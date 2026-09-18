@@ -77,34 +77,34 @@ export default function Header({
   return (
     <div className="header" ref={headerRef}>
       <div className="header-inner">
-        <div className="header-row1">
+        <div className="header-top-row">
           <div className="brand">
             <span className="kicker">Controle de repetidas</span>
             <span className="title">Álbum Copa 2026</span>
           </div>
-          <div className="header-spacer" />
-          <div className="totals">
-            <div className="total-card">
-              <span className="total-value" style={{ color: "var(--positive)" }}>
-                {totColadas}
-                <span className="denom">/{totGeral}</span>
-              </span>
-              <span className="total-label">Coladas</span>
-            </div>
-            <div className="total-card">
-              <span className="total-value" style={{ color: "var(--gold)" }}>
-                {totRepetidas}
-              </span>
-              <span className="total-label">Repetidas</span>
-            </div>
-            <div className="total-card">
-              <span className="total-value" style={{ color: "var(--danger)" }}>
-                {totFaltam}
-              </span>
-              <span className="total-label">Faltam</span>
-            </div>
-          </div>
           <AuthBar user={user} onSignOut={onSignOut} />
+        </div>
+
+        <div className="totals-row">
+          <div className="total-card">
+            <span className="total-value" style={{ color: "var(--positive)" }}>
+              {totColadas}
+              <span className="denom">/{totGeral}</span>
+            </span>
+            <span className="total-label">Coladas</span>
+          </div>
+          <div className="total-card">
+            <span className="total-value" style={{ color: "var(--gold)" }}>
+              {totRepetidas}
+            </span>
+            <span className="total-label">Repetidas</span>
+          </div>
+          <div className="total-card">
+            <span className="total-value" style={{ color: "var(--danger)" }}>
+              {totFaltam}
+            </span>
+            <span className="total-label">Faltam</span>
+          </div>
         </div>
 
         <div className="quick-row">

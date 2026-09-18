@@ -1,0 +1,180 @@
+"use client";
+
+import type { RefObject } from "react";
+import type { Anchor, AppUser, ModoClique, StatusFiltro, TipoFiltro } from "@/lib/types";
+import AuthBar from "./AuthBar";
+
+interface HeaderProps {
+  headerRef: RefObject<HTMLDivElement | null>;
+  totColadas: number;
+  totGeral: number;
+  totRepetidas: number;
+  totFaltam: number;
+  busca: string;
+  onBusca: (v: string) => void;
+  tipo: TipoFiltro;
+  onTipo: (v: TipoFiltro) => void;
+  statusFiltro: StatusFiltro;
+  onStatusFiltro: (v: StatusFiltro) => void;
+  modo: ModoClique;
+  onModo: (v: ModoClique) => void;
+  onAbrirTrocas: () => void;
+  onExportar: () => void;
+  onImportar: () => void;
+  anchoras: Anchor[];
+  onAnchorClick: (id: string) => void;
+  user: AppUser | null;
+  onSignIn: (email: string) => Promise<{ error: string | null }>;
+  onSignOut: () => void;
+}
+
+const TIPOS: { value: TipoFiltro; label: string }[] = [
+  { value: "ALL", label: "Todas" },
+  { value: "TEAM", label: "Seleções" },
+  { value: "FWC", label: "FWC" },
+  { value: "CC", label: "Coca-Cola" },
+];
+
+const STATUSES: { value: StatusFiltro; label: string }[] = [
+  { value: "ALL", label: "Tudo" },
+  { value: "REP", label: "Só repetidas" },
+  { value: "MISS", label: "Só faltantes" },
+];
+
+const MODOS: { value: ModoClique; label: string }[] = [
+  { value: "add", label: "+ Somar" },
+  { value: "sub", label: "− Tirar" },
+];
+
+export default function Header({
+  headerRef,
+  totColadas,
+  totGeral,
+  totRepetidas,
+  totFaltam,
+  busca,
+  onBusca,
+  tipo,
+  onTipo,
+  statusFiltro,
+  onStatusFiltro,
+  modo,
+  onModo,
+  onAbrirTrocas,
+  onExportar,
+  onImportar,
+  anchoras,
+  onAnchorClick,
+  user,
+  onSignIn,
+  onSignOut,
+}: HeaderProps) {
+  return (
+    <div className="header" ref={headerRef}>
+      <div className="header-inner">
+        <div className="header-row1">
+          <div className="brand">
+            <span className="kicker">Controle de repetidas</span>
+            <span className="title">Álbum Copa 2026</span>
+          </div>
+          <div className="header-spacer" />
+          <div className="totals">
+            <div className="total-card">
+              <span className="total-value" style={{ color: "var(--positive)" }}>
+                {totColadas}
+                <span className="denom">/{totGeral}</span>
+              </span>
+              <span className="total-label">Coladas</span>
+            </div>
+            <div className="total-card">
+              <span className="total-value" style={{ color: "var(--gold)" }}>
+                {totRepetidas}
+              </span>
+              <span className="total-label">Repetidas</span>
+            </div>
+            <div className="total-card">
+              <span className="total-value" style={{ color: "var(--danger)" }}>
+                {totFaltam}
+              </span>
+              <span className="total-label">Faltam</span>
+            </div>
+          </div>
+          <AuthBar user={user} onSignIn={onSignIn} onSignOut={onSignOut} />
+        </div>
+
+        <div className="controls-row">
+          <input
+            type="search"
+            placeholder="Buscar seleção ou código (ex: BRA9)"
+            value={busca}
+            onChange={(e) => onBusca(e.target.value)}
+            className="search-input"
+          />
+
+          <div className="segmented">
+            {TIPOS.map((t) => (
+              <button
+                key={t.value}
+                type="button"
+                className={`chip ${tipo === t.value ? "active" : ""}`}
+                onClick={() => onTipo(t.value)}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="segmented">
+            {STATUSES.map((s) => (
+              <button
+                key={s.value}
+                type="button"
+                className={`chip ${statusFiltro === s.value ? "active" : ""}`}
+                onClick={() => onStatusFiltro(s.value)}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="segmented">
+            {MODOS.map((m) => (
+              <button
+                key={m.value}
+                type="button"
+                className={`chip ${modo === m.value ? "active" : ""}`}
+                onClick={() => onModo(m.value)}
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
+
+          <button type="button" className="btn-primary" onClick={onAbrirTrocas}>
+            Minhas repetidas
+          </button>
+          <button type="button" className="btn-ghost" onClick={onExportar}>
+            Backup
+          </button>
+          <button type="button" className="btn-ghost" onClick={onImportar}>
+            Importar
+          </button>
+        </div>
+
+        <div className="anchors-row">
+          {anchoras.map((a) => (
+            <button
+              key={a.id}
+              type="button"
+              title={a.title}
+              className={`anchor-btn ${a.variant !== "team" ? `anchor-${a.variant}` : ""}`}
+              onClick={() => onAnchorClick(a.id)}
+            >
+              {a.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin:0; padding:0; background:#0a120e; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  a { color:#ffcf4d; text-decoration:none; }
+  a:hover { color:#ffe08f; }
+  ::selection { background:#ffcf4d; color:#0a120e; }
+  input[type="search"]::-webkit-search-cancel-button { filter:invert(1) opacity(.5); }
+</style>
+</helmet>
+<div style="min-height:100vh;background:#0a120e;background-image:radial-gradient(1200px 500px at 12% -10%, rgba(0,196,106,.16), transparent 60%),radial-gradient(900px 400px at 95% 0%, rgba(255,207,77,.10), transparent 60%);font-family:Barlow,system-ui,sans-serif;color:#e8f2ec;padding-bottom:64px">
+
+  <div style="position:sticky;top:0;z-index:30;background:rgba(10,18,14,.94);backdrop-filter:blur(10px);border-bottom:1px solid #1e3328">
+    <div style="max-width:1340px;margin:0 auto;padding:16px 18px 10px;display:flex;flex-direction:column;gap:12px">
+
+      <div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.22em;font-size:12px;color:#ffcf4d;text-transform:uppercase">Controle de repetidas</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:.92;letter-spacing:.01em">Álbum Copa 2026</div>
+        </div>
+        <div style="flex:1 1 220px"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <div style="display:flex;flex-direction:column;align-items:flex-end;padding:8px 14px;background:#10201a;border:1px solid #21382c;border-radius:10px;min-width:96px">
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;color:#7de2ab">{{ totColadas }}<span style="font-size:15px;color:#6b8a79">/{{ totGeral }}</span></span>
+            <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#7f9c8c;font-weight:600">Coladas</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;padding:8px 14px;background:#10201a;border:1px solid #21382c;border-radius:10px;min-width:96px">
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;color:#ffcf4d">{{ totRepetidas }}</span>
+            <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#7f9c8c;font-weight:600">Repetidas</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;padding:8px 14px;background:#10201a;border:1px solid #21382c;border-radius:10px;min-width:96px">
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;color:#ff8f6b">{{ totFaltam }}</span>
+            <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#7f9c8c;font-weight:600">Faltam</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <input type="search" placeholder="Buscar seleção ou código (ex: BRA9)" value="{{ busca }}" onChange="{{ onBusca }}" style="flex:1 1 240px;min-width:0;background:#0d1a14;border:1px solid #21382c;border-radius:9px;padding:9px 12px;color:#e8f2ec;font-family:Barlow,sans-serif;font-size:14px;outline:none" style-focus="border-color:#00c46a" />
+
+        <div style="display:flex;background:#0d1a14;border:1px solid #21382c;border-radius:9px;padding:3px;gap:2px">
+          <sc-for list="{{ tipos }}" as="t" hint-placeholder-count="4">
+            <button onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="display:flex;background:#0d1a14;border:1px solid #21382c;border-radius:9px;padding:3px;gap:2px">
+          <sc-for list="{{ status }}" as="s" hint-placeholder-count="3">
+            <button onClick="{{ s.onClick }}" style="{{ s.style }}">{{ s.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="display:flex;background:#0d1a14;border:1px solid #21382c;border-radius:9px;padding:3px;gap:2px">
+          <sc-for list="{{ modos }}" as="m" hint-placeholder-count="2">
+            <button onClick="{{ m.onClick }}" style="{{ m.style }}">{{ m.label }}</button>
+          </sc-for>
+        </div>
+
+        <button onClick="{{ abrirTrocas }}" style="background:#ffcf4d;color:#0a120e;border:none;border-radius:9px;padding:10px 14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer" style-hover="background:#ffe08f">Minhas repetidas</button>
+        <button onClick="{{ exportar }}" style="background:transparent;color:#9fc2ae;border:1px solid #21382c;border-radius:9px;padding:10px 12px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer" style-hover="color:#e8f2ec;border-color:#3b5c4a">Backup</button>
+        <button onClick="{{ importar }}" style="background:transparent;color:#9fc2ae;border:1px solid #21382c;border-radius:9px;padding:10px 12px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer" style-hover="color:#e8f2ec;border-color:#3b5c4a">Importar</button>
+      </div>
+
+      <div style="display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px">
+        <sc-for list="{{ ancoras }}" as="a" hint-placeholder-count="14">
+          <button onClick="{{ a.onClick }}" title="{{ a.title }}" style="{{ a.style }}">{{ a.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:1340px;margin:0 auto;padding:18px 18px 0;display:flex;gap:18px;flex-wrap:wrap;align-items:center;font-size:12px;color:#7f9c8c">
+    <span style="font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:10px">Legenda</span>
+    <span style="display:flex;align-items:center;gap:7px"><i style="width:14px;height:14px;border-radius:4px;border:1px dashed #37563f;background:#12211a;display:inline-block"></i>falta</span>
+    <span style="display:flex;align-items:center;gap:7px"><i style="width:14px;height:14px;border-radius:4px;background:#00c46a;display:inline-block"></i>colada</span>
+    <span style="display:flex;align-items:center;gap:7px"><i style="width:14px;height:14px;border-radius:4px;background:#ffcf4d;display:inline-block"></i>tenho repetida</span>
+    <span style="opacity:.8">{{ dicaModo }}</span>
+    <div style="flex:1 1 20px"></div>
+    <span style="{{ statusSalvoStyle }}"><i style="width:7px;height:7px;border-radius:99px;background:currentColor;display:inline-block"></i>{{ statusSalvo }}</span>
+  </div>
+
+  <div style="max-width:1340px;margin:0 auto;padding:18px;position:relative;display:flex;flex-direction:column;gap:14px">
+    <sc-for list="{{ blocos }}" as="b" hint-placeholder-count="6">
+      <div id="{{ b.anchorId }}" style="scroll-margin-top:190px;background:#0e1b15;border:1px solid #1c2f25;border-radius:14px;overflow:hidden">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(90deg,#132218,#0e1b15);border-bottom:1px solid #1c2f25;flex-wrap:wrap">
+          <span style="{{ b.tagStyle }}">{{ b.tag }}</span>
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:25px;line-height:1;letter-spacing:.02em">{{ b.nome }}</span>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#6b8a79">{{ b.codigoBase }}</span>
+          <div style="flex:1 1 40px"></div>
+          <span style="font-size:12px;color:#7de2ab;font-weight:600">{{ b.resumoColadas }}</span>
+          <span style="font-size:12px;color:#ffcf4d;font-weight:600">{{ b.resumoRepetidas }}</span>
+          <div style="width:120px;height:6px;border-radius:99px;background:#1c2f25;overflow:hidden">
+            <div style="{{ b.barraStyle }}"></div>
+          </div>
+        </div>
+        <div style="{{ b.gridStyle }}">
+          <sc-for list="{{ b.stickers }}" as="s" hint-placeholder-count="20">
+            <div onClick="{{ s.onClick }}" onContextMenu="{{ s.onContext }}" title="{{ s.title }}" style="{{ s.style }}">
+              <span style="{{ s.numStyle }}">{{ s.num }}</span>
+              <span style="{{ s.badgeStyle }}">{{ s.badge }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+    <sc-if value="{{ vazio }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:60px 20px;text-align:center;color:#6b8a79;font-size:15px">Nenhuma figurinha com esses filtros.</div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ backupAberto }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ fecharBackup }}" style="position:fixed;inset:0;z-index:70;background:rgba(5,9,7,.78);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px">
+      <div onClick="{{ stop }}" style="width:100%;max-width:620px;display:flex;flex-direction:column;gap:12px;background:#0e1b15;border:1px solid #21382c;border-radius:16px;padding:18px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:27px;line-height:1">{{ backupTitulo }}</span>
+          <div style="flex:1"></div>
+          <button onClick="{{ fecharBackup }}" style="background:transparent;border:1px solid #21382c;color:#9fc2ae;border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer">×</button>
+        </div>
+        <div style="font-size:13px;color:#9fc2ae;line-height:1.5">{{ backupAviso }}</div>
+        <sc-if value="{{ backupEhExport }}" hint-placeholder-val="{{ true }}">
+          <textarea id="bk-ta" readonly value="{{ backupTexto }}" style="width:100%;height:190px;resize:vertical;background:#0a120e;border:1px solid #21382c;border-radius:10px;padding:12px;color:#cfe3d7;font-family:ui-monospace,monospace;font-size:12px;line-height:1.5;outline:none"></textarea>
+        </sc-if>
+        <sc-if value="{{ backupEhImport }}" hint-placeholder-val="{{ false }}">
+          <textarea placeholder="Cole aqui o texto do backup..." value="{{ backupTexto }}" onChange="{{ onImportText }}" style="width:100%;height:190px;resize:vertical;background:#0a120e;border:1px solid #21382c;border-radius:10px;padding:12px;color:#cfe3d7;font-family:ui-monospace,monospace;font-size:12px;line-height:1.5;outline:none"></textarea>
+        </sc-if>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <sc-if value="{{ backupEhExport }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ copiarBackup }}" style="background:#ffcf4d;color:#0a120e;border:none;border-radius:9px;padding:10px 16px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:14px;cursor:pointer">{{ labelCopiar }}</button>
+          </sc-if>
+          <sc-if value="{{ backupEhExport }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ baixarArquivo }}" style="background:transparent;color:#9fc2ae;border:1px solid #21382c;border-radius:9px;padding:10px 14px;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:13px;cursor:pointer">Tentar baixar arquivo</button>
+          </sc-if>
+          <sc-if value="{{ backupEhImport }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ aplicarImport }}" style="background:#00c46a;color:#04180d;border:none;border-radius:9px;padding:10px 16px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:14px;cursor:pointer">Restaurar base</button>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ trocasAberto }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ fecharTrocas }}" style="position:fixed;inset:0;z-index:60;background:rgba(5,9,7,.78);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px">
+      <div onClick="{{ stop }}" style="width:100%;max-width:620px;max-height:84vh;display:flex;flex-direction:column;background:#0e1b15;border:1px solid #21382c;border-radius:16px;overflow:hidden">
+        <div style="display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid #1c2f25">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:27px;line-height:1">Minhas repetidas</span>
+          <span style="font-size:12px;color:#7f9c8c">{{ totRepetidas }} figurinhas</span>
+          <div style="flex:1"></div>
+          <button onClick="{{ copiarLista }}" style="background:#ffcf4d;color:#0a120e;border:none;border-radius:8px;padding:8px 13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:13px;cursor:pointer">{{ labelCopiar }}</button>
+          <button onClick="{{ fecharTrocas }}" style="background:transparent;border:1px solid #21382c;color:#9fc2ae;border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer">×</button>
+        </div>
+        <div style="padding:16px 18px;overflow:auto;font-family:Barlow,monospace;font-size:14px;line-height:1.7;white-space:pre-wrap;color:#cfe3d7">{{ listaTrocas }}</div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#00c46a&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#00c46a&quot;,&quot;#38bdf8&quot;,&quot;#f97316&quot;,&quot;#a78bfa&quot;],&quot;section&quot;:&quot;Aparência&quot;},&quot;cellSize&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:46,&quot;min&quot;:34,&quot;max&quot;:72,&quot;step&quot;:2,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Aparência&quot;}}">
+const GRUPOS = [
+  ["A", [["MEX","México"],["RSA","África do Sul"],["KOR","Coreia do Sul"],["CZE","Rep. Tcheca"]]],
+  ["B", [["CAN","Canadá"],["BIH","Bósnia"],["QAT","Catar"],["SUI","Suíça"]]],
+  ["C", [["BRA","Brasil"],["MAR","Marrocos"],["HAI","Haiti"],["SCO","Escócia"]]],
+  ["D", [["USA","Estados Unidos"],["PAR","Paraguai"],["AUS","Austrália"],["TUR","Turquia"]]],
+  ["E", [["GER","Alemanha"],["CUW","Curaçao"],["CIV","Costa do Marfim"],["ECU","Equador"]]],
+  ["F", [["NED","Holanda"],["JPN","Japão"],["SWE","Suécia"],["TUN","Tunísia"]]],
+  ["G", [["BEL","Bélgica"],["EGY","Egito"],["IRN","Irã"],["NZL","Nova Zelândia"]]],
+  ["H", [["ESP","Espanha"],["CPV","Cabo Verde"],["KSA","Arábia Saudita"],["URU","Uruguai"]]],
+  ["I", [["FRA","França"],["SEN","Senegal"],["IRQ","Iraque"],["NOR","Noruega"]]],
+  ["J", [["ARG","Argentina"],["ALG","Argélia"],["AUT","Áustria"],["JOR","Jordânia"]]],
+  ["K", [["POR","Portugal"],["COD","Congo"],["UZB","Uzbequistão"],["COL","Colômbia"]]],
+  ["L", [["ENG","Inglaterra"],["CRO","Croácia"],["GHA","Gana"],["PAN","Panamá"]]]
+];
+
+function montarBlocos() {
+  const out = [];
+  const fwc = ["00"];
+  for (let i = 1; i <= 19; i++) fwc.push("FWC" + i);
+  out.push({ id: "fwc", nome: "FIFA World Cup History", tipo: "FWC", tag: "FWC", grupo: "FWC", codigoBase: "00 · FWC1–19", codes: fwc });
+  GRUPOS.forEach(function (g) {
+    g[1].forEach(function (t) {
+      const codes = [];
+      for (let i = 1; i <= 20; i++) codes.push(t[0] + i);
+      out.push({ id: t[0], nome: t[1], tipo: "TEAM", tag: "Grupo " + g[0], grupo: g[0], codigoBase: t[0] + "1–20", codes: codes });
+    });
+  });
+  const cc = [];
+  for (let i = 1; i <= 14; i++) cc.push("CC" + i);
+  out.push({ id: "cc", nome: "Coca-Cola", tipo: "CC", tag: "Extra", grupo: "CC", codigoBase: "CC1–14", codes: cc });
+  return out;
+}
+
+const BLOCOS = montarBlocos();
+const KEY = "copa2026-figurinhas-v1";
+
+class Component extends DCLogic {
+  state = { qtd: {}, tipo: "ALL", stat: "ALL", modo: "add", busca: "", trocas: false, copiado: false };
+
+  componentDidMount() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (raw) {
+        const p = JSON.parse(raw);
+        if (p && typeof p === "object" && p.qtd) this.setState({ qtd: p.qtd, salvoEm: p.atualizado ? new Date(p.atualizado) : null });
+      }
+    } catch (e) {}
+  }
+
+  persist(qtd) {
+    try {
+      localStorage.setItem(KEY, JSON.stringify({ v: 1, atualizado: new Date().toISOString(), qtd: qtd }));
+      this.setState({ salvoEm: new Date() });
+    } catch (e) { this.setState({ salvoEm: "erro" }); }
+  }
+
+  bump(code, delta) {
+    this.setState(function (s) {
+      const q = Object.assign({}, s.qtd);
+      const n = Math.max(0, Math.min(99, (q[code] || 0) + delta));
+      if (n === 0) delete q[code]; else q[code] = n;
+      return { qtd: q };
+    }, () => this.persist(this.state.qtd));
+  }
+
+  chip(active, label, onClick) {
+    return {
+      label: label,
+      onClick: onClick,
+      style: "border:none;cursor:pointer;border-radius:7px;padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;" +
+        (active ? "background:#00c46a;color:#04180d" : "background:transparent;color:#89a99a")
+    };
+  }
+
+  renderVals() {
+    const self = this;
+    const qtd = this.state.qtd;
+    const accent = this.props.accentColor || "#00c46a";
+    const cell = Math.max(34, Math.min(72, this.props.cellSize || 46));
+    const busca = (this.state.busca || "").trim().toLowerCase();
+
+    let totColadas = 0, totRepetidas = 0, totGeral = 0;
+    BLOCOS.forEach(function (b) {
+      b.codes.forEach(function (c) {
+        totGeral++;
+        const n = qtd[c] || 0;
+        if (n >= 1) totColadas++;
+        if (n > 1) totRepetidas += n - 1;
+      });
+    });
+
+    const blocos = [];
+    BLOCOS.forEach(function (b) {
+      if (self.state.tipo !== "ALL" && self.state.tipo !== b.tipo) return;
+      const matchBloco = !busca || b.nome.toLowerCase().indexOf(busca) >= 0 || b.id.toLowerCase().indexOf(busca) >= 0;
+      let coladas = 0, reps = 0;
+      const stickers = [];
+      b.codes.forEach(function (code) {
+        const n = qtd[code] || 0;
+        if (n >= 1) coladas++;
+        if (n > 1) reps += n - 1;
+        if (self.state.stat === "REP" && n < 2) return;
+        if (self.state.stat === "MISS" && n !== 0) return;
+        if (busca && !matchBloco && code.toLowerCase().indexOf(busca) < 0) return;
+        const num = code.replace(/^[A-Z]+/, "") || code;
+        let bg = "#12211a", bd = "1px dashed #37563f", fg = "#5d7a6c";
+        if (n === 1) { bg = accent; bd = "1px solid " + accent; fg = "#04180d"; }
+        else if (n > 1) { bg = "#ffcf4d"; bd = "1px solid #ffcf4d"; fg = "#3a2a00"; }
+        stickers.push({
+          num: num === "00" ? "00" : num,
+          badge: n > 1 ? "+" + (n - 1) : "",
+          title: code + " — " + (n === 0 ? "não tenho" : n === 1 ? "tenho 1 (colada)" : "tenho " + n + " (" + (n - 1) + " repetida" + (n - 2 ? "s" : "") + ")") + " · clique para " + (self.state.modo === "add" ? "somar" : "tirar") + ", clique direito inverte",
+          onClick: function () { self.bump(code, self.state.modo === "add" ? 1 : -1); },
+          onContext: function (e) { e.preventDefault(); self.bump(code, self.state.modo === "add" ? -1 : 1); },
+          style: "position:relative;height:" + cell + "px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;background:" + bg + ";border:" + bd + ";color:" + fg + ";transition:transform .08s ease",
+          numStyle: "font-size:" + Math.round(cell * 0.36) + "px;line-height:1;letter-spacing:.02em",
+          badgeStyle: n > 1
+            ? "position:absolute;top:-6px;right:-5px;background:#0a120e;color:#ffcf4d;border:1px solid #ffcf4d;border-radius:99px;font-size:10px;font-weight:700;padding:1px 5px;font-family:Barlow,sans-serif"
+            : "display:none"
+        });
+      });
+      if (!stickers.length) return;
+      const pct = Math.round((coladas / b.codes.length) * 100);
+      blocos.push({
+        anchorId: "bl-" + b.id,
+        nome: b.nome,
+        tag: b.tag,
+        codigoBase: b.codigoBase,
+        stickers: stickers,
+        resumoColadas: coladas + "/" + b.codes.length + " coladas",
+        resumoRepetidas: reps + " repetidas",
+        barraStyle: "height:100%;width:" + pct + "%;background:" + (pct === 100 ? "#ffcf4d" : accent),
+        tagStyle: "font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:" + (b.tipo === "TEAM" ? "#7f9c8c" : "#ffcf4d") + ";border:1px solid " + (b.tipo === "TEAM" ? "#2a4436" : "#5a4a15") + ";border-radius:6px;padding:3px 8px",
+        gridStyle: "display:grid;gap:8px;padding:14px 16px 18px;grid-template-columns:repeat(auto-fill,minmax(" + cell + "px,1fr))"
+      });
+    });
+
+    const ancoras = [];
+    const go = function (id) {
+      return function () {
+        const el = document.getElementById("bl-" + id);
+        if (!el) return;
+        const hdr = document.querySelector('div[style*="sticky"]');
+        const off = (hdr ? hdr.getBoundingClientRect().height : 200) + 12;
+        const y = el.getBoundingClientRect().top + window.scrollY - off;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      };
+    };
+    ancoras.push({ label: "FWC", title: "FIFA World Cup History", onClick: go("fwc"), style: "border:1px solid #5a4a15;background:#1a1706;color:#ffcf4d;cursor:pointer;border-radius:8px;padding:7px 11px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.08em;white-space:nowrap" });
+    GRUPOS.forEach(function (g) {
+      g[1].forEach(function (t) {
+        ancoras.push({ label: g[0] + " · " + t[0], title: t[1], onClick: go(t[0]), style: "border:1px solid #21382c;background:#0d1a14;color:#9fc2ae;cursor:pointer;border-radius:8px;padding:7px 10px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;letter-spacing:.06em;white-space:nowrap" });
+      });
+    });
+    ancoras.push({ label: "COCA-COLA", title: "Figurinhas Coca-Cola", onClick: go("cc"), style: "border:1px solid #6b1f1f;background:#1d0b0b;color:#ff9c9c;cursor:pointer;border-radius:8px;padding:7px 11px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.08em;white-space:nowrap" });
+
+    const linhas = [];
+    BLOCOS.forEach(function (b) {
+      const itens = b.codes.filter(function (c) { return (qtd[c] || 0) > 1; }).map(function (c) {
+        const n = (qtd[c] || 0) - 1;
+        return c + (n > 1 ? " (x" + n + ")" : "");
+      });
+      if (itens.length) linhas.push(b.nome + ": " + itens.join(", "));
+    });
+    const lista = linhas.length ? "REPETIDAS — ÁLBUM COPA 2026\n\n" + linhas.join("\n") : "Nenhuma repetida registrada ainda.";
+
+    return {
+      totColadas: totColadas, totGeral: totGeral, totRepetidas: totRepetidas, totFaltam: totGeral - totColadas,
+      blocos: blocos, ancoras: ancoras, vazio: blocos.length === 0,
+      busca: this.state.busca,
+      statusSalvo: (function () {
+        const s = self.state.salvoEm;
+        const marcadas = Object.keys(qtd).length;
+        if (s === "erro") return "Não foi possível salvar neste navegador — use Backup";
+        if (!marcadas) return "Nada registrado ainda — sua marcação salva automaticamente";
+        const hora = s instanceof Date ? s.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : "—";
+        return "Salvo " + hora + " · " + marcadas + " figurinhas na base";
+      })(),
+      statusSalvoStyle: "display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:" + (self.state.salvoEm === "erro" ? "#ff8f6b" : "#7de2ab"),
+      onBusca: function (e) { self.setState({ busca: e.target.value }); },
+      dicaModo: this.state.modo === "add" ? "Clique na figurinha para somar uma unidade · clique direito (ou modo Tirar) para remover" : "Modo TIRAR: cada clique remove uma unidade",
+      tipos: [
+        this.chip(this.state.tipo === "ALL", "Todas", function () { self.setState({ tipo: "ALL" }); }),
+        this.chip(this.state.tipo === "TEAM", "Seleções", function () { self.setState({ tipo: "TEAM" }); }),
+        this.chip(this.state.tipo === "FWC", "FWC", function () { self.setState({ tipo: "FWC" }); }),
+        this.chip(this.state.tipo === "CC", "Coca-Cola", function () { self.setState({ tipo: "CC" }); })
+      ],
+      status: [
+        this.chip(this.state.stat === "ALL", "Tudo", function () { self.setState({ stat: "ALL" }); }),
+        this.chip(this.state.stat === "REP", "Só repetidas", function () { self.setState({ stat: "REP" }); }),
+        this.chip(this.state.stat === "MISS", "Só faltantes", function () { self.setState({ stat: "MISS" }); })
+      ],
+      modos: [
+        this.chip(this.state.modo === "add", "+ Somar", function () { self.setState({ modo: "add" }); }),
+        this.chip(this.state.modo === "sub", "− Tirar", function () { self.setState({ modo: "sub" }); })
+      ],
+      trocasAberto: this.state.trocas,
+      abrirTrocas: function () { self.setState({ trocas: true, copiado: false }); },
+      fecharTrocas: function () { self.setState({ trocas: false }); },
+      stop: function (e) { e.stopPropagation(); },
+      listaTrocas: lista,
+      labelCopiar: this.state.copiado ? "Copiado!" : "Copiar lista",
+      copiarLista: function () {
+        try { navigator.clipboard.writeText(lista); } catch (e) {}
+        self.setState({ copiado: true });
+      },
+      backupAberto: !!this.state.backup,
+      backupModo: this.state.backup,
+      backupTitulo: this.state.backup === "import" ? "Restaurar base" : "Backup da base",
+      backupTexto: this.state.backup === "import" ? (this.state.importText || "") : JSON.stringify({ v: 1, atualizado: new Date().toISOString(), qtd: qtd }, null, 0),
+      backupAviso: this.state.backup === "import"
+        ? "Cole aqui o texto do backup e clique em Restaurar. Isso substitui a base atual."
+        : "Este texto é a sua base completa (" + Object.keys(qtd).length + " figurinhas). Copie e guarde em uma nota, e-mail ou arquivo.",
+      backupEhImport: this.state.backup === "import",
+      backupEhExport: this.state.backup === "export",
+      exportar: function () { self.setState({ backup: "export", copiado: false }); },
+      importar: function () { self.setState({ backup: "import", importText: "" }); },
+      fecharBackup: function () { self.setState({ backup: null }); },
+      onImportText: function (e) { self.setState({ importText: e.target.value }); },
+      copiarBackup: function () {
+        const txt = JSON.stringify({ v: 1, atualizado: new Date().toISOString(), qtd: qtd }, null, 0);
+        try { navigator.clipboard.writeText(txt); } catch (e) {}
+        try {
+          const ta = document.getElementById("bk-ta");
+          if (ta) { ta.focus(); ta.select(); document.execCommand("copy"); }
+        } catch (e) {}
+        self.setState({ copiado: true });
+      },
+      aplicarImport: function () {
+        try {
+          const p = JSON.parse((self.state.importText || "").trim());
+          const novo = p && p.qtd ? p.qtd : p;
+          if (!novo || typeof novo !== "object") throw new Error("x");
+          self.setState({ qtd: novo, backup: null, importText: "" }, function () { self.persist(novo); });
+        } catch (e) { alert("Texto inválido — cole o backup completo, começando com {"); }
+      },
+      baixarArquivo: function () {
+        try {
+          const txt = JSON.stringify({ v: 1, atualizado: new Date().toISOString(), qtd: qtd }, null, 2);
+          const a = document.createElement("a");
+          a.href = "data:application/json;charset=utf-8," + encodeURIComponent(txt);
+          a.download = "figurinhas-copa2026-" + new Date().toISOString().slice(0, 10) + ".json";
+          a.rel = "noopener";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        } catch (e) {}
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

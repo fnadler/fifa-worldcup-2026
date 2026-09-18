@@ -1,6 +1,6 @@
 "use client";
 
-import type { RefObject } from "react";
+import { useState, type RefObject } from "react";
 import type { Anchor, AppUser, ModoClique, StatusFiltro, TipoFiltro } from "@/lib/types";
 import AuthBar from "./AuthBar";
 
@@ -23,8 +23,7 @@ interface HeaderProps {
   onImportar: () => void;
   anchoras: Anchor[];
   onAnchorClick: (id: string) => void;
-  user: AppUser | null;
-  onSignIn: (email: string) => Promise<{ error: string | null }>;
+  user: AppUser;
   onSignOut: () => void;
 }
 
@@ -66,9 +65,15 @@ export default function Header({
   anchoras,
   onAnchorClick,
   user,
-  onSignIn,
   onSignOut,
 }: HeaderProps) {
+  const [menuAberto, setMenuAberto] = useState(false);
+
+  function anchorClickAndClose(id: string) {
+    setMenuAberto(false);
+    onAnchorClick(id);
+  }
+
   return (
     <div className="header" ref={headerRef}>
       <div className="header-inner">
@@ -99,44 +104,10 @@ export default function Header({
               <span className="total-label">Faltam</span>
             </div>
           </div>
-          <AuthBar user={user} onSignIn={onSignIn} onSignOut={onSignOut} />
+          <AuthBar user={user} onSignOut={onSignOut} />
         </div>
 
-        <div className="controls-row">
-          <input
-            type="search"
-            placeholder="Buscar seleção ou código (ex: BRA9)"
-            value={busca}
-            onChange={(e) => onBusca(e.target.value)}
-            className="search-input"
-          />
-
-          <div className="segmented">
-            {TIPOS.map((t) => (
-              <button
-                key={t.value}
-                type="button"
-                className={`chip ${tipo === t.value ? "active" : ""}`}
-                onClick={() => onTipo(t.value)}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="segmented">
-            {STATUSES.map((s) => (
-              <button
-                key={s.value}
-                type="button"
-                className={`chip ${statusFiltro === s.value ? "active" : ""}`}
-                onClick={() => onStatusFiltro(s.value)}
-              >
-                {s.label}
-              </button>
-            ))}
-          </div>
-
+        <div className="quick-row">
           <div className="segmented">
             {MODOS.map((m) => (
               <button
@@ -149,30 +120,84 @@ export default function Header({
               </button>
             ))}
           </div>
-
-          <button type="button" className="btn-primary" onClick={onAbrirTrocas}>
-            Minhas repetidas
-          </button>
-          <button type="button" className="btn-ghost" onClick={onExportar}>
-            Backup
-          </button>
-          <button type="button" className="btn-ghost" onClick={onImportar}>
-            Importar
+          <button
+            type="button"
+            className="btn-ghost mobile-menu-button"
+            onClick={() => setMenuAberto((v) => !v)}
+          >
+            Filtros
           </button>
         </div>
 
-        <div className="anchors-row">
-          {anchoras.map((a) => (
-            <button
-              key={a.id}
-              type="button"
-              title={a.title}
-              className={`anchor-btn ${a.variant !== "team" ? `anchor-${a.variant}` : ""}`}
-              onClick={() => onAnchorClick(a.id)}
-            >
-              {a.label}
+        <div className={`filters-panel ${menuAberto ? "is-open" : ""}`}>
+          <button
+            type="button"
+            className="modal-close filters-panel-close"
+            onClick={() => setMenuAberto(false)}
+            aria-label="Fechar filtros"
+          >
+            ×
+          </button>
+
+          <div className="controls-row">
+            <input
+              type="search"
+              placeholder="Buscar seleção ou código (ex: BRA9)"
+              value={busca}
+              onChange={(e) => onBusca(e.target.value)}
+              className="search-input"
+            />
+
+            <div className="segmented">
+              {TIPOS.map((t) => (
+                <button
+                  key={t.value}
+                  type="button"
+                  className={`chip ${tipo === t.value ? "active" : ""}`}
+                  onClick={() => onTipo(t.value)}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="segmented">
+              {STATUSES.map((s) => (
+                <button
+                  key={s.value}
+                  type="button"
+                  className={`chip ${statusFiltro === s.value ? "active" : ""}`}
+                  onClick={() => onStatusFiltro(s.value)}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+
+            <button type="button" className="btn-primary" onClick={onAbrirTrocas}>
+              Minhas repetidas
             </button>
-          ))}
+            <button type="button" className="btn-ghost" onClick={onExportar}>
+              Backup
+            </button>
+            <button type="button" className="btn-ghost" onClick={onImportar}>
+              Importar
+            </button>
+          </div>
+
+          <div className="anchors-row">
+            {anchoras.map((a) => (
+              <button
+                key={a.id}
+                type="button"
+                title={a.title}
+                className={`anchor-btn ${a.variant !== "team" ? `anchor-${a.variant}` : ""}`}
+                onClick={() => anchorClickAndClose(a.id)}
+              >
+                {a.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>

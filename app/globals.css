@@ -205,6 +205,27 @@ button {
 
 /* ---------- controls ---------- */
 
+.quick-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.mobile-menu-button {
+  display: none;
+}
+
+/* Desktop: the panel is transparent to layout so its children (.controls-row,
+   .anchors-row) stack as ordinary rows, exactly like before this existed. */
+.filters-panel {
+  display: contents;
+}
+
+.filters-panel-close {
+  display: none;
+}
+
 .controls-row {
   display: flex;
   gap: 10px;
@@ -705,4 +726,116 @@ button {
   border-radius: 10px;
   font-size: 13px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* ---------- login page ---------- */
+
+.login-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: var(--bg);
+  background-image: radial-gradient(1200px 500px at 12% -10%, rgba(0, 196, 106, 0.16), transparent 60%),
+    radial-gradient(900px 400px at 95% 0%, rgba(255, 207, 77, 0.1), transparent 60%);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: var(--card);
+  border: 1px solid var(--border-1);
+  border-radius: 16px;
+  padding: 28px 24px;
+}
+
+.login-card .brand {
+  align-items: center;
+  text-align: center;
+}
+
+.login-mode-toggle {
+  align-self: center;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login-input {
+  background: var(--field);
+  border: 1px solid var(--border-3);
+  border-radius: 9px;
+  padding: 11px 12px;
+  color: var(--text-1);
+  font-family: var(--font-barlow);
+  font-size: 14px;
+  outline: none;
+}
+.login-input:focus {
+  border-color: var(--accent);
+}
+
+.login-submit {
+  margin-top: 6px;
+}
+
+.login-error {
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.login-info {
+  color: var(--positive);
+  font-size: 13px;
+}
+
+/* ---------- responsive: collapse filters into a mobile drawer ---------- */
+
+@media (max-width: 700px) {
+  .mobile-menu-button {
+    display: inline-flex;
+  }
+
+  .filters-panel {
+    display: none;
+  }
+
+  .filters-panel.is-open {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    background: var(--bg);
+    padding: 64px 18px 24px;
+    overflow-y: auto;
+  }
+
+  .filters-panel.is-open .filters-panel-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 71;
+  }
+
+  .filters-panel.is-open .controls-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters-panel.is-open .anchors-row {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
 }

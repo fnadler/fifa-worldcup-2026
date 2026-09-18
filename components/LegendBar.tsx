@@ -1,20 +1,15 @@
 "use client";
 
-import type { AppUser, ModoClique, SyncStatus } from "@/lib/types";
+import type { ModoClique, SyncStatus } from "@/lib/types";
 
 interface LegendBarProps {
   modo: ModoClique;
-  user: AppUser | null;
   syncStatus: SyncStatus;
   lastSyncedAt: Date | null;
   qtdCount: number;
 }
 
-function statusText({ user, syncStatus, lastSyncedAt, qtdCount }: LegendBarProps): string {
-  if (!user) {
-    if (!qtdCount) return "Nada registrado ainda — sua marcação é salva neste navegador";
-    return `Salvo neste navegador · ${qtdCount} figurinhas — entre para sincronizar entre aparelhos`;
-  }
+function statusText({ syncStatus, lastSyncedAt, qtdCount }: LegendBarProps): string {
   const hora = lastSyncedAt
     ? lastSyncedAt.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
     : "—";

@@ -29,12 +29,11 @@ const ANCHORAS: Anchor[] = BLOCKS.map((b) => ({
 }));
 
 interface AlbumAppProps {
-  initialUser: AppUser | null;
+  initialUser: AppUser;
 }
 
 export default function AlbumApp({ initialUser }: AlbumAppProps) {
   const [qtd, setQtd] = useState<Qtd>({});
-  const [user, setUser] = useState<AppUser | null>(initialUser);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>("idle");
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
   const [tipo, setTipo] = useState<TipoFiltro>("ALL");
@@ -55,20 +54,9 @@ export default function AlbumApp({ initialUser }: AlbumAppProps) {
   }, []);
 
   const loadForUser = useCallback(
-    async (nextUser: AppUser | null) => {
-      setUser(nextUser);
-
-      if (!nextUser) {
-        syncRef.current = null;
-        lastConfirmedQtdRef.current = {};
-        setQtd(readLocalQtd());
-        setSyncStatus("idle");
-        setLastSyncedAt(null);
-        return;
-      }
-
+    async (user: AppUser) => {
       const supabase = createClient();
-      const sync = new CollectionSync(supabase, nextUser.id, {
+      const sync = new CollectionSync(supabase, user.id, {
         onSaving: () => setSyncStatus("saving"),
         onSynced: (code, qty2) => {
           lastConfirmedQtdRef.current = { ...lastConfirmedQtdRef.current };
@@ -95,10 +83,10 @@ export default function AlbumApp({ initialUser }: AlbumAppProps) {
 
       try {
         const localQtd = readLocalQtd();
-        const remoteQtd = await fetchRemoteQtd(supabase, nextUser.id);
+        const remoteQtd = await fetchRemoteQtd(supabase, user.id);
         let baseline: Qtd;
         if (Object.keys(remoteQtd).length === 0 && Object.keys(localQtd).length > 0) {
-          await bulkUpsertQtd(supabase, nextUser.id, localQtd);
+          await bulkUpsertQtd(supabase, user.id, localQtd);
           baseline = localQtd;
         } else {
           baseline = remoteQtd;
@@ -119,6 +107,7 @@ export default function AlbumApp({ initialUser }: AlbumAppProps) {
         lastConfirmedQtdRef.current = {};
         setQtd(readLocalQtd());
         setSyncStatus("error");
+        showToast("Não foi possível carregar sua coleção do servidor — mostrando dados locais.");
       }
     },
     [showToast]
@@ -132,11 +121,9 @@ export default function AlbumApp({ initialUser }: AlbumAppProps) {
     const supabase = createClient();
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" && session?.user) {
-        void loadForUser({ id: session.user.id, email: session.user.email ?? null });
-      } else if (event === "SIGNED_OUT") {
-        void loadForUser(null);
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_OUT") {
+        window.location.href = "/login";
       }
     });
 
@@ -173,18 +160,10 @@ export default function AlbumApp({ initialUser }: AlbumAppProps) {
     });
   }, []);
 
-  async function onSignIn(email: string): Promise<{ error: string | null }> {
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
-    });
-    return { error: error ? error.message : null };
-  }
-
   async function onSignOut() {
     const supabase = createClient();
     await supabase.auth.signOut();
+    window.location.href = "/login";
   }
 
   const derived = useMemo(() => {
@@ -290,14 +269,12 @@ export default function AlbumApp({ initialUser }: AlbumAppProps) {
         onImportar={() => setBackupModo("import")}
         anchoras={ANCHORAS}
         onAnchorClick={scrollToBlock}
-        user={user}
-        onSignIn={onSignIn}
+        user={initialUser}
         onSignOut={onSignOut}
       />
 
       <LegendBar
         modo={modo}
-        user={user}
         syncStatus={syncStatus}
         lastSyncedAt={lastSyncedAt}
         qtdCount={Object.keys(qtd).length}

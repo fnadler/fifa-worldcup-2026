@@ -226,6 +226,7 @@ button {
   display: flex;
   gap: 10px;
   align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
 }
 
@@ -466,7 +467,7 @@ button {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 30px;
 }
 
 .empty-message {

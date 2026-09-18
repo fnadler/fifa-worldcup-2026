@@ -77,38 +77,35 @@ export default function Header({
   return (
     <div className="header" ref={headerRef}>
       <div className="header-inner">
-        <div className="header-top-row">
+        <div className="header-main-row">
           <div className="brand">
             <span className="kicker">Controle de repetidas</span>
             <span className="title">Álbum Copa 2026</span>
           </div>
-          <AuthBar user={user} onSignOut={onSignOut} />
-        </div>
 
-        <div className="totals-row">
-          <div className="total-card">
-            <span className="total-value" style={{ color: "var(--positive)" }}>
-              {totColadas}
-              <span className="denom">/{totGeral}</span>
-            </span>
-            <span className="total-label">Coladas</span>
+          <div className="totals-row">
+            <div className="total-card">
+              <span className="total-value" style={{ color: "var(--positive)" }}>
+                {totColadas}
+                <span className="denom">/{totGeral}</span>
+              </span>
+              <span className="total-label">Coladas</span>
+            </div>
+            <div className="total-card">
+              <span className="total-value" style={{ color: "var(--gold)" }}>
+                {totRepetidas}
+              </span>
+              <span className="total-label">Repetidas</span>
+            </div>
+            <div className="total-card">
+              <span className="total-value" style={{ color: "var(--danger)" }}>
+                {totFaltam}
+              </span>
+              <span className="total-label">Faltam</span>
+            </div>
           </div>
-          <div className="total-card">
-            <span className="total-value" style={{ color: "var(--gold)" }}>
-              {totRepetidas}
-            </span>
-            <span className="total-label">Repetidas</span>
-          </div>
-          <div className="total-card">
-            <span className="total-value" style={{ color: "var(--danger)" }}>
-              {totFaltam}
-            </span>
-            <span className="total-label">Faltam</span>
-          </div>
-        </div>
 
-        <div className="quick-row">
-          <div className="segmented">
+          <div className="segmented modo-segment">
             {MODOS.map((m) => (
               <button
                 key={m.value}
@@ -120,6 +117,7 @@ export default function Header({
               </button>
             ))}
           </div>
+
           <button
             type="button"
             className="btn-ghost mobile-menu-button"
@@ -127,6 +125,8 @@ export default function Header({
           >
             Filtros
           </button>
+
+          <AuthBar user={user} onSignOut={onSignOut} />
         </div>
 
         <div className={`filters-panel ${menuAberto ? "is-open" : ""}`}>

@@ -104,9 +104,10 @@ button {
   gap: 6px;
 }
 
-.header-top-row {
+.header-main-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 16px;
 }
 
@@ -115,7 +116,8 @@ button {
   flex-direction: column;
   gap: 2px;
   min-width: 0;
-  flex: 1 1 auto;
+  flex: 0 0 auto;
+  order: 1;
 }
 
 .kicker {
@@ -138,6 +140,7 @@ button {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  order: 2;
 }
 
 .total-card {
@@ -177,6 +180,7 @@ button {
   display: flex;
   align-items: center;
   margin-left: auto;
+  order: 4;
 }
 
 .user-icon-button {
@@ -222,16 +226,13 @@ button {
 
 /* ---------- controls ---------- */
 
-.quick-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
+.modo-segment {
+  order: 3;
 }
 
 .mobile-menu-button {
   display: none;
+  order: 5;
 }
 
 /* Desktop: the panel is transparent to layout so its children (.controls-row,
@@ -467,7 +468,7 @@ button {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 24px;
 }
 
 .empty-message {
@@ -819,6 +820,21 @@ button {
 @media (max-width: 700px) {
   .mobile-menu-button {
     display: inline-flex;
+    order: 5;
+    margin-left: auto;
+  }
+
+  .auth-bar {
+    order: 2;
+  }
+
+  .totals-row {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .modo-segment {
+    order: 4;
   }
 
   .filters-panel {

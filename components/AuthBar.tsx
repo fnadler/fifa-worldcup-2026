@@ -6,12 +6,12 @@ import type { AppUser } from "@/lib/types";
 interface AuthBarProps {
   user: AppUser;
   onSignOut: () => void;
+  onToast: (msg: string) => void;
 }
 
-export default function AuthBar({ user, onSignOut }: AuthBarProps) {
+export default function AuthBar({ user, onSignOut, onToast }: AuthBarProps) {
   const [open, setOpen] = useState(false);
   const [sharing, setSharing] = useState(false);
-  const [shareLabel, setShareLabel] = useState("Copiar link público");
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,17 +33,18 @@ export default function AuthBar({ user, onSignOut }: AuthBarProps) {
       if (!res.ok) throw new Error("request failed");
       const { token } = (await res.json()) as { token: string };
       const url = `${window.location.origin}/publico/${token}`;
+      let copied = true;
       try {
         await navigator.clipboard.writeText(url);
       } catch {
-        // clipboard unavailable — the label below still confirms the link exists
+        copied = false;
       }
-      setShareLabel("Link copiado!");
+      onToast(copied ? "Link público copiado para a área de transferência!" : `Link público: ${url}`);
+      setOpen(false);
     } catch {
-      setShareLabel("Não foi possível gerar o link");
+      onToast("Não foi possível gerar o link público — tente de novo.");
     } finally {
       setSharing(false);
-      window.setTimeout(() => setShareLabel("Copiar link público"), 3000);
     }
   }
 
@@ -65,7 +66,7 @@ export default function AuthBar({ user, onSignOut }: AuthBarProps) {
         <div className="user-menu">
           <span className="auth-status">{user.email}</span>
           <button type="button" className="btn-ghost" onClick={copiarLinkPublico} disabled={sharing}>
-            {shareLabel}
+            {sharing ? "Gerando link…" : "Copiar link público"}
           </button>
           <button type="button" className="btn-ghost" onClick={onSignOut}>
             Sair

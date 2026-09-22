@@ -25,6 +25,7 @@ interface HeaderProps {
   onAnchorClick: (id: string) => void;
   user: AppUser;
   onSignOut: () => void;
+  onToast: (msg: string) => void;
 }
 
 const TIPOS: { value: TipoFiltro; label: string }[] = [
@@ -66,6 +67,7 @@ export default function Header({
   onAnchorClick,
   user,
   onSignOut,
+  onToast,
 }: HeaderProps) {
   const [menuAberto, setMenuAberto] = useState(false);
 
@@ -126,7 +128,7 @@ export default function Header({
             Filtros
           </button>
 
-          <AuthBar user={user} onSignOut={onSignOut} />
+          <AuthBar user={user} onSignOut={onSignOut} onToast={onToast} />
         </div>
 
         <div className={`filters-panel ${menuAberto ? "is-open" : ""}`}>

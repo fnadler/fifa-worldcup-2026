@@ -187,6 +187,7 @@ export default function AlbumApp({ initialUser }: AlbumAppProps) {
         onAnchorClick={scrollToBlock}
         user={initialUser}
         onSignOut={onSignOut}
+        onToast={showToast}
       />
 
       <LegendBar

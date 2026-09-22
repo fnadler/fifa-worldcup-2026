@@ -6,11 +6,12 @@ import StickerCell from "./StickerCell";
 
 interface AlbumBlockCardProps {
   vb: VisibleBlock;
-  modo: ModoClique;
-  onBump: (code: string, delta: number) => void;
+  modo?: ModoClique;
+  onBump?: (code: string, delta: number) => void;
+  readOnly?: boolean;
 }
 
-export default function AlbumBlockCard({ vb, modo, onBump }: AlbumBlockCardProps) {
+export default function AlbumBlockCard({ vb, modo = "add", onBump, readOnly }: AlbumBlockCardProps) {
   const { block, tag, codigoBase, coladas, repetidas, pct, stickers } = vb;
   const isSpecial = block.tipo !== "TEAM";
 
@@ -34,7 +35,14 @@ export default function AlbumBlockCard({ vb, modo, onBump }: AlbumBlockCardProps
       </div>
       <div className="cell-grid">
         {stickers.map((s) => (
-          <StickerCell key={s.code} code={s.code} qty={s.qty} modo={modo} onBump={onBump} />
+          <StickerCell
+            key={s.code}
+            code={s.code}
+            qty={s.qty}
+            modo={modo}
+            onBump={onBump ?? (() => {})}
+            readOnly={readOnly}
+          />
         ))}
       </div>
     </div>

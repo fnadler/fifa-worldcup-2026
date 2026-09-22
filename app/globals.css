@@ -587,6 +587,14 @@ button {
   transform: scale(0.94);
 }
 
+.sticker-cell.cell-readonly {
+  cursor: default;
+  opacity: 1;
+}
+.sticker-cell.cell-readonly:active {
+  transform: none;
+}
+
 .sticker-cell.cell-empty {
   background: var(--cell-empty);
   border: 1px dashed var(--border-dashed);

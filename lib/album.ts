@@ -1,9 +1,16 @@
 import albumJson from "@/album.json";
-import type { AlbumBlock, AlbumData } from "./types";
+import type { AlbumBlock, AlbumData, Anchor } from "./types";
 
 export const ALBUM = albumJson as AlbumData;
 export const BLOCKS: AlbumBlock[] = ALBUM.blocks;
 export const TOTAL_STICKERS = ALBUM.total;
+
+export const ANCHORAS: Anchor[] = BLOCKS.map((b) => ({
+  id: b.id,
+  label: b.tipo === "TEAM" ? `${b.grupo} · ${b.id}` : b.tipo === "FWC" ? "FWC" : "COCA-COLA",
+  title: b.nome,
+  variant: b.tipo === "TEAM" ? "team" : b.tipo === "FWC" ? "fwc" : "cc",
+}));
 
 export function anchorId(block: AlbumBlock): string {
   return `bl-${block.id}`;

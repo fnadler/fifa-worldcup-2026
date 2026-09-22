@@ -10,6 +10,8 @@ interface AuthBarProps {
 
 export default function AuthBar({ user, onSignOut }: AuthBarProps) {
   const [open, setOpen] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const [shareLabel, setShareLabel] = useState("Copiar link público");
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,6 +24,28 @@ export default function AuthBar({ user, onSignOut }: AuthBarProps) {
     document.addEventListener("mousedown", onDocClick);
     return () => document.removeEventListener("mousedown", onDocClick);
   }, [open]);
+
+  async function copiarLinkPublico() {
+    if (sharing) return;
+    setSharing(true);
+    try {
+      const res = await fetch("/api/share-link", { method: "POST" });
+      if (!res.ok) throw new Error("request failed");
+      const { token } = (await res.json()) as { token: string };
+      const url = `${window.location.origin}/publico/${token}`;
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {
+        // clipboard unavailable — the label below still confirms the link exists
+      }
+      setShareLabel("Link copiado!");
+    } catch {
+      setShareLabel("Não foi possível gerar o link");
+    } finally {
+      setSharing(false);
+      window.setTimeout(() => setShareLabel("Copiar link público"), 3000);
+    }
+  }
 
   return (
     <div className="auth-bar" ref={rootRef}>
@@ -40,6 +64,9 @@ export default function AuthBar({ user, onSignOut }: AuthBarProps) {
       {open && (
         <div className="user-menu">
           <span className="auth-status">{user.email}</span>
+          <button type="button" className="btn-ghost" onClick={copiarLinkPublico} disabled={sharing}>
+            {shareLabel}
+          </button>
           <button type="button" className="btn-ghost" onClick={onSignOut}>
             Sair
           </button>

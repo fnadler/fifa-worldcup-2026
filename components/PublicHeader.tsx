@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, type RefObject } from "react";
-import type { Anchor, StatusFiltro, TipoFiltro } from "@/lib/types";
+import { VIEW_OPTIONS } from "@/lib/useViewMode";
+import type { ViewMode, Anchor, StatusFiltro, TipoFiltro } from "@/lib/types";
 
 interface PublicHeaderProps {
   headerRef: RefObject<HTMLDivElement | null>;
@@ -15,6 +16,8 @@ interface PublicHeaderProps {
   onTipo: (v: TipoFiltro) => void;
   statusFiltro: StatusFiltro;
   onStatusFiltro: (v: StatusFiltro) => void;
+  view: ViewMode;
+  onView: (v: ViewMode) => void;
   anchoras: Anchor[];
   onAnchorClick: (id: string) => void;
 }
@@ -24,6 +27,7 @@ const TIPOS: { value: TipoFiltro; label: string }[] = [
   { value: "TEAM", label: "Seleções" },
   { value: "FWC", label: "FWC" },
   { value: "CC", label: "Coca-Cola" },
+  { value: "LEG", label: "Legends" },
 ];
 
 const STATUSES: { value: StatusFiltro; label: string }[] = [
@@ -44,6 +48,8 @@ export default function PublicHeader({
   onTipo,
   statusFiltro,
   onStatusFiltro,
+  view,
+  onView,
   anchoras,
   onAnchorClick,
 }: PublicHeaderProps) {
@@ -122,6 +128,19 @@ export default function PublicHeader({
                   onClick={() => onTipo(t.value)}
                 >
                   {t.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="segmented">
+              {VIEW_OPTIONS.map((v) => (
+                <button
+                  key={v.value}
+                  type="button"
+                  className={`chip ${view === v.value ? "active" : ""}`}
+                  onClick={() => onView(v.value)}
+                >
+                  {v.label}
                 </button>
               ))}
             </div>

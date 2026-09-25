@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, type RefObject } from "react";
-import type { Anchor, AppUser, ModoClique, StatusFiltro, TipoFiltro } from "@/lib/types";
+import { VIEW_OPTIONS } from "@/lib/useViewMode";
+import type { ViewMode, Anchor, AppUser, ModoClique, StatusFiltro, TipoFiltro } from "@/lib/types";
 import AuthBar from "./AuthBar";
 
 interface HeaderProps {
@@ -16,6 +17,8 @@ interface HeaderProps {
   onTipo: (v: TipoFiltro) => void;
   statusFiltro: StatusFiltro;
   onStatusFiltro: (v: StatusFiltro) => void;
+  view: ViewMode;
+  onView: (v: ViewMode) => void;
   modo: ModoClique;
   onModo: (v: ModoClique) => void;
   onAbrirTrocas: () => void;
@@ -24,6 +27,7 @@ interface HeaderProps {
   anchoras: Anchor[];
   onAnchorClick: (id: string) => void;
   user: AppUser;
+  canSell: boolean;
   onSignOut: () => void;
   onToast: (msg: string) => void;
 }
@@ -33,6 +37,7 @@ const TIPOS: { value: TipoFiltro; label: string }[] = [
   { value: "TEAM", label: "Seleções" },
   { value: "FWC", label: "FWC" },
   { value: "CC", label: "Coca-Cola" },
+  { value: "LEG", label: "Legends" },
 ];
 
 const STATUSES: { value: StatusFiltro; label: string }[] = [
@@ -58,6 +63,8 @@ export default function Header({
   onTipo,
   statusFiltro,
   onStatusFiltro,
+  view,
+  onView,
   modo,
   onModo,
   onAbrirTrocas,
@@ -66,6 +73,7 @@ export default function Header({
   anchoras,
   onAnchorClick,
   user,
+  canSell,
   onSignOut,
   onToast,
 }: HeaderProps) {
@@ -128,7 +136,7 @@ export default function Header({
             Filtros
           </button>
 
-          <AuthBar user={user} onSignOut={onSignOut} onToast={onToast} />
+          <AuthBar user={user} canSell={canSell} onSignOut={onSignOut} onToast={onToast} />
         </div>
 
         <div className={`filters-panel ${menuAberto ? "is-open" : ""}`}>
@@ -159,6 +167,19 @@ export default function Header({
                   onClick={() => onTipo(t.value)}
                 >
                   {t.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="segmented">
+              {VIEW_OPTIONS.map((v) => (
+                <button
+                  key={v.value}
+                  type="button"
+                  className={`chip ${view === v.value ? "active" : ""}`}
+                  onClick={() => onView(v.value)}
+                >
+                  {v.label}
                 </button>
               ))}
             </div>

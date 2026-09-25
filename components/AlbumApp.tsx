@@ -5,6 +5,7 @@ import { ANCHORAS } from "@/lib/album";
 import { deriveBoard } from "@/lib/derive";
 import { readLocalQtd, writeLocalQtd } from "@/lib/localBackup";
 import { createClient } from "@/lib/supabase/client";
+import { useViewMode } from "@/lib/useViewMode";
 import { CollectionSync, bulkUpsertQtd, fetchRemoteQtd, getPendingSnapshot } from "@/lib/sync";
 import type { AppUser, ModoClique, Qtd, StatusFiltro, SyncStatus, TipoFiltro } from "@/lib/types";
 import Header from "./Header";
@@ -15,15 +16,17 @@ import BackupModal from "./BackupModal";
 
 interface AlbumAppProps {
   initialUser: AppUser;
+  canSell: boolean;
 }
 
-export default function AlbumApp({ initialUser }: AlbumAppProps) {
+export default function AlbumApp({ initialUser, canSell }: AlbumAppProps) {
   const [qtd, setQtd] = useState<Qtd>({});
   const [syncStatus, setSyncStatus] = useState<SyncStatus>("idle");
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
   const [tipo, setTipo] = useState<TipoFiltro>("ALL");
   const [statusFiltro, setStatusFiltro] = useState<StatusFiltro>("ALL");
   const [modo, setModo] = useState<ModoClique>("add");
+  const [view, setView] = useViewMode("copa2026-album-view");
   const [busca, setBusca] = useState("");
   const [trocasAberto, setTrocasAberto] = useState(false);
   const [backupModo, setBackupModo] = useState<"export" | "import" | null>(null);
@@ -178,6 +181,8 @@ export default function AlbumApp({ initialUser }: AlbumAppProps) {
         onTipo={setTipo}
         statusFiltro={statusFiltro}
         onStatusFiltro={setStatusFiltro}
+        view={view}
+        onView={setView}
         modo={modo}
         onModo={setModo}
         onAbrirTrocas={() => setTrocasAberto(true)}
@@ -186,6 +191,7 @@ export default function AlbumApp({ initialUser }: AlbumAppProps) {
         anchoras={ANCHORAS}
         onAnchorClick={scrollToBlock}
         user={initialUser}
+        canSell={canSell}
         onSignOut={onSignOut}
         onToast={showToast}
       />
@@ -199,7 +205,7 @@ export default function AlbumApp({ initialUser }: AlbumAppProps) {
 
       <div className="board">
         {derived.visibleBlocks.map((vb) => (
-          <AlbumBlockCard key={vb.block.id} vb={vb} modo={modo} onBump={bump} />
+          <AlbumBlockCard key={vb.block.id} vb={vb} modo={modo} onBump={bump} view={view} />
         ))}
         {derived.visibleBlocks.length === 0 && (
           <div className="empty-message">Nenhuma figurinha com esses filtros.</div>

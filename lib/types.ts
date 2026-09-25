@@ -1,6 +1,6 @@
 export type Qtd = Record<string, number>;
 
-export type BlockType = "FWC" | "TEAM" | "CC";
+export type BlockType = "FWC" | "TEAM" | "CC" | "LEG";
 
 export interface AlbumBlock {
   id: string;
@@ -8,6 +8,8 @@ export interface AlbumBlock {
   tipo: BlockType;
   grupo: string;
   codes: string[];
+  /** Nome por figurinha, paralelo a `codes` (usado nas Legends: nome do atleta). */
+  labels?: string[];
 }
 
 export interface AlbumData {
@@ -15,9 +17,10 @@ export interface AlbumData {
   blocks: AlbumBlock[];
 }
 
-export type TipoFiltro = "ALL" | "TEAM" | "FWC" | "CC";
+export type TipoFiltro = "ALL" | "TEAM" | "FWC" | "CC" | "LEG";
 export type StatusFiltro = "ALL" | "REP" | "MISS";
 export type ModoClique = "add" | "sub";
+export type ViewMode = "photos" | "grid";
 export type SyncStatus = "idle" | "saving" | "synced" | "offline" | "error";
 
 export interface AppUser {
@@ -39,5 +42,5 @@ export interface Anchor {
   id: string;
   label: string;
   title: string;
-  variant: "fwc" | "team" | "cc";
+  variant: "fwc" | "team" | "cc" | "leg";
 }

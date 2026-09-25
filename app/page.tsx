@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { hasShopAccess } from "@/lib/shopAccess";
 import AlbumApp from "@/components/AlbumApp";
 
 export const dynamic = "force-dynamic";
@@ -12,5 +13,7 @@ export default async function Home() {
 
   if (!user) redirect("/login");
 
-  return <AlbumApp initialUser={{ id: user.id, email: user.email ?? null }} />;
+  const canSell = await hasShopAccess(supabase, user.id);
+
+  return <AlbumApp initialUser={{ id: user.id, email: user.email ?? null }} canSell={canSell} />;
 }

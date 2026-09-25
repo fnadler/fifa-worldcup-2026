@@ -1,4 +1,4 @@
-import { BLOCKS, TOTAL_STICKERS, blockTag, codigoBase } from "./album";
+import { BLOCKS, TOTAL_STICKERS, blockTag, codigoBase, countsTowardAlbum, stickerName } from "./album";
 import type { Qtd, StatusFiltro, TipoFiltro, VisibleBlock } from "./types";
 
 export interface DerivedBoard {
@@ -8,6 +8,17 @@ export interface DerivedBoard {
   totFaltam: number;
   visibleBlocks: VisibleBlock[];
   listaTrocas: string;
+}
+
+// Busca por código (BRA9) ou, quando houver, pelo nome da figurinha (ex: "messi"), sem acento.
+export function matchesSticker(code: string, buscaLower: string): boolean {
+  if (code.toLowerCase().includes(buscaLower)) return true;
+  const nome = stickerName(code);
+  return !!nome && semAcento(nome).includes(semAcento(buscaLower));
+}
+
+function semAcento(s: string): string {
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
 export function deriveBoard(
@@ -21,9 +32,10 @@ export function deriveBoard(
   let totRepetidas = 0;
 
   BLOCKS.forEach((b) => {
+    const doAlbum = countsTowardAlbum(b);
     b.codes.forEach((code) => {
       const n = qtd[code] ?? 0;
-      if (n >= 1) totColadas++;
+      if (n >= 1 && doAlbum) totColadas++;
       if (n > 1) totRepetidas += n - 1;
     });
   });
@@ -47,7 +59,7 @@ export function deriveBoard(
 
       if (statusFiltro === "REP" && n < 2) return;
       if (statusFiltro === "MISS" && n !== 0) return;
-      if (buscaLower && !matchBloco && !code.toLowerCase().includes(buscaLower)) return;
+      if (buscaLower && !matchBloco && !matchesSticker(code, buscaLower)) return;
 
       stickers.push({ code, qty: n });
     });
@@ -71,7 +83,9 @@ export function deriveBoard(
       .filter((c) => (qtd[c] ?? 0) > 1)
       .map((c) => {
         const n = (qtd[c] ?? 0) - 1;
-        return n > 1 ? `${c} (x${n})` : c;
+        const nome = stickerName(c);
+        const rotulo = nome ? `${c} ${nome}` : c;
+        return n > 1 ? `${rotulo} (x${n})` : rotulo;
       });
     if (itens.length) linhas.push(`${b.nome}: ${itens.join(", ")}`);
   });

@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState } from "react";
 import { ANCHORAS } from "@/lib/album";
 import { deriveBoard } from "@/lib/derive";
+import { useViewMode } from "@/lib/useViewMode";
 import type { Qtd, StatusFiltro, TipoFiltro } from "@/lib/types";
 import PublicHeader from "./PublicHeader";
 import AlbumBlockCard from "./AlbumBlockCard";
@@ -15,6 +16,7 @@ export default function PublicBoard({ qtd }: PublicBoardProps) {
   const [tipo, setTipo] = useState<TipoFiltro>("ALL");
   const [statusFiltro, setStatusFiltro] = useState<StatusFiltro>("ALL");
   const [busca, setBusca] = useState("");
+  const [view, setView] = useViewMode("copa2026-public-view");
   const headerRef = useRef<HTMLDivElement | null>(null);
 
   const derived = useMemo(
@@ -44,6 +46,8 @@ export default function PublicBoard({ qtd }: PublicBoardProps) {
         onTipo={setTipo}
         statusFiltro={statusFiltro}
         onStatusFiltro={setStatusFiltro}
+        view={view}
+        onView={setView}
         anchoras={ANCHORAS}
         onAnchorClick={scrollToBlock}
       />
@@ -66,7 +70,7 @@ export default function PublicBoard({ qtd }: PublicBoardProps) {
 
       <div className="board">
         {derived.visibleBlocks.map((vb) => (
-          <AlbumBlockCard key={vb.block.id} vb={vb} readOnly />
+          <AlbumBlockCard key={vb.block.id} vb={vb} readOnly view={view} />
         ))}
         {derived.visibleBlocks.length === 0 && (
           <div className="empty-message">Nenhuma figurinha com esses filtros.</div>

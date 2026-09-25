@@ -1,15 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { AppUser } from "@/lib/types";
 
 interface AuthBarProps {
   user: AppUser;
+  canSell: boolean;
   onSignOut: () => void;
   onToast: (msg: string) => void;
 }
 
-export default function AuthBar({ user, onSignOut, onToast }: AuthBarProps) {
+export default function AuthBar({ user, canSell, onSignOut, onToast }: AuthBarProps) {
   const [open, setOpen] = useState(false);
   const [sharing, setSharing] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -65,6 +67,11 @@ export default function AuthBar({ user, onSignOut, onToast }: AuthBarProps) {
       {open && (
         <div className="user-menu">
           <span className="auth-status">{user.email}</span>
+          {canSell && (
+            <Link href="/vendas" className="btn-ghost user-menu-link">
+              Loja e pedidos
+            </Link>
+          )}
           <button type="button" className="btn-ghost" onClick={copiarLinkPublico} disabled={sharing}>
             {sharing ? "Gerando link…" : "Copiar link público"}
           </button>

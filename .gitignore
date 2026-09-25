@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# fotos originais das figurinhas (~420 MB) — as versões otimizadas saem de `npm run images` em public/stickers
+/images

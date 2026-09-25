@@ -239,6 +239,24 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 
 Em **Authentication → URL Configuration** no painel do Supabase, adicione `http://localhost:3000` (dev) e o domínio de produção (depois do deploy) em Site URL / Redirect URLs — sem isso o magic link não funciona.
 
+### Loja (venda de repetidas)
+
+Rode também **`supabase_migration_shop.sql`** no SQL Editor (depois das outras migrações). Ela cria `shops`, `sticker_prices`, `orders` e a função `set_order_status`.
+
+- **`/vendas`** (menu da conta → "Loja e pedidos"): link da loja, loja aberta/pausada, WhatsApp que recebe os pedidos, pedido mínimo, preços por grupo (FWC / Seleções / Coca-Cola) e individuais, e a lista de pedidos.
+- **`/loja/<token>`**: catálogo público com carrinho. Só vende **repetidas** (`qty - 1`) com preço definido; o preço individual sobrepõe o do grupo.
+- Não há pagamento online: o pedido é gravado como `novo` e o comprador o envia pelo WhatsApp (`wa.me`) do anunciante. Frete é combinado por lá.
+- **Reserva de 5h** (`supabase_migration_order_reservations.sql`): pedido novo reserva os itens até `reserved_until`; disponível na loja = repetidas − reservas ativas. Vencido o prazo sem confirmação, o pedido vira "cancelado (expirado)" — a liberação é imediata (as contas olham o prazo) e a troca de status acontece na próxima leitura (`expire_orders`), sem cron. Criação (`place_order`), edição (`update_order_items`) e confirmação usam trava por vendedor para não vender a mesma repetida duas vezes.
+- **Editar pedido** (só novos): incluir, alterar quantidade/preço unitário e excluir itens, respeitando o disponível; depois, "Enviar resumo ao comprador" manda o pedido atualizado pelo WhatsApp. Não estende a reserva.
+- **Confirmar** dá baixa no estoque; **cancelar** um novo libera a reserva, e um confirmado devolve as figurinhas.
+- A página pública e a criação de pedidos usam `SUPABASE_SERVICE_ROLE_KEY` no servidor (mesma env var do link público).
+
+**Acesso à loja (por usuário).** Rode **`supabase_migration_shop_access.sql`**. Só quem tem uma linha ativa em `shop_entitlements` vê "Loja e pedidos", acessa `/vendas` e tem a loja pública no ar. Para habilitar alguém: Supabase → Table Editor → `shop_entitlements` → inserir `user_id` (de Authentication → Users), com `expires_at` opcional. Usuários não conseguem se autoconceder acesso (não há policy de escrita). Loja de quem perdeu o acesso aparece como "pausada".
+
+**Legends.** Coleção à parte de 80 figurinhas (20 atletas × Lilás, Bronze, Prata, Ouro), códigos `LIL1–20`, `BRO1–20`, `PRA1–20`, `OUR1–20` — o número é o atleta em ordem alfabética (nomes em `album.json → labels`). Rode **`supabase_migration_legends.sql`** (sem ela, marcar Legends falha e a loja não carrega). Aparecem no quadro, na loja e em "Minhas repetidas", mas **não** entram em Coladas/Faltam do álbum (ver `countsTowardAlbum` em `lib/album.ts`).
+
+**Fotos das figurinhas.** Os originais ficam em `/images` (fora do git, ~420 MB). `npm run images` gera WebP otimizados em `public/stickers/{thumb,large}` (~48 MB, versionados) e `lib/sticker-images.json`. Rode de novo sempre que adicionar/trocar fotos. Figurinha sem foto mostra o número como placeholder.
+
 ### Deploy na Vercel
 
 1. Suba o repositório para o GitHub (ou outro git remoto).

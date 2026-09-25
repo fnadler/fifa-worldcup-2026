@@ -1,36 +1,41 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Qtd } from "./types";
 
-const PENDING_KEY = "copa2026-pending-writes-v1";
+// Marcações ainda não enviadas ao servidor — por conta, para nunca irem para a conta errada.
+const PENDING_PREFIX = "copa2026-pending-writes-v1";
 const DEBOUNCE_MS = 300;
 
-function readPending(): Qtd {
+function pendingKey(userId: string): string {
+  return `${PENDING_PREFIX}:${userId}`;
+}
+
+function readPending(userId: string): Qtd {
   if (typeof window === "undefined") return {};
   try {
-    const raw = window.localStorage.getItem(PENDING_KEY);
+    const raw = window.localStorage.getItem(pendingKey(userId));
     return raw ? (JSON.parse(raw) as Qtd) : {};
   } catch {
     return {};
   }
 }
 
-function writePending(map: Qtd): void {
+function writePending(userId: string, map: Qtd): void {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(PENDING_KEY, JSON.stringify(map));
+    window.localStorage.setItem(pendingKey(userId), JSON.stringify(map));
   } catch {
     // ignore quota errors — the in-memory retry on next bump still applies
   }
 }
 
-export function getPendingSnapshot(): Qtd {
-  return readPending();
+export function getPendingSnapshot(userId: string): Qtd {
+  return readPending(userId);
 }
 
-function clearPendingCode(code: string): void {
-  const map = readPending();
+function clearPendingCode(userId: string, code: string): void {
+  const map = readPending(userId);
   delete map[code];
-  writePending(map);
+  writePending(userId, map);
 }
 
 async function sendOne(
@@ -77,13 +82,13 @@ export class CollectionSync {
   }
 
   hasPending(): boolean {
-    return Object.keys(readPending()).length > 0;
+    return Object.keys(readPending(this.userId)).length > 0;
   }
 
   schedule(code: string, qty: number): void {
-    const map = readPending();
+    const map = readPending(this.userId);
     map[code] = qty;
-    writePending(map);
+    writePending(this.userId, map);
 
     const existing = this.timers.get(code);
     if (existing) clearTimeout(existing);
@@ -103,23 +108,23 @@ export class CollectionSync {
     this.callbacks.onSaving();
     try {
       await sendOne(this.supabase, this.userId, code, qty);
-      clearPendingCode(code);
+      clearPendingCode(this.userId, code);
       this.callbacks.onSynced(code, qty);
     } catch {
-      clearPendingCode(code);
+      clearPendingCode(this.userId, code);
       this.callbacks.onError(code);
     }
   }
 
   async flushPending(): Promise<void> {
-    const map = readPending();
+    const map = readPending(this.userId);
     const entries = Object.entries(map);
     if (!entries.length) return;
     this.callbacks.onSaving();
     for (const [code, qty] of entries) {
       try {
         await sendOne(this.supabase, this.userId, code, qty);
-        clearPendingCode(code);
+        clearPendingCode(this.userId, code);
         this.callbacks.onSynced(code, qty);
       } catch {
         // stays in the pending queue, retried on the next flush
@@ -145,26 +150,4 @@ export async function fetchRemoteQtd(
     if (row.qty > 0) qtd[row.code as string] = row.qty as number;
   }
   return qtd;
-}
-
-export async function bulkUpsertQtd(
-  supabase: SupabaseClient,
-  userId: string,
-  qtd: Qtd
-): Promise<void> {
-  const rows = Object.entries(qtd)
-    .filter(([, qty]) => qty > 0)
-    .map(([code, qty]) => ({
-      user_id: userId,
-      code,
-      qty,
-      updated_at: new Date().toISOString(),
-    }));
-  if (!rows.length) return;
-  const chunkSize = 500;
-  for (let i = 0; i < rows.length; i += chunkSize) {
-    const chunk = rows.slice(i, i + chunkSize);
-    const { error } = await supabase.from("collection").upsert(chunk, { onConflict: "user_id,code" });
-    if (error) throw error;
-  }
 }

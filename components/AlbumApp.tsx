@@ -2,10 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { deriveBoard } from "@/lib/derive";
-import { readLocalQtd, writeLocalQtd } from "@/lib/localBackup";
+import { purgeLegacyLocalData, readLocalQtd, writeLocalQtd } from "@/lib/localBackup";
 import { createClient } from "@/lib/supabase/client";
 import { useViewMode } from "@/lib/useViewMode";
-import { CollectionSync, bulkUpsertQtd, fetchRemoteQtd, getPendingSnapshot } from "@/lib/sync";
+import { CollectionSync, fetchRemoteQtd, getPendingSnapshot } from "@/lib/sync";
 import type { AppUser, ModoClique, Qtd, StatusFiltro, SyncStatus, TipoFiltro } from "@/lib/types";
 import Header from "./Header";
 import LegendBar from "./LegendBar";
@@ -60,7 +60,7 @@ export default function AlbumApp({ initialUser, shopHref, collectionName }: Albu
             const next = { ...prev };
             if (fallback <= 0) delete next[code];
             else next[code] = fallback;
-            writeLocalQtd(next);
+            writeLocalQtd(user.id, next);
             return next;
           });
           setSyncStatus("error");
@@ -69,31 +69,26 @@ export default function AlbumApp({ initialUser, shopHref, collectionName }: Albu
       });
       syncRef.current = sync;
 
+      purgeLegacyLocalData();
       try {
-        const localQtd = readLocalQtd();
-        const remoteQtd = await fetchRemoteQtd(supabase, user.id);
-        let baseline: Qtd;
-        if (Object.keys(remoteQtd).length === 0 && Object.keys(localQtd).length > 0) {
-          await bulkUpsertQtd(supabase, user.id, localQtd);
-          baseline = localQtd;
-        } else {
-          baseline = remoteQtd;
-        }
+        // O servidor é a fonte da verdade. A cópia local só é usada se o servidor não responder
+        // (catch abaixo) — nunca é enviada ao servidor, para não ressuscitar/misturar coleções.
+        const baseline = await fetchRemoteQtd(supabase, user.id);
         lastConfirmedQtdRef.current = baseline;
 
-        const pending = getPendingSnapshot();
+        const pending = getPendingSnapshot(user.id);
         const merged: Qtd = { ...baseline, ...pending };
         Object.keys(merged).forEach((code) => {
           if (merged[code] <= 0) delete merged[code];
         });
         setQtd(merged);
-        writeLocalQtd(merged);
+        writeLocalQtd(user.id, merged);
         setSyncStatus("synced");
         setLastSyncedAt(new Date());
         void sync.flushPending();
       } catch {
         lastConfirmedQtdRef.current = {};
-        setQtd(readLocalQtd());
+        setQtd(readLocalQtd(user.id));
         setSyncStatus("error");
         showToast("Não foi possível carregar sua coleção do servidor — mostrando dados locais.");
       }
@@ -134,19 +129,19 @@ export default function AlbumApp({ initialUser, shopHref, collectionName }: Albu
       const updated = { ...prev };
       if (next === 0) delete updated[code];
       else updated[code] = next;
-      writeLocalQtd(updated);
+      writeLocalQtd(initialUser.id, updated);
       syncRef.current?.schedule(code, next);
       return updated;
     });
-  }, []);
+  }, [initialUser.id]);
 
   const restoreFromBackup = useCallback((novo: Qtd) => {
     setQtd(novo);
-    writeLocalQtd(novo);
+    writeLocalQtd(initialUser.id, novo);
     Object.entries(novo).forEach(([code, value]) => {
       if (value > 0) syncRef.current?.schedule(code, value);
     });
-  }, []);
+  }, [initialUser.id]);
 
   const derived = useMemo(
     () => deriveBoard(qtd, tipo, statusFiltro, busca),

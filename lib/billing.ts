@@ -53,3 +53,31 @@ export interface SubscriptionRow {
 
 export const SUBSCRIPTION_COLUMNS =
   "stripe_customer_id, stripe_subscription_id, status, current_period_end, trial_end, cancel_at_period_end, access_until";
+
+/** Erro do Stripe de recurso inexistente (ex: cliente de teste consultado com a chave de produção). */
+export function isStripeMissing(err: unknown): boolean {
+  return (err as { code?: string } | null)?.code === "resource_missing";
+}
+
+// A assinatura/cliente salvos não existem no modo atual do Stripe (acontece ao trocar de chaves de
+// teste para produção com o mesmo banco). Esquece o vínculo e o acesso que vinha dele — acessos
+// manuais (source = 'manual') não são tocados.
+export async function forgetStaleSubscription(userId: string): Promise<void> {
+  const admin = createAdminClient();
+  await admin
+    .from("subscriptions")
+    .update({
+      stripe_customer_id: null,
+      stripe_subscription_id: null,
+      status: null,
+      price_id: null,
+      current_period_start: null,
+      current_period_end: null,
+      trial_end: null,
+      cancel_at_period_end: false,
+      access_until: null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("user_id", userId);
+  await admin.from("shop_entitlements").delete().eq("user_id", userId).eq("source", "stripe");
+}

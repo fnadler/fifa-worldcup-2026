@@ -5,6 +5,7 @@ import { parseProfileInput, type ProfileData } from "@/lib/profile";
 import { maskPhoneBR } from "@/lib/phone";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { HeaderActions, NavSwitch } from "./HeaderIcons";
 import UserMenu, { signOut } from "./UserMenu";
 import BrandLogo from "./BrandLogo";
@@ -54,6 +55,7 @@ function descreverAssinatura(s: SubscriptionInfo | null, ativa: boolean, manual:
 }
 
 export default function ProfilePage({ email, createdAt, shop, subscription, manualAccess, profile, albumName }: ProfilePageProps) {
+  const router = useRouter();
   const [abrindoPortal, setAbrindoPortal] = useState(false);
   const [erroPortal, setErroPortal] = useState<string | null>(null);
 
@@ -62,7 +64,14 @@ export default function ProfilePage({ email, createdAt, shop, subscription, manu
     setErroPortal(null);
     try {
       const res = await fetch("/api/assinatura/portal", { method: "POST" });
-      const data = (await res.json()) as { url?: string; error?: string };
+      const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string; stale?: boolean };
+      if (data.stale) {
+        // vínculo com o Stripe foi limpo no servidor: recarrega os dados para oferecer "Assinar"
+        setErroPortal(data.error ?? null);
+        setAbrindoPortal(false);
+        router.refresh();
+        return;
+      }
       if (!res.ok || !data.url) throw new Error(data.error ?? "Não foi possível abrir o portal.");
       window.location.assign(data.url);
     } catch (e) {

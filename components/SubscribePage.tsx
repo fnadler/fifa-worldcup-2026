@@ -29,7 +29,7 @@ export default function SubscribePage({ email, plan }: SubscribePageProps) {
     setErro(null);
     try {
       const res = await fetch("/api/assinatura/checkout", { method: "POST" });
-      const data = (await res.json()) as { url?: string; error?: string };
+      const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string };
       if (!res.ok || !data.url) throw new Error(data.error ?? "Não foi possível iniciar a assinatura.");
       window.location.assign(data.url);
     } catch (e) {

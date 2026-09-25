@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { ANCHORAS } from "@/lib/album";
 import { deriveBoard } from "@/lib/derive";
 import { useViewMode } from "@/lib/useViewMode";
 import type { Qtd, StatusFiltro, TipoFiltro } from "@/lib/types";
@@ -48,7 +47,6 @@ export default function PublicBoard({ qtd }: PublicBoardProps) {
         onStatusFiltro={setStatusFiltro}
         view={view}
         onView={setView}
-        anchoras={ANCHORAS}
         onAnchorClick={scrollToBlock}
       />
 

@@ -1,5 +1,5 @@
 import albumJson from "@/album.json";
-import type { AlbumBlock, AlbumData, Anchor } from "./types";
+import type { AlbumBlock, AlbumData } from "./types";
 
 export const ALBUM = albumJson as AlbumData;
 export const BLOCKS: AlbumBlock[] = ALBUM.blocks;
@@ -10,20 +10,6 @@ export const TOTAL_STICKERS = ALBUM.total;
 export function countsTowardAlbum(block: AlbumBlock): boolean {
   return block.tipo !== "LEG";
 }
-
-function anchorLabel(b: AlbumBlock): string {
-  if (b.tipo === "TEAM") return `${b.grupo} · ${b.id}`;
-  if (b.tipo === "FWC") return "FWC";
-  if (b.tipo === "CC") return "COCA-COLA";
-  return b.nome.replace(/^Legends\s+/, "").toUpperCase();
-}
-
-export const ANCHORAS: Anchor[] = BLOCKS.map((b) => ({
-  id: b.id,
-  label: anchorLabel(b),
-  title: b.nome,
-  variant: b.tipo === "TEAM" ? "team" : b.tipo === "FWC" ? "fwc" : b.tipo === "CC" ? "cc" : "leg",
-}));
 
 const NAME_BY_CODE = new Map<string, string>();
 BLOCKS.forEach((b) => b.labels?.forEach((nome, i) => NAME_BY_CODE.set(b.codes[i], nome)));

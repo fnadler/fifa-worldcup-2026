@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { CART_COOKIE, readCartId } from "@/lib/cartCookie";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { availableFromQty, groupPricesFromRow, type ShopRow } from "@/lib/shop";
 import { hasShopAccess } from "@/lib/shopAccess";
 import NoticeCard from "@/components/NoticeCard";
@@ -30,8 +33,16 @@ export default async function LojaPage({
 
   if (!shop) notFound();
 
-  // Loja desligada pelo dono ou acesso à vitrine vencido/revogado: mesma tela para o comprador.
-  if (!shop.enabled || !(await hasShopAccess(admin, shop.user_id))) {
+  // Quem está vendo é o dono? Ele ganha os atalhos (álbum, configurações, link, conta)
+  // e consegue ver a própria loja mesmo pausada.
+  const {
+    data: { user },
+  } = await (await createClient()).auth.getUser();
+  const isOwner = user?.id === shop.user_id;
+
+  // Acesso à vitrine vencido/revogado, ou loja pausada para quem não é o dono.
+  const hasAccess = await hasShopAccess(admin, shop.user_id);
+  if (!hasAccess || (!shop.enabled && !isOwner)) {
     return (
       <NoticeCard kicker="Loja pausada">
         Esta loja não está recebendo pedidos no momento. Volte mais tarde!
@@ -41,10 +52,22 @@ export default async function LojaPage({
 
   await admin.rpc("expire_orders", { p_seller: shop.user_id });
 
-  const [{ data: rows }, { data: priceRows }, { data: reservedRows }] = await Promise.all([
+  const cartId = readCartId((await cookies()).get(CART_COOKIE)?.value);
+
+  const [{ data: rows }, { data: priceRows }, { data: reservedRows }, { data: ownHold }] = await Promise.all([
     admin.from("collection").select("code, qty").eq("user_id", shop.user_id),
     admin.from("sticker_prices").select("code, price_cents").eq("user_id", shop.user_id),
-    admin.rpc("reserved_qty", { p_seller: shop.user_id }),
+    // reservas de pedidos + carrinhos de OUTRAS pessoas (o deste navegador não desconta dele)
+    admin.rpc("reserved_qty", { p_seller: shop.user_id, p_exclude_cart: cartId }),
+    cartId
+      ? admin
+          .from("cart_holds")
+          .select("items, expires_at")
+          .eq("cart_id", cartId)
+          .eq("seller_id", shop.user_id)
+          .gt("expires_at", new Date().toISOString())
+          .maybeSingle<{ items: { code: string; qty: number }[]; expires_at: string }>()
+      : Promise.resolve({ data: null }),
   ]);
 
   const reserved = new Map(
@@ -52,7 +75,8 @@ export default async function LojaPage({
   );
 
   // Só a disponibilidade vai para o cliente — nunca o qty bruto nem o WhatsApp do anunciante.
-  // Disponível = repetidas menos o que está reservado em pedidos ainda não confirmados.
+  // Disponível = repetidas menos o que está reservado em pedidos ainda não confirmados e
+  // em carrinhos ativos de outros compradores.
   const available: Qtd = {};
   (rows ?? []).forEach((row) => {
     const n = availableFromQty(row.qty as number) - (reserved.get(row.code as string) ?? 0);
@@ -71,6 +95,8 @@ export default async function LojaPage({
       minOrderCents={shop.min_order_cents}
       available={available}
       pricing={{ group: groupPricesFromRow(shop), individual }}
+      initialHold={ownHold ? { items: ownHold.items, expiresAt: ownHold.expires_at } : null}
+      owner={isOwner ? { email: user?.email ?? null, paused: !shop.enabled } : null}
     />
   );
 }

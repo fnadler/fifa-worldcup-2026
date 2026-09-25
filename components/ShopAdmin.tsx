@@ -8,6 +8,7 @@ import type { Qtd } from "@/lib/types";
 import AdminOrders from "./AdminOrders";
 import AdminPrices from "./AdminPrices";
 import AdminSettings from "./AdminSettings";
+import BrandLogo from "./BrandLogo";
 
 interface ShopAdminProps {
   userId: string;
@@ -56,6 +57,7 @@ export default function ShopAdmin({
         <div className="header-inner">
           <div className="header-main-row">
             <div className="brand">
+              <BrandLogo />
               <span className="kicker">Loja · administração</span>
               <span className="title">Álbum Copa 2026</span>
             </div>
@@ -74,9 +76,14 @@ export default function ShopAdmin({
             <span className={`shop-status-pill ${settings.enabled ? "is-on" : ""}`}>
               {settings.enabled ? "Loja aberta" : "Loja pausada"}
             </span>
-            <Link href="/" className="btn-ghost admin-back">
-              ← Meu álbum
-            </Link>
+            <div className="admin-back">
+              <Link href="/" className="btn-ghost">
+                Meu álbum
+              </Link>
+              <Link href={`/loja/${settings.token}`} className="btn-ghost">
+                Minha loja
+              </Link>
+            </div>
           </div>
         </div>
       </div>

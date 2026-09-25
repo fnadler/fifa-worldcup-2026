@@ -37,10 +37,3 @@ export interface VisibleBlock {
   pct: number;
   stickers: { code: string; qty: number }[];
 }
-
-export interface Anchor {
-  id: string;
-  label: string;
-  title: string;
-  variant: "fwc" | "team" | "cc" | "leg";
-}

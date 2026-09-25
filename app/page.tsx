@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { hasShopAccess } from "@/lib/shopAccess";
+import { ownShopHref } from "@/lib/shopLink";
 import AlbumApp from "@/components/AlbumApp";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +13,7 @@ export default async function Home() {
 
   if (!user) redirect("/login");
 
-  const canSell = await hasShopAccess(supabase, user.id);
+  const shopHref = await ownShopHref(supabase, user.id);
 
-  return <AlbumApp initialUser={{ id: user.id, email: user.email ?? null }} canSell={canSell} />;
+  return <AlbumApp initialUser={{ id: user.id, email: user.email ?? null }} shopHref={shopHref} />;
 }

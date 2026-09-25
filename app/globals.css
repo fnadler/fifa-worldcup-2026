@@ -14,7 +14,6 @@
   --border-hover: #3b5c4a;
   --border-fwc: #5a4a15;
   --border-cc: #6b1f1f;
-  --border-leg: #4a2f6b;
 
   --text-1: #e8f2ec;
   --text-2: #cfe3d7;
@@ -175,17 +174,27 @@ button {
   font-weight: 600;
 }
 
-/* ---------- auth bar ---------- */
+/* ---------- ícones do cabeçalho (loja, link, conta…) ---------- */
 
-.auth-bar {
-  position: relative;
+.header-actions {
   display: flex;
   align-items: center;
+  gap: 8px;
   margin-left: auto;
   order: 4;
 }
 
-.user-icon-button {
+/* Na loja, o carrinho vem logo depois dos ícones (sem outro auto-margin dividindo o espaço). */
+.header-actions + .cart-button {
+  margin-left: 0;
+}
+
+.user-menu-root {
+  position: relative;
+  display: flex;
+}
+
+.icon-button {
   width: 36px;
   height: 36px;
   display: flex;
@@ -198,9 +207,13 @@ button {
   cursor: pointer;
   padding: 0;
 }
-.user-icon-button:hover {
+.icon-button:hover {
   color: var(--text-1);
   border-color: var(--border-hover);
+}
+.icon-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
 }
 
 .user-menu {
@@ -237,8 +250,8 @@ button {
   order: 5;
 }
 
-/* Desktop: the panel is transparent to layout so its children (.controls-row,
-   .anchors-row) stack as ordinary rows, exactly like before this existed. */
+/* Desktop: the panel is transparent to layout so its children (.controls-row)
+   stack as ordinary rows, exactly like before this existed. */
 .filters-panel {
   display: contents;
 }
@@ -346,55 +359,6 @@ button {
   text-transform: uppercase;
   font-size: 14px;
   cursor: pointer;
-}
-
-/* ---------- anchors ---------- */
-
-.anchors-row {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  padding: 2px 0 10px;
-}
-
-.anchor-btn {
-  cursor: pointer;
-  border-radius: 8px;
-  padding: 7px 10px;
-  font-family: var(--font-barlow-condensed);
-  font-weight: 600;
-  font-size: 13px;
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-  border: 1px solid var(--border-3);
-  background: var(--field);
-  color: var(--text-3);
-}
-
-.anchor-btn.anchor-fwc,
-.anchor-btn.anchor-cc,
-.anchor-btn.anchor-leg {
-  font-weight: 700;
-  padding: 7px 11px;
-  letter-spacing: 0.08em;
-}
-
-.anchor-btn.anchor-fwc {
-  border-color: var(--border-fwc);
-  background: #1a1706;
-  color: var(--gold);
-}
-
-.anchor-btn.anchor-cc {
-  border-color: var(--border-cc);
-  background: #1d0b0b;
-  color: var(--cc-text);
-}
-
-.anchor-btn.anchor-leg {
-  border-color: var(--border-leg);
-  background: #170f22;
-  color: var(--leg-text);
 }
 
 /* ---------- legend ---------- */
@@ -1391,7 +1355,6 @@ button {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  flex: 1 1 160px;
   min-width: 0;
   font-size: 12px;
   font-weight: 600;
@@ -1402,11 +1365,17 @@ button {
   width: 100%;
 }
 
-.form-label.form-narrow {
+/* Largura flexível só quando os campos estão lado a lado — dentro de um bloco em
+   coluna, o flex-basis viraria altura. */
+.form-row > .form-label {
+  flex: 1 1 160px;
+}
+
+.form-row > .form-label.form-narrow {
   flex: 0 1 130px;
 }
 
-.form-label.form-tiny {
+.form-row > .form-label.form-tiny {
   flex: 0 1 70px;
 }
 
@@ -1472,6 +1441,8 @@ button {
 .admin-back {
   order: 4;
   margin-left: auto;
+  display: flex;
+  gap: 8px;
 }
 
 .admin-page {
@@ -1530,20 +1501,6 @@ button {
 .shop-link-input {
   flex: 1 1 280px;
   min-width: 0;
-}
-
-.toggle-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  color: var(--text-2);
-  cursor: pointer;
-}
-.toggle-row input {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--accent);
 }
 
 .order-card {
@@ -1662,8 +1619,19 @@ button {
     margin-left: auto;
   }
 
-  .auth-bar {
+  .header-actions {
     order: 2;
+    gap: 6px;
+  }
+
+  /* Título e ícones um pouco menores para os ícones caberem ao lado do nome. */
+  .header .title {
+    font-size: 34px;
+  }
+
+  .header .icon-button {
+    width: 32px;
+    height: 32px;
   }
 
   .totals-row {
@@ -1714,9 +1682,17 @@ button {
     width: 100%;
   }
 
-  .filters-panel.is-open .anchors-row {
-    flex-wrap: wrap;
-    overflow-x: visible;
+  .group-menu,
+  .group-menu-toggle {
+    width: 100%;
+  }
+
+  .group-menu-panel {
+    position: static;
+    width: auto;
+    max-height: none;
+    margin-top: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   /* Loja: carrinho fica na linha do título, como o ícone de conta no álbum. */
@@ -1854,4 +1830,342 @@ button {
 }
 .order-editor-footer .cart-total-row {
   gap: 12px;
+}
+
+/* ---------- dono vendo a própria loja pausada ---------- */
+
+.owner-banner {
+  max-width: 1340px;
+  margin: 18px auto 0;
+  padding: 12px 16px;
+  border: 1px solid var(--border-fwc);
+  border-radius: 10px;
+  background: #1a1706;
+  color: var(--text-2);
+  font-size: 13px;
+  width: calc(100% - 36px);
+}
+
+/* ---------- perfil ---------- */
+
+.profile-page {
+  max-width: 720px;
+}
+
+.login-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Configurações da loja: campos mais próximos */
+.admin-settings-form {
+  gap: 10px;
+}
+.admin-settings-form .form-row {
+  gap: 10px;
+}
+.admin-settings-form .modal-actions {
+  margin-top: 4px;
+}
+
+/* ---------- menu de grupos (substitui a faixa de âncoras) ---------- */
+
+/* O painel se posiciona pelo cabeçalho (sticky = containing block), logo abaixo dele e
+   alinhado à coluna de conteúdo — não pelo botão, que pode quebrar para outra linha. */
+.group-menu {
+  position: static;
+}
+
+.group-menu-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.group-menu-toggle.is-open {
+  color: var(--text-1);
+  border-color: var(--accent);
+}
+
+.group-menu-caret {
+  font-size: 11px;
+  transition: transform 0.15s ease;
+}
+.group-menu-toggle.is-open .group-menu-caret {
+  transform: rotate(180deg);
+}
+
+.group-menu-panel {
+  position: absolute;
+  top: calc(100% - 6px);
+  left: max(18px, calc((100% - 1340px) / 2 + 18px));
+  z-index: 45;
+  width: min(1000px, calc(100% - 36px));
+  max-height: min(70vh, 640px);
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  gap: 14px 12px;
+  padding: 16px;
+  background: var(--card);
+  border: 1px solid var(--border-3);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.group-menu-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.group-menu-title {
+  font-family: var(--font-barlow-condensed);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-5);
+}
+.group-menu-fwc .group-menu-title {
+  color: var(--gold);
+}
+.group-menu-cc .group-menu-title {
+  color: var(--cc-text);
+}
+.group-menu-leg .group-menu-title {
+  color: var(--leg-text);
+}
+
+.group-menu-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.group-menu-items button {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.group-menu-items button:hover {
+  background: var(--card-header);
+  color: var(--text-1);
+}
+
+.group-menu-code {
+  font-family: var(--font-barlow-condensed);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--text-5);
+  min-width: 30px;
+}
+
+/* ---------- logo (ícone estilo app) ao lado do título ---------- */
+
+.brand {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  column-gap: 12px;
+  row-gap: 2px;
+  align-items: end;
+}
+.brand > .kicker {
+  grid-column: 2;
+  align-self: end;
+}
+.brand > .title {
+  grid-column: 2;
+  align-self: start;
+}
+
+.brand-logo {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  border: 1px solid var(--border-3);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  background: #000;
+}
+
+/* Telas centralizadas (login, avisos): logo acima do título, maior. */
+.login-card .brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  order: 0; /* .brand tem order: 1 por causa do cabeçalho — aqui ele vem primeiro */
+}
+.login-card .brand > .kicker,
+.login-card .brand > .title {
+  align-self: center;
+}
+.login-card .brand-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 700px) {
+  .header .brand-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+  .header .brand {
+    column-gap: 8px;
+  }
+  /* logo + título + 3 ícones na mesma linha em telas de ~390px */
+  .header .title {
+    font-size: 30px;
+  }
+  .header .kicker {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+  }
+}
+
+/* ---------- status da loja (abrir/fechar) ---------- */
+
+.shop-status-section {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  border-color: var(--border-cc);
+}
+.shop-status-section.is-open {
+  border-color: var(--accent);
+}
+
+.shop-status-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 280px;
+}
+
+.admin-section-title .shop-status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 10px;
+  border-radius: 99px;
+  background: var(--danger);
+  vertical-align: middle;
+}
+.admin-section-title .shop-status-dot.is-on {
+  background: var(--positive);
+  box-shadow: 0 0 0 4px rgba(125, 226, 171, 0.15);
+}
+
+.shop-toggle-close:hover {
+  color: var(--danger);
+  border-color: var(--border-cc);
+}
+
+/* ---------- reserva do carrinho + confirmação ---------- */
+
+.hold-timer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-fwc);
+  border-radius: 10px;
+  background: #1a1706;
+  color: var(--text-2);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.hold-timer.is-urgent {
+  border-color: var(--danger);
+}
+.hold-timer.is-expired {
+  border-color: var(--border-cc);
+  background: #1d0b0b;
+  display: block;
+}
+
+.hold-timer-clock {
+  font-family: var(--font-bebas-neue);
+  font-size: 30px;
+  line-height: 1;
+  color: var(--gold);
+  min-width: 64px;
+  text-align: center;
+}
+.hold-timer.is-urgent .hold-timer-clock {
+  color: var(--danger);
+}
+
+.hold-timer-compact {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 99px;
+  background: rgba(0, 0, 0, 0.18);
+}
+.hold-timer-compact.is-urgent {
+  background: var(--danger);
+  color: var(--bg);
+}
+.hold-timer-compact.is-expired {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.cart-footer-actions {
+  display: flex;
+  gap: 10px;
+}
+.cart-footer-actions .btn-primary {
+  flex: 1;
+}
+
+.review-ok {
+  color: var(--positive);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.review-line {
+  align-items: center;
+}
+.review-status {
+  width: 22px;
+  text-align: center;
+  font-size: 16px;
+  color: var(--positive);
+}
+.review-line.is-adjusted .review-status {
+  color: var(--gold);
+}
+.review-line.is-removed {
+  opacity: 0.6;
+}
+.review-line.is-removed .review-status {
+  color: var(--danger);
+}
+.review-qty {
+  font-size: 13px;
+  color: var(--text-4);
 }

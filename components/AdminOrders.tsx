@@ -4,6 +4,7 @@ import { useMemo, useState, type Dispatch, type SetStateAction } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
   ORDER_COLUMNS,
+  RESERVA_HORAS,
   describeSticker,
   formatAddress,
   formatBRL,
@@ -147,7 +148,7 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
           ))}
         </div>
         <span className="order-hint">
-          Pedidos novos reservam as figurinhas por 5h. Sem confirmação nesse prazo, são cancelados e o estoque é
+          Pedidos novos reservam as figurinhas por {RESERVA_HORAS}h. Sem confirmação nesse prazo, são cancelados e o estoque é
           liberado.
         </span>
       </div>

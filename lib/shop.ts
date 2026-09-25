@@ -1,10 +1,19 @@
 import { BLOCKS, stickerName } from "./album";
+import { normalizeWhatsapp } from "./phone";
+
+export { isValidPhoneBR, maskPhoneBR, normalizeWhatsapp, onlyDigits } from "./phone";
 import type { BlockType } from "./types";
 
 export type OrderStatus = "novo" | "confirmado" | "cancelado";
 export type CancelReason = "manual" | "expirado" | null;
 
-export const RESERVA_HORAS = 5;
+export const RESERVA_HORAS = 24; // pedido novo segura as figurinhas por 24h
+export const CARRINHO_MINUTOS = 10; // carrinho segura as figurinhas por 10 min
+
+export interface CartHold {
+  items: { code: string; qty: number }[];
+  expiresAt: string | null;
+}
 
 export interface GroupPrices {
   FWC: number | null;
@@ -219,16 +228,6 @@ export function centsToInput(cents: number | null): string {
 }
 
 // ---------- WhatsApp ----------
-
-export function onlyDigits(s: string): string {
-  return s.replace(/\D/g, "");
-}
-
-// Número brasileiro sem DDI (10–11 dígitos) ganha o 55 na frente.
-export function normalizeWhatsapp(s: string): string {
-  const d = onlyDigits(s);
-  return d.length === 10 || d.length === 11 ? `55${d}` : d;
-}
 
 export function whatsappLink(number: string, text?: string): string {
   const base = `https://wa.me/${normalizeWhatsapp(number)}`;

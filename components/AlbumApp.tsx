@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ANCHORAS } from "@/lib/album";
 import { deriveBoard } from "@/lib/derive";
 import { readLocalQtd, writeLocalQtd } from "@/lib/localBackup";
 import { createClient } from "@/lib/supabase/client";
@@ -16,10 +15,10 @@ import BackupModal from "./BackupModal";
 
 interface AlbumAppProps {
   initialUser: AppUser;
-  canSell: boolean;
+  shopHref: string | null;
 }
 
-export default function AlbumApp({ initialUser, canSell }: AlbumAppProps) {
+export default function AlbumApp({ initialUser, shopHref }: AlbumAppProps) {
   const [qtd, setQtd] = useState<Qtd>({});
   const [syncStatus, setSyncStatus] = useState<SyncStatus>("idle");
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
@@ -148,12 +147,6 @@ export default function AlbumApp({ initialUser, canSell }: AlbumAppProps) {
     });
   }, []);
 
-  async function onSignOut() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    window.location.href = "/login";
-  }
-
   const derived = useMemo(
     () => deriveBoard(qtd, tipo, statusFiltro, busca),
     [qtd, tipo, statusFiltro, busca]
@@ -188,11 +181,9 @@ export default function AlbumApp({ initialUser, canSell }: AlbumAppProps) {
         onAbrirTrocas={() => setTrocasAberto(true)}
         onExportar={() => setBackupModo("export")}
         onImportar={() => setBackupModo("import")}
-        anchoras={ANCHORAS}
         onAnchorClick={scrollToBlock}
         user={initialUser}
-        canSell={canSell}
-        onSignOut={onSignOut}
+        shopHref={shopHref}
         onToast={showToast}
       />
 

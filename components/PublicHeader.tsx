@@ -2,7 +2,9 @@
 
 import { useState, type RefObject } from "react";
 import { VIEW_OPTIONS } from "@/lib/useViewMode";
-import type { ViewMode, Anchor, StatusFiltro, TipoFiltro } from "@/lib/types";
+import GroupMenu from "./GroupMenu";
+import type { ViewMode, StatusFiltro, TipoFiltro } from "@/lib/types";
+import BrandLogo from "./BrandLogo";
 
 interface PublicHeaderProps {
   headerRef: RefObject<HTMLDivElement | null>;
@@ -18,7 +20,6 @@ interface PublicHeaderProps {
   onStatusFiltro: (v: StatusFiltro) => void;
   view: ViewMode;
   onView: (v: ViewMode) => void;
-  anchoras: Anchor[];
   onAnchorClick: (id: string) => void;
 }
 
@@ -50,7 +51,6 @@ export default function PublicHeader({
   onStatusFiltro,
   view,
   onView,
-  anchoras,
   onAnchorClick,
 }: PublicHeaderProps) {
   const [menuAberto, setMenuAberto] = useState(false);
@@ -65,6 +65,7 @@ export default function PublicHeader({
       <div className="header-inner">
         <div className="header-main-row">
           <div className="brand">
+            <BrandLogo />
             <span className="kicker">Coleção pública · somente leitura</span>
             <span className="title">Álbum Copa 2026</span>
           </div>
@@ -157,20 +158,8 @@ export default function PublicHeader({
                 </button>
               ))}
             </div>
-          </div>
 
-          <div className="anchors-row">
-            {anchoras.map((a) => (
-              <button
-                key={a.id}
-                type="button"
-                title={a.title}
-                className={`anchor-btn ${a.variant !== "team" ? `anchor-${a.variant}` : ""}`}
-                onClick={() => anchorClickAndClose(a.id)}
-              >
-                {a.label}
-              </button>
-            ))}
+            <GroupMenu onSelect={anchorClickAndClose} />
           </div>
         </div>
       </div>

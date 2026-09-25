@@ -2,8 +2,11 @@
 
 import { useState, type RefObject } from "react";
 import { VIEW_OPTIONS } from "@/lib/useViewMode";
-import type { ViewMode, Anchor, AppUser, ModoClique, StatusFiltro, TipoFiltro } from "@/lib/types";
-import AuthBar from "./AuthBar";
+import type { ViewMode, AppUser, ModoClique, StatusFiltro, TipoFiltro } from "@/lib/types";
+import { CopyLinkButton, HeaderActions, IconLink } from "./HeaderIcons";
+import GroupMenu from "./GroupMenu";
+import UserMenu from "./UserMenu";
+import BrandLogo from "./BrandLogo";
 
 interface HeaderProps {
   headerRef: RefObject<HTMLDivElement | null>;
@@ -24,11 +27,9 @@ interface HeaderProps {
   onAbrirTrocas: () => void;
   onExportar: () => void;
   onImportar: () => void;
-  anchoras: Anchor[];
   onAnchorClick: (id: string) => void;
   user: AppUser;
-  canSell: boolean;
-  onSignOut: () => void;
+  shopHref: string | null;
   onToast: (msg: string) => void;
 }
 
@@ -51,6 +52,14 @@ const MODOS: { value: ModoClique; label: string }[] = [
   { value: "sub", label: "− Tirar" },
 ];
 
+// Link de visualização (somente leitura) do álbum — o token é criado na primeira vez.
+async function gerarLinkPublico(): Promise<string> {
+  const res = await fetch("/api/share-link", { method: "POST" });
+  if (!res.ok) throw new Error("request failed");
+  const { token } = (await res.json()) as { token: string };
+  return `${window.location.origin}/publico/${token}`;
+}
+
 export default function Header({
   headerRef,
   totColadas,
@@ -70,11 +79,9 @@ export default function Header({
   onAbrirTrocas,
   onExportar,
   onImportar,
-  anchoras,
   onAnchorClick,
   user,
-  canSell,
-  onSignOut,
+  shopHref,
   onToast,
 }: HeaderProps) {
   const [menuAberto, setMenuAberto] = useState(false);
@@ -89,6 +96,7 @@ export default function Header({
       <div className="header-inner">
         <div className="header-main-row">
           <div className="brand">
+            <BrandLogo />
             <span className="kicker">Controle de repetidas</span>
             <span className="title">Álbum Copa 2026</span>
           </div>
@@ -136,7 +144,16 @@ export default function Header({
             Filtros
           </button>
 
-          <AuthBar user={user} canSell={canSell} onSignOut={onSignOut} onToast={onToast} />
+          <HeaderActions>
+            {shopHref && <IconLink href={shopHref} icon="store" label="Minha loja" />}
+            <CopyLinkButton
+              label="Copiar link público do álbum"
+              url={gerarLinkPublico}
+              successMessage="Link público do álbum copiado!"
+              onToast={onToast}
+            />
+            <UserMenu email={user.email} onBackup={onExportar} onImport={onImportar} />
+          </HeaderActions>
         </div>
 
         <div className={`filters-panel ${menuAberto ? "is-open" : ""}`}>
@@ -200,26 +217,7 @@ export default function Header({
             <button type="button" className="btn-primary" onClick={onAbrirTrocas}>
               Minhas repetidas
             </button>
-            <button type="button" className="btn-ghost" onClick={onExportar}>
-              Backup
-            </button>
-            <button type="button" className="btn-ghost" onClick={onImportar}>
-              Importar
-            </button>
-          </div>
-
-          <div className="anchors-row">
-            {anchoras.map((a) => (
-              <button
-                key={a.id}
-                type="button"
-                title={a.title}
-                className={`anchor-btn ${a.variant !== "team" ? `anchor-${a.variant}` : ""}`}
-                onClick={() => anchorClickAndClose(a.id)}
-              >
-                {a.label}
-              </button>
-            ))}
+            <GroupMenu onSelect={anchorClickAndClose} />
           </div>
         </div>
       </div>

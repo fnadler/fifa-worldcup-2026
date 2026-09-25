@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import BrandLogo from "./BrandLogo";
 
 interface NoticeCardProps {
   kicker: string;
@@ -13,6 +14,7 @@ export default function NoticeCard({ kicker, children, backHref, backLabel }: No
     <div className="login-shell">
       <div className="login-card">
         <div className="brand">
+          <BrandLogo />
           <span className="kicker">{kicker}</span>
           <span className="title">Álbum Copa 2026</span>
         </div>

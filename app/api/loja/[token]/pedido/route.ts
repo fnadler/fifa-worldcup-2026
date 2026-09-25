@@ -1,9 +1,12 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { CART_COOKIE, readCartId } from "@/lib/cartCookie";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { hasShopAccess } from "@/lib/shopAccess";
 import {
   groupPricesFromRow,
   isKnownCode,
+  isValidPhoneBR,
   onlyDigits,
   orderMessage,
   priceFor,
@@ -64,8 +67,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ tok
   if (REQUIRED.some((k) => !buyer[k])) return bad("Preencha todos os campos obrigatórios.");
   if (buyer.name.split(/\s+/).length < 2) return bad("Informe o nome completo.");
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyer.email)) return bad("E-mail inválido.");
-  const whatsDigits = onlyDigits(buyer.whatsapp).length;
-  if (whatsDigits < 10 || whatsDigits > 13) return bad("Número de WhatsApp inválido.");
+  if (!isValidPhoneBR(buyer.whatsapp)) return bad("WhatsApp inválido. Informe o DDD e o número: (11) 99999-8888.");
   if (onlyDigits(buyer.cep).length !== 8) return bad("CEP inválido.");
   if (!/^[A-Z]{2}$/.test(buyer.state)) return bad("UF inválida.");
 
@@ -117,8 +119,16 @@ export async function POST(request: Request, { params }: { params: Promise<{ tok
   if (totalCents < shop.min_order_cents) return bad("O pedido não atingiu o valor mínimo.");
 
   // Estoque (repetidas - reservas de outros pedidos) é checado e reservado atomicamente no banco.
+  // O carrinho do próprio comprador não conta como reserva de terceiros (e vira o pedido).
+  const cartId = readCartId((await cookies()).get(CART_COOKIE)?.value);
   const { data: placed, error } = await admin
-    .rpc("place_order", { p_seller: shop.user_id, p_items: items, p_total_cents: totalCents, p_buyer: buyer })
+    .rpc("place_order", {
+      p_seller: shop.user_id,
+      p_items: items,
+      p_total_cents: totalCents,
+      p_buyer: buyer,
+      p_cart_id: cartId,
+    })
     .single<{ id: string; number: number; reserved_until: string }>();
 
   if (error?.message.startsWith("INDISPONIVEL:")) {

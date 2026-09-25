@@ -1,14 +1,21 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ANCHORAS, BLOCKS, anchorId, blockTag, codigoBase, hasNamedStickers } from "@/lib/album";
+import Link from "next/link";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { BLOCKS, anchorId, blockTag, codigoBase, hasNamedStickers } from "@/lib/album";
 import { matchesSticker } from "@/lib/derive";
-import { formatBRL, priceFor, type ShopPricing } from "@/lib/shop";
+import { formatBRL, priceFor, type CartHold, type ShopPricing } from "@/lib/shop";
+import { useCartHold } from "@/lib/useCartHold";
 import type { Qtd, TipoFiltro } from "@/lib/types";
 import { VIEW_OPTIONS, useViewMode } from "@/lib/useViewMode";
+import { CopyLinkButton, HeaderActions, IconLink } from "./HeaderIcons";
+import GroupMenu from "./GroupMenu";
 import ShopCell from "./ShopCell";
+import UserMenu from "./UserMenu";
 import StickerPreview from "./StickerPreview";
 import CartModal, { type CartLine } from "./CartModal";
+import BrandLogo from "./BrandLogo";
+import HoldTimer from "./HoldTimer";
 
 interface ShopBoardProps {
   token: string;
@@ -16,6 +23,10 @@ interface ShopBoardProps {
   minOrderCents: number;
   available: Qtd;
   pricing: ShopPricing;
+  /** Reserva ativa do carrinho deste navegador (cookie), se houver. */
+  initialHold: CartHold | null;
+  /** Preenchido só quando o dono da loja está vendo a própria vitrine. */
+  owner: { email: string | null; paused: boolean } | null;
 }
 
 type DispFiltro = "ALL" | "AVAIL";
@@ -33,9 +44,15 @@ const DISPS: { value: DispFiltro; label: string }[] = [
   { value: "AVAIL", label: "Só disponíveis" },
 ];
 
-export default function ShopBoard({ token, sellerName, minOrderCents, available, pricing }: ShopBoardProps) {
-  const cartKey = `copa2026-cart-${token}`;
-  const [cart, setCart] = useState<Qtd>({});
+export default function ShopBoard({
+  token,
+  sellerName,
+  minOrderCents,
+  available,
+  pricing,
+  initialHold,
+  owner,
+}: ShopBoardProps) {
   const [tipo, setTipo] = useState<TipoFiltro>("ALL");
   const [disp, setDisp] = useState<DispFiltro>("ALL");
   const [busca, setBusca] = useState("");
@@ -43,73 +60,26 @@ export default function ShopBoard({ token, sellerName, minOrderCents, available,
   const [cartAberto, setCartAberto] = useState(false);
   const [view, changeView] = useViewMode("copa2026-shop-view");
   const [preview, setPreview] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
   const headerRef = useRef<HTMLDivElement | null>(null);
+
+  const showToast = useCallback((msg: string) => {
+    setToast(msg);
+    window.setTimeout(() => setToast((current) => (current === msg ? null : current)), 4000);
+  }, []);
 
   const vendavel = useCallback(
     (code: string) => priceFor(code, pricing) !== null && (available[code] ?? 0) > 0,
     [pricing, available]
   );
 
-  // Restaura o carrinho salvo neste navegador, limitado ao que ainda está disponível.
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(cartKey);
-      if (!raw) return;
-      const saved = JSON.parse(raw) as Qtd;
-      const clamped: Qtd = {};
-      Object.entries(saved).forEach(([code, n]) => {
-        const max = vendavel(code) ? available[code] : 0;
-        const q = Math.min(n, max);
-        if (q > 0) clamped[code] = q;
-      });
-      queueMicrotask(() => setCart(clamped));
-    } catch {
-      // sem carrinho salvo
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const persist = useCallback(
-    (next: Qtd) => {
-      try {
-        window.localStorage.setItem(cartKey, JSON.stringify(next));
-      } catch {
-        // conveniência apenas
-      }
-    },
-    [cartKey]
-  );
-
-  const changeQty = useCallback(
-    (code: string, delta: number) => {
-      setCart((prev) => {
-        const q = Math.max(0, Math.min(available[code] ?? 0, (prev[code] ?? 0) + delta));
-        const next = { ...prev };
-        if (q === 0) delete next[code];
-        else next[code] = q;
-        persist(next);
-        return next;
-      });
-    },
-    [available, persist]
-  );
-
-  const removeCodes = useCallback(
-    (codes: string[]) => {
-      setCart((prev) => {
-        const next = { ...prev };
-        codes.forEach((c) => delete next[c]);
-        persist(next);
-        return next;
-      });
-    },
-    [persist]
-  );
-
-  const clearCart = useCallback(() => {
-    setCart({});
-    persist({});
-  }, [persist]);
+  // Carrinho com reserva de 10 min no servidor (ver useCartHold).
+  const { cart, expiresAt, changeQty, remove, clear, flush, resetAfterOrder } = useCartHold({
+    token,
+    available,
+    initialHold,
+    onToast: showToast,
+  });
 
   const lines: CartLine[] = useMemo(() => {
     const out: CartLine[] = [];
@@ -167,6 +137,7 @@ export default function ShopBoard({ token, sellerName, minOrderCents, available,
         <div className="header-inner">
           <div className="header-main-row">
             <div className="brand">
+              <BrandLogo />
               <span className="kicker">Loja de figurinhas{sellerName ? ` · ${sellerName}` : ""}</span>
               <span className="title">Álbum Copa 2026</span>
             </div>
@@ -195,6 +166,20 @@ export default function ShopBoard({ token, sellerName, minOrderCents, available,
             >
               Filtros
             </button>
+
+            {owner && (
+              <HeaderActions>
+                <IconLink href="/" icon="album" label="Meu álbum" />
+                <IconLink href="/vendas" icon="settings" label="Configurações da loja" />
+                <CopyLinkButton
+                  label="Copiar link da loja"
+                  url={() => Promise.resolve(window.location.href.split("#")[0])}
+                  successMessage="Link da loja copiado!"
+                  onToast={showToast}
+                />
+                <UserMenu email={owner.email} />
+              </HeaderActions>
+            )}
 
             <button type="button" className="btn-primary cart-button" onClick={() => setCartAberto(true)}>
               Carrinho
@@ -256,24 +241,18 @@ export default function ShopBoard({ token, sellerName, minOrderCents, available,
                   </button>
                 ))}
               </div>
-            </div>
-
-            <div className="anchors-row">
-              {ANCHORAS.map((a) => (
-                <button
-                  key={a.id}
-                  type="button"
-                  title={a.title}
-                  className={`anchor-btn ${a.variant !== "team" ? `anchor-${a.variant}` : ""}`}
-                  onClick={() => scrollToBlock(a.id)}
-                >
-                  {a.label}
-                </button>
-              ))}
+              <GroupMenu onSelect={scrollToBlock} />
             </div>
           </div>
         </div>
       </div>
+
+      {owner?.paused && (
+        <div className="owner-banner">
+          <strong>Loja pausada.</strong> Só você está vendo esta página — compradores veem “loja pausada”.{" "}
+          <Link href="/vendas">Abrir a loja nas configurações</Link>
+        </div>
+      )}
 
       <div className="legend-bar">
         <span className="legend-label">Legenda</span>
@@ -336,6 +315,7 @@ export default function ShopBoard({ token, sellerName, minOrderCents, available,
           <span>
             {totalFigurinhas} figurinha{totalFigurinhas === 1 ? "" : "s"} · <strong>{formatBRL(totalCents)}</strong>
           </span>
+          <HoldTimer expiresAt={expiresAt} variant="compact" />
           <span className="cart-float-cta">Ver carrinho →</span>
         </button>
       )}
@@ -357,16 +337,20 @@ export default function ShopBoard({ token, sellerName, minOrderCents, available,
         />
       )}
 
+      {toast && <div className="toast">{toast}</div>}
+
       {cartAberto && (
         <CartModal
           token={token}
           lines={lines}
           totalCents={totalCents}
           minOrderCents={minOrderCents}
+          expiresAt={expiresAt}
           onChange={changeQty}
-          onRemove={(code) => removeCodes([code])}
-          onUnavailable={removeCodes}
-          onOrdered={clearCart}
+          onRemove={remove}
+          onClear={clear}
+          onReview={flush}
+          onOrdered={resetAfterOrder}
           onClose={() => setCartAberto(false)}
         />
       )}

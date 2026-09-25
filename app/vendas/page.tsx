@@ -66,7 +66,7 @@ export default async function VendasPage() {
     throw new Error("Não foi possível criar a loja — confira se a migração supabase_migration_shop.sql foi aplicada.");
   }
 
-  // Pedidos novos com a reserva de 5h vencida viram "cancelado (expirado)" antes de listar.
+  // Pedidos novos com a reserva vencida viram "cancelado (expirado)" antes de listar.
   await supabase.rpc("expire_orders", { p_seller: user.id });
 
   const [{ data: priceRows }, { data: orderRows }, { data: collectionRows }] = await Promise.all([

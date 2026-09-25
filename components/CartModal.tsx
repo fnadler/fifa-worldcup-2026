@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { describeSticker, formatBRL, formatDateTimeBR, type BuyerInfo } from "@/lib/shop";
+import { describeSticker, formatBRL, formatDateTimeBR, isValidPhoneBR, maskPhoneBR, type BuyerInfo } from "@/lib/shop";
+import type { CartAdjust } from "@/lib/useCartHold";
+import HoldTimer from "./HoldTimer";
 
 export interface CartLine {
   code: string;
@@ -17,7 +19,10 @@ interface CartModalProps {
   minOrderCents: number;
   onChange: (code: string, delta: number) => void;
   onRemove: (code: string) => void;
-  onUnavailable: (codes: string[]) => void;
+  onClear: () => void;
+  /** Revalida (e reserva de novo) o carrinho no servidor; devolve o que precisou ser ajustado. */
+  onReview: () => Promise<{ adjusted: CartAdjust[] } | null>;
+  expiresAt: string | null;
   onOrdered: () => void;
   onClose: () => void;
 }
@@ -37,7 +42,7 @@ const EMPTY_BUYER: BuyerInfo = {
   state: "",
 };
 
-type Step = "cart" | "checkout" | "done";
+type Step = "cart" | "review" | "checkout" | "done";
 
 export default function CartModal({
   token,
@@ -46,7 +51,9 @@ export default function CartModal({
   minOrderCents,
   onChange,
   onRemove,
-  onUnavailable,
+  onClear,
+  onReview,
+  expiresAt,
   onOrdered,
   onClose,
 }: CartModalProps) {
@@ -55,12 +62,17 @@ export default function CartModal({
   const [honeypot, setHoneypot] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [ajustes, setAjustes] = useState<CartAdjust[]>([]);
+  const [revisando, setRevisando] = useState(false);
   const [result, setResult] = useState<{ number: number; whatsappUrl: string; reservedUntil?: string } | null>(null);
 
   useEffect(() => {
     try {
       const raw = window.localStorage.getItem(BUYER_KEY);
-      if (raw) queueMicrotask(() => setBuyer({ ...EMPTY_BUYER, ...(JSON.parse(raw) as Partial<BuyerInfo>) }));
+      if (raw) {
+        const saved = { ...EMPTY_BUYER, ...(JSON.parse(raw) as Partial<BuyerInfo>) };
+        queueMicrotask(() => setBuyer({ ...saved, whatsapp: maskPhoneBR(saved.whatsapp) }));
+      }
     } catch {
       // sem dados salvos — o formulário começa vazio
     }
@@ -76,9 +88,30 @@ export default function CartModal({
     };
   }
 
+  // Tela de confirmação: revalida o carrinho no servidor (reservando de novo, se o prazo
+  // venceu) e mostra o que foi confirmado e o que deixou de estar disponível.
+  async function revisar(aviso?: string) {
+    setRevisando(true);
+    setError(null);
+    const res = await onReview();
+    setRevisando(false);
+    if (!res) return;
+    setAjustes(res.adjusted);
+    setStep("review");
+    if (aviso) setError(aviso);
+  }
+
+  function limpar() {
+    if (window.confirm("Remover todas as figurinhas do carrinho?")) onClear();
+  }
+
   async function enviar(e: FormEvent) {
     e.preventDefault();
     if (sending) return;
+    if (!isValidPhoneBR(buyer.whatsapp)) {
+      setError("WhatsApp inválido. Informe o DDD e o número: (11) 99999-8888.");
+      return;
+    }
     setSending(true);
     setError(null);
     try {
@@ -105,8 +138,8 @@ export default function CartModal({
       };
       if (!res.ok || !data.number || !data.whatsappUrl) {
         if (data.unavailable?.length) {
-          onUnavailable(data.unavailable);
-          setStep("cart");
+          await revisar("Algumas figurinhas deixaram de estar disponíveis enquanto você preenchia os dados. Confira abaixo.");
+          return;
         }
         setError(data.error ?? "Não foi possível registrar o pedido — tente de novo.");
         return;
@@ -126,7 +159,13 @@ export default function CartModal({
       <div className="modal-card cart-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <span className="modal-title">
-            {step === "cart" ? "Carrinho" : step === "checkout" ? "Seus dados" : "Pedido registrado"}
+            {step === "cart"
+              ? "Carrinho"
+              : step === "review"
+                ? "Confirme seu pedido"
+                : step === "checkout"
+                  ? "Seus dados"
+                  : "Pedido registrado"}
           </span>
           {step !== "done" && (
             <span className="modal-count">
@@ -142,6 +181,7 @@ export default function CartModal({
         {step === "cart" && (
           <>
             <div className="cart-body">
+              {lines.length > 0 && <HoldTimer expiresAt={expiresAt} />}
               {error && <div className="login-error">{error}</div>}
               {lines.length === 0 && <div className="empty-message">Seu carrinho está vazio.</div>}
               {lines.map((l) => (
@@ -184,23 +224,104 @@ export default function CartModal({
                   Pedido mínimo de {formatBRL(minOrderCents)} — faltam {formatBRL(faltaParaMinimo)}.
                 </span>
               )}
-              <button
-                type="button"
-                className="btn-primary"
-                disabled={lines.length === 0 || faltaParaMinimo > 0}
-                onClick={() => {
-                  setError(null);
-                  setStep("checkout");
-                }}
-              >
-                Fechar pedido
-              </button>
+              <div className="cart-footer-actions">
+                <button type="button" className="btn-ghost" disabled={lines.length === 0} onClick={limpar}>
+                  Limpar carrinho
+                </button>
+                <button
+                  type="button"
+                  className="btn-primary"
+                  disabled={lines.length === 0 || faltaParaMinimo > 0 || revisando}
+                  onClick={() => void revisar()}
+                >
+                  {revisando ? "Conferindo…" : "Fechar pedido"}
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+
+        {step === "review" && (
+          <>
+            <div className="cart-body">
+              <HoldTimer expiresAt={expiresAt} />
+              {error && <div className="login-error">{error}</div>}
+              {ajustes.length === 0 ? (
+                <div className="review-ok">✓ Todas as figurinhas do seu carrinho estão confirmadas.</div>
+              ) : (
+                <div className="cart-warning">
+                  Algumas figurinhas foram reservadas por outra pessoa depois que sua reserva expirou. Seu carrinho foi
+                  ajustado:
+                </div>
+              )}
+              {lines.map((l) => {
+                const aj = ajustes.find((a) => a.code === l.code);
+                return (
+                  <div key={l.code} className={`cart-line review-line ${aj ? "is-adjusted" : ""}`}>
+                    <span className="review-status">{aj ? "⚠" : "✓"}</span>
+                    <div className="cart-line-info">
+                      <span className="cart-line-code">{l.code}</span>
+                      <span className="cart-line-meta">
+                        {describeSticker(l.code)}
+                        {aj && ` · só ${aj.granted} de ${aj.requested} disponíve${aj.granted === 1 ? "l" : "is"}`}
+                      </span>
+                    </div>
+                    <span className="review-qty">
+                      {l.qty} × {formatBRL(l.unitCents)}
+                    </span>
+                    <span className="cart-line-total">{formatBRL(l.qty * l.unitCents)}</span>
+                  </div>
+                );
+              })}
+              {ajustes
+                .filter((a) => a.granted === 0)
+                .map((a) => (
+                  <div key={a.code} className="cart-line review-line is-removed">
+                    <span className="review-status">✗</span>
+                    <div className="cart-line-info">
+                      <span className="cart-line-code">{a.code}</span>
+                      <span className="cart-line-meta">{describeSticker(a.code)} · não está mais disponível — removida</span>
+                    </div>
+                  </div>
+                ))}
+              {lines.length === 0 && (
+                <div className="empty-message">Nenhuma das figurinhas do carrinho está mais disponível.</div>
+              )}
+            </div>
+            <div className="cart-footer">
+              <div className="cart-total-row">
+                <span>Total</span>
+                <span className="cart-total-value">{formatBRL(totalCents)}</span>
+              </div>
+              {faltaParaMinimo > 0 && lines.length > 0 && (
+                <span className="cart-warning">
+                  Com os ajustes, o pedido ficou abaixo do mínimo de {formatBRL(minOrderCents)} — faltam{" "}
+                  {formatBRL(faltaParaMinimo)}.
+                </span>
+              )}
+              <div className="cart-footer-actions">
+                <button type="button" className="btn-ghost" onClick={() => setStep("cart")}>
+                  Voltar ao carrinho
+                </button>
+                <button
+                  type="button"
+                  className="btn-primary"
+                  disabled={lines.length === 0 || faltaParaMinimo > 0}
+                  onClick={() => {
+                    setError(null);
+                    setStep("checkout");
+                  }}
+                >
+                  Confirmar e continuar
+                </button>
+              </div>
             </div>
           </>
         )}
 
         {step === "checkout" && (
           <form className="cart-body checkout-form" onSubmit={enviar}>
+            <HoldTimer expiresAt={expiresAt} />
             <label className="form-label">
               Nome completo
               <input className="login-input" required autoComplete="name" {...field("name")} />
@@ -216,9 +337,12 @@ export default function CartModal({
                   className="login-input"
                   type="tel"
                   required
-                  autoComplete="tel"
+                  inputMode="numeric"
+                  autoComplete="tel-national"
                   placeholder="(11) 99999-8888"
-                  {...field("whatsapp")}
+                  maxLength={15}
+                  value={buyer.whatsapp}
+                  onChange={(e) => setBuyer((b) => ({ ...b, whatsapp: maskPhoneBR(e.target.value) }))}
                 />
               </label>
             </div>
@@ -277,7 +401,7 @@ export default function CartModal({
               frete diretamente por lá.
             </span>
             <div className="modal-actions">
-              <button type="button" className="btn-ghost" onClick={() => setStep("cart")}>
+              <button type="button" className="btn-ghost" onClick={() => setStep("review")}>
                 Voltar
               </button>
               <button type="submit" className="btn-primary" disabled={sending}>

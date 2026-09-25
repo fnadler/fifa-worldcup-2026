@@ -5,6 +5,7 @@ import { parseProfileInput } from "@/lib/profile";
 import { maskPhoneBR } from "@/lib/phone";
 import { createClient } from "@/lib/supabase/client";
 import BrandLogo from "./BrandLogo";
+import { NAME_MAX, PLATFORM_NAME } from "@/lib/brand";
 
 type Mode = "signin" | "signup";
 
@@ -14,6 +15,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [collectionName, setCollectionName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -42,7 +44,7 @@ export default function LoginForm() {
       return;
     }
 
-    const profile = parseProfileInput(fullName, whatsapp);
+    const profile = parseProfileInput(fullName, whatsapp, collectionName);
     if ("error" in profile) {
       setLoading(false);
       setError(profile.error);
@@ -74,8 +76,8 @@ export default function LoginForm() {
       <div className="login-card">
         <div className="brand">
           <BrandLogo />
-          <span className="kicker">Controle de repetidas</span>
-          <span className="title">Álbum Copa 2026</span>
+          <span className="kicker">Controle de figurinhas · Copa 2026</span>
+          <span className="title">{PLATFORM_NAME}</span>
         </div>
 
         <div className="segmented login-mode-toggle">
@@ -118,6 +120,19 @@ export default function LoginForm() {
                 onChange={(e) => setWhatsapp(maskPhoneBR(e.target.value))}
                 className="login-input"
               />
+              <div className="field-with-counter">
+                <input
+                  required
+                  placeholder="Nome da sua coleção (ex: Coleção do João)"
+                  maxLength={NAME_MAX}
+                  value={collectionName}
+                  onChange={(e) => setCollectionName(e.target.value)}
+                  className="login-input"
+                />
+                <span className="field-counter">
+                  {collectionName.length}/{NAME_MAX}
+                </span>
+              </div>
             </>
           )}
           <input

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { collectionTitle } from "@/lib/profile";
 import PublicBoard from "@/components/PublicBoard";
 import type { Qtd } from "@/lib/types";
 
@@ -21,15 +22,15 @@ export default async function PublicoPage({
 
   if (!share) notFound();
 
-  const { data: rows } = await admin
-    .from("collection")
-    .select("code, qty")
-    .eq("user_id", share.user_id);
+  const [{ data: rows }, { data: owner }] = await Promise.all([
+    admin.from("collection").select("code, qty").eq("user_id", share.user_id),
+    admin.auth.admin.getUserById(share.user_id),
+  ]);
 
   const qtd: Qtd = {};
   (rows ?? []).forEach((row) => {
     if (row.qty > 0) qtd[row.code as string] = row.qty as number;
   });
 
-  return <PublicBoard qtd={qtd} />;
+  return <PublicBoard qtd={qtd} collectionName={collectionTitle(owner?.user?.user_metadata)} />;
 }

@@ -56,6 +56,31 @@ export function IconLink({ href, icon, label }: { href: string; icon: IconName; 
   );
 }
 
+// Alternância entre as duas áreas do usuário (ícone + texto; no celular, só o ícone).
+// `active` null = nenhuma das duas (ex: perfil, configurações da loja).
+export function NavSwitch({ active, shopHref }: { active: "album" | "shop" | null; shopHref: string }) {
+  const itens = [
+    { key: "album" as const, href: "/", icon: "album" as const, label: "Minha coleção" },
+    { key: "shop" as const, href: shopHref, icon: "store" as const, label: "Minha loja" },
+  ];
+  return (
+    <nav className="nav-switch" aria-label="Alternar entre álbum e loja">
+      {itens.map((i) => (
+        <Link
+          key={i.key}
+          href={i.href}
+          className={`nav-switch-item ${active === i.key ? "is-active" : ""}`}
+          aria-current={active === i.key ? "page" : undefined}
+          title={i.label}
+        >
+          <Icon name={i.icon} />
+          <span className="header-label">{i.label}</span>
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
 // Grupo de ícones do cabeçalho — ocupa o lugar do antigo menu de conta.
 export function HeaderActions({ children }: { children: ReactNode }) {
   return <div className="header-actions">{children}</div>;
@@ -67,9 +92,11 @@ interface CopyLinkButtonProps {
   url: string | (() => Promise<string>);
   successMessage: string;
   onToast: (msg: string) => void;
+  /** Texto visível ao lado do ícone (some no celular). Sem ele, o botão é só o ícone. */
+  text?: string;
 }
 
-export function CopyLinkButton({ label, url, successMessage, onToast }: CopyLinkButtonProps) {
+export function CopyLinkButton({ label, url, successMessage, onToast, text }: CopyLinkButtonProps) {
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -94,8 +121,16 @@ export function CopyLinkButton({ label, url, successMessage, onToast }: CopyLink
   }
 
   return (
-    <button type="button" className="icon-button" onClick={copiar} disabled={busy} title={label} aria-label={label}>
+    <button
+      type="button"
+      className={text ? "header-button" : "icon-button"}
+      onClick={copiar}
+      disabled={busy}
+      title={label}
+      aria-label={label}
+    >
       <Icon name={copied ? "check" : "link"} />
+      {text && <span className="header-label">{copied ? "Copiado!" : text}</span>}
     </button>
   );
 }

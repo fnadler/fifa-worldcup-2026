@@ -1438,13 +1438,6 @@ button {
   color: var(--positive);
 }
 
-.admin-back {
-  order: 4;
-  margin-left: auto;
-  display: flex;
-  gap: 8px;
-}
-
 .admin-page {
   max-width: 1340px;
   margin: 0 auto;
@@ -1697,10 +1690,6 @@ button {
 
   /* Loja: carrinho fica na linha do título, como o ícone de conta no álbum. */
   .cart-button {
-    order: 2;
-  }
-
-  .admin-back {
     order: 2;
   }
 
@@ -2168,4 +2157,178 @@ button {
 .review-qty {
   font-size: 13px;
   color: var(--text-4);
+}
+
+/* ---------- topo: alternância álbum/loja + botões com texto ---------- */
+
+.nav-switch {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--field);
+  border: 1px solid var(--border-3);
+  border-radius: 10px;
+}
+
+.nav-switch-item,
+.header-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  font-family: var(--font-barlow-condensed);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text-4);
+}
+.nav-switch-item:hover {
+  color: var(--text-1);
+}
+
+/* Ativo: verde discreto — o amarelo fica reservado ao CTA (ex: carrinho). */
+.nav-switch-item.is-active {
+  background: rgba(0, 196, 106, 0.14);
+  border-color: rgba(0, 196, 106, 0.5);
+  color: var(--text-1);
+}
+.nav-switch-item.is-active svg {
+  color: var(--positive);
+}
+
+.header-button {
+  height: 36px;
+  background: var(--field);
+  border-color: var(--border-3);
+  color: var(--text-3);
+  cursor: pointer;
+}
+.header-button:hover {
+  color: var(--text-1);
+  border-color: var(--border-hover);
+}
+.header-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+@media (max-width: 700px) {
+  /* No celular, só os ícones. */
+  .header-label {
+    display: none;
+  }
+  .nav-switch {
+    padding: 2px;
+  }
+  .nav-switch-item {
+    width: 30px;
+    height: 28px;
+    padding: 0;
+    justify-content: center;
+  }
+  .header-button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 999px;
+  }
+}
+
+/* ---------- nomes de coleção/loja no título ---------- */
+
+/* O nome é limitado a 24 caracteres (lib/brand.ts); a reticência é só uma rede de segurança. */
+.brand {
+  min-width: 0;
+  grid-template-columns: auto minmax(0, auto);
+}
+.brand > .title {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* folga para acentos em maiúsculas (Ã, É…) não serem cortados pelo overflow com line-height .92 */
+  padding-top: 0.14em;
+  margin-top: -0.14em;
+}
+
+.field-with-counter {
+  position: relative;
+  display: flex;
+}
+.field-with-counter .login-input {
+  flex: 1;
+  padding-right: 52px;
+}
+.field-counter {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  color: var(--text-6);
+}
+
+.field-hint {
+  font-weight: 400;
+  color: var(--text-6);
+}
+
+.slug-preview {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 12px;
+  margin-top: -2px;
+  padding: 8px 12px;
+  border-radius: 9px;
+  background: var(--field);
+  border: 1px dashed var(--border-3);
+  font-size: 13px;
+  color: var(--text-4);
+}
+.slug-url strong {
+  color: var(--text-1);
+}
+.slug-free .slug-status,
+.slug-current .slug-status {
+  color: var(--positive);
+}
+.slug-taken {
+  border-color: var(--border-cc);
+}
+.slug-taken .slug-status {
+  color: var(--danger);
+}
+
+.logo-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.logo-row .brand-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  flex-shrink: 0;
+}
+.logo-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }

@@ -15,15 +15,16 @@ import { hasShopAccess } from "@/lib/shopAccess";
 import NoticeCard from "@/components/NoticeCard";
 import ShopAdmin from "@/components/ShopAdmin";
 import type { Qtd } from "@/lib/types";
+import { PLATFORM_NAME } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Loja e pedidos — Álbum Copa 2026",
+  title: `Configurações da loja — ${PLATFORM_NAME}`,
 };
 
 const SHOP_COLUMNS =
-  "token, enabled, seller_name, whatsapp, min_order_cents, price_fwc_cents, price_team_cents, price_cc_cents, price_leg_cents";
+  "token, slug, logo_url, enabled, seller_name, whatsapp, min_order_cents, price_fwc_cents, price_team_cents, price_cc_cents, price_leg_cents";
 
 export default async function VendasPage() {
   const supabase = await createClient();
@@ -35,7 +36,7 @@ export default async function VendasPage() {
 
   if (!(await hasShopAccess(supabase, user.id))) {
     return (
-      <NoticeCard kicker="Loja" backHref="/" backLabel="← Meu álbum">
+      <NoticeCard kicker="Loja" backHref="/" backLabel="← Minha coleção">
         A loja de figurinhas ainda não está disponível para a sua conta.
       </NoticeCard>
     );
@@ -95,6 +96,7 @@ export default async function VendasPage() {
   return (
     <ShopAdmin
       userId={user.id}
+      email={user.email ?? null}
       initialSettings={settingsFromRow(shop)}
       initialGroupPrices={groupPricesFromRow(shop)}
       initialIndividual={individual}

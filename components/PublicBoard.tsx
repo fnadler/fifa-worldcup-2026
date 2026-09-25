@@ -9,9 +9,10 @@ import AlbumBlockCard from "./AlbumBlockCard";
 
 interface PublicBoardProps {
   qtd: Qtd;
+  collectionName: string;
 }
 
-export default function PublicBoard({ qtd }: PublicBoardProps) {
+export default function PublicBoard({ qtd, collectionName }: PublicBoardProps) {
   const [tipo, setTipo] = useState<TipoFiltro>("ALL");
   const [statusFiltro, setStatusFiltro] = useState<StatusFiltro>("ALL");
   const [busca, setBusca] = useState("");
@@ -45,6 +46,7 @@ export default function PublicBoard({ qtd }: PublicBoardProps) {
         onTipo={setTipo}
         statusFiltro={statusFiltro}
         onStatusFiltro={setStatusFiltro}
+        collectionName={collectionName}
         view={view}
         onView={setView}
         onAnchorClick={scrollToBlock}

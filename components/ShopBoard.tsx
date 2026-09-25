@@ -8,7 +8,7 @@ import { formatBRL, priceFor, type CartHold, type ShopPricing } from "@/lib/shop
 import { useCartHold } from "@/lib/useCartHold";
 import type { Qtd, TipoFiltro } from "@/lib/types";
 import { VIEW_OPTIONS, useViewMode } from "@/lib/useViewMode";
-import { CopyLinkButton, HeaderActions, IconLink } from "./HeaderIcons";
+import { CopyLinkButton, HeaderActions, NavSwitch } from "./HeaderIcons";
 import GroupMenu from "./GroupMenu";
 import ShopCell from "./ShopCell";
 import UserMenu from "./UserMenu";
@@ -16,10 +16,14 @@ import StickerPreview from "./StickerPreview";
 import CartModal, { type CartLine } from "./CartModal";
 import BrandLogo from "./BrandLogo";
 import HoldTimer from "./HoldTimer";
+import { PLATFORM_NAME } from "@/lib/brand";
 
 interface ShopBoardProps {
   token: string;
-  sellerName: string;
+  /** Caminho público da loja (/slug ou /loja/token). */
+  path: string;
+  shopName: string;
+  logoUrl: string | null;
   minOrderCents: number;
   available: Qtd;
   pricing: ShopPricing;
@@ -46,7 +50,9 @@ const DISPS: { value: DispFiltro; label: string }[] = [
 
 export default function ShopBoard({
   token,
-  sellerName,
+  path,
+  shopName,
+  logoUrl,
   minOrderCents,
   available,
   pricing,
@@ -137,9 +143,9 @@ export default function ShopBoard({
         <div className="header-inner">
           <div className="header-main-row">
             <div className="brand">
-              <BrandLogo />
-              <span className="kicker">Loja de figurinhas{sellerName ? ` · ${sellerName}` : ""}</span>
-              <span className="title">Álbum Copa 2026</span>
+              <BrandLogo src={logoUrl} />
+              <span className="kicker">{PLATFORM_NAME}</span>
+              <span className="title">{shopName}</span>
             </div>
 
             <div className="totals-row">
@@ -169,15 +175,15 @@ export default function ShopBoard({
 
             {owner && (
               <HeaderActions>
-                <IconLink href="/" icon="album" label="Meu álbum" />
-                <IconLink href="/vendas" icon="settings" label="Configurações da loja" />
+                <NavSwitch active="shop" shopHref={path} />
                 <CopyLinkButton
+                  text="Copiar link"
                   label="Copiar link da loja"
                   url={() => Promise.resolve(window.location.href.split("#")[0])}
                   successMessage="Link da loja copiado!"
                   onToast={showToast}
                 />
-                <UserMenu email={owner.email} />
+                <UserMenu email={owner.email} shopSettings />
               </HeaderActions>
             )}
 

@@ -1,17 +1,20 @@
 "use client";
 
-import Link from "next/link";
+import { HeaderActions, NavSwitch } from "./HeaderIcons";
+import UserMenu from "./UserMenu";
 import { useCallback, useState } from "react";
-import { isExpired, type GroupPrices, type Order, type ShopSettings } from "@/lib/shop";
+import { isExpired, shopPath, type GroupPrices, type Order, type ShopSettings } from "@/lib/shop";
 import { useNow } from "@/lib/useNow";
 import type { Qtd } from "@/lib/types";
 import AdminOrders from "./AdminOrders";
 import AdminPrices from "./AdminPrices";
 import AdminSettings from "./AdminSettings";
 import BrandLogo from "./BrandLogo";
+import { DEFAULT_SHOP_NAME, PLATFORM_NAME } from "@/lib/brand";
 
 interface ShopAdminProps {
   userId: string;
+  email: string | null;
   initialSettings: ShopSettings;
   initialGroupPrices: GroupPrices;
   initialIndividual: Record<string, number>;
@@ -23,6 +26,7 @@ type Aba = "pedidos" | "precos" | "config";
 
 export default function ShopAdmin({
   userId,
+  email,
   initialSettings,
   initialGroupPrices,
   initialIndividual,
@@ -57,9 +61,9 @@ export default function ShopAdmin({
         <div className="header-inner">
           <div className="header-main-row">
             <div className="brand">
-              <BrandLogo />
-              <span className="kicker">Loja · administração</span>
-              <span className="title">Álbum Copa 2026</span>
+              <BrandLogo src={settings.logoUrl} />
+              <span className="kicker">{PLATFORM_NAME}</span>
+              <span className="title">{settings.sellerName || DEFAULT_SHOP_NAME}</span>
             </div>
             <div className="segmented admin-tabs">
               {ABAS.map((a) => (
@@ -76,14 +80,10 @@ export default function ShopAdmin({
             <span className={`shop-status-pill ${settings.enabled ? "is-on" : ""}`}>
               {settings.enabled ? "Loja aberta" : "Loja pausada"}
             </span>
-            <div className="admin-back">
-              <Link href="/" className="btn-ghost">
-                Meu álbum
-              </Link>
-              <Link href={`/loja/${settings.token}`} className="btn-ghost">
-                Minha loja
-              </Link>
-            </div>
+            <HeaderActions>
+              <NavSwitch active={null} shopHref={shopPath(settings)} />
+              <UserMenu email={email} shopSettings />
+            </HeaderActions>
           </div>
         </div>
       </div>

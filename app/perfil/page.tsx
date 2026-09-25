@@ -4,11 +4,12 @@ import { createClient } from "@/lib/supabase/server";
 import { profileFromMetadata } from "@/lib/profile";
 import { ownShopHref } from "@/lib/shopLink";
 import ProfilePage from "@/components/ProfilePage";
+import { PLATFORM_NAME } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Meu perfil — Álbum Copa 2026",
+  title: `Minha conta — ${PLATFORM_NAME}`,
 };
 
 export default async function PerfilPage() {

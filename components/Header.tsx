@@ -3,10 +3,11 @@
 import { useState, type RefObject } from "react";
 import { VIEW_OPTIONS } from "@/lib/useViewMode";
 import type { ViewMode, AppUser, ModoClique, StatusFiltro, TipoFiltro } from "@/lib/types";
-import { CopyLinkButton, HeaderActions, IconLink } from "./HeaderIcons";
+import { CopyLinkButton, HeaderActions, NavSwitch } from "./HeaderIcons";
 import GroupMenu from "./GroupMenu";
 import UserMenu from "./UserMenu";
 import BrandLogo from "./BrandLogo";
+import { PLATFORM_NAME } from "@/lib/brand";
 
 interface HeaderProps {
   headerRef: RefObject<HTMLDivElement | null>;
@@ -30,6 +31,7 @@ interface HeaderProps {
   onAnchorClick: (id: string) => void;
   user: AppUser;
   shopHref: string | null;
+  collectionName: string;
   onToast: (msg: string) => void;
 }
 
@@ -82,6 +84,7 @@ export default function Header({
   onAnchorClick,
   user,
   shopHref,
+  collectionName,
   onToast,
 }: HeaderProps) {
   const [menuAberto, setMenuAberto] = useState(false);
@@ -97,8 +100,8 @@ export default function Header({
         <div className="header-main-row">
           <div className="brand">
             <BrandLogo />
-            <span className="kicker">Controle de repetidas</span>
-            <span className="title">Álbum Copa 2026</span>
+            <span className="kicker">{PLATFORM_NAME}</span>
+            <span className="title">{collectionName}</span>
           </div>
 
           <div className="totals-row">
@@ -145,14 +148,15 @@ export default function Header({
           </button>
 
           <HeaderActions>
-            {shopHref && <IconLink href={shopHref} icon="store" label="Minha loja" />}
+            {shopHref && <NavSwitch active="album" shopHref={shopHref} />}
             <CopyLinkButton
+              text="Copiar link"
               label="Copiar link público do álbum"
               url={gerarLinkPublico}
               successMessage="Link público do álbum copiado!"
               onToast={onToast}
             />
-            <UserMenu email={user.email} onBackup={onExportar} onImport={onImportar} />
+            <UserMenu email={user.email} shopSettings={!!shopHref} onBackup={onExportar} onImport={onImportar} />
           </HeaderActions>
         </div>
 

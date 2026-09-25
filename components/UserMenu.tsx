@@ -7,6 +7,8 @@ import { Icon } from "./HeaderIcons";
 
 interface UserMenuProps {
   email: string | null;
+  /** Mostra o atalho "Configurações da loja" (quem tem acesso à loja). */
+  shopSettings?: boolean;
   /** Só no álbum: exportar/importar a base de figurinhas. */
   onBackup?: () => void;
   onImport?: () => void;
@@ -17,7 +19,7 @@ export async function signOut() {
   window.location.href = "/login";
 }
 
-export default function UserMenu({ email, onBackup, onImport }: UserMenuProps) {
+export default function UserMenu({ email, shopSettings, onBackup, onImport }: UserMenuProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -55,6 +57,11 @@ export default function UserMenu({ email, onBackup, onImport }: UserMenuProps) {
           <Link href="/perfil" className="btn-ghost user-menu-link" onClick={() => setOpen(false)}>
             Meu perfil
           </Link>
+          {shopSettings && (
+            <Link href="/vendas" className="btn-ghost user-menu-link" onClick={() => setOpen(false)}>
+              Configurações da loja
+            </Link>
+          )}
           {onBackup && (
             <button
               type="button"

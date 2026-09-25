@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, Barlow, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
+import { PLATFORM_NAME } from "@/lib/brand";
 
 const bebasNeue = Bebas_Neue({
   weight: "400",
@@ -21,13 +22,13 @@ const barlowCondensed = Barlow_Condensed({
 });
 
 export const metadata: Metadata = {
-  title: "Álbum Copa 2026 — Controle de repetidas",
-  description: "Controle pessoal de figurinhas coladas e repetidas do álbum da Copa 2026.",
+  title: `${PLATFORM_NAME} — sua coleção da Copa 2026`,
+  description: "Controle suas figurinhas coladas e repetidas do álbum da Copa 2026 e venda as repetidas na sua loja.",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Álbum Copa 2026",
+    title: PLATFORM_NAME,
   },
 };
 

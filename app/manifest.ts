@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
+import { PLATFORM_NAME } from "@/lib/brand";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Álbum Copa 2026 — Controle de repetidas",
-    short_name: "Copa 2026",
-    description: "Controle pessoal de figurinhas coladas e repetidas do álbum da Copa 2026.",
+    name: PLATFORM_NAME,
+    short_name: PLATFORM_NAME,
+    description: "Controle suas figurinhas da Copa 2026 e venda as repetidas.",
     start_url: "/",
     display: "standalone",
     background_color: "#0a120e",

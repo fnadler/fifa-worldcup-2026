@@ -5,6 +5,7 @@ import { VIEW_OPTIONS } from "@/lib/useViewMode";
 import GroupMenu from "./GroupMenu";
 import type { ViewMode, StatusFiltro, TipoFiltro } from "@/lib/types";
 import BrandLogo from "./BrandLogo";
+import { PLATFORM_NAME } from "@/lib/brand";
 
 interface PublicHeaderProps {
   headerRef: RefObject<HTMLDivElement | null>;
@@ -18,6 +19,7 @@ interface PublicHeaderProps {
   onTipo: (v: TipoFiltro) => void;
   statusFiltro: StatusFiltro;
   onStatusFiltro: (v: StatusFiltro) => void;
+  collectionName: string;
   view: ViewMode;
   onView: (v: ViewMode) => void;
   onAnchorClick: (id: string) => void;
@@ -49,6 +51,7 @@ export default function PublicHeader({
   onTipo,
   statusFiltro,
   onStatusFiltro,
+  collectionName,
   view,
   onView,
   onAnchorClick,
@@ -66,8 +69,8 @@ export default function PublicHeader({
         <div className="header-main-row">
           <div className="brand">
             <BrandLogo />
-            <span className="kicker">Coleção pública · somente leitura</span>
-            <span className="title">Álbum Copa 2026</span>
+            <span className="kicker">{PLATFORM_NAME}</span>
+            <span className="title">{collectionName}</span>
           </div>
 
           <div className="totals-row">

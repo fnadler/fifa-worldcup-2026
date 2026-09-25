@@ -4,9 +4,10 @@ import { useState, type FormEvent } from "react";
 import { parseProfileInput, type ProfileData } from "@/lib/profile";
 import { maskPhoneBR } from "@/lib/phone";
 import { createClient } from "@/lib/supabase/client";
-import { HeaderActions, IconLink } from "./HeaderIcons";
-import { signOut } from "./UserMenu";
+import { HeaderActions, IconLink, NavSwitch } from "./HeaderIcons";
+import UserMenu, { signOut } from "./UserMenu";
 import BrandLogo from "./BrandLogo";
+import { NAME_MAX, PLATFORM_NAME } from "@/lib/brand";
 
 interface ProfilePageProps {
   email: string | null;
@@ -18,6 +19,7 @@ interface ProfilePageProps {
 export default function ProfilePage({ email, createdAt, shopHref, profile }: ProfilePageProps) {
   const [fullName, setFullName] = useState(profile.full_name);
   const [whatsapp, setWhatsapp] = useState(maskPhoneBR(profile.whatsapp));
+  const [collectionName, setCollectionName] = useState(profile.collection_name);
   const [savingDados, setSavingDados] = useState(false);
   const [erroDados, setErroDados] = useState<string | null>(null);
   const [okDados, setOkDados] = useState(false);
@@ -32,7 +34,7 @@ export default function ProfilePage({ email, createdAt, shopHref, profile }: Pro
     e.preventDefault();
     setErroDados(null);
     setOkDados(false);
-    const parsed = parseProfileInput(fullName, whatsapp);
+    const parsed = parseProfileInput(fullName, whatsapp, collectionName);
     if ("error" in parsed) return setErroDados(parsed.error);
 
     setSavingDados(true);
@@ -41,6 +43,7 @@ export default function ProfilePage({ email, createdAt, shopHref, profile }: Pro
     if (error) return setErroDados("Não foi possível salvar — tente de novo.");
     setFullName(parsed.data.full_name);
     setWhatsapp(maskPhoneBR(parsed.data.whatsapp));
+    setCollectionName(parsed.data.collection_name);
     setOkDados(true);
   }
 
@@ -74,12 +77,12 @@ export default function ProfilePage({ email, createdAt, shopHref, profile }: Pro
           <div className="header-main-row">
             <div className="brand">
               <BrandLogo />
-              <span className="kicker">Minha conta</span>
-              <span className="title">Álbum Copa 2026</span>
+              <span className="kicker">{PLATFORM_NAME}</span>
+              <span className="title">Minha conta</span>
             </div>
             <HeaderActions>
-              <IconLink href="/" icon="album" label="Meu álbum" />
-              {shopHref && <IconLink href={shopHref} icon="store" label="Minha loja" />}
+              {shopHref ? <NavSwitch active={null} shopHref={shopHref} /> : <IconLink href="/" icon="album" label="Minha coleção" />}
+              <UserMenu email={email} shopSettings={!!shopHref} />
             </HeaderActions>
           </div>
         </div>
@@ -88,8 +91,8 @@ export default function ProfilePage({ email, createdAt, shopHref, profile }: Pro
       <div className="admin-page profile-page">
         <form className="admin-section admin-settings-form" onSubmit={salvarDados}>
           <h2 className="admin-section-title">Dados da conta</h2>
-          {!profile.full_name && (
-            <p className="modal-notice">Complete seu cadastro com nome completo e WhatsApp.</p>
+          {(!profile.full_name || !profile.collection_name) && (
+            <p className="modal-notice">Complete seu cadastro: nome completo, WhatsApp e o nome da sua coleção.</p>
           )}
           <label className="form-label">
             Nome completo
@@ -99,6 +102,19 @@ export default function ProfilePage({ email, createdAt, shopHref, profile }: Pro
               maxLength={120}
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
+            />
+          </label>
+          <label className="form-label">
+            Nome da coleção{" "}
+            <span className="field-hint">
+              aparece no topo da sua coleção · {collectionName.length}/{NAME_MAX}
+            </span>
+            <input
+              className="login-input"
+              maxLength={NAME_MAX}
+              placeholder="Ex: Coleção do João"
+              value={collectionName}
+              onChange={(e) => setCollectionName(e.target.value)}
             />
           </label>
           <div className="form-row">

@@ -30,6 +30,9 @@ export interface ShopPricing {
 
 export interface ShopSettings {
   token: string;
+  /** Endereço público (/slug). null até o lojista definir o nome da loja. */
+  slug: string | null;
+  logoUrl: string | null;
   enabled: boolean;
   sellerName: string;
   whatsapp: string;
@@ -67,8 +70,15 @@ export interface Order {
   cancelReason: CancelReason;
 }
 
+/** Caminho público da loja: /slug quando definido; senão o link permanente por token. */
+export function shopPath(shop: { slug?: string | null; token: string }): string {
+  return shop.slug ? `/${shop.slug}` : `/loja/${shop.token}`;
+}
+
 export interface ShopRow {
   token: string;
+  slug?: string | null;
+  logo_url?: string | null;
   enabled: boolean;
   seller_name: string | null;
   whatsapp: string | null;
@@ -142,6 +152,8 @@ export function availableFromQty(qty: number): number {
 export function settingsFromRow(row: ShopRow): ShopSettings {
   return {
     token: row.token,
+    slug: row.slug ?? null,
+    logoUrl: row.logo_url ?? null,
     enabled: row.enabled,
     sellerName: row.seller_name ?? "",
     whatsapp: row.whatsapp ?? "",

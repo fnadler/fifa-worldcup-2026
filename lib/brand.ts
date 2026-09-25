@@ -14,6 +14,9 @@ export const RESERVED_SLUGS = new Set([
   "login", "perfil", "vendas", "loja", "lojas", "publico", "api", "auth", "assinar", "assinatura",
   "admin", "app", "conta", "config", "configuracoes", "ajuda", "suporte", "termos", "privacidade",
   "icon", "apple-icon", "manifest", "favicon", "brand", "stickers", "static", "gn", "gnfigurinhas", "gncoleciona", "coleciona",
+  // páginas públicas da plataforma (landing e institucionais)
+  "colecao", "contato", "cancelamento", "planos", "cadastro", "entrar", "sobre", "precos", "faq", "duvidas", "blog",
+  "landing", "home", "inicio", "site",
 ]);
 
 export function cleanName(name: string): string {

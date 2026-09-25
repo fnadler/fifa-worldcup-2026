@@ -31,8 +31,9 @@ export async function proxy(request: NextRequest) {
   return response;
 }
 
+// api/stripe fica de fora: o webhook não tem sessão de usuário e responde mais rápido sem o proxy.
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|icon|apple-icon|manifest.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|icon|apple-icon|manifest.webmanifest|api/stripe|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

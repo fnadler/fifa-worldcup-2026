@@ -5,7 +5,7 @@ export { isValidPhoneBR, maskPhoneBR, normalizeWhatsapp, onlyDigits } from "./ph
 import type { BlockType } from "./types";
 
 export type OrderStatus = "novo" | "confirmado" | "cancelado";
-export type CancelReason = "manual" | "expirado" | null;
+export type CancelReason = "manual" | "expirado" | "assinatura" | null;
 
 export const RESERVA_HORAS = 24; // pedido novo segura as figurinhas por 24h
 export const CARRINHO_MINUTOS = 10; // carrinho segura as figurinhas por 10 min
@@ -33,6 +33,8 @@ export interface ShopSettings {
   /** Endereço público (/slug). null até o lojista definir o nome da loja. */
   slug: string | null;
   logoUrl: string | null;
+  /** Loja mostra só o que está à venda (sem o filtro "Catálogo completo"). */
+  onlyAvailable: boolean;
   enabled: boolean;
   sellerName: string;
   whatsapp: string;
@@ -79,6 +81,7 @@ export interface ShopRow {
   token: string;
   slug?: string | null;
   logo_url?: string | null;
+  only_available?: boolean;
   enabled: boolean;
   seller_name: string | null;
   whatsapp: string | null;
@@ -154,6 +157,7 @@ export function settingsFromRow(row: ShopRow): ShopSettings {
     token: row.token,
     slug: row.slug ?? null,
     logoUrl: row.logo_url ?? null,
+    onlyAvailable: row.only_available ?? false,
     enabled: row.enabled,
     sellerName: row.seller_name ?? "",
     whatsapp: row.whatsapp ?? "",

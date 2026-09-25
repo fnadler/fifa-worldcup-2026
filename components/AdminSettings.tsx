@@ -30,13 +30,25 @@ interface AdminSettingsProps {
   settings: ShopSettings;
   onSaved: (s: ShopSettings) => void;
   onToast: (msg: string) => void;
+  /** Repetidas em estoque e quantas delas têm preço (grupo ou individual). */
+  stockSummary: { repetidas: number; vendaveis: number };
+  onGoToPrices: () => void;
 }
 
-export default function AdminSettings({ userId, settings, onSaved, onToast }: AdminSettingsProps) {
+export default function AdminSettings({
+  userId,
+  settings,
+  onSaved,
+  onToast,
+  stockSummary,
+  onGoToPrices,
+}: AdminSettingsProps) {
   const [toggling, setToggling] = useState(false);
+  const [semVenda, setSemVenda] = useState(false);
   const [sellerName, setSellerName] = useState(settings.sellerName);
   const [whatsapp, setWhatsapp] = useState(maskPhoneBR(settings.whatsapp));
   const [minOrder, setMinOrder] = useState(centsToInput(settings.minOrderCents || null));
+  const [onlyAvailable, setOnlyAvailable] = useState(settings.onlyAvailable);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [slugStatus, setSlugStatus] = useState<SlugStatus>("idle");
@@ -103,6 +115,7 @@ export default function AdminSettings({ userId, settings, onSaved, onToast }: Ad
       .update({
         seller_name: nome,
         slug,
+        only_available: onlyAvailable,
         whatsapp: whats || null,
         min_order_cents: minCents,
         updated_at: new Date().toISOString(),
@@ -124,17 +137,22 @@ export default function AdminSettings({ userId, settings, onSaved, onToast }: Ad
     }
     setSellerName(nome);
     setWhatsapp(maskPhoneBR(whats));
-    onSaved({ ...settings, sellerName: nome, slug, whatsapp: whats, minOrderCents: minCents });
+    onSaved({ ...settings, sellerName: nome, slug, onlyAvailable, whatsapp: whats, minOrderCents: minCents });
     onToast("Configurações salvas!");
   }
 
   // Abre/fecha na hora (independente do "Salvar configurações").
   async function alternarLoja() {
     const abrir = !settings.enabled;
+    if (abrir && stockSummary.vendaveis === 0) {
+      setSemVenda(true);
+      return;
+    }
     if (abrir && (!settings.whatsapp || !settings.slug)) {
       onToast("Antes de abrir a loja, salve o nome da loja e o WhatsApp nas configurações abaixo.");
       return;
     }
+    setSemVenda(false);
     setToggling(true);
     const { error: dbError } = await createClient()
       .from("shops")
@@ -219,6 +237,28 @@ export default function AdminSettings({ userId, settings, onSaved, onToast }: Ad
         >
           {toggling ? "Aguarde…" : settings.enabled ? "Fechar loja" : "Abrir loja"}
         </button>
+        {semVenda && !settings.enabled && stockSummary.vendaveis === 0 && (
+          <div className="open-blocked" role="alert">
+            <strong>Ainda não dá para abrir a loja.</strong>
+            {stockSummary.repetidas === 0 ? (
+              <span>
+                Você não tem nenhuma figurinha repetida para vender. Marque suas repetidas em <em>Minha coleção</em> —
+                só elas aparecem à venda.
+              </span>
+            ) : (
+              <>
+                <span>
+                  Você tem {stockSummary.repetidas} figurinha{stockSummary.repetidas === 1 ? "" : "s"} repetida
+                  {stockSummary.repetidas === 1 ? "" : "s"}, mas nenhuma com preço. Defina um preço por grupo (ex: todas
+                  as Seleções) ou por figurinha para ela aparecer na loja.
+                </span>
+                <button type="button" className="btn-primary" onClick={onGoToPrices}>
+                  Definir preços
+                </button>
+              </>
+            )}
+          </div>
+        )}
       </section>
 
       <section className="admin-section">
@@ -331,6 +371,17 @@ export default function AdminSettings({ userId, settings, onSaved, onToast }: Ad
             />
           </label>
         </div>
+
+        <label className="check-row">
+          <input type="checkbox" checked={onlyAvailable} onChange={(e) => setOnlyAvailable(e.target.checked)} />
+          <span>
+            <strong>Mostrar só as figurinhas à venda</strong>
+            <span className="field-hint">
+              A loja exibe apenas o que tem preço e estoque — ideal se você vende só um tipo (ex: só Legends). Sem
+              marcar, o comprador vê o catálogo completo e pode filtrar.
+            </span>
+          </span>
+        </label>
 
         {error && <div className="login-error">{error}</div>}
 

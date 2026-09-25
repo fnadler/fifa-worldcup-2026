@@ -20,6 +20,7 @@ interface PedidoBody {
   items?: { code?: unknown; qty?: unknown }[];
   buyer?: Partial<Record<keyof BuyerInfo, unknown>>;
   website?: unknown; // honeypot — humanos não veem esse campo
+  ack?: unknown; // comprador marcou que leu as orientações de segurança
 }
 
 const REQUIRED: (keyof BuyerInfo)[] = ["name", "email", "whatsapp", "cep", "street", "number", "district", "city", "state"];
@@ -50,6 +51,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ tok
   }
 
   if (str(body.website)) return bad("Requisição inválida.");
+  if (body.ack !== true) return bad("Confirme que leu as dicas de segurança para continuar.");
 
   // ---------- comprador ----------
   const buyer: BuyerInfo = {
@@ -135,6 +137,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ tok
     return indisponivel(error.message.slice("INDISPONIVEL:".length).split(","));
   }
   if (error || !placed) return bad("Não foi possível registrar o pedido — tente de novo.", 500);
+
+  // Registro de que o comprador leu as orientações (e o aviso de responsabilidade) antes de pedir.
+  await admin.from("orders").update({ buyer_ack_at: new Date().toISOString() }).eq("id", placed.id);
 
   const message = orderMessage(placed.number, items, totalCents, buyer, placed.reserved_until);
   return NextResponse.json({

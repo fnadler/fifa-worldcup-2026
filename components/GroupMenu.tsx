@@ -6,6 +6,8 @@ import type { AlbumBlock } from "@/lib/types";
 
 interface GroupMenuProps {
   onSelect: (blockId: string) => void;
+  /** Se informado, lista só esses blocos (ex: loja que mostra só o que está à venda). */
+  onlyIds?: Set<string>;
 }
 
 interface Section {
@@ -34,7 +36,7 @@ function shortName(b: AlbumBlock): string {
   return b.nome;
 }
 
-export default function GroupMenu({ onSelect }: GroupMenuProps) {
+export default function GroupMenu({ onSelect, onlyIds }: GroupMenuProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -54,6 +56,10 @@ export default function GroupMenu({ onSelect }: GroupMenuProps) {
     };
   }, [open]);
 
+  const sections = onlyIds
+    ? SECTIONS.map((s) => ({ ...s, blocks: s.blocks.filter((b) => onlyIds.has(b.id)) })).filter((s) => s.blocks.length)
+    : SECTIONS;
+
   function escolher(id: string) {
     setOpen(false);
     onSelect(id);
@@ -72,7 +78,7 @@ export default function GroupMenu({ onSelect }: GroupMenuProps) {
 
       {open && (
         <div className="group-menu-panel" role="menu">
-          {SECTIONS.map((s) => (
+          {sections.map((s) => (
             <div key={s.title} className={`group-menu-section group-menu-${s.variant}`}>
               <span className="group-menu-title">{s.title}</span>
               <div className="group-menu-items">

@@ -264,3 +264,21 @@ Rode também **`supabase_migration_shop.sql`** no SQL Editor (depois das outras 
 2. Importe o repositório em [vercel.com/new](https://vercel.com/new).
 3. Configure as mesmas duas env vars do `.env.local` nas configurações do projeto na Vercel.
 4. Depois do primeiro deploy, adicione a URL de produção nas Redirect URLs do Supabase (passo acima).
+
+### Assinatura da loja (Stripe)
+
+Criar a coleção é grátis; a loja exige assinatura mensal (cartão, com teste grátis na primeira vez).
+
+- Migração: **`supabase_migration_subscriptions.sql`** (tabelas `subscriptions` e `stripe_events`, coluna `shop_entitlements.source` e a função `sync_subscription`).
+- Env vars (local e Vercel): `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_ID`. Sem elas, `/assinar` mostra "em breve".
+- Fluxo: `/assinar` → Checkout do Stripe → `/assinar/sucesso` (sincroniza na hora) → `/vendas`. O webhook `/api/stripe/webhook` mantém tudo em dia (renovação, falha, cancelamento). O perfil abre o portal do Stripe ("Gerenciar assinatura").
+- Acesso: ativa/teste → fim do período + 3 dias; pagamento pendente → início do período + 3 dias; encerrada → acaba na hora e os pedidos pendentes são cancelados (`cancel_reason = 'assinatura'`). Acessos manuais (`source = 'manual'`) nunca são rebaixados.
+- Teste local do webhook: `stripe listen --forward-to localhost:3000/api/stripe/webhook`.
+
+### Landing pública e rotas
+
+- **`/`** — landing de divulgação (route group `app/(marketing)`, visual claro próprio, fontes Nunito/Figtree só nessa área). Estática, regenerada de hora em hora (preço lido do Stripe). Nunca redireciona; com sessão, os CTAs viram "Ir para minha coleção". Texto em `content/landing.ts`.
+- **`/colecao`** — o álbum (antes em `/`). Login e confirmação de e-mail seguem para `?next=` (só caminhos internos) ou para cá.
+- **`/login?modo=cadastro&next=/assinar`** — abre na aba de cadastro e segue para a assinatura.
+- **`/termos`, `/privacidade`, `/cancelamento`, `/contato`** — textos em `content/legal.ts` (primeira versão, a revisar com advogado). Preencha `COMPANY` (razão social, CNPJ, endereço, e-mail, foro).
+- Endereços reservados para lojas: `lib/brand.ts` + **`supabase_migration_reserved_slugs.sql`**.

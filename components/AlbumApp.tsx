@@ -15,11 +15,12 @@ import BackupModal from "./BackupModal";
 
 interface AlbumAppProps {
   initialUser: AppUser;
-  shopHref: string | null;
+  shopHref: string;
+  shopActive: boolean;
   collectionName: string;
 }
 
-export default function AlbumApp({ initialUser, shopHref, collectionName }: AlbumAppProps) {
+export default function AlbumApp({ initialUser, shopHref, shopActive, collectionName }: AlbumAppProps) {
   const [qtd, setQtd] = useState<Qtd>({});
   const [syncStatus, setSyncStatus] = useState<SyncStatus>("idle");
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
@@ -180,6 +181,7 @@ export default function AlbumApp({ initialUser, shopHref, collectionName }: Albu
         onAnchorClick={scrollToBlock}
         user={initialUser}
         shopHref={shopHref}
+        shopActive={shopActive}
         collectionName={collectionName}
         onToast={showToast}
       />

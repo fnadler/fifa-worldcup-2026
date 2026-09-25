@@ -33,6 +33,23 @@
   --cc-text: #ff9c9c;
   --leg-text: #cfa8ff;
 
+  /* marca GN Coleciona (landing pública; disponíveis também para o app) */
+  --gn-green: #029836;
+  --gn-green-600: #027a2c;
+  --gn-green-50: #e3f5ea;
+  --gn-ink: #06301a;
+  --gn-ink-2: #0b3d22;
+  --gn-ink-line: #1a5234;
+  --gn-text: #0b2a17;
+  --gn-text-2: #3d5a48;
+  --gn-muted: #5b7566;
+  --gn-yellow: #fdca04;
+  --gn-yellow-hover: #ffd83d;
+  --gn-blue: #02aaed;
+  --gn-bg: #f5f7f2;
+  --gn-surface: #ffffff;
+  --gn-line: #e1e9e3;
+
   --overlay: rgba(5, 9, 7, 0.78);
   --header-bg: rgba(10, 18, 14, 0.94);
 }
@@ -2331,4 +2348,193 @@ button {
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+/* ---------- assinatura ---------- */
+
+.subscribe-page {
+  max-width: 620px;
+}
+
+.subscribe-card {
+  gap: 14px;
+  padding: 26px 24px;
+  border-color: var(--border-fwc);
+}
+
+.subscribe-title {
+  margin: 0;
+  font-family: var(--font-bebas-neue);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1;
+}
+
+.subscribe-benefits {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-2);
+}
+.subscribe-benefits li {
+  padding-left: 24px;
+  position: relative;
+}
+.subscribe-benefits li::before {
+  content: "✓";
+  position: absolute;
+  left: 2px;
+  color: var(--positive);
+  font-weight: 700;
+}
+
+.subscribe-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-top: 6px;
+}
+.subscribe-price-value {
+  font-family: var(--font-bebas-neue);
+  font-size: 52px;
+  line-height: 1;
+  color: var(--gold);
+}
+.subscribe-price-period {
+  font-size: 15px;
+  color: var(--text-4);
+}
+
+.subscribe-cta {
+  padding: 14px 18px;
+  font-size: 16px;
+}
+
+.welcome-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-color: var(--accent);
+  background: rgba(0, 196, 106, 0.1);
+}
+.welcome-banner .modal-close {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* ---------- checkout: dicas de segurança + aceite ---------- */
+
+.safety-tips {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border-3);
+  background: var(--field);
+}
+
+.safety-tips-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--text-3);
+  line-height: 1.45;
+}
+.safety-tips-head strong {
+  font-size: 15px;
+  color: var(--text-1);
+}
+
+.safety-tips-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 8px 14px;
+}
+.safety-tips-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--text-3);
+}
+.safety-tips-list li > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.safety-tips-list strong {
+  color: var(--text-1);
+  font-size: 13px;
+}
+.safety-tips-icon {
+  font-size: 18px;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.safety-tips-note {
+  margin: 2px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-1);
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--text-5);
+}
+
+.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-2);
+  cursor: pointer;
+  line-height: 1.45;
+}
+.check-row input {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+}
+.check-row > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ack-row {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-fwc);
+  background: #1a1706;
+}
+
+/* abrir loja bloqueado: nenhuma repetida com preço */
+.open-blocked {
+  flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-cc);
+  background: #1d0b0b;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-2);
+}
+.open-blocked strong {
+  color: var(--danger);
 }

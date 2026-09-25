@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { describeSticker, formatBRL, formatDateTimeBR, isValidPhoneBR, maskPhoneBR, type BuyerInfo } from "@/lib/shop";
 import type { CartAdjust } from "@/lib/useCartHold";
 import HoldTimer from "./HoldTimer";
+import SafetyTips from "./SafetyTips";
 
 export interface CartLine {
   code: string;
@@ -60,6 +61,7 @@ export default function CartModal({
   const [step, setStep] = useState<Step>("cart");
   const [buyer, setBuyer] = useState<BuyerInfo>(EMPTY_BUYER);
   const [honeypot, setHoneypot] = useState("");
+  const [ciente, setCiente] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [ajustes, setAjustes] = useState<CartAdjust[]>([]);
@@ -127,6 +129,7 @@ export default function CartModal({
           items: lines.map((l) => ({ code: l.code, qty: l.qty })),
           buyer,
           website: honeypot,
+          ack: ciente,
         }),
       });
       const data = (await res.json()) as {
@@ -396,15 +399,16 @@ export default function CartModal({
               <span>Total</span>
               <span className="cart-total-value">{formatBRL(totalCents)}</span>
             </div>
-            <span className="cart-note">
-              Nenhum pagamento é feito pelo site. Ao confirmar, você envia o pedido pelo WhatsApp e combina pagamento e
-              frete diretamente por lá.
-            </span>
+            <SafetyTips />
+            <label className="check-row ack-row">
+              <input type="checkbox" checked={ciente} onChange={(e) => setCiente(e.target.checked)} required />
+              <span>Li as dicas e estou ciente de que combino pagamento e entrega diretamente com o vendedor.</span>
+            </label>
             <div className="modal-actions">
               <button type="button" className="btn-ghost" onClick={() => setStep("review")}>
                 Voltar
               </button>
-              <button type="submit" className="btn-primary" disabled={sending}>
+              <button type="submit" className="btn-primary" disabled={sending || !ciente}>
                 {sending ? "Registrando…" : "Confirmar pedido"}
               </button>
             </div>

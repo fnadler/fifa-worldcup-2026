@@ -18,7 +18,7 @@ import type { Qtd } from "@/lib/types";
 type ShopLookup = { slug: string } | { token: string };
 
 const SHOP_COLUMNS =
-  "user_id, token, slug, logo_url, enabled, seller_name, whatsapp, min_order_cents, price_fwc_cents, price_team_cents, price_cc_cents, price_leg_cents";
+  "user_id, token, slug, logo_url, only_available, enabled, seller_name, whatsapp, min_order_cents, price_fwc_cents, price_team_cents, price_cc_cents, price_leg_cents";
 
 async function findShop(where: ShopLookup) {
   const admin = createAdminClient();
@@ -108,6 +108,7 @@ export async function renderShop(where: ShopLookup) {
       path={shopPath(shop)}
       shopName={shop.seller_name || DEFAULT_SHOP_NAME}
       logoUrl={shop.logo_url ?? null}
+      onlyAvailable={shop.only_available ?? false}
       minOrderCents={shop.min_order_cents}
       available={available}
       pricing={{ group: groupPricesFromRow(shop), individual }}

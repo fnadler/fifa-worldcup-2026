@@ -30,7 +30,8 @@ interface HeaderProps {
   onImportar: () => void;
   onAnchorClick: (id: string) => void;
   user: AppUser;
-  shopHref: string | null;
+  shopHref: string;
+  shopActive: boolean;
   collectionName: string;
   onToast: (msg: string) => void;
 }
@@ -84,6 +85,7 @@ export default function Header({
   onAnchorClick,
   user,
   shopHref,
+  shopActive,
   collectionName,
   onToast,
 }: HeaderProps) {
@@ -148,7 +150,7 @@ export default function Header({
           </button>
 
           <HeaderActions>
-            {shopHref && <NavSwitch active="album" shopHref={shopHref} />}
+            <NavSwitch active="album" shopHref={shopHref} />
             <CopyLinkButton
               text="Copiar link"
               label="Copiar link público do álbum"
@@ -156,7 +158,7 @@ export default function Header({
               successMessage="Link público do álbum copiado!"
               onToast={onToast}
             />
-            <UserMenu email={user.email} shopSettings={!!shopHref} onBackup={onExportar} onImport={onImportar} />
+            <UserMenu email={user.email} shopSettings={shopActive} onBackup={onExportar} onImport={onImportar} />
           </HeaderActions>
         </div>
 

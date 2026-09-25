@@ -48,7 +48,14 @@ function effective(o: Order, now: number): { status: OrderStatus; label: string;
   if (isExpired(o, now) || (o.status === "cancelado" && o.cancelReason === "expirado")) {
     return { status: "cancelado", label: "Expirado", css: "cancelado" };
   }
-  const label = o.status === "novo" ? "Novo" : o.status === "confirmado" ? "Confirmado" : "Cancelado";
+  const label =
+    o.status === "novo"
+      ? "Novo"
+      : o.status === "confirmado"
+        ? "Confirmado"
+        : o.cancelReason === "assinatura"
+          ? "Cancelado · assinatura"
+          : "Cancelado";
   return { status: o.status, label, css: o.status };
 }
 

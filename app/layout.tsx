@@ -22,6 +22,7 @@ const barlowCondensed = Barlow_Condensed({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.gncoleciona.com.br"),
   title: `${PLATFORM_NAME} — sua coleção da Copa 2026`,
   description: "Controle suas figurinhas coladas e repetidas do álbum da Copa 2026 e venda as repetidas na sua loja.",
   manifest: "/manifest.webmanifest",

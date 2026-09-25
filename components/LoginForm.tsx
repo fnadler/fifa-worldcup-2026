@@ -9,13 +9,23 @@ import { NAME_MAX, PLATFORM_NAME } from "@/lib/brand";
 
 type Mode = "signin" | "signup";
 
-export default function LoginForm() {
-  const [mode, setMode] = useState<Mode>("signin");
+interface LoginFormProps {
+  /** Coleções ativas. Com mais de uma, a criação de conta pede para escolher. */
+  albums: { id: string; name: string }[];
+  /** Aba inicial: /login?modo=cadastro abre direto em "Criar conta". */
+  initialMode?: Mode;
+  /** Para onde seguir depois de entrar/cadastrar (já validado no servidor). */
+  next: string;
+}
+
+export default function LoginForm({ albums, initialMode = "signin", next }: LoginFormProps) {
+  const [mode, setMode] = useState<Mode>(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [collectionName, setCollectionName] = useState("");
+  const [albumId, setAlbumId] = useState(albums.length === 1 ? albums[0].id : "");
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -40,10 +50,15 @@ export default function LoginForm() {
         setError("E-mail ou senha inválidos.");
         return;
       }
-      window.location.href = "/";
+      window.location.href = next;
       return;
     }
 
+    if (albums.length > 1 && !albumId) {
+      setLoading(false);
+      setError("Escolha qual coleção você vai montar.");
+      return;
+    }
     const profile = parseProfileInput(fullName, whatsapp, collectionName);
     if ("error" in profile) {
       setLoading(false);
@@ -55,8 +70,8 @@ export default function LoginForm() {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-        data: profile.data, // vai para o user_metadata
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
+        data: { ...profile.data, ...(albumId ? { album_id: albumId } : {}) }, // vai para o user_metadata
       },
     });
     setLoading(false);
@@ -68,7 +83,7 @@ export default function LoginForm() {
       setInfo("Conta criada — confira seu e-mail para confirmar antes de entrar.");
       return;
     }
-    window.location.href = "/";
+    window.location.href = next;
   }
 
   return (
@@ -76,7 +91,7 @@ export default function LoginForm() {
       <div className="login-card">
         <div className="brand">
           <BrandLogo />
-          <span className="kicker">Controle de figurinhas · Copa 2026</span>
+          <span className="kicker">Controle de figurinhas</span>
           <span className="title">{PLATFORM_NAME}</span>
         </div>
 
@@ -100,6 +115,24 @@ export default function LoginForm() {
         <form onSubmit={onSubmit} className="login-form">
           {mode === "signup" && (
             <>
+              {albums.length > 1 && (
+                <select
+                  required
+                  className="login-input login-select"
+                  value={albumId}
+                  onChange={(e) => setAlbumId(e.target.value)}
+                  aria-label="Coleção que você vai montar"
+                >
+                  <option value="" disabled>
+                    Qual coleção você vai montar?
+                  </option>
+                  {albums.map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.name}
+                    </option>
+                  ))}
+                </select>
+              )}
               <input
                 required
                 autoComplete="name"

@@ -6,7 +6,7 @@ import { BLOCKS, anchorId, blockTag, codigoBase, hasNamedStickers } from "@/lib/
 import { matchesSticker } from "@/lib/derive";
 import { formatBRL, priceFor, type CartHold, type ShopPricing } from "@/lib/shop";
 import { useCartHold } from "@/lib/useCartHold";
-import type { Qtd, TipoFiltro } from "@/lib/types";
+import type { BlockType, Qtd, TipoFiltro } from "@/lib/types";
 import { VIEW_OPTIONS, useViewMode } from "@/lib/useViewMode";
 import { CopyLinkButton, HeaderActions, NavSwitch } from "./HeaderIcons";
 import GroupMenu from "./GroupMenu";
@@ -24,6 +24,8 @@ interface ShopBoardProps {
   path: string;
   shopName: string;
   logoUrl: string | null;
+  /** Configuração da loja: mostrar só o que está à venda (sem o filtro de disponibilidade). */
+  onlyAvailable: boolean;
   minOrderCents: number;
   available: Qtd;
   pricing: ShopPricing;
@@ -53,6 +55,7 @@ export default function ShopBoard({
   path,
   shopName,
   logoUrl,
+  onlyAvailable,
   minOrderCents,
   available,
   pricing,
@@ -60,7 +63,8 @@ export default function ShopBoard({
   owner,
 }: ShopBoardProps) {
   const [tipo, setTipo] = useState<TipoFiltro>("ALL");
-  const [disp, setDisp] = useState<DispFiltro>("ALL");
+  const [dispEscolhido, setDisp] = useState<DispFiltro>("ALL");
+  const disp: DispFiltro = onlyAvailable ? "AVAIL" : dispEscolhido;
   const [busca, setBusca] = useState("");
   const [menuAberto, setMenuAberto] = useState(false);
   const [cartAberto, setCartAberto] = useState(false);
@@ -106,6 +110,18 @@ export default function ShopBoard({
     () => Object.keys(available).reduce((s, code) => s + (vendavel(code) ? available[code] : 0), 0),
     [available, vendavel]
   );
+
+  const blocosComVenda = useMemo(
+    () => new Set(BLOCKS.filter((b) => b.codes.some(vendavel)).map((b) => b.id)),
+    [vendavel]
+  );
+  const tiposVisiveis = useMemo(() => {
+    if (!onlyAvailable) return TIPOS;
+    const comVenda = new Set(BLOCKS.filter((b) => blocosComVenda.has(b.id)).map((b) => b.tipo));
+    const filtrados = TIPOS.filter((t) => t.value === "ALL" || comVenda.has(t.value as BlockType));
+    // com um tipo só, "Todas" já mostra tudo — o filtro não acrescenta nada
+    return filtrados.length <= 2 ? [] : filtrados;
+  }, [onlyAvailable, blocosComVenda]);
 
   const visibleBlocks = useMemo(() => {
     const buscaLower = busca.trim().toLowerCase();
@@ -211,8 +227,9 @@ export default function ShopBoard({
                 onChange={(e) => setBusca(e.target.value)}
                 className="search-input"
               />
+              {tiposVisiveis.length > 0 && (
               <div className="segmented">
-                {TIPOS.map((t) => (
+                {tiposVisiveis.map((t) => (
                   <button
                     key={t.value}
                     type="button"
@@ -223,6 +240,7 @@ export default function ShopBoard({
                   </button>
                 ))}
               </div>
+              )}
               <div className="segmented">
                 {VIEW_OPTIONS.map((v) => (
                   <button
@@ -235,6 +253,7 @@ export default function ShopBoard({
                   </button>
                 ))}
               </div>
+              {!onlyAvailable && (
               <div className="segmented">
                 {DISPS.map((d) => (
                   <button
@@ -247,7 +266,8 @@ export default function ShopBoard({
                   </button>
                 ))}
               </div>
-              <GroupMenu onSelect={scrollToBlock} />
+              )}
+              <GroupMenu onSelect={scrollToBlock} onlyIds={onlyAvailable ? blocosComVenda : undefined} />
             </div>
           </div>
         </div>

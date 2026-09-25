@@ -6,6 +6,8 @@ export interface ProfileData {
   full_name: string;
   whatsapp: string; // só dígitos, com DDI (5511999998888)
   collection_name: string;
+  /** Coleção (álbum) que a pessoa está montando — ver tabela albums. */
+  album_id?: string;
 }
 
 export function profileFromMetadata(meta: Record<string, unknown> | undefined): ProfileData {
@@ -14,6 +16,7 @@ export function profileFromMetadata(meta: Record<string, unknown> | undefined): 
     full_name: str(meta?.full_name),
     whatsapp: str(meta?.whatsapp),
     collection_name: str(meta?.collection_name),
+    album_id: str(meta?.album_id) || undefined,
   };
 }
 

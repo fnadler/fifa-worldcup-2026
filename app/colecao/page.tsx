@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { collectionTitle } from "@/lib/profile";
-import { ownShopHref } from "@/lib/shopLink";
+import { ownShop } from "@/lib/shopLink";
 import AlbumApp from "@/components/AlbumApp";
 
 export const dynamic = "force-dynamic";
@@ -14,12 +14,13 @@ export default async function Home() {
 
   if (!user) redirect("/login");
 
-  const shopHref = await ownShopHref(supabase, user.id);
+  const shop = await ownShop(supabase, user.id);
 
   return (
     <AlbumApp
       initialUser={{ id: user.id, email: user.email ?? null }}
-      shopHref={shopHref}
+      shopHref={shop.href}
+      shopActive={shop.active}
       collectionName={collectionTitle(user.user_metadata)}
     />
   );

@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: PLATFORM_NAME,
     short_name: PLATFORM_NAME,
     description: "Controle suas figurinhas da Copa 2026 e venda as repetidas.",
-    start_url: "/",
+    start_url: "/colecao",
     display: "standalone",
     background_color: "#0a120e",
     theme_color: "#0a120e",

@@ -2538,3 +2538,219 @@ button {
 .open-blocked strong {
   color: var(--danger);
 }
+
+/* ---------- menu do usuário com grupos ---------- */
+
+.user-menu {
+  gap: 4px;
+  min-width: 230px;
+  padding: 10px;
+}
+.user-menu .auth-status {
+  padding: 4px 8px 8px;
+  border-bottom: 1px solid var(--border-1);
+  margin-bottom: 2px;
+}
+.user-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-2) !important;
+  font-family: var(--font-barlow);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.user-menu-item:hover {
+  background: var(--card-header);
+  color: var(--text-1) !important;
+}
+.user-menu-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 6px;
+  margin-top: 4px;
+  border-top: 1px solid var(--border-1);
+}
+.user-menu-group-title {
+  padding: 2px 10px 4px;
+  font-family: var(--font-barlow-condensed);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-6);
+}
+.user-menu-group .user-menu-item {
+  padding-left: 18px;
+}
+.user-menu-cta {
+  color: var(--gold) !important;
+}
+.user-menu-signout {
+  margin-top: 4px;
+  border-top: 1px solid var(--border-1);
+  border-radius: 0 0 8px 8px;
+  padding-top: 11px;
+  color: var(--text-4) !important;
+}
+
+/* ---------- elementos só do celular (ocultos no desktop) ---------- */
+
+.view-toggle,
+.filters-footer,
+.cart-bar {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  /* Cabeçalho logado em linhas:
+     1) imagem + título | copiar link | menu   2) Minha coleção | Minha loja (largura toda)
+     3) totais (álbum)                         4) Fotos/Grade [+ Somar/Tirar] … Filtros */
+  .header-main-row {
+    gap: 10px 8px;
+  }
+  .header-main-row > .brand {
+    order: 1;
+    flex: 1 1 0;
+    min-width: 0;
+    /* ocupa o espaço livre (empurra os ícones à direita), mas logo + nome ficam juntos à esquerda */
+    grid-template-columns: auto minmax(0, 1fr);
+    justify-content: start;
+  }
+  .header-actions {
+    display: contents;
+  }
+  .header-actions > .header-button,
+  .header-actions > .icon-button {
+    order: 2;
+  }
+  .header-actions > .user-menu-root {
+    order: 3;
+  }
+  .header-actions > .nav-switch {
+    order: 4;
+    flex: 1 1 100%;
+  }
+  .nav-switch-item {
+    flex: 1;
+    width: auto;
+    height: 36px;
+    padding: 0 12px;
+    justify-content: center;
+  }
+  .nav-switch .header-label {
+    display: inline;
+  }
+  .totals-row {
+    order: 5;
+  }
+  .shop-totals {
+    display: none; /* loja: "à venda" sai; o pedido mínimo vai para a barra do carrinho */
+  }
+  .view-toggle {
+    display: inline-flex;
+    order: 6;
+  }
+  .modo-segment {
+    order: 7;
+  }
+  .mobile-menu-button {
+    order: 8;
+    margin-left: auto;
+  }
+  .cart-button {
+    display: none; /* o carrinho fica na barra fixa do rodapé */
+  }
+  .admin-tabs {
+    order: 5;
+  }
+  .shop-status-pill {
+    order: 6;
+  }
+
+  /* Gaveta de filtros: sem "Grupos" nem Fotos/Grade (virou o ícone), com Limpar/Aplicar no rodapé. */
+  .filters-panel .group-menu,
+  .filters-panel .view-segment {
+    display: none;
+  }
+  .filters-panel.is-open .filters-footer {
+    display: flex;
+    gap: 10px;
+    position: sticky;
+    bottom: -24px;
+    margin-top: auto;
+    padding: 14px 0 24px;
+    background: var(--bg);
+    border-top: 1px solid var(--border-1);
+  }
+  .filters-footer > * {
+    flex: 1;
+  }
+
+  /* Loja: carrinho fixo no rodapé da tela. */
+  .cart-float-desktop {
+    display: none;
+  }
+  .cart-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    background: var(--header-bg);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border-2);
+  }
+  .cart-bar-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+  }
+  .cart-bar-info strong {
+    font-size: 14px;
+    color: var(--text-1);
+  }
+  .cart-bar-note {
+    font-size: 12px;
+    color: var(--gold);
+  }
+  .cart-bar-note.is-ok {
+    color: var(--positive);
+  }
+  .cart-bar .btn-primary {
+    flex-shrink: 0;
+  }
+  .app-shell.has-cart-bar {
+    padding-bottom: 120px;
+  }
+  .has-cart-bar .toast {
+    bottom: 100px;
+  }
+}
+
+/* Legenda no celular: rótulo numa linha, opções juntas na de baixo, dica por último. */
+@media (max-width: 700px) {
+  .legend-bar {
+    gap: 8px 16px;
+  }
+  .legend-label {
+    flex-basis: 100%;
+  }
+  .legend-hint {
+    flex-basis: 100%;
+    margin-top: 4px;
+  }
+}

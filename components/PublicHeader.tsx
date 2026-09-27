@@ -3,6 +3,7 @@
 import { useState, type RefObject } from "react";
 import { VIEW_OPTIONS } from "@/lib/useViewMode";
 import GroupMenu from "./GroupMenu";
+import { FiltersFooter, ViewToggleButton } from "./HeaderIcons";
 import type { ViewMode, StatusFiltro, TipoFiltro } from "@/lib/types";
 import BrandLogo from "./BrandLogo";
 import { PLATFORM_NAME } from "@/lib/brand";
@@ -22,6 +23,7 @@ interface PublicHeaderProps {
   collectionName: string;
   view: ViewMode;
   onView: (v: ViewMode) => void;
+  onClearFilters: () => void;
   onAnchorClick: (id: string) => void;
 }
 
@@ -54,6 +56,7 @@ export default function PublicHeader({
   collectionName,
   view,
   onView,
+  onClearFilters,
   onAnchorClick,
 }: PublicHeaderProps) {
   const [menuAberto, setMenuAberto] = useState(false);
@@ -94,6 +97,8 @@ export default function PublicHeader({
               <span className="total-label">Faltam</span>
             </div>
           </div>
+
+          <ViewToggleButton view={view} onChange={onView} />
 
           <button
             type="button"
@@ -136,7 +141,7 @@ export default function PublicHeader({
               ))}
             </div>
 
-            <div className="segmented">
+            <div className="segmented view-segment">
               {VIEW_OPTIONS.map((v) => (
                 <button
                   key={v.value}
@@ -164,6 +169,14 @@ export default function PublicHeader({
 
             <GroupMenu onSelect={anchorClickAndClose} />
           </div>
+
+          <FiltersFooter
+            onClear={onClearFilters}
+            onApply={() => {
+              setMenuAberto(false);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          />
         </div>
       </div>
     </div>

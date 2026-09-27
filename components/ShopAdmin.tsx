@@ -2,7 +2,8 @@
 
 import { HeaderActions, NavSwitch } from "./HeaderIcons";
 import UserMenu from "./UserMenu";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { isExpired, priceFor, shopPath, type GroupPrices, type Order, type ShopSettings } from "@/lib/shop";
 import { useNow } from "@/lib/useNow";
 import type { Qtd } from "@/lib/types";
@@ -17,6 +18,8 @@ interface ShopAdminProps {
   email: string | null;
   /** Acabou de assinar (volta do checkout): mostra boas-vindas e abre nas configurações. */
   welcome?: boolean;
+  /** Aba pedida na URL (?aba=pedidos|precos|config), ex: vindo do menu do usuário. */
+  initialTab?: string;
   initialSettings: ShopSettings;
   initialGroupPrices: GroupPrices;
   initialIndividual: Record<string, number>;
@@ -26,17 +29,28 @@ interface ShopAdminProps {
 
 type Aba = "pedidos" | "precos" | "config";
 
+const isAba = (v: string | null | undefined): v is Aba => v === "pedidos" || v === "precos" || v === "config";
+
 export default function ShopAdmin({
   userId,
   email,
   welcome = false,
+  initialTab,
   initialSettings,
   initialGroupPrices,
   initialIndividual,
   initialOrders,
   initialAvailable,
 }: ShopAdminProps) {
-  const [aba, setAba] = useState<Aba>(welcome || !initialSettings.whatsapp ? "config" : "pedidos");
+  const [aba, setAba] = useState<Aba>(
+    isAba(initialTab) ? initialTab : welcome || !initialSettings.whatsapp ? "config" : "pedidos"
+  );
+  // O menu do usuário leva a /vendas?aba=…; se já estamos na página, só troca a aba.
+  const params = useSearchParams();
+  const abaNaUrl = params.get("aba");
+  useEffect(() => {
+    if (isAba(abaNaUrl)) queueMicrotask(() => setAba(abaNaUrl));
+  }, [abaNaUrl]);
   const [bemVindo, setBemVindo] = useState(welcome);
   const [settings, setSettings] = useState(initialSettings);
   const [orders, setOrders] = useState(initialOrders);
@@ -93,7 +107,7 @@ export default function ShopAdmin({
             </span>
             <HeaderActions>
               <NavSwitch active={null} shopHref={shopPath(settings)} />
-              <UserMenu email={email} shopSettings />
+              <UserMenu email={email} shopActive />
             </HeaderActions>
           </div>
         </div>

@@ -3,7 +3,7 @@
 import { useState, type RefObject } from "react";
 import { VIEW_OPTIONS } from "@/lib/useViewMode";
 import type { ViewMode, AppUser, ModoClique, StatusFiltro, TipoFiltro } from "@/lib/types";
-import { CopyLinkButton, HeaderActions, NavSwitch } from "./HeaderIcons";
+import { CopyLinkButton, FiltersFooter, HeaderActions, NavSwitch, ViewToggleButton } from "./HeaderIcons";
 import GroupMenu from "./GroupMenu";
 import UserMenu from "./UserMenu";
 import BrandLogo from "./BrandLogo";
@@ -34,6 +34,8 @@ interface HeaderProps {
   shopActive: boolean;
   collectionName: string;
   onToast: (msg: string) => void;
+  /** Volta busca, tipo e status ao padrão (botão "Limpar filtros" do celular). */
+  onClearFilters: () => void;
 }
 
 const TIPOS: { value: TipoFiltro; label: string }[] = [
@@ -88,6 +90,7 @@ export default function Header({
   shopActive,
   collectionName,
   onToast,
+  onClearFilters,
 }: HeaderProps) {
   const [menuAberto, setMenuAberto] = useState(false);
 
@@ -141,6 +144,8 @@ export default function Header({
             ))}
           </div>
 
+          <ViewToggleButton view={view} onChange={onView} />
+
           <button
             type="button"
             className="btn-ghost mobile-menu-button"
@@ -158,7 +163,7 @@ export default function Header({
               successMessage="Link público do álbum copiado!"
               onToast={onToast}
             />
-            <UserMenu email={user.email} shopSettings={shopActive} onBackup={onExportar} onImport={onImportar} />
+            <UserMenu email={user.email} shopActive={shopActive} onBackup={onExportar} onImport={onImportar} />
           </HeaderActions>
         </div>
 
@@ -194,7 +199,7 @@ export default function Header({
               ))}
             </div>
 
-            <div className="segmented">
+            <div className="segmented view-segment">
               {VIEW_OPTIONS.map((v) => (
                 <button
                   key={v.value}
@@ -225,6 +230,14 @@ export default function Header({
             </button>
             <GroupMenu onSelect={anchorClickAndClose} />
           </div>
+
+          <FiltersFooter
+            onClear={onClearFilters}
+            onApply={() => {
+              setMenuAberto(false);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          />
         </div>
       </div>
     </div>

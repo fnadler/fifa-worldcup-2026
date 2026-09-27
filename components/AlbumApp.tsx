@@ -184,6 +184,11 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
         shopActive={shopActive}
         collectionName={collectionName}
         onToast={showToast}
+        onClearFilters={() => {
+          setBusca("");
+          setTipo("ALL");
+          setStatusFiltro("ALL");
+        }}
       />
 
       <LegendBar

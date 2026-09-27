@@ -28,7 +28,7 @@ const SHOP_COLUMNS =
 export default async function VendasPage({
   searchParams,
 }: {
-  searchParams: Promise<{ assinatura?: string }>;
+  searchParams: Promise<{ assinatura?: string; aba?: string }>;
 }) {
   const supabase = await createClient();
   const {
@@ -107,6 +107,7 @@ export default async function VendasPage({
       userId={user.id}
       email={user.email ?? null}
       welcome={(await searchParams).assinatura === "ok"}
+      initialTab={(await searchParams).aba}
       initialSettings={settingsFromRow(shop)}
       initialGroupPrices={groupPricesFromRow(shop)}
       initialIndividual={individual}

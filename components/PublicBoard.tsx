@@ -47,6 +47,11 @@ export default function PublicBoard({ qtd, collectionName }: PublicBoardProps) {
         statusFiltro={statusFiltro}
         onStatusFiltro={setStatusFiltro}
         collectionName={collectionName}
+        onClearFilters={() => {
+          setBusca("");
+          setTipo("ALL");
+          setStatusFiltro("ALL");
+        }}
         view={view}
         onView={setView}
         onAnchorClick={scrollToBlock}

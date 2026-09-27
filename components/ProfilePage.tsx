@@ -4,82 +4,20 @@ import { useState, type FormEvent } from "react";
 import { parseProfileInput, type ProfileData } from "@/lib/profile";
 import { maskPhoneBR } from "@/lib/phone";
 import { createClient } from "@/lib/supabase/client";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { HeaderActions, NavSwitch } from "./HeaderIcons";
-import UserMenu, { signOut } from "./UserMenu";
-import BrandLogo from "./BrandLogo";
-import { NAME_MAX, PLATFORM_NAME } from "@/lib/brand";
+import AccountHeader from "./AccountHeader";
+import { signOut } from "./UserMenu";
+import { NAME_MAX } from "@/lib/brand";
 
 interface ProfilePageProps {
   email: string | null;
   createdAt: string;
   shop: { href: string; active: boolean };
-  subscription: SubscriptionInfo | null;
-  /** Acesso à loja concedido manualmente (ex: dono/cortesia), independente do Stripe. */
-  manualAccess: boolean;
   profile: ProfileData;
   /** Nome da coleção (álbum) que a pessoa monta. */
   albumName: string | null;
 }
 
-interface SubscriptionInfo {
-  stripe_customer_id: string | null;
-  status: string | null;
-  current_period_end: string | null;
-  trial_end: string | null;
-  cancel_at_period_end: boolean;
-  access_until: string | null;
-}
-
-const dataBR = (iso: string | null) =>
-  iso ? new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }) : "";
-
-function descreverAssinatura(s: SubscriptionInfo | null, ativa: boolean, manual: boolean): string {
-  if (manual && ativa) return "Acesso à loja liberado (cortesia).";
-  if (!s?.status) return "Você ainda não assina a loja.";
-  switch (s.status) {
-    case "trialing":
-      return s.cancel_at_period_end
-        ? `Teste grátis até ${dataBR(s.trial_end)} — cancelamento agendado, não haverá cobrança.`
-        : `Teste grátis até ${dataBR(s.trial_end)}. A primeira cobrança acontece nessa data.`;
-    case "active":
-      return s.cancel_at_period_end
-        ? `Assinatura cancelada — a loja fica disponível até ${dataBR(s.current_period_end)}.`
-        : `Assinatura ativa. Próxima cobrança em ${dataBR(s.current_period_end)}.`;
-    case "past_due":
-      return `Não conseguimos cobrar seu cartão. Atualize o pagamento — a loja fica disponível até ${dataBR(s.access_until)}.`;
-    default:
-      return "Sua assinatura foi encerrada. Assine novamente para reabrir a loja.";
-  }
-}
-
-export default function ProfilePage({ email, createdAt, shop, subscription, manualAccess, profile, albumName }: ProfilePageProps) {
-  const router = useRouter();
-  const [abrindoPortal, setAbrindoPortal] = useState(false);
-  const [erroPortal, setErroPortal] = useState<string | null>(null);
-
-  async function abrirPortal() {
-    setAbrindoPortal(true);
-    setErroPortal(null);
-    try {
-      const res = await fetch("/api/assinatura/portal", { method: "POST" });
-      const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string; stale?: boolean };
-      if (data.stale) {
-        // vínculo com o Stripe foi limpo no servidor: recarrega os dados para oferecer "Assinar"
-        setErroPortal(data.error ?? null);
-        setAbrindoPortal(false);
-        router.refresh();
-        return;
-      }
-      if (!res.ok || !data.url) throw new Error(data.error ?? "Não foi possível abrir o portal.");
-      window.location.assign(data.url);
-    } catch (e) {
-      setErroPortal(e instanceof Error ? e.message : "Não foi possível abrir o portal.");
-      setAbrindoPortal(false);
-    }
-  }
-
+export default function ProfilePage({ email, createdAt, shop, profile, albumName }: ProfilePageProps) {
   const [fullName, setFullName] = useState(profile.full_name);
   const [whatsapp, setWhatsapp] = useState(maskPhoneBR(profile.whatsapp));
   const [collectionName, setCollectionName] = useState(profile.collection_name);
@@ -135,21 +73,7 @@ export default function ProfilePage({ email, createdAt, shop, subscription, manu
 
   return (
     <div className="app-shell">
-      <div className="header">
-        <div className="header-inner">
-          <div className="header-main-row">
-            <div className="brand">
-              <BrandLogo />
-              <span className="kicker">{PLATFORM_NAME}</span>
-              <span className="title">Minha conta</span>
-            </div>
-            <HeaderActions>
-              <NavSwitch active={null} shopHref={shop.href} />
-              <UserMenu email={email} shopSettings={shop.active} />
-            </HeaderActions>
-          </div>
-        </div>
-      </div>
+      <AccountHeader title="Minha conta" email={email} shop={shop} />
 
       <div className="admin-page profile-page">
         <form className="admin-section admin-settings-form" onSubmit={salvarDados}>
@@ -246,24 +170,6 @@ export default function ProfilePage({ email, createdAt, shop, subscription, manu
             </button>
           </div>
         </form>
-
-        <section className="admin-section">
-          <h2 className="admin-section-title">Assinatura da loja</h2>
-          <p className="modal-notice">{descreverAssinatura(subscription, shop.active, manualAccess)}</p>
-          {erroPortal && <div className="login-error">{erroPortal}</div>}
-          <div className="modal-actions">
-            {subscription?.stripe_customer_id && subscription.status && (
-              <button type="button" className="btn-ghost" onClick={() => void abrirPortal()} disabled={abrindoPortal}>
-                {abrindoPortal ? "Abrindo…" : "Gerenciar assinatura"}
-              </button>
-            )}
-            {!shop.active && (
-              <Link href="/assinar" className="btn-primary">
-                {subscription?.status ? "Assinar novamente" : "Assinar a loja"}
-              </Link>
-            )}
-          </div>
-        </section>
 
         <section className="admin-section">
           <h2 className="admin-section-title">Sessão</h2>

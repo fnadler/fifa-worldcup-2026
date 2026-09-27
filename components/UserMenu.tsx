@@ -7,8 +7,8 @@ import { Icon } from "./HeaderIcons";
 
 interface UserMenuProps {
   email: string | null;
-  /** Mostra o atalho "Configurações da loja" (quem tem acesso à loja). */
-  shopSettings?: boolean;
+  /** Loja ativa (assinatura/acesso): mostra o grupo "Minha loja" completo; senão, só "Assine já". */
+  shopActive: boolean;
   /** Só no álbum: exportar/importar a base de figurinhas. */
   onBackup?: () => void;
   onImport?: () => void;
@@ -19,7 +19,14 @@ export async function signOut() {
   window.location.href = "/login";
 }
 
-export default function UserMenu({ email, shopSettings, onBackup, onImport }: UserMenuProps) {
+const LOJA_ITENS = [
+  { href: "/vendas?aba=pedidos", label: "Pedidos" },
+  { href: "/vendas?aba=precos", label: "Definir preços" },
+  { href: "/vendas?aba=config", label: "Configurações" },
+  { href: "/assinatura", label: "Assinatura" },
+];
+
+export default function UserMenu({ email, shopActive, onBackup, onImport }: UserMenuProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -39,6 +46,8 @@ export default function UserMenu({ email, shopSettings, onBackup, onImport }: Us
     };
   }, [open]);
 
+  const fechar = () => setOpen(false);
+
   return (
     <div className="user-menu-root" ref={rootRef}>
       <button
@@ -52,41 +61,61 @@ export default function UserMenu({ email, shopSettings, onBackup, onImport }: Us
         <Icon name="user" />
       </button>
       {open && (
-        <div className="user-menu">
+        <div className="user-menu" role="menu">
           {email && <span className="auth-status">{email}</span>}
-          <Link href="/perfil" className="btn-ghost user-menu-link" onClick={() => setOpen(false)}>
+
+          <Link href="/perfil" className="user-menu-item" role="menuitem" onClick={fechar}>
             Meu perfil
           </Link>
-          {shopSettings && (
-            <Link href="/vendas" className="btn-ghost user-menu-link" onClick={() => setOpen(false)}>
-              Configurações da loja
-            </Link>
+
+          <div className="user-menu-group" role="group" aria-label="Minha loja">
+            <span className="user-menu-group-title">Minha loja</span>
+            {shopActive ? (
+              LOJA_ITENS.map((i) => (
+                <Link key={i.href} href={i.href} className="user-menu-item" role="menuitem" onClick={fechar}>
+                  {i.label}
+                </Link>
+              ))
+            ) : (
+              <Link href="/assinar" className="user-menu-item user-menu-cta" role="menuitem" onClick={fechar}>
+                Assine já
+              </Link>
+            )}
+          </div>
+
+          {(onBackup || onImport) && (
+            <div className="user-menu-group" role="group" aria-label="Coleção">
+              <span className="user-menu-group-title">Coleção</span>
+              {onBackup && (
+                <button
+                  type="button"
+                  className="user-menu-item"
+                  role="menuitem"
+                  onClick={() => {
+                    fechar();
+                    onBackup();
+                  }}
+                >
+                  Backup
+                </button>
+              )}
+              {onImport && (
+                <button
+                  type="button"
+                  className="user-menu-item"
+                  role="menuitem"
+                  onClick={() => {
+                    fechar();
+                    onImport();
+                  }}
+                >
+                  Importar
+                </button>
+              )}
+            </div>
           )}
-          {onBackup && (
-            <button
-              type="button"
-              className="btn-ghost"
-              onClick={() => {
-                setOpen(false);
-                onBackup();
-              }}
-            >
-              Backup
-            </button>
-          )}
-          {onImport && (
-            <button
-              type="button"
-              className="btn-ghost"
-              onClick={() => {
-                setOpen(false);
-                onImport();
-              }}
-            >
-              Importar
-            </button>
-          )}
-          <button type="button" className="btn-ghost" onClick={() => void signOut()}>
+
+          <button type="button" className="user-menu-item user-menu-signout" role="menuitem" onClick={() => void signOut()}>
             Sair
           </button>
         </div>

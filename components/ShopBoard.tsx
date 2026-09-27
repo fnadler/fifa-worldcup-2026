@@ -8,7 +8,7 @@ import { formatBRL, priceFor, type CartHold, type ShopPricing } from "@/lib/shop
 import { useCartHold } from "@/lib/useCartHold";
 import type { BlockType, Qtd, TipoFiltro } from "@/lib/types";
 import { VIEW_OPTIONS, useViewMode } from "@/lib/useViewMode";
-import { CopyLinkButton, HeaderActions, NavSwitch } from "./HeaderIcons";
+import { CopyLinkButton, FiltersFooter, HeaderActions, NavSwitch, ViewToggleButton } from "./HeaderIcons";
 import GroupMenu from "./GroupMenu";
 import ShopCell from "./ShopCell";
 import UserMenu from "./UserMenu";
@@ -154,7 +154,7 @@ export default function ShopBoard({
   }
 
   return (
-    <div className="app-shell">
+    <div className="app-shell has-cart-bar">
       <div className="header" ref={headerRef}>
         <div className="header-inner">
           <div className="header-main-row">
@@ -164,7 +164,7 @@ export default function ShopBoard({
               <span className="title">{shopName}</span>
             </div>
 
-            <div className="totals-row">
+            <div className="totals-row shop-totals">
               <div className="total-card">
                 <span className="total-value" style={{ color: "var(--positive)" }}>
                   {totalDisponivel}
@@ -180,6 +180,8 @@ export default function ShopBoard({
                 </div>
               )}
             </div>
+
+            <ViewToggleButton view={view} onChange={changeView} />
 
             <button
               type="button"
@@ -199,7 +201,7 @@ export default function ShopBoard({
                   successMessage="Link da loja copiado!"
                   onToast={showToast}
                 />
-                <UserMenu email={owner.email} shopSettings />
+                <UserMenu email={owner.email} shopActive />
               </HeaderActions>
             )}
 
@@ -241,7 +243,7 @@ export default function ShopBoard({
                 ))}
               </div>
               )}
-              <div className="segmented">
+              <div className="segmented view-segment">
                 {VIEW_OPTIONS.map((v) => (
                   <button
                     key={v.value}
@@ -269,6 +271,18 @@ export default function ShopBoard({
               )}
               <GroupMenu onSelect={scrollToBlock} onlyIds={onlyAvailable ? blocosComVenda : undefined} />
             </div>
+
+            <FiltersFooter
+              onClear={() => {
+                setBusca("");
+                setTipo("ALL");
+                setDisp("ALL");
+              }}
+              onApply={() => {
+                setMenuAberto(false);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            />
           </div>
         </div>
       </div>
@@ -337,13 +351,41 @@ export default function ShopBoard({
       </div>
 
       {totalFigurinhas > 0 && !cartAberto && !preview && (
-        <button type="button" className="cart-float" onClick={() => setCartAberto(true)}>
+        <button type="button" className="cart-float cart-float-desktop" onClick={() => setCartAberto(true)}>
           <span>
             {totalFigurinhas} figurinha{totalFigurinhas === 1 ? "" : "s"} · <strong>{formatBRL(totalCents)}</strong>
           </span>
           <HoldTimer expiresAt={expiresAt} variant="compact" />
           <span className="cart-float-cta">Ver carrinho →</span>
         </button>
+      )}
+
+      {/* Celular: carrinho fixo no rodapé, sempre visível, com o aviso do pedido mínimo. */}
+      {!cartAberto && !preview && !menuAberto && (
+        <div className="cart-bar">
+          <div className="cart-bar-info">
+            <strong>
+              {totalFigurinhas === 0
+                ? "Seu carrinho está vazio"
+                : `${totalFigurinhas} figurinha${totalFigurinhas === 1 ? "" : "s"} · ${formatBRL(totalCents)}`}
+            </strong>
+            {minOrderCents > 0 ? (
+              totalCents >= minOrderCents ? (
+                <span className="cart-bar-note is-ok">Pedido mínimo atingido ✓</span>
+              ) : (
+                <span className="cart-bar-note">
+                  Pedido mínimo {formatBRL(minOrderCents)} · faltam {formatBRL(minOrderCents - totalCents)}
+                </span>
+              )
+            ) : (
+              totalFigurinhas === 0 && <span className="cart-bar-note">Toque em + para adicionar figurinhas</span>
+            )}
+            {totalFigurinhas > 0 && <HoldTimer expiresAt={expiresAt} variant="compact" />}
+          </div>
+          <button type="button" className="btn-primary" onClick={() => setCartAberto(true)}>
+            Carrinho{totalFigurinhas > 0 ? ` (${totalFigurinhas})` : ""}
+          </button>
+        </div>
       )}
 
       {preview && (

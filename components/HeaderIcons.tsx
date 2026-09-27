@@ -30,6 +30,21 @@ const PATHS = {
     </>
   ),
   check: <path d="M5 12.5 10 17 19 7" />,
+  grid: (
+    <>
+      <rect x="4" y="4" width="6.5" height="6.5" rx="1.5" />
+      <rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5" />
+      <rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5" />
+      <rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5" />
+    </>
+  ),
+  photo: (
+    <>
+      <rect x="3.5" y="4.5" width="17" height="15" rx="2.5" />
+      <circle cx="9" cy="10" r="1.8" />
+      <path d="m20.5 16-5-5-8.5 8.5" />
+    </>
+  ),
   user: (
     <>
       <circle cx="12" cy="8" r="4" />
@@ -79,6 +94,31 @@ export function NavSwitch({ active, shopHref }: { active: "album" | "shop" | nul
         </Link>
       ))}
     </nav>
+  );
+}
+
+// Alternância Fotos/Grade em um ícone (celular). O ícone mostra o modo para o qual vai mudar.
+export function ViewToggleButton({ view, onChange }: { view: "photos" | "grid"; onChange: (v: "photos" | "grid") => void }) {
+  const proximo = view === "photos" ? "grid" : "photos";
+  const label = proximo === "grid" ? "Ver em grade" : "Ver com fotos";
+  return (
+    <button type="button" className="icon-button view-toggle" onClick={() => onChange(proximo)} title={label} aria-label={label}>
+      <Icon name={proximo === "grid" ? "grid" : "photo"} />
+    </button>
+  );
+}
+
+// Rodapé da gaveta de filtros no celular: limpa tudo ou aplica (fecha e volta ao topo).
+export function FiltersFooter({ onClear, onApply }: { onClear: () => void; onApply: () => void }) {
+  return (
+    <div className="filters-footer">
+      <button type="button" className="btn-ghost" onClick={onClear}>
+        Limpar filtros
+      </button>
+      <button type="button" className="btn-primary" onClick={onApply}>
+        Aplicar filtros
+      </button>
+    </div>
   );
 }
 

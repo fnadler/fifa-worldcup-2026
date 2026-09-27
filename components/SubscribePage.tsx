@@ -50,7 +50,7 @@ export default function SubscribePage({ email, plan }: SubscribePageProps) {
             </div>
             <HeaderActions>
               <IconLink href={COLLECTION_PATH} icon="album" label="Minha coleção" />
-              <UserMenu email={email} />
+              <UserMenu email={email} shopActive={false} />
             </HeaderActions>
           </div>
         </div>

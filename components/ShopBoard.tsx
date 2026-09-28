@@ -15,6 +15,7 @@ import UserMenu from "./UserMenu";
 import StickerPreview from "./StickerPreview";
 import CartModal, { type CartLine } from "./CartModal";
 import BrandLogo from "./BrandLogo";
+import LogoPreview from "./LogoPreview";
 import HoldTimer from "./HoldTimer";
 import { PLATFORM_NAME } from "@/lib/brand";
 
@@ -70,6 +71,7 @@ export default function ShopBoard({
   const [cartAberto, setCartAberto] = useState(false);
   const [view, changeView] = useViewMode("copa2026-shop-view");
   const [preview, setPreview] = useState<string | null>(null);
+  const [logoAberto, setLogoAberto] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const headerRef = useRef<HTMLDivElement | null>(null);
 
@@ -159,7 +161,13 @@ export default function ShopBoard({
         <div className="header-inner">
           <div className="header-main-row">
             <div className="brand">
-              <BrandLogo src={logoUrl} />
+              {logoUrl ? (
+                <button type="button" className="brand-logo-button" onClick={() => setLogoAberto(true)} aria-label="Ver logo da loja">
+                  <BrandLogo src={logoUrl} />
+                </button>
+              ) : (
+                <BrandLogo />
+              )}
               <span className="kicker">{PLATFORM_NAME}</span>
               <span className="title">{shopName}</span>
             </div>
@@ -387,6 +395,8 @@ export default function ShopBoard({
           </button>
         </div>
       )}
+
+      {logoAberto && logoUrl && <LogoPreview src={logoUrl} name={shopName} onClose={() => setLogoAberto(false)} />}
 
       {preview && (
         <StickerPreview

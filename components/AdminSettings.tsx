@@ -176,7 +176,7 @@ export default function AdminSettings({
 
     setUploading(true);
     try {
-      const blob = await squareImage(file, 256);
+      const blob = await squareImage(file, 640);
       const ext = blob.type === "image/png" ? "png" : "webp";
       const path = `${userId}/logo-${Date.now()}.${ext}`;
       const supabase = createClient();

@@ -1,9 +1,9 @@
 "use client";
 
 // Recorta a imagem no centro em formato quadrado e reduz para `size` px, no navegador,
-// antes do upload (a imagem da loja aparece como ícone — não precisa de mais que isso).
+// antes do upload (ícone no cabeçalho e ampliada ao clicar na vitrine).
 // WebP quando o navegador suporta codificar; senão PNG (ex: Safari antigo).
-export async function squareImage(file: File, size = 256): Promise<Blob> {
+export async function squareImage(file: File, size = 640): Promise<Blob> {
   const bitmap = await createImageBitmap(file);
   const side = Math.min(bitmap.width, bitmap.height);
   const canvas = document.createElement("canvas");

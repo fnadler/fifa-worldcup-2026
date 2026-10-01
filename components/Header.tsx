@@ -2,6 +2,7 @@
 
 import { useState, type RefObject } from "react";
 import { VIEW_OPTIONS } from "@/lib/useViewMode";
+import { useCatalog } from "@/lib/CatalogContext";
 import type { ViewMode, AppUser, ModoClique, StatusFiltro, TipoFiltro } from "@/lib/types";
 import { CopyLinkButton, FiltersFooter, HeaderActions, NavSwitch, ViewToggleButton } from "./HeaderIcons";
 import GroupMenu from "./GroupMenu";
@@ -37,14 +38,6 @@ interface HeaderProps {
   /** Volta busca, tipo e status ao padrão (botão "Limpar filtros" do celular). */
   onClearFilters: () => void;
 }
-
-const TIPOS: { value: TipoFiltro; label: string }[] = [
-  { value: "ALL", label: "Todas" },
-  { value: "TEAM", label: "Seleções" },
-  { value: "FWC", label: "FWC" },
-  { value: "CC", label: "Coca-Cola" },
-  { value: "LEG", label: "Legends" },
-];
 
 const STATUSES: { value: StatusFiltro; label: string }[] = [
   { value: "ALL", label: "Tudo" },
@@ -92,6 +85,7 @@ export default function Header({
   onToast,
   onClearFilters,
 }: HeaderProps) {
+  const tipos = useCatalog().filters;
   const [menuAberto, setMenuAberto] = useState(false);
 
   function anchorClickAndClose(id: string) {
@@ -187,7 +181,7 @@ export default function Header({
             />
 
             <div className="segmented">
-              {TIPOS.map((t) => (
+              {tipos.map((t) => (
                 <button
                   key={t.value}
                   type="button"

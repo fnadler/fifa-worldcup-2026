@@ -1,6 +1,6 @@
 "use client";
 
-import { stickerLabel, stickerName } from "@/lib/album";
+import { cellText, hasCellName, stickerName } from "@/lib/album";
 import type { ModoClique } from "@/lib/types";
 
 interface StickerCellProps {
@@ -42,7 +42,7 @@ export default function StickerCell({ code, qty, modo, onBump, readOnly }: Stick
             }
       }
     >
-      <span className={nome ? "sticker-name" : "sticker-num"}>{nome ?? stickerLabel(code)}</span>
+      <span className={hasCellName(code) ? "sticker-name" : "sticker-num"}>{cellText(code)}</span>
       {qty > 1 && <span className="sticker-badge">+{qty - 1}</span>}
     </button>
   );

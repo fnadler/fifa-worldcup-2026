@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { BLOCKS, stickerName } from "@/lib/album";
+import { stickerName } from "@/lib/album";
+import { catalogOfCodes } from "@/lib/catalog";
 import { matchesSticker } from "@/lib/derive";
 import {
   centsToInput,
@@ -32,14 +33,17 @@ interface Row {
   unit: string; // input em reais ("2,50")
 }
 
-const ALL_CODES = BLOCKS.flatMap((b) => b.codes);
-
 export default function OrderEditor({ order, stock, reservedOthers, pricing, saving, onSave, onCancel }: OrderEditorProps) {
   const [rows, setRows] = useState<Row[]>(() =>
     order.items.map((it) => ({ code: it.code, qty: it.qty, unit: centsToInput(it.unit_cents) }))
   );
   const [busca, setBusca] = useState("");
   const [erro, setErro] = useState<string | null>(null);
+  // Um pedido é sempre de uma coleção só: as sugestões vêm dela.
+  const allCodes = useMemo(
+    () => catalogOfCodes(order.items.map((it) => it.code)).blocks.flatMap((b) => b.codes),
+    [order.items]
+  );
 
   // Máximo que este pedido pode ter de cada código: repetidas - reservas dos outros pedidos.
   const maxFor = (code: string) => Math.max((stock[code] ?? 0) - (reservedOthers[code] ?? 0), 0);
@@ -48,8 +52,8 @@ export default function OrderEditor({ order, stock, reservedOthers, pricing, sav
     const q = busca.trim().toLowerCase();
     if (q.length < 2) return [];
     const noPedido = new Set(rows.map((r) => r.code));
-    return ALL_CODES.filter((c) => !noPedido.has(c) && matchesSticker(c, q)).slice(0, 8);
-  }, [busca, rows]);
+    return allCodes.filter((c) => !noPedido.has(c) && matchesSticker(c, q)).slice(0, 8);
+  }, [allCodes, busca, rows]);
 
   function update(code: string, patch: Partial<Row>) {
     setRows((prev) => prev.map((r) => (r.code === code ? { ...r, ...patch } : r)));

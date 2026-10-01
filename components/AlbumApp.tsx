@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { deriveBoard } from "@/lib/derive";
+import { useCatalog } from "@/lib/CatalogContext";
 import { purgeLegacyLocalData, readLocalQtd, writeLocalQtd } from "@/lib/localBackup";
 import { createClient } from "@/lib/supabase/client";
 import { useViewMode } from "@/lib/useViewMode";
@@ -144,9 +145,10 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
     });
   }, [initialUser.id]);
 
+  const catalog = useCatalog();
   const derived = useMemo(
-    () => deriveBoard(qtd, tipo, statusFiltro, busca),
-    [qtd, tipo, statusFiltro, busca]
+    () => deriveBoard(catalog, qtd, tipo, statusFiltro, busca),
+    [catalog, qtd, tipo, statusFiltro, busca]
   );
 
   function scrollToBlock(id: string) {

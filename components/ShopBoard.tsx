@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { BLOCKS, anchorId, blockTag, codigoBase, hasNamedStickers } from "@/lib/album";
+import { anchorId, hasNamedStickers } from "@/lib/album";
+import { useCatalog } from "@/lib/CatalogContext";
 import { matchesSticker } from "@/lib/derive";
 import { formatBRL, priceFor, type CartHold, type ShopPricing } from "@/lib/shop";
 import { useCartHold } from "@/lib/useCartHold";
-import type { BlockType, Qtd, TipoFiltro } from "@/lib/types";
+import type { Qtd, TipoFiltro } from "@/lib/types";
 import { VIEW_OPTIONS, useViewMode } from "@/lib/useViewMode";
 import { CopyLinkButton, FiltersFooter, HeaderActions, NavSwitch, ViewToggleButton } from "./HeaderIcons";
 import GroupMenu from "./GroupMenu";
@@ -38,14 +39,6 @@ interface ShopBoardProps {
 
 type DispFiltro = "ALL" | "AVAIL";
 
-const TIPOS: { value: TipoFiltro; label: string }[] = [
-  { value: "ALL", label: "Todas" },
-  { value: "TEAM", label: "Seleções" },
-  { value: "FWC", label: "FWC" },
-  { value: "CC", label: "Coca-Cola" },
-  { value: "LEG", label: "Legends" },
-];
-
 const DISPS: { value: DispFiltro; label: string }[] = [
   { value: "ALL", label: "Catálogo completo" },
   { value: "AVAIL", label: "Só disponíveis" },
@@ -63,6 +56,7 @@ export default function ShopBoard({
   initialHold,
   owner,
 }: ShopBoardProps) {
+  const catalog = useCatalog();
   const [tipo, setTipo] = useState<TipoFiltro>("ALL");
   const [dispEscolhido, setDisp] = useState<DispFiltro>("ALL");
   const disp: DispFiltro = onlyAvailable ? "AVAIL" : dispEscolhido;
@@ -95,7 +89,7 @@ export default function ShopBoard({
 
   const lines: CartLine[] = useMemo(() => {
     const out: CartLine[] = [];
-    BLOCKS.forEach((b) =>
+    catalog.blocks.forEach((b) =>
       b.codes.forEach((code) => {
         const qty = cart[code];
         const unit = priceFor(code, pricing);
@@ -103,7 +97,7 @@ export default function ShopBoard({
       })
     );
     return out;
-  }, [cart, pricing, available]);
+  }, [catalog, cart, pricing, available]);
 
   const totalCents = lines.reduce((s, l) => s + l.qty * l.unitCents, 0);
   const totalFigurinhas = lines.reduce((s, l) => s + l.qty, 0);
@@ -114,20 +108,20 @@ export default function ShopBoard({
   );
 
   const blocosComVenda = useMemo(
-    () => new Set(BLOCKS.filter((b) => b.codes.some(vendavel)).map((b) => b.id)),
-    [vendavel]
+    () => new Set(catalog.blocks.filter((b) => b.codes.some(vendavel)).map((b) => b.id)),
+    [catalog, vendavel]
   );
   const tiposVisiveis = useMemo(() => {
-    if (!onlyAvailable) return TIPOS;
-    const comVenda = new Set(BLOCKS.filter((b) => blocosComVenda.has(b.id)).map((b) => b.tipo));
-    const filtrados = TIPOS.filter((t) => t.value === "ALL" || comVenda.has(t.value as BlockType));
+    if (!onlyAvailable) return catalog.filters;
+    const comVenda = new Set(catalog.blocks.filter((b) => blocosComVenda.has(b.id)).map((b) => b.tipo));
+    const filtrados = catalog.filters.filter((t) => t.value === "ALL" || comVenda.has(t.value));
     // com um tipo só, "Todas" já mostra tudo — o filtro não acrescenta nada
     return filtrados.length <= 2 ? [] : filtrados;
-  }, [onlyAvailable, blocosComVenda]);
+  }, [catalog, onlyAvailable, blocosComVenda]);
 
   const visibleBlocks = useMemo(() => {
     const buscaLower = busca.trim().toLowerCase();
-    return BLOCKS.flatMap((b) => {
+    return catalog.blocks.flatMap((b) => {
       if (tipo !== "ALL" && tipo !== b.tipo) return [];
       const matchBloco =
         !buscaLower || b.nome.toLowerCase().includes(buscaLower) || b.id.toLowerCase().includes(buscaLower);
@@ -140,7 +134,7 @@ export default function ShopBoard({
       const disponiveis = b.codes.filter(vendavel).length;
       return [{ block: b, codes, disponiveis }];
     });
-  }, [busca, tipo, disp, vendavel]);
+  }, [catalog, busca, tipo, disp, vendavel]);
 
   // Ordem de navegação da ampliação = o que está visível com os filtros atuais.
   const visibleCodes = useMemo(() => visibleBlocks.flatMap((vb) => vb.codes), [visibleBlocks]);
@@ -327,9 +321,11 @@ export default function ShopBoard({
         {visibleBlocks.map(({ block, codes, disponiveis }) => (
           <div key={block.id} id={anchorId(block)} className="block-card">
             <div className="block-header">
-              <span className={`block-tag ${block.tipo !== "TEAM" ? "block-tag-special" : ""}`}>{blockTag(block)}</span>
+              <span className={`block-tag ${catalog.isSpecial(block) ? "block-tag-special" : ""}`}>
+                {catalog.blockTag(block)}
+              </span>
               <span className="block-name">{block.nome}</span>
-              <span className="block-code-range">{codigoBase(block)}</span>
+              <span className="block-code-range">{catalog.blockRange(block)}</span>
               <div className="block-header-spacer" />
               <span className="block-summary-coladas">
                 {disponiveis} de {block.codes.length} à venda

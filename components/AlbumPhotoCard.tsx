@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { stickerLabel, stickerName } from "@/lib/album";
+import { cellText, stickerName } from "@/lib/album";
 import { stickerImage } from "@/lib/stickerImages";
 import type { ModoClique } from "@/lib/types";
 
@@ -28,7 +28,7 @@ export default function AlbumPhotoCard({ code, qty, modo, onBump, readOnly }: Al
   const media = img ? (
     <Image src={img} alt={id} width={240} height={336} unoptimized loading="lazy" />
   ) : (
-    <span className="shop-card-placeholder">{nome ?? stickerLabel(code)}</span>
+    <span className="shop-card-placeholder">{cellText(code)}</span>
   );
 
   return (

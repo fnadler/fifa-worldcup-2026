@@ -2,6 +2,7 @@
 
 import { useState, type RefObject } from "react";
 import { VIEW_OPTIONS } from "@/lib/useViewMode";
+import { useCatalog } from "@/lib/CatalogContext";
 import GroupMenu from "./GroupMenu";
 import { FiltersFooter, ViewToggleButton } from "./HeaderIcons";
 import type { ViewMode, StatusFiltro, TipoFiltro } from "@/lib/types";
@@ -27,14 +28,6 @@ interface PublicHeaderProps {
   onAnchorClick: (id: string) => void;
 }
 
-const TIPOS: { value: TipoFiltro; label: string }[] = [
-  { value: "ALL", label: "Todas" },
-  { value: "TEAM", label: "Seleções" },
-  { value: "FWC", label: "FWC" },
-  { value: "CC", label: "Coca-Cola" },
-  { value: "LEG", label: "Legends" },
-];
-
 const STATUSES: { value: StatusFiltro; label: string }[] = [
   { value: "ALL", label: "Tudo" },
   { value: "REP", label: "Só repetidas" },
@@ -59,6 +52,7 @@ export default function PublicHeader({
   onClearFilters,
   onAnchorClick,
 }: PublicHeaderProps) {
+  const tipos = useCatalog().filters;
   const [menuAberto, setMenuAberto] = useState(false);
 
   function anchorClickAndClose(id: string) {
@@ -129,7 +123,7 @@ export default function PublicHeader({
             />
 
             <div className="segmented">
-              {TIPOS.map((t) => (
+              {tipos.map((t) => (
                 <button
                   key={t.value}
                   type="button"

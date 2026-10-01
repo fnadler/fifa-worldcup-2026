@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import { deriveBoard } from "@/lib/derive";
+import { useCatalog } from "@/lib/CatalogContext";
 import { useViewMode } from "@/lib/useViewMode";
 import type { Qtd, StatusFiltro, TipoFiltro } from "@/lib/types";
 import PublicHeader from "./PublicHeader";
@@ -19,9 +20,10 @@ export default function PublicBoard({ qtd, collectionName }: PublicBoardProps) {
   const [view, setView] = useViewMode("copa2026-public-view");
   const headerRef = useRef<HTMLDivElement | null>(null);
 
+  const catalog = useCatalog();
   const derived = useMemo(
-    () => deriveBoard(qtd, tipo, statusFiltro, busca),
-    [qtd, tipo, statusFiltro, busca]
+    () => deriveBoard(catalog, qtd, tipo, statusFiltro, busca),
+    [catalog, qtd, tipo, statusFiltro, busca]
   );
 
   function scrollToBlock(id: string) {

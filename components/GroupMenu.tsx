@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { BLOCKS } from "@/lib/album";
-import type { AlbumBlock } from "@/lib/types";
+import { useCatalog } from "@/lib/CatalogContext";
 
 interface GroupMenuProps {
   onSelect: (blockId: string) => void;
@@ -10,33 +9,8 @@ interface GroupMenuProps {
   onlyIds?: Set<string>;
 }
 
-interface Section {
-  title: string;
-  variant: "fwc" | "team" | "cc" | "leg";
-  blocks: AlbumBlock[];
-}
-
-// FWC, Grupo A…L (4 seleções cada), Coca-Cola e Legends — na ordem do álbum.
-const SECTIONS: Section[] = (() => {
-  const out: Section[] = [];
-  BLOCKS.forEach((b) => {
-    const title =
-      b.tipo === "TEAM" ? `Grupo ${b.grupo}` : b.tipo === "FWC" ? "FWC" : b.tipo === "CC" ? "Coca-Cola" : "Legends";
-    const variant = b.tipo === "TEAM" ? "team" : b.tipo === "FWC" ? "fwc" : b.tipo === "CC" ? "cc" : "leg";
-    const last = out[out.length - 1];
-    if (last?.title === title) last.blocks.push(b);
-    else out.push({ title, variant, blocks: [b] });
-  });
-  return out;
-})();
-
-function shortName(b: AlbumBlock): string {
-  if (b.tipo === "FWC") return "World Cup History";
-  if (b.tipo === "LEG") return b.nome.replace(/^Legends\s+/, "");
-  return b.nome;
-}
-
 export default function GroupMenu({ onSelect, onlyIds }: GroupMenuProps) {
+  const catalog = useCatalog();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -57,8 +31,10 @@ export default function GroupMenu({ onSelect, onlyIds }: GroupMenuProps) {
   }, [open]);
 
   const sections = onlyIds
-    ? SECTIONS.map((s) => ({ ...s, blocks: s.blocks.filter((b) => onlyIds.has(b.id)) })).filter((s) => s.blocks.length)
-    : SECTIONS;
+    ? catalog.menuSections
+        .map((s) => ({ ...s, blocks: s.blocks.filter((b) => onlyIds.has(b.id)) }))
+        .filter((s) => s.blocks.length)
+    : catalog.menuSections;
 
   function escolher(id: string) {
     setOpen(false);
@@ -84,8 +60,8 @@ export default function GroupMenu({ onSelect, onlyIds }: GroupMenuProps) {
               <div className="group-menu-items">
                 {s.blocks.map((b) => (
                   <button key={b.id} type="button" role="menuitem" title={b.nome} onClick={() => escolher(b.id)}>
-                    {b.tipo === "TEAM" && <span className="group-menu-code">{b.id}</span>}
-                    {shortName(b)}
+                    {catalog.menuCode(b) && <span className="group-menu-code">{catalog.menuCode(b)}</span>}
+                    {catalog.menuLabel(b)}
                   </button>
                 ))}
               </div>

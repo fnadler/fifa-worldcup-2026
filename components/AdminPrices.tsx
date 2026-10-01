@@ -1,11 +1,12 @@
 "use client";
 
 import { useMemo, useState, type Dispatch, type FormEvent, type SetStateAction } from "react";
-import { BLOCKS, anchorId, blockTag, cellText, codigoBase, hasNamedStickers, stickerName } from "@/lib/album";
+import { anchorId, cellText, hasCellName, hasNamedStickers } from "@/lib/album";
+import { useCatalog } from "@/lib/CatalogContext";
 import { matchesSticker } from "@/lib/derive";
 import { createClient } from "@/lib/supabase/client";
-import { GROUP_LABELS, centsToInput, formatBRL, parseBRL, priceFor, type GroupPrices } from "@/lib/shop";
-import type { BlockType, Qtd, TipoFiltro } from "@/lib/types";
+import { centsToInput, formatBRL, parseBRL, priceFor, type GroupPrices } from "@/lib/shop";
+import type { Qtd, TipoFiltro } from "@/lib/types";
 
 interface AdminPricesProps {
   userId: string;
@@ -19,16 +20,6 @@ interface AdminPricesProps {
 
 type Pincel = "set" | "clear";
 
-const TIPOS: { value: TipoFiltro; label: string }[] = [
-  { value: "ALL", label: "Todas" },
-  { value: "TEAM", label: "Seleções" },
-  { value: "FWC", label: "FWC" },
-  { value: "CC", label: "Coca-Cola" },
-  { value: "LEG", label: "Legends" },
-];
-
-const GROUP_ORDER: BlockType[] = ["FWC", "TEAM", "CC", "LEG"];
-
 export default function AdminPrices({
   userId,
   group,
@@ -38,12 +29,10 @@ export default function AdminPrices({
   available,
   onToast,
 }: AdminPricesProps) {
-  const [groupInputs, setGroupInputs] = useState<Record<BlockType, string>>({
-    FWC: centsToInput(group.FWC),
-    TEAM: centsToInput(group.TEAM),
-    CC: centsToInput(group.CC),
-    LEG: centsToInput(group.LEG),
-  });
+  const catalog = useCatalog();
+  const [groupInputs, setGroupInputs] = useState<Record<string, string>>(() =>
+    Object.fromEntries(catalog.priceGroups.map((g) => [g.key, centsToInput(group[g.key] ?? null)]))
+  );
   const [savingGroup, setSavingGroup] = useState(false);
 
   const [pincel, setPincel] = useState<Pincel>("set");
@@ -56,15 +45,16 @@ export default function AdminPrices({
 
   async function salvarGrupos(e: FormEvent) {
     e.preventDefault();
-    const parsed = {} as GroupPrices;
-    for (const t of GROUP_ORDER) {
-      const v = parseBRL(groupInputs[t]);
-      if (Number.isNaN(v)) return onToast(`Preço inválido para ${GROUP_LABELS[t]}. Use o formato 2,50.`);
-      parsed[t] = v;
+    const parsed: GroupPrices = {};
+    for (const g of catalog.priceGroups) {
+      const v = parseBRL(groupInputs[g.key] ?? "");
+      if (Number.isNaN(v)) return onToast(`Preço inválido para ${g.label}. Use o formato 2,50.`);
+      parsed[g.key] = v;
     }
     setSavingGroup(true);
     const { error } = await createClient()
       .from("shops")
+      // Por enquanto os preços por grupo do Álbum Copa ficam em colunas de shops (Fase 3 → shop_albums).
       .update({
         price_fwc_cents: parsed.FWC,
         price_team_cents: parsed.TEAM,
@@ -123,7 +113,7 @@ export default function AdminPrices({
 
   const visibleBlocks = useMemo(() => {
     const buscaLower = busca.trim().toLowerCase();
-    return BLOCKS.flatMap((b) => {
+    return catalog.blocks.flatMap((b) => {
       if (tipo !== "ALL" && tipo !== b.tipo) return [];
       const matchBloco =
         !buscaLower || b.nome.toLowerCase().includes(buscaLower) || b.id.toLowerCase().includes(buscaLower);
@@ -134,7 +124,7 @@ export default function AdminPrices({
       });
       return codes.length ? [{ block: b, codes }] : [];
     });
-  }, [busca, tipo, soEstoque, available]);
+  }, [catalog, busca, tipo, soEstoque, available]);
 
   const qtdIndividual = Object.keys(individual).length;
 
@@ -147,9 +137,9 @@ export default function AdminPrices({
           grupo (a não ser as figurinhas com preço individual).
         </p>
         <div className="form-row">
-          {GROUP_ORDER.map((t) => (
+          {catalog.priceGroups.map(({ key: t, label }) => (
             <label key={t} className="form-label">
-              {GROUP_LABELS[t]} (R$)
+              {label} (R$)
               <input
                 className="login-input"
                 inputMode="decimal"
@@ -211,7 +201,7 @@ export default function AdminPrices({
             className="search-input"
           />
           <div className="segmented">
-            {TIPOS.map((t) => (
+            {catalog.filters.map((t) => (
               <button
                 key={t.value}
                 type="button"
@@ -252,9 +242,11 @@ export default function AdminPrices({
         {visibleBlocks.map(({ block, codes }) => (
           <div key={block.id} id={anchorId(block)} className="block-card">
             <div className="block-header">
-              <span className={`block-tag ${block.tipo !== "TEAM" ? "block-tag-special" : ""}`}>{blockTag(block)}</span>
+              <span className={`block-tag ${catalog.isSpecial(block) ? "block-tag-special" : ""}`}>
+                {catalog.blockTag(block)}
+              </span>
               <span className="block-name">{block.nome}</span>
-              <span className="block-code-range">{codigoBase(block)}</span>
+              <span className="block-code-range">{catalog.blockRange(block)}</span>
               <div className="block-header-spacer" />
               <button type="button" className="btn-ghost btn-small" onClick={() => void aplicar(codes)}>
                 {pincel === "set" ? "Aplicar ao bloco" : "Limpar bloco"}
@@ -278,7 +270,7 @@ export default function AdminPrices({
                     className={`shop-cell ${state} shop-cell-editable`}
                     onClick={() => void aplicar([code])}
                   >
-                    <span className={stickerName(code) ? "sticker-name" : "sticker-num"}>{cellText(code)}</span>
+                    <span className={hasCellName(code) ? "sticker-name" : "sticker-num"}>{cellText(code)}</span>
                     <span className="shop-cell-price">{preco === null ? "—" : formatBRL(preco)}</span>
                     <span className="shop-cell-stock">{estoque} disp.</span>
                   </button>

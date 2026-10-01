@@ -1,4 +1,5 @@
-import { BLOCKS, stickerName } from "./album";
+import { stickerName } from "./album";
+import { catalogOfCodes, lookupCode } from "./catalog";
 import { normalizeWhatsapp } from "./phone";
 
 export { isValidPhoneBR, maskPhoneBR, normalizeWhatsapp, onlyDigits } from "./phone";
@@ -15,12 +16,8 @@ export interface CartHold {
   expiresAt: string | null;
 }
 
-export interface GroupPrices {
-  FWC: number | null;
-  TEAM: number | null;
-  CC: number | null;
-  LEG: number | null;
-}
+/** Preço por grupo (BlockType da coleção → centavos; null = grupo sem preço). */
+export type GroupPrices = Record<BlockType, number | null>;
 
 // Preços em centavos. Individual sobrepõe o do grupo; sem nenhum dos dois = não vendável.
 export interface ShopPricing {
@@ -116,22 +113,12 @@ export interface OrderRow {
 export const ORDER_COLUMNS =
   "id, number, status, buyer_name, buyer_email, buyer_whatsapp, address_cep, address_street, address_number, address_complement, address_district, address_city, address_state, items, total_cents, created_at, reserved_until, cancel_reason";
 
-export const GROUP_LABELS: Record<BlockType, string> = {
-  FWC: "FWC",
-  TEAM: "Seleções",
-  CC: "Coca-Cola",
-  LEG: "Legends",
-};
-
-const BLOCK_BY_CODE = new Map<string, { tipo: BlockType; nome: string }>();
-BLOCKS.forEach((b) => b.codes.forEach((c) => BLOCK_BY_CODE.set(c, { tipo: b.tipo, nome: b.nome })));
-
 export function isKnownCode(code: string): boolean {
-  return BLOCK_BY_CODE.has(code);
+  return lookupCode(code) !== undefined;
 }
 
 export function blockNameFor(code: string): string {
-  return BLOCK_BY_CODE.get(code)?.nome ?? "";
+  return lookupCode(code)?.block.nome ?? "";
 }
 
 // "Lionel Messi · Legends Ouro" para figurinhas com nome; senão só o bloco ("Brasil").
@@ -143,8 +130,8 @@ export function describeSticker(code: string): string {
 export function priceFor(code: string, pricing: ShopPricing): number | null {
   const individual = pricing.individual[code];
   if (individual !== undefined) return individual;
-  const tipo = BLOCK_BY_CODE.get(code)?.tipo;
-  return tipo ? pricing.group[tipo] : null;
+  const tipo = lookupCode(code)?.block.tipo;
+  return tipo ? (pricing.group[tipo] ?? null) : null;
 }
 
 // Só as repetidas estão à venda — a figurinha colada no álbum nunca sai.
@@ -277,15 +264,18 @@ export function orderMessage(
     });
   });
 
+  const catalog = catalogOfCodes(items.map((it) => it.code));
   const totalFigurinhas = items.reduce((s, it) => s + it.qty, 0);
+  const itemLabel = totalFigurinhas === 1 ? catalog.itemSingular : catalog.itemPlural;
+  const reservados = catalog.itemSingular === "card" ? "Cards reservados" : "Figurinhas reservadas";
 
   return [
-    `*Pedido #${number} — Álbum Copa 2026*`,
+    `*Pedido #${number} — ${catalog.shortName}*`,
     "",
     ...linhas,
     "",
-    `*Total: ${formatBRL(totalCents)}* (${totalFigurinhas} figurinha${totalFigurinhas === 1 ? "" : "s"}) — frete a combinar`,
-    ...(reservedUntil ? [`Figurinhas reservadas até ${formatDateTimeBR(reservedUntil)}.`] : []),
+    `*Total: ${formatBRL(totalCents)}* (${totalFigurinhas} ${itemLabel}) — frete a combinar`,
+    ...(reservedUntil ? [`${reservados} até ${formatDateTimeBR(reservedUntil)}.`] : []),
     "",
     "*Comprador*",
     `Nome: ${buyer.name}`,

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { stickerLabel, stickerName } from "@/lib/album";
+import { cellText, hasCellName, stickerName } from "@/lib/album";
 import { formatBRL } from "@/lib/shop";
 import { stickerImage } from "@/lib/stickerImages";
 
@@ -46,7 +46,7 @@ export default function ShopCell({ code, price, available, inCart, view, onChang
           if (inCart > 0) onChange(code, -1);
         }}
       >
-        <span className={nome ? "sticker-name" : "sticker-num"}>{nome ?? stickerLabel(code)}</span>
+        <span className={hasCellName(code) ? "sticker-name" : "sticker-num"}>{cellText(code)}</span>
         {vendavel && <span className="shop-cell-price">{formatBRL(price)}</span>}
         {vendavel && !inCart && <span className="shop-cell-stock">{available} disp.</span>}
         {inCart > 0 && <span className="sticker-badge">{inCart}</span>}
@@ -62,7 +62,7 @@ export default function ShopCell({ code, price, available, inCart, view, onChang
         {img ? (
           <Image src={img} alt={code} width={240} height={336} unoptimized loading="lazy" />
         ) : (
-          <span className="shop-card-placeholder">{nome ?? stickerLabel(code)}</span>
+          <span className="shop-card-placeholder">{cellText(code)}</span>
         )}
         {inCart > 0 && <span className="sticker-badge shop-card-badge">{inCart}</span>}
       </button>

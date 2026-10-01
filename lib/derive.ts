@@ -1,4 +1,5 @@
-import { BLOCKS, TOTAL_STICKERS, blockTag, codigoBase, countsTowardAlbum, stickerName } from "./album";
+import { stickerName } from "./album";
+import type { Catalog } from "./catalog";
 import type { Qtd, StatusFiltro, TipoFiltro, VisibleBlock } from "./types";
 
 export interface DerivedBoard {
@@ -22,6 +23,7 @@ function semAcento(s: string): string {
 }
 
 export function deriveBoard(
+  catalog: Catalog,
   qtd: Qtd,
   tipo: TipoFiltro,
   statusFiltro: StatusFiltro,
@@ -31,8 +33,10 @@ export function deriveBoard(
   let totColadas = 0;
   let totRepetidas = 0;
 
-  BLOCKS.forEach((b) => {
-    const doAlbum = countsTowardAlbum(b);
+  const { blocks, total } = catalog;
+
+  blocks.forEach((b) => {
+    const doAlbum = catalog.countsToward(b);
     b.codes.forEach((code) => {
       const n = qtd[code] ?? 0;
       if (n >= 1 && doAlbum) totColadas++;
@@ -41,7 +45,7 @@ export function deriveBoard(
   });
 
   const visibleBlocks: VisibleBlock[] = [];
-  BLOCKS.forEach((b) => {
+  blocks.forEach((b) => {
     if (tipo !== "ALL" && tipo !== b.tipo) return;
     const matchBloco =
       !buscaLower ||
@@ -68,8 +72,8 @@ export function deriveBoard(
 
     visibleBlocks.push({
       block: b,
-      tag: blockTag(b),
-      codigoBase: codigoBase(b),
+      tag: catalog.blockTag(b),
+      codigoBase: catalog.blockRange(b),
       coladas,
       repetidas,
       pct: Math.round((coladas / b.codes.length) * 100),
@@ -78,7 +82,7 @@ export function deriveBoard(
   });
 
   const linhas: string[] = [];
-  BLOCKS.forEach((b) => {
+  blocks.forEach((b) => {
     const itens = b.codes
       .filter((c) => (qtd[c] ?? 0) > 1)
       .map((c) => {
@@ -90,14 +94,14 @@ export function deriveBoard(
     if (itens.length) linhas.push(`${b.nome}: ${itens.join(", ")}`);
   });
   const listaTrocas = linhas.length
-    ? `REPETIDAS — ÁLBUM COPA 2026\n\n${linhas.join("\n")}`
+    ? `REPETIDAS — ${catalog.shortName.toUpperCase()}\n\n${linhas.join("\n")}`
     : "Nenhuma repetida registrada ainda.";
 
   return {
     totColadas,
     totRepetidas,
-    totGeral: TOTAL_STICKERS,
-    totFaltam: TOTAL_STICKERS - totColadas,
+    totGeral: total,
+    totFaltam: total - totColadas,
     visibleBlocks,
     listaTrocas,
   };

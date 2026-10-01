@@ -1,22 +1,17 @@
-import albumJson from "@/album.json";
-import type { AlbumBlock, AlbumData } from "./types";
+import { catalogOfBlock, lookupCode } from "./catalog";
+import type { AlbumBlock } from "./types";
 
-export const ALBUM = albumJson as AlbumData;
-export const BLOCKS: AlbumBlock[] = ALBUM.blocks;
-// Total do álbum principal (994). As Legends são uma coleção à parte: aparecem no
-// quadro e têm seus próprios contadores por bloco, mas não entram em Coladas/Faltam.
-export const TOTAL_STICKERS = ALBUM.total;
+// Funções por código/bloco. Valem para qualquer coleção: o código é único na plataforma e cada
+// bloco sabe a qual coleção pertence (ver lib/catalog.ts).
 
 export function countsTowardAlbum(block: AlbumBlock): boolean {
-  return block.tipo !== "LEG";
+  return catalogOfBlock(block).countsToward(block);
 }
 
-const NAME_BY_CODE = new Map<string, string>();
-BLOCKS.forEach((b) => b.labels?.forEach((nome, i) => NAME_BY_CODE.set(b.codes[i], nome)));
-
-/** Nome próprio da figurinha, quando o catálogo tem (ex: atleta das Legends). */
+/** Nome próprio do item, quando o catálogo tem (atleta das Legends, jogador da Adrenalyn). */
 export function stickerName(code: string): string | undefined {
-  return NAME_BY_CODE.get(code);
+  const e = lookupCode(code);
+  return e ? (e.block.labels ?? e.block.names)?.[e.index] : undefined;
 }
 
 export function anchorId(block: AlbumBlock): string {
@@ -24,23 +19,11 @@ export function anchorId(block: AlbumBlock): string {
 }
 
 export function blockTag(block: AlbumBlock): string {
-  if (block.tipo === "TEAM") return `Grupo ${block.grupo}`;
-  if (block.tipo === "FWC") return "FWC";
-  if (block.tipo === "LEG") return "Legends";
-  return "Extra";
+  return catalogOfBlock(block).blockTag(block);
 }
 
-// Same output as the prototype's hardcoded strings ("00 · FWC1–19", "BRA1–20", "CC1–14"),
-// derived generically from the block's own code list instead of a second hardcoded table.
 export function codigoBase(block: AlbumBlock): string {
-  if (block.labels) return `${block.codes.length} atletas`;
-  if (block.tipo === "FWC") return "00 · FWC1–19";
-  const first = block.codes[0];
-  const last = block.codes[block.codes.length - 1];
-  const prefix = first.match(/^[A-Za-z]+/)?.[0] ?? "";
-  const firstNum = first.replace(/^[A-Za-z]+/, "");
-  const lastNum = last.replace(/^[A-Za-z]+/, "");
-  return `${prefix}${firstNum}–${lastNum}`;
+  return catalogOfBlock(block).blockRange(block);
 }
 
 /** Blocos cujas figurinhas não são numeradas (Legends) mostram o nome — células mais largas. */
@@ -48,9 +31,16 @@ export function hasNamedStickers(block: AlbumBlock): boolean {
   return !!block.labels;
 }
 
+/** A célula mostra o nome em vez do número (Legends). */
+export function hasCellName(code: string): boolean {
+  const e = lookupCode(code);
+  return !!e?.block.labels;
+}
+
 /** Texto dentro da célula: nome do atleta nas Legends, número nas demais. */
 export function cellText(code: string): string {
-  return stickerName(code) ?? stickerLabel(code);
+  const e = lookupCode(code);
+  return e?.block.labels?.[e.index] ?? stickerLabel(code);
 }
 
 export function stickerLabel(code: string): string {

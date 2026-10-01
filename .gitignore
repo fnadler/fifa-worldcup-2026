@@ -43,3 +43,6 @@ next-env.d.ts
 
 # fotos originais das figurinhas (~420 MB) — as versões otimizadas saem de `npm run images` em public/stickers
 /images
+
+# imagens originais (pesadas) da Adrenalyn XL — viram webp em public/ quando forem usadas
+/data/adrenalyn-xl/

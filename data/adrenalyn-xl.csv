@@ -1,0 +1,631 @@
+numero,secao,selecao_codigo,selecao,tipo,posicao,nome,imagem
+1,Golden Ballers,ARG,Argentina,GOLDEN_BALLER,FWD,Messi (ARG),
+2,Golden Ballers,BRA,Brasil,GOLDEN_BALLER,FWD,Vinícius Júnior (BRA),002.jpeg
+3,Golden Ballers,EGY,Egito,GOLDEN_BALLER,FWD,Salah (EGY),
+4,Golden Ballers,ENG,Inglaterra,GOLDEN_BALLER,FWD,Kane (ENG),
+5,Golden Ballers,FRA,França,GOLDEN_BALLER,FWD,Mbappé (FRA),
+6,Golden Ballers,KOR,Coreia do Sul,GOLDEN_BALLER,FWD,Son (KOR),
+7,Golden Ballers,NOR,Noruega,GOLDEN_BALLER,FWD,Haaland (NOR),
+8,Golden Ballers,POR,Portugal,GOLDEN_BALLER,FWD,Ronaldo (POR),
+9,Golden Ballers,ESP,Espanha,GOLDEN_BALLER,FWD,Yamal (ESP),
+10,Seleções,ALG,Argélia,FAN_FAVOURITE,DEF,Rayan Aït-Nouri,
+11,Seleções,ALG,Argélia,CREST,,Escudo,
+12,Seleções,ALG,Argélia,ICON,FWD,Riyad Mahrez,
+13,Seleções,ALG,Argélia,BASE,GK,Alexis Guendouz,013.jpeg
+14,Seleções,ALG,Argélia,BASE,DEF,Ramy Bensebaini,014.jpeg
+15,Seleções,ALG,Argélia,BASE,DEF,Youcef Atal,
+16,Seleções,ALG,Argélia,BASE,DEF,Aïssa Mandi,
+17,Seleções,ALG,Argélia,BASE,MID,Nabil Bentaleb,
+18,Seleções,ALG,Argélia,BASE,FWD,Saïd Benrahma,
+19,Seleções,ALG,Argélia,BASE,FWD,Amine Gouiri,
+20,Seleções,ALG,Argélia,BASE,FWD,Mohamed Amoura,
+21,Seleções,ALG,Argélia,BASE,FWD,Baghdad Bounedjah,
+22,Seleções,ARG,Argentina,FAN_FAVOURITE,FWD,Julián Alvarez,022.jpeg
+23,Seleções,ARG,Argentina,CREST,,Escudo,023.jpeg
+24,Seleções,ARG,Argentina,ICON,FWD,Lionel Messi,
+25,Seleções,ARG,Argentina,BASE,GK,Emiliano Martínez,
+26,Seleções,ARG,Argentina,BASE,DEF,Nahuel Molina,
+27,Seleções,ARG,Argentina,BASE,DEF,Cristian Romero,
+28,Seleções,ARG,Argentina,BASE,DEF,Nicolás Otamendi,
+29,Seleções,ARG,Argentina,BASE,MID,Enzo Fernández,
+30,Seleções,ARG,Argentina,BASE,MID,Alexis Mac Allister,
+31,Seleções,ARG,Argentina,BASE,MID,Rodrigo De Paul,031.jpeg
+32,Seleções,ARG,Argentina,BASE,FWD,Giuliano Simeone,
+33,Seleções,ARG,Argentina,BASE,FWD,Lautaro Martínez,033.jpeg
+34,Seleções,AUS,Austrália,FAN_FAVOURITE,DEF,Harry Souttar,
+35,Seleções,AUS,Austrália,CREST,,Escudo,
+36,Seleções,AUS,Austrália,ICON,GK,Mathew Ryan,
+37,Seleções,AUS,Austrália,BASE,DEF,Alessandro Circati,
+38,Seleções,AUS,Austrália,BASE,DEF,Jordan Bos,
+39,Seleções,AUS,Austrália,BASE,DEF,Lewis Miller,
+40,Seleções,AUS,Austrália,BASE,DEF,Milos Degenek,
+41,Seleções,AUS,Austrália,BASE,MID,Jackson Irvine,041.jpeg
+42,Seleções,AUS,Austrália,BASE,MID,Riley McGree,
+43,Seleções,AUS,Austrália,BASE,MID,Aiden O'Neill,043.jpeg
+44,Seleções,AUS,Austrália,BASE,MID,Connor Metcalfe,
+45,Seleções,AUS,Austrália,BASE,FWD,Craig Goodwin,045.jpeg
+46,Seleções,AUT,Áustria,FAN_FAVOURITE,FWD,Marko Arnautović,
+47,Seleções,AUT,Áustria,CREST,,Escudo,
+48,Seleções,AUT,Áustria,ICON,DEF,David Alaba,
+49,Seleções,AUT,Áustria,BASE,GK,Alexander Schlager,
+50,Seleções,AUT,Áustria,BASE,DEF,Kevin Danso,
+51,Seleções,AUT,Áustria,BASE,DEF,Philipp Lienhart,
+52,Seleções,AUT,Áustria,BASE,MID,Konrad Laimer,
+53,Seleções,AUT,Áustria,BASE,MID,Nicolas Seiwald,053.jpeg
+54,Seleções,AUT,Áustria,BASE,MID,Marcel Sabitzer,
+55,Seleções,AUT,Áustria,BASE,MID,Florian Grillitsch,
+56,Seleções,AUT,Áustria,BASE,FWD,Christoph Baumgartner,056.jpeg
+57,Seleções,AUT,Áustria,BASE,FWD,Michael Gregoritsch,
+58,Seleções,BEL,Bélgica,FAN_FAVOURITE,MID,Youri Tielemans,058.jpeg
+59,Seleções,BEL,Bélgica,CREST,,Escudo,059.jpeg
+60,Seleções,BEL,Bélgica,ICON,MID,Kevin De Bruyne,
+61,Seleções,BEL,Bélgica,BASE,GK,Thibaut Courtois,
+62,Seleções,BEL,Bélgica,BASE,DEF,Arthur Theate,
+63,Seleções,BEL,Bélgica,BASE,DEF,Timothy Castagne,
+64,Seleções,BEL,Bélgica,BASE,DEF,Maxim De Cuyper,
+65,Seleções,BEL,Bélgica,BASE,MID,Amadou Onana,
+66,Seleções,BEL,Bélgica,BASE,FWD,Jérémy Doku,066.jpeg
+67,Seleções,BEL,Bélgica,BASE,FWD,Charles De Ketelaere,067.jpeg
+68,Seleções,BEL,Bélgica,BASE,FWD,Leandro Trossard,
+69,Seleções,BEL,Bélgica,BASE,FWD,Romelu Lukaku,
+70,Seleções,BRA,Brasil,FAN_FAVOURITE,DEF,Marquinhos,
+71,Seleções,BRA,Brasil,CREST,,Escudo,071.jpeg
+72,Seleções,BRA,Brasil,ICON,FWD,Vinícius Júnior,
+73,Seleções,BRA,Brasil,BASE,GK,Alisson,073.jpeg
+74,Seleções,BRA,Brasil,BASE,DEF,Danilo,074.jpeg
+75,Seleções,BRA,Brasil,BASE,DEF,Éder Militão,
+76,Seleções,BRA,Brasil,BASE,DEF,Gabriel Magalhães,
+77,Seleções,BRA,Brasil,BASE,MID,Casemiro,
+78,Seleções,BRA,Brasil,BASE,MID,Bruno Guimarães,078.jpeg
+79,Seleções,BRA,Brasil,BASE,FWD,Rodrygo,079.jpeg
+80,Seleções,BRA,Brasil,BASE,FWD,Matheus Cunha,
+81,Seleções,BRA,Brasil,BASE,FWD,Raphinha,
+82,Seleções,CAN,Canadá,FAN_FAVOURITE,FWD,Jonathan David,
+83,Seleções,CAN,Canadá,CREST,,Escudo,
+84,Seleções,CAN,Canadá,ICON,DEF,Alphonso Davies,
+85,Seleções,CAN,Canadá,BASE,GK,Dayne St. Clair,
+86,Seleções,CAN,Canadá,BASE,DEF,Richie Laryea,086.jpeg
+87,Seleções,CAN,Canadá,BASE,DEF,Derek Cornelius,
+88,Seleções,CAN,Canadá,BASE,MID,Stephen Eustáquio,
+89,Seleções,CAN,Canadá,BASE,MID,Ismaël Koné,089.jpeg
+90,Seleções,CAN,Canadá,BASE,MID,Jonathan Osorio,090.jpeg
+91,Seleções,CAN,Canadá,BASE,MID,Jacob Shaffelburg,091.jpeg
+92,Seleções,CAN,Canadá,BASE,MID,Tajon Buchanan,
+93,Seleções,CAN,Canadá,BASE,FWD,Cyle Larin,
+94,Seleções,CPV,Cabo Verde,FAN_FAVOURITE,GK,Vozinha,094.jpeg
+95,Seleções,CPV,Cabo Verde,CREST,,Escudo,
+96,Seleções,CPV,Cabo Verde,ICON,FWD,Ryan Mendes,096.jpeg
+97,Seleções,CPV,Cabo Verde,BASE,DEF,Logan Costa,
+98,Seleções,CPV,Cabo Verde,BASE,DEF,Pico,
+99,Seleções,CPV,Cabo Verde,BASE,DEF,Steven Moreira,
+100,Seleções,CPV,Cabo Verde,BASE,DEF,João Paulo,100.jpeg
+101,Seleções,CPV,Cabo Verde,BASE,MID,Kevin Pina,
+102,Seleções,CPV,Cabo Verde,BASE,MID,Jamiro Monteiro,102.jpeg
+103,Seleções,CPV,Cabo Verde,BASE,MID,Yannick Semedo,103.jpeg
+104,Seleções,CPV,Cabo Verde,BASE,FWD,Jovane Cabral,104.jpeg
+105,Seleções,CPV,Cabo Verde,BASE,FWD,Dailon Livramento,105.jpeg
+106,Seleções,COL,Colômbia,FAN_FAVOURITE,FWD,Luis Díaz,106.jpeg
+107,Seleções,COL,Colômbia,CREST,,Escudo,
+108,Seleções,COL,Colômbia,ICON,MID,James Rodríguez,108.jpeg
+109,Seleções,COL,Colômbia,BASE,GK,Camilo Vargas,
+110,Seleções,COL,Colômbia,BASE,DEF,Dávinson Sánchez,
+111,Seleções,COL,Colômbia,BASE,DEF,Yerry Mina,
+112,Seleções,COL,Colômbia,BASE,DEF,Daniel Muñoz,112.jpeg
+113,Seleções,COL,Colômbia,BASE,MID,Jefferson Lerma,113.jpeg
+114,Seleções,COL,Colômbia,BASE,MID,Richard Ríos,
+115,Seleções,COL,Colômbia,BASE,MID,Juan Fernando Quintero,
+116,Seleções,COL,Colômbia,BASE,FWD,Jhon Arias,
+117,Seleções,COL,Colômbia,BASE,FWD,Luis Suárez,
+118,Seleções,CRO,Croácia,FAN_FAVOURITE,MID,Ivan Perišić,
+119,Seleções,CRO,Croácia,CREST,,Escudo,119.jpeg
+120,Seleções,CRO,Croácia,ICON,MID,Luka Modrić,
+121,Seleções,CRO,Croácia,BASE,GK,Dominik Livaković,
+122,Seleções,CRO,Croácia,BASE,DEF,Duje Ćaleta-Car,
+123,Seleções,CRO,Croácia,BASE,DEF,Joško Gvardiol,123.jpeg
+124,Seleções,CRO,Croácia,BASE,DEF,Josip Stanišić,
+125,Seleções,CRO,Croácia,BASE,MID,Mateo Kovačić,125.jpeg
+126,Seleções,CRO,Croácia,BASE,MID,Lovro Majer,126.jpeg
+127,Seleções,CRO,Croácia,BASE,MID,Mario Pašalić,
+128,Seleções,CRO,Croácia,BASE,FWD,Ante Budimir,
+129,Seleções,CRO,Croácia,BASE,FWD,Andrej Kramarić,
+130,Seleções,CUW,Curaçao,FAN_FAVOURITE,DEF,Juriën Gaari,
+131,Seleções,CUW,Curaçao,CREST,,Escudo,
+132,Seleções,CUW,Curaçao,ICON,MID,Leandro Bacuna,
+133,Seleções,CUW,Curaçao,BASE,GK,Eloy Room,133.jpeg
+134,Seleções,CUW,Curaçao,BASE,DEF,Sherel Floranus,
+135,Seleções,CUW,Curaçao,BASE,DEF,Roshon van Eijma,
+136,Seleções,CUW,Curaçao,BASE,DEF,Armando Obispo,136.jpeg
+137,Seleções,CUW,Curaçao,BASE,MID,Livano Comenencia,137.jpeg
+138,Seleções,CUW,Curaçao,BASE,MID,Juninho Bacuna,
+139,Seleções,CUW,Curaçao,BASE,MID,Kenji Gorré,
+140,Seleções,CUW,Curaçao,BASE,FWD,Sontje Hansen,140.jpeg
+141,Seleções,CUW,Curaçao,BASE,FWD,Jearl Margaritha,
+142,Seleções,ECU,Equador,FAN_FAVOURITE,MID,Moisés Caicedo,
+143,Seleções,ECU,Equador,CREST,,Escudo,
+144,Seleções,ECU,Equador,ICON,FWD,Enner Valencia,
+145,Seleções,ECU,Equador,BASE,GK,Hernán Galíndez,145.jpeg
+146,Seleções,ECU,Equador,BASE,DEF,Piero Hincapié,146.jpeg
+147,Seleções,ECU,Equador,BASE,DEF,Pervis Estupiñán,147.jpeg
+148,Seleções,ECU,Equador,BASE,DEF,Willian Pacho,148.jpeg
+149,Seleções,ECU,Equador,BASE,DEF,Ángelo Preciado,
+150,Seleções,ECU,Equador,BASE,DEF,Joel Ordóñez,
+151,Seleções,ECU,Equador,BASE,MID,Alan Franco,
+152,Seleções,ECU,Equador,BASE,FWD,Gonzalo Plata,
+153,Seleções,ECU,Equador,BASE,FWD,Kevin Rodríguez,
+154,Seleções,EGY,Egito,FAN_FAVOURITE,FWD,Omar Marmoush,154.jpeg
+155,Seleções,EGY,Egito,CREST,,Escudo,
+156,Seleções,EGY,Egito,ICON,FWD,Mohamed Salah,
+157,Seleções,EGY,Egito,BASE,GK,Mohamed El Shenawy,157.jpeg
+158,Seleções,EGY,Egito,BASE,DEF,Mohamed Hany,158.jpeg
+159,Seleções,EGY,Egito,BASE,DEF,Mohamed Abdelmonem,159.jpeg
+160,Seleções,EGY,Egito,BASE,DEF,Ramy Rabia,160.jpeg
+161,Seleções,EGY,Egito,BASE,MID,Marwan Attia,
+162,Seleções,EGY,Egito,BASE,MID,Zizo,162.jpeg
+163,Seleções,EGY,Egito,BASE,MID,Hamdy Fathy,
+164,Seleções,EGY,Egito,BASE,FWD,Mostafa Mohamed,
+165,Seleções,EGY,Egito,BASE,FWD,Trézéguet,165.jpeg
+166,Seleções,ENG,Inglaterra,FAN_FAVOURITE,MID,Jude Bellingham,
+167,Seleções,ENG,Inglaterra,CREST,,Escudo,
+168,Seleções,ENG,Inglaterra,ICON,FWD,Harry Kane,
+169,Seleções,ENG,Inglaterra,BASE,GK,Jordan Pickford,
+170,Seleções,ENG,Inglaterra,BASE,DEF,Reece James,170.jpeg
+171,Seleções,ENG,Inglaterra,BASE,DEF,John Stones,171.jpeg
+172,Seleções,ENG,Inglaterra,BASE,MID,Declan Rice,
+173,Seleções,ENG,Inglaterra,BASE,MID,Jordan Henderson,
+174,Seleções,ENG,Inglaterra,BASE,MID,Phil Foden,
+175,Seleções,ENG,Inglaterra,BASE,FWD,Bukayo Saka,
+176,Seleções,ENG,Inglaterra,BASE,FWD,Cole Palmer,
+177,Seleções,ENG,Inglaterra,BASE,FWD,Marcus Rashford,177.jpeg
+178,Seleções,FRA,França,FAN_FAVOURITE,FWD,Ousmane Dembélé,178.jpeg
+179,Seleções,FRA,França,CREST,,Escudo,179.jpeg
+180,Seleções,FRA,França,ICON,FWD,Kylian Mbappé,
+181,Seleções,FRA,França,BASE,GK,Mike Maignan,
+182,Seleções,FRA,França,BASE,DEF,William Saliba,
+183,Seleções,FRA,França,BASE,DEF,Jules Koundé,
+184,Seleções,FRA,França,BASE,DEF,Théo Hernández,
+185,Seleções,FRA,França,BASE,MID,Aurélien Tchouaméni,185.jpeg
+186,Seleções,FRA,França,BASE,MID,Eduardo Camavinga,
+187,Seleções,FRA,França,BASE,FWD,Bradley Barcola,
+188,Seleções,FRA,França,BASE,FWD,Marcus Thuram,188.jpeg
+189,Seleções,FRA,França,BASE,FWD,Randal Kolo Muani,189.jpeg
+190,Seleções,GER,Alemanha,FAN_FAVOURITE,FWD,Jamal Musiala,
+191,Seleções,GER,Alemanha,CREST,,Escudo,191.jpeg
+192,Seleções,GER,Alemanha,ICON,MID,Joshua Kimmich,192.jpeg
+193,Seleções,GER,Alemanha,BASE,GK,Marc-André ter Stegen,193.jpeg
+194,Seleções,GER,Alemanha,BASE,DEF,Antonio Rüdiger,
+195,Seleções,GER,Alemanha,BASE,DEF,Jonathan Tah,
+196,Seleções,GER,Alemanha,BASE,MID,Felix Nmecha,
+197,Seleções,GER,Alemanha,BASE,MID,Leon Goretzka,197.jpeg
+198,Seleções,GER,Alemanha,BASE,MID,Florian Wirtz,
+199,Seleções,GER,Alemanha,BASE,MID,Serge Gnabry,199.jpeg
+200,Seleções,GER,Alemanha,BASE,FWD,Kai Havertz,
+201,Seleções,GER,Alemanha,BASE,FWD,Leroy Sané,
+202,Seleções,GHA,Gana,FAN_FAVOURITE,MID,Thomas Partey,202.jpeg
+203,Seleções,GHA,Gana,CREST,,Escudo,
+204,Seleções,GHA,Gana,ICON,FWD,Mohammed Kudus,
+205,Seleções,GHA,Gana,BASE,GK,Lawrence Ati Zigi,205.jpeg
+206,Seleções,GHA,Gana,BASE,DEF,Alidu Seidu,206.jpeg
+207,Seleções,GHA,Gana,BASE,DEF,Alexander Djiku,
+208,Seleções,GHA,Gana,BASE,DEF,Gideon Mensah,208.jpeg
+209,Seleções,GHA,Gana,BASE,DEF,Caleb Yirenkyi,
+210,Seleções,GHA,Gana,BASE,MID,Abdul Issahaku Fatawu,210.jpeg
+211,Seleções,GHA,Gana,BASE,FWD,Kamaldeen Sulemana,
+212,Seleções,GHA,Gana,BASE,FWD,Jordan Ayew,
+213,Seleções,GHA,Gana,BASE,FWD,Antoine Semenyo,
+214,Seleções,HAI,Haiti,FAN_FAVOURITE,FWD,Frantzdy Pierrot,
+215,Seleções,HAI,Haiti,CREST,,Escudo,215.jpeg
+216,Seleções,HAI,Haiti,ICON,FWD,Duckens Nazon,216.jpeg
+217,Seleções,HAI,Haiti,BASE,GK,Johny Placide,
+218,Seleções,HAI,Haiti,BASE,DEF,Ricardo Adé,
+219,Seleções,HAI,Haiti,BASE,DEF,Carlens Arcus,219.jpeg
+220,Seleções,HAI,Haiti,BASE,DEF,Hannes Delcroix,
+221,Seleções,HAI,Haiti,BASE,MID,Leverton Pierre,221.jpeg
+222,Seleções,HAI,Haiti,BASE,MID,Danley Jean Jacques,222.jpeg
+223,Seleções,HAI,Haiti,BASE,MID,Jean-Ricner Bellegarde,223.jpeg
+224,Seleções,HAI,Haiti,BASE,FWD,Ruben Providence,
+225,Seleções,HAI,Haiti,BASE,FWD,Don Deedson Louicius,225.jpeg
+226,Seleções,IRN,Irã,FAN_FAVOURITE,FWD,Mehdi Taremi,
+227,Seleções,IRN,Irã,CREST,,Escudo,
+228,Seleções,IRN,Irã,ICON,FWD,Sardar Azmoun,
+229,Seleções,IRN,Irã,BASE,GK,Alireza Beiranvand,229.jpeg
+230,Seleções,IRN,Irã,BASE,DEF,Shoja Khalilzadeh,
+231,Seleções,IRN,Irã,BASE,DEF,Milad Mohammadi,
+232,Seleções,IRN,Irã,BASE,DEF,Ramin Rezaeian,
+233,Seleções,IRN,Irã,BASE,DEF,Hossein Kanaani,
+234,Seleções,IRN,Irã,BASE,MID,Saeid Ezatolahi,234.jpeg
+235,Seleções,IRN,Irã,BASE,MID,Saman Ghoddos,
+236,Seleções,IRN,Irã,BASE,MID,Mohammad Mohebi,
+237,Seleções,IRN,Irã,BASE,FWD,Alireza Jahanbakhsh,237.jpeg
+238,Seleções,CIV,Costa do Marfim,FAN_FAVOURITE,MID,Franck Kessié,
+239,Seleções,CIV,Costa do Marfim,CREST,,Escudo,
+240,Seleções,CIV,Costa do Marfim,ICON,FWD,Sébastien Haller,
+241,Seleções,CIV,Costa do Marfim,BASE,GK,Yahia Fofana,
+242,Seleções,CIV,Costa do Marfim,BASE,DEF,Ghislain Konan,
+243,Seleções,CIV,Costa do Marfim,BASE,DEF,Odilon Kossounou,243.jpeg
+244,Seleções,CIV,Costa do Marfim,BASE,DEF,Evan N'Dicka,244.jpeg
+245,Seleções,CIV,Costa do Marfim,BASE,DEF,Wilfried Singo,
+246,Seleções,CIV,Costa do Marfim,BASE,MID,Ibrahim Sangaré,
+247,Seleções,CIV,Costa do Marfim,BASE,FWD,Nicolas Pépé,247.jpeg
+248,Seleções,CIV,Costa do Marfim,BASE,FWD,Simon Adingra,
+249,Seleções,CIV,Costa do Marfim,BASE,FWD,Oumar Diakité,249.jpeg
+250,Seleções,JPN,Japão,FAN_FAVOURITE,MID,Takumi Minamino,250.jpeg
+251,Seleções,JPN,Japão,CREST,,Escudo,
+252,Seleções,JPN,Japão,ICON,MID,Takefusa Kubo,
+253,Seleções,JPN,Japão,BASE,GK,Zion Suzuki,
+254,Seleções,JPN,Japão,BASE,DEF,Tsuyoshi Watanabe,254.jpeg
+255,Seleções,JPN,Japão,BASE,MID,Kaishu Sano,255.jpeg
+256,Seleções,JPN,Japão,BASE,MID,Ao Tanaka,
+257,Seleções,JPN,Japão,BASE,MID,Daichi Kamada,257.jpeg
+258,Seleções,JPN,Japão,BASE,MID,Ritsu Doan,
+259,Seleções,JPN,Japão,BASE,MID,Keito Nakamura,
+260,Seleções,JPN,Japão,BASE,FWD,Shuto Machino,
+261,Seleções,JPN,Japão,BASE,FWD,Ayase Ueda,
+262,Seleções,JOR,Jordânia,FAN_FAVOURITE,FWD,Yazan Al-Naimat,
+263,Seleções,JOR,Jordânia,CREST,,Escudo,
+264,Seleções,JOR,Jordânia,ICON,FWD,Musa Al-Taamari,264.jpeg
+265,Seleções,JOR,Jordânia,BASE,GK,Yazeed Abulaila,
+266,Seleções,JOR,Jordânia,BASE,DEF,Mohammad Abu Hashish,266.jpeg
+267,Seleções,JOR,Jordânia,BASE,DEF,Yazan Al-Arab,
+268,Seleções,JOR,Jordânia,BASE,DEF,Abdallah Nasib,268.jpeg
+269,Seleções,JOR,Jordânia,BASE,MID,Ibrahim Saadeh,269.jpeg
+270,Seleções,JOR,Jordânia,BASE,MID,Nizar Al-Rashdan,
+271,Seleções,JOR,Jordânia,BASE,MID,Noor Al-Rawabdeh,
+272,Seleções,JOR,Jordânia,BASE,FWD,Mahmoud Al-Mardi,272.jpeg
+273,Seleções,JOR,Jordânia,BASE,FWD,Ali Olwan,
+274,Seleções,KOR,Coreia do Sul,FAN_FAVOURITE,DEF,Minjae Kim,274.jpeg
+275,Seleções,KOR,Coreia do Sul,CREST,,Escudo,
+276,Seleções,KOR,Coreia do Sul,ICON,FWD,Heungmin Son,
+277,Seleções,KOR,Coreia do Sul,BASE,GK,Hyeonwoo Jo,277.jpeg
+278,Seleções,KOR,Coreia do Sul,BASE,DEF,Youngwoo Seol,
+279,Seleções,KOR,Coreia do Sul,BASE,DEF,Yumin Cho,
+280,Seleções,KOR,Coreia do Sul,BASE,DEF,Taeseok Lee,
+281,Seleções,KOR,Coreia do Sul,BASE,MID,Inbeom Hwang,
+282,Seleções,KOR,Coreia do Sul,BASE,MID,Jaesung Lee,
+283,Seleções,KOR,Coreia do Sul,BASE,MID,Kangin Lee,283.jpeg
+284,Seleções,KOR,Coreia do Sul,BASE,FWD,Hyeongyu Oh,
+285,Seleções,KOR,Coreia do Sul,BASE,FWD,Heechan Hwang,
+286,Seleções,MEX,México,FAN_FAVOURITE,MID,Edson Álvarez,
+287,Seleções,MEX,México,CREST,,Escudo,
+288,Seleções,MEX,México,ICON,FWD,Raúl Jiménez,288.jpeg
+289,Seleções,MEX,México,BASE,GK,Luis Malagón,
+290,Seleções,MEX,México,BASE,DEF,Israel Reyes,
+291,Seleções,MEX,México,BASE,DEF,Johan Vásquez,291.jpeg
+292,Seleções,MEX,México,BASE,DEF,César Montes,
+293,Seleções,MEX,México,BASE,DEF,Jesús Gallardo,
+294,Seleções,MEX,México,BASE,MID,Carlos Rodríguez,294.jpeg
+295,Seleções,MEX,México,BASE,MID,Orbelín Pineda,
+296,Seleções,MEX,México,BASE,FWD,Hirving Lozano,
+297,Seleções,MEX,México,BASE,FWD,Santiago Giménez,297.jpeg
+298,Seleções,MAR,Marrocos,FAN_FAVOURITE,FWD,Youssef En-Nesyri,298.jpeg
+299,Seleções,MAR,Marrocos,CREST,,Escudo,
+300,Seleções,MAR,Marrocos,ICON,DEF,Achraf Hakimi,
+301,Seleções,MAR,Marrocos,BASE,GK,Yassine Bounou,
+302,Seleções,MAR,Marrocos,BASE,DEF,Noussair Mazraoui,
+303,Seleções,MAR,Marrocos,BASE,DEF,Nayef Aguerd,
+304,Seleções,MAR,Marrocos,BASE,MID,Sofyan Amrabat,304.jpeg
+305,Seleções,MAR,Marrocos,BASE,MID,Eliesse Ben Seghir,305.jpeg
+306,Seleções,MAR,Marrocos,BASE,MID,Ismael Saibari,
+307,Seleções,MAR,Marrocos,BASE,FWD,Brahim Díaz,
+308,Seleções,MAR,Marrocos,BASE,FWD,Abde Ezzalzouli,
+309,Seleções,MAR,Marrocos,BASE,FWD,Ayoub El Kaabi,
+310,Seleções,NED,Holanda,FAN_FAVOURITE,FWD,Memphis Depay,
+311,Seleções,NED,Holanda,CREST,,Escudo,311.jpeg
+312,Seleções,NED,Holanda,ICON,DEF,Virgil van Dijk,312.jpeg
+313,Seleções,NED,Holanda,BASE,GK,Bart Verbruggen,
+314,Seleções,NED,Holanda,BASE,DEF,Nathan Aké,
+315,Seleções,NED,Holanda,BASE,DEF,Jeremie Frimpong,
+316,Seleções,NED,Holanda,BASE,DEF,Denzel Dumfries,
+317,Seleções,NED,Holanda,BASE,MID,Tijjani Reijnders,
+318,Seleções,NED,Holanda,BASE,MID,Ryan Gravenberch,318.jpeg
+319,Seleções,NED,Holanda,BASE,FWD,Cody Gakpo,319.jpeg
+320,Seleções,NED,Holanda,BASE,FWD,Donyell Malen,320.jpeg
+321,Seleções,NED,Holanda,BASE,FWD,Wout Weghorst,
+322,Seleções,NZL,Nova Zelândia,FAN_FAVOURITE,MID,Marko Stamenic,
+323,Seleções,NZL,Nova Zelândia,CREST,,Escudo,323.jpeg
+324,Seleções,NZL,Nova Zelândia,ICON,FWD,Chris Wood,324.jpeg
+325,Seleções,NZL,Nova Zelândia,BASE,GK,Max Crocombe,
+326,Seleções,NZL,Nova Zelândia,BASE,DEF,Michael Boxall,
+327,Seleções,NZL,Nova Zelândia,BASE,DEF,Liberato Cacace,
+328,Seleções,NZL,Nova Zelândia,BASE,DEF,Tim Payne,
+329,Seleções,NZL,Nova Zelândia,BASE,DEF,Finn Surman,
+330,Seleções,NZL,Nova Zelândia,BASE,MID,Joe Bell,
+331,Seleções,NZL,Nova Zelândia,BASE,MID,Sarpreet Singh,
+332,Seleções,NZL,Nova Zelândia,BASE,MID,Matt Garbett,
+333,Seleções,NZL,Nova Zelândia,BASE,FWD,Elijah Just,
+334,Seleções,NOR,Noruega,FAN_FAVOURITE,MID,Martin Ødegaard,334.jpeg
+335,Seleções,NOR,Noruega,CREST,,Escudo,
+336,Seleções,NOR,Noruega,ICON,FWD,Erling Haaland,336.jpeg
+337,Seleções,NOR,Noruega,BASE,GK,Ørjan Nyland,337.jpeg
+338,Seleções,NOR,Noruega,BASE,DEF,Julian Ryerson,
+339,Seleções,NOR,Noruega,BASE,DEF,Kristoffer Vassbakk Ajer,
+340,Seleções,NOR,Noruega,BASE,DEF,David Møller Wolfe,
+341,Seleções,NOR,Noruega,BASE,MID,Sander Berge,341.jpeg
+342,Seleções,NOR,Noruega,BASE,MID,Patrick Berg,342.jpeg
+343,Seleções,NOR,Noruega,BASE,FWD,Antonio Nusa,343.jpeg
+344,Seleções,NOR,Noruega,BASE,FWD,Oscar Bobb,344.jpeg
+345,Seleções,NOR,Noruega,BASE,FWD,Alexander Sørloth,345.jpeg
+346,Seleções,PAN,Panamá,FAN_FAVOURITE,DEF,Michael Amir Murillo,346.jpeg
+347,Seleções,PAN,Panamá,CREST,,Escudo,
+348,Seleções,PAN,Panamá,ICON,MID,Aníbal Godoy,
+349,Seleções,PAN,Panamá,BASE,GK,Orlando Mosquera,
+350,Seleções,PAN,Panamá,BASE,DEF,Andrés Andrade,350.jpeg
+351,Seleções,PAN,Panamá,BASE,DEF,Fidel Escobar,
+352,Seleções,PAN,Panamá,BASE,MID,Cristian Martínez,352.jpeg
+353,Seleções,PAN,Panamá,BASE,MID,Adalberto Carrasquilla,
+354,Seleções,PAN,Panamá,BASE,MID,Édgar Bárcenas,
+355,Seleções,PAN,Panamá,BASE,FWD,José Fajardo,
+356,Seleções,PAN,Panamá,BASE,FWD,Ismael Díaz,356.jpeg
+357,Seleções,PAN,Panamá,BASE,FWD,José Luiz Rodríguez,357.jpeg
+358,Seleções,PAR,Paraguai,FAN_FAVOURITE,DEF,Gustavo Gómez,
+359,Seleções,PAR,Paraguai,CREST,,Escudo,
+360,Seleções,PAR,Paraguai,ICON,FWD,Miguel Almirón,
+361,Seleções,PAR,Paraguai,BASE,GK,Roberto Fernández,
+362,Seleções,PAR,Paraguai,BASE,DEF,Juan José Cáceres,362.jpeg
+363,Seleções,PAR,Paraguai,BASE,DEF,Omar Alderete,363.jpeg
+364,Seleções,PAR,Paraguai,BASE,DEF,Júnior Alonso,364.jpeg
+365,Seleções,PAR,Paraguai,BASE,MID,Andrés Cubas,365.jpeg
+366,Seleções,PAR,Paraguai,BASE,MID,Mathías Villasanti,
+367,Seleções,PAR,Paraguai,BASE,MID,Julio Enciso,
+368,Seleções,PAR,Paraguai,BASE,FWD,Ramón Sosa,368.jpeg
+369,Seleções,PAR,Paraguai,BASE,FWD,Antonio Sanabria,
+370,Seleções,POR,Portugal,FAN_FAVOURITE,MID,Vitinha,370.jpeg
+371,Seleções,POR,Portugal,CREST,,Escudo,
+372,Seleções,POR,Portugal,ICON,FWD,Cristiano Ronaldo,
+373,Seleções,POR,Portugal,BASE,GK,Diogo Costa,373.jpeg
+374,Seleções,POR,Portugal,BASE,DEF,Rúben Dias,374.jpeg
+375,Seleções,POR,Portugal,BASE,DEF,Nuno Mendes,
+376,Seleções,POR,Portugal,BASE,MID,Bernardo Silva,
+377,Seleções,POR,Portugal,BASE,MID,Bruno Fernandes,377.jpeg
+378,Seleções,POR,Portugal,BASE,MID,Rúben Neves,
+379,Seleções,POR,Portugal,BASE,FWD,Francisco Conceição,
+380,Seleções,POR,Portugal,BASE,FWD,Pedro Neto,380.jpeg
+381,Seleções,POR,Portugal,BASE,FWD,Rafael Leão,
+382,Seleções,QAT,Catar,FAN_FAVOURITE,FWD,Almoez Ali,
+383,Seleções,QAT,Catar,CREST,,Escudo,
+384,Seleções,QAT,Catar,ICON,FWD,Hasan Al-Haydos,384.jpeg
+385,Seleções,QAT,Catar,BASE,GK,Meshaal Barsham,
+386,Seleções,QAT,Catar,BASE,DEF,Boualem Khoukhi,386.jpeg
+387,Seleções,QAT,Catar,BASE,DEF,Lucas Mendes,
+388,Seleções,QAT,Catar,BASE,DEF,Pedro Miguel,
+389,Seleções,QAT,Catar,BASE,DEF,Homam Al-Amin,389.jpeg
+390,Seleções,QAT,Catar,BASE,MID,Ahmed Fathi,
+391,Seleções,QAT,Catar,BASE,FWD,Edmílson Junior,391.jpeg
+392,Seleções,QAT,Catar,BASE,FWD,Ahmed Al-Ganehi,
+393,Seleções,QAT,Catar,BASE,FWD,Akram Hassan Afif,
+394,Seleções,KSA,Arábia Saudita,FAN_FAVOURITE,FWD,Feras Albrikan,
+395,Seleções,KSA,Arábia Saudita,CREST,,Escudo,395.jpeg
+396,Seleções,KSA,Arábia Saudita,ICON,FWD,Salem Aldawsari,
+397,Seleções,KSA,Arábia Saudita,BASE,GK,Nawaf Alaqidi,
+398,Seleções,KSA,Arábia Saudita,BASE,DEF,Hassan Altambakti,
+399,Seleções,KSA,Arábia Saudita,BASE,DEF,Jehad Thikri,
+400,Seleções,KSA,Arábia Saudita,BASE,DEF,Saud Abdulhamid,400.jpeg
+401,Seleções,KSA,Arábia Saudita,BASE,MID,Nasser Aldawsari,
+402,Seleções,KSA,Arábia Saudita,BASE,MID,Abdullah Alkhaibari,
+403,Seleções,KSA,Arábia Saudita,BASE,MID,Musab Aljuwayr,403.jpeg
+404,Seleções,KSA,Arábia Saudita,BASE,FWD,Saleh Abu Alshamat,
+405,Seleções,KSA,Arábia Saudita,BASE,FWD,Saleh Alshehri,
+406,Seleções,SCO,Escócia,FAN_FAVOURITE,MID,Scott McTominay,
+407,Seleções,SCO,Escócia,CREST,,Escudo,407.jpeg
+408,Seleções,SCO,Escócia,ICON,DEF,Andrew Robertson,
+409,Seleções,SCO,Escócia,BASE,GK,Angus Gunn,409.jpeg
+410,Seleções,SCO,Escócia,BASE,DEF,Kieran Tierney,
+411,Seleções,SCO,Escócia,BASE,DEF,Grant Hanley,
+412,Seleções,SCO,Escócia,BASE,MID,Billy Gilmour,412.jpeg
+413,Seleções,SCO,Escócia,BASE,MID,Lewis Ferguson,413.jpeg
+414,Seleções,SCO,Escócia,BASE,MID,Ryan Christie,414.jpeg
+415,Seleções,SCO,Escócia,BASE,MID,John McGinn,
+416,Seleções,SCO,Escócia,BASE,FWD,Ben Gannon-Doak,
+417,Seleções,SCO,Escócia,BASE,FWD,Ché Adams,
+418,Seleções,SEN,Senegal,FAN_FAVOURITE,DEF,Kalidou Koulibaly,418.jpeg
+419,Seleções,SEN,Senegal,CREST,,Escudo,
+420,Seleções,SEN,Senegal,ICON,FWD,Sadio Mané,
+421,Seleções,SEN,Senegal,BASE,GK,Edouard Mendy,421.jpeg
+422,Seleções,SEN,Senegal,BASE,DEF,Moussa Niakhaté,
+423,Seleções,SEN,Senegal,BASE,DEF,El Hadji Malick Diouf,423.jpeg
+424,Seleções,SEN,Senegal,BASE,MID,Idrissa Gana Gueye,
+425,Seleções,SEN,Senegal,BASE,MID,Pape Matar Sarr,
+426,Seleções,SEN,Senegal,BASE,FWD,Iliman Ndiaye,
+427,Seleções,SEN,Senegal,BASE,FWD,Krépin Diatta,427.jpeg
+428,Seleções,SEN,Senegal,BASE,FWD,Ismaïla Sarr,
+429,Seleções,SEN,Senegal,BASE,FWD,Nicolas Jackson,429.jpeg
+430,Seleções,RSA,África do Sul,FAN_FAVOURITE,FWD,Lyle Foster,
+431,Seleções,RSA,África do Sul,CREST,,Escudo,
+432,Seleções,RSA,África do Sul,ICON,GK,Ronwen Williams,
+433,Seleções,RSA,África do Sul,BASE,DEF,Sivabonga Ngezana,
+434,Seleções,RSA,África do Sul,BASE,DEF,Aubrey Modiba,
+435,Seleções,RSA,África do Sul,BASE,DEF,Mbekezeli Mbokazi,435.jpeg
+436,Seleções,RSA,África do Sul,BASE,DEF,Khuliso Mudau,436.jpeg
+437,Seleções,RSA,África do Sul,BASE,MID,Teboho Mokoena,
+438,Seleções,RSA,África do Sul,BASE,MID,Yaya Sithole,438.jpeg
+439,Seleções,RSA,África do Sul,BASE,MID,Themba Zwane,
+440,Seleções,RSA,África do Sul,BASE,FWD,Oswin Appollis,
+441,Seleções,RSA,África do Sul,BASE,FWD,Iqraam Rayners,
+442,Seleções,ESP,Espanha,FAN_FAVOURITE,FWD,Lamine Yamal,
+443,Seleções,ESP,Espanha,CREST,,Escudo,
+444,Seleções,ESP,Espanha,ICON,MID,Rodri,
+445,Seleções,ESP,Espanha,BASE,GK,Unai Simón,
+446,Seleções,ESP,Espanha,BASE,DEF,Robin Le Normand,446.jpeg
+447,Seleções,ESP,Espanha,BASE,DEF,Dean Huijsen,447.jpeg
+448,Seleções,ESP,Espanha,BASE,DEF,Marc Cucurella,
+449,Seleções,ESP,Espanha,BASE,MID,Martín Zubimendi,
+450,Seleções,ESP,Espanha,BASE,MID,Pedri,
+451,Seleções,ESP,Espanha,BASE,MID,Fabián Ruiz,
+452,Seleções,ESP,Espanha,BASE,FWD,Nico Williams,452.jpeg
+453,Seleções,ESP,Espanha,BASE,FWD,Mikel Oyarzabal,
+454,Seleções,SUI,Suíça,FAN_FAVOURITE,DEF,Manuel Akanji,
+455,Seleções,SUI,Suíça,CREST,,Escudo,455.jpeg
+456,Seleções,SUI,Suíça,ICON,MID,Granit Xhaka,
+457,Seleções,SUI,Suíça,BASE,GK,Gregor Kobel,457.jpeg
+458,Seleções,SUI,Suíça,BASE,DEF,Nico Elvedi,458.jpeg
+459,Seleções,SUI,Suíça,BASE,DEF,Ricardo Rodríguez,
+460,Seleções,SUI,Suíça,BASE,DEF,Silvan Widmer,460.jpeg
+461,Seleções,SUI,Suíça,BASE,MID,Denis Zakaria,
+462,Seleções,SUI,Suíça,BASE,MID,Remo Freuler,
+463,Seleções,SUI,Suíça,BASE,FWD,Breel Embolo,463.jpeg
+464,Seleções,SUI,Suíça,BASE,FWD,Rubén Vargas,464.jpeg
+465,Seleções,SUI,Suíça,BASE,FWD,Dan Ndoye,465.jpeg
+466,Seleções,TUN,Tunísia,FAN_FAVOURITE,MID,Ferjani Sassi,
+467,Seleções,TUN,Tunísia,CREST,,Escudo,
+468,Seleções,TUN,Tunísia,ICON,MID,Ellyes Skhiri,
+469,Seleções,TUN,Tunísia,BASE,GK,Aymen Dahmen,469.jpeg
+470,Seleções,TUN,Tunísia,BASE,DEF,Montassar Talbi,
+471,Seleções,TUN,Tunísia,BASE,DEF,Yassine Meriah,
+472,Seleções,TUN,Tunísia,BASE,DEF,Ali Abdi,472.jpeg
+473,Seleções,TUN,Tunísia,BASE,MID,Aïssa Laïdouni,473.jpeg
+474,Seleções,TUN,Tunísia,BASE,MID,Hannibal Mejbri,
+475,Seleções,TUN,Tunísia,BASE,FWD,Naïm Sliti,
+476,Seleções,TUN,Tunísia,BASE,FWD,Elias Achouri,
+477,Seleções,TUN,Tunísia,BASE,FWD,Hazem Mastouri,
+478,Seleções,USA,Estados Unidos,FAN_FAVOURITE,MID,Weston McKennie,478.jpeg
+479,Seleções,USA,Estados Unidos,CREST,,Escudo,479.jpeg
+480,Seleções,USA,Estados Unidos,ICON,FWD,Christian Pulisic,
+481,Seleções,USA,Estados Unidos,BASE,GK,Matt Freese,
+482,Seleções,USA,Estados Unidos,BASE,DEF,Chris Richards,
+483,Seleções,USA,Estados Unidos,BASE,DEF,Tim Ream,483.jpeg
+484,Seleções,USA,Estados Unidos,BASE,DEF,Antonee Robinson,484.jpeg
+485,Seleções,USA,Estados Unidos,BASE,MID,Tanner Tessmann,485.jpeg
+486,Seleções,USA,Estados Unidos,BASE,MID,Tyler Adams,
+487,Seleções,USA,Estados Unidos,BASE,MID,Timothy Weah,487.jpeg
+488,Seleções,USA,Estados Unidos,BASE,FWD,Malik Tillman,
+489,Seleções,USA,Estados Unidos,BASE,FWD,Folarin Balogun,
+490,Seleções,URU,Uruguai,FAN_FAVOURITE,DEF,José María Giménez,
+491,Seleções,URU,Uruguai,CREST,,Escudo,
+492,Seleções,URU,Uruguai,ICON,MID,Federico Valverde,
+493,Seleções,URU,Uruguai,BASE,GK,Sergio Rochet,
+494,Seleções,URU,Uruguai,BASE,DEF,Ronald Araújo,494.jpeg
+495,Seleções,URU,Uruguai,BASE,DEF,Sebastián Cáceres,
+496,Seleções,URU,Uruguai,BASE,DEF,Mathías Olivera,496.jpeg
+497,Seleções,URU,Uruguai,BASE,DEF,Nahitan Nández,497.jpeg
+498,Seleções,URU,Uruguai,BASE,MID,Rodrigo Bentancur,
+499,Seleções,URU,Uruguai,BASE,MID,Manuel Ugarte,499.jpeg
+500,Seleções,URU,Uruguai,BASE,FWD,Facundo Pellistri,
+501,Seleções,URU,Uruguai,BASE,FWD,Darwin Núñez,
+502,Seleções,UZB,Uzbequistão,FAN_FAVOURITE,DEF,Abdukodir Khusanov,502.jpeg
+503,Seleções,UZB,Uzbequistão,CREST,,Escudo,
+504,Seleções,UZB,Uzbequistão,ICON,FWD,Eldor Shomurodov,
+505,Seleções,UZB,Uzbequistão,BASE,GK,Utkir Yusupov,505.jpeg
+506,Seleções,UZB,Uzbequistão,BASE,DEF,Farrukh Sayfiev,
+507,Seleções,UZB,Uzbequistão,BASE,DEF,Sherzod Nasrullaev,507.jpeg
+508,Seleções,UZB,Uzbequistão,BASE,DEF,Husniddin Aliqulov,
+509,Seleções,UZB,Uzbequistão,BASE,DEF,Rustam Ashurmatov,
+510,Seleções,UZB,Uzbequistão,BASE,DEF,Khojiakbar Alijonov,
+511,Seleções,UZB,Uzbequistão,BASE,MID,Odiljon Hamrobekov,
+512,Seleções,UZB,Uzbequistão,BASE,MID,Otabek Shukurov,
+513,Seleções,UZB,Uzbequistão,BASE,FWD,Abbosbek Fayzullaev,
+514,Contenders,,,CONTENDER_PATH,,ITA - NIR/WAL - BIH,
+515,Contenders,,,CONTENDER_PATH,,UKR - SWE/POL - ALB,
+516,Contenders,,,CONTENDER_PATH,,TUR - ROU/SVK - KOS,
+517,Contenders,,,CONTENDER_PATH,,DEN - MKD/CZE - IRL,
+518,Contenders,,,CONTENDER_PATH,,NCL - JAM/COD,
+519,Contenders,,,CONTENDER_PATH,,SUR - BOL/IRQ,
+520,Contenders,DEN,Dinamarca,CONTENDER,MID,Hjulmand (DEN),
+521,Contenders,DEN,Dinamarca,CONTENDER,MID,Højbjerg (DEN),
+522,Contenders,DEN,Dinamarca,CONTENDER,MID,Eriksen (DEN),
+523,Contenders,DEN,Dinamarca,CONTENDER,MID,Damsgaard (DEN),
+524,Contenders,DEN,Dinamarca,CONTENDER,FWD,Højlund (DEN),524.jpeg
+525,Contenders,ITA,Itália,CONTENDER,GK,Donnarumma (ITA),525.jpeg
+526,Contenders,ITA,Itália,CONTENDER,DEF,Bastoni (ITA),526.jpeg
+527,Contenders,ITA,Itália,CONTENDER,MID,Tonali (ITA),
+528,Contenders,ITA,Itália,CONTENDER,MID,Barella (ITA),528.jpeg
+529,Contenders,ITA,Itália,CONTENDER,FWD,Kean (ITA),529.jpeg
+530,Contenders,JAM,Jamaica,CONTENDER,GK,Blake (JAM),
+531,Contenders,JAM,Jamaica,CONTENDER,DEF,Pinnock (JAM),
+532,Contenders,JAM,Jamaica,CONTENDER,FWD,Gray (JAM),532.jpeg
+533,Contenders,JAM,Jamaica,CONTENDER,FWD,Bailey (JAM),533.jpeg
+534,Contenders,JAM,Jamaica,CONTENDER,FWD,Nicholson (JAM),
+535,Contenders,POL,Polônia,CONTENDER,DEF,Cash (POL),
+536,Contenders,POL,Polônia,CONTENDER,DEF,Kiwior (POL),
+537,Contenders,POL,Polônia,CONTENDER,MID,Zieliński (POL),537.jpeg
+538,Contenders,POL,Polônia,CONTENDER,MID,Szymański (POL),
+539,Contenders,POL,Polônia,CONTENDER,FWD,Lewandowski (POL),
+540,Contenders,SWE,Suécia,CONTENDER,DEF,Hien (SWE),
+541,Contenders,SWE,Suécia,CONTENDER,MID,Kulusevski (SWE),
+542,Contenders,SWE,Suécia,CONTENDER,FWD,Elanga (SWE),
+543,Contenders,SWE,Suécia,CONTENDER,FWD,Gyökeres (SWE),
+544,Contenders,SWE,Suécia,CONTENDER,FWD,Isak (SWE),544.jpeg
+545,Contenders,TUR,Turquia,CONTENDER,DEF,Söyüncü (TUR),
+546,Contenders,TUR,Turquia,CONTENDER,MID,Çalhanoğlu (TUR),546.jpeg
+547,Contenders,TUR,Turquia,CONTENDER,MID,Güler (TUR),547.jpeg
+548,Contenders,TUR,Turquia,CONTENDER,FWD,Yildiz (TUR),
+549,Contenders,TUR,Turquia,CONTENDER,FWD,Aktürkoğlu (TUR),549.jpeg
+550,Top Keepers,ARG,Argentina,TOP_KEEPER,GK,Martínez (ARG),550.jpeg
+551,Top Keepers,BEL,Bélgica,TOP_KEEPER,GK,Courtois (BEL),
+552,Top Keepers,BRA,Brasil,TOP_KEEPER,GK,Alisson (BRA),552.jpeg
+553,Top Keepers,FRA,França,TOP_KEEPER,GK,Maignan (FRA),553.jpeg
+554,Top Keepers,JPN,Japão,TOP_KEEPER,GK,Suzuki (JPN),
+555,Top Keepers,MAR,Marrocos,TOP_KEEPER,GK,Bounou (MAR),
+556,Top Keepers,POR,Portugal,TOP_KEEPER,GK,Diogo Costa (POR),556.jpeg
+557,Top Keepers,ESP,Espanha,TOP_KEEPER,GK,Simón (ESP),
+558,Top Keepers,SUI,Suíça,TOP_KEEPER,GK,Kobel (SUI),
+559,Defensive Rocks,BRA,Brasil,DEFENSIVE_ROCK,DEF,Éder Militão (BRA),559.jpeg
+560,Defensive Rocks,CAN,Canadá,DEFENSIVE_ROCK,DEF,Davies (CAN),
+561,Defensive Rocks,FRA,França,DEFENSIVE_ROCK,DEF,Saliba (FRA),
+562,Defensive Rocks,GER,Alemanha,DEFENSIVE_ROCK,DEF,Rüdiger (GER),
+563,Defensive Rocks,KOR,Coreia do Sul,DEFENSIVE_ROCK,DEF,Kim (KOR),
+564,Defensive Rocks,MAR,Marrocos,DEFENSIVE_ROCK,DEF,Hakimi (MAR),
+565,Defensive Rocks,NED,Holanda,DEFENSIVE_ROCK,DEF,Van Dijk (NED),
+566,Defensive Rocks,POR,Portugal,DEFENSIVE_ROCK,DEF,Nuno Mendes (POR),566.jpeg
+567,Defensive Rocks,ESP,Espanha,DEFENSIVE_ROCK,DEF,Huijsen (ESP),
+568,Midfield Maestros,ARG,Argentina,MIDFIELD_MAESTRO,MID,Fernández (ARG),
+569,Midfield Maestros,BEL,Bélgica,MIDFIELD_MAESTRO,MID,De Bruyne (BEL),
+570,Midfield Maestros,BRA,Brasil,MIDFIELD_MAESTRO,MID,Casemiro (BRA),
+571,Midfield Maestros,CRO,Croácia,MIDFIELD_MAESTRO,MID,Modrić (CRO),
+572,Midfield Maestros,ECU,Equador,MIDFIELD_MAESTRO,MID,Caicedo (ECU),
+573,Midfield Maestros,ENG,Inglaterra,MIDFIELD_MAESTRO,MID,Bellingham (ENG),
+574,Midfield Maestros,FRA,França,MIDFIELD_MAESTRO,MID,Tchouaméni (FRA),
+575,Midfield Maestros,GER,Alemanha,MIDFIELD_MAESTRO,MID,Wirtz (GER),
+576,Midfield Maestros,MAR,Marrocos,MIDFIELD_MAESTRO,MID,Amrabat (MAR),576.jpeg
+577,Midfield Maestros,NED,Holanda,MIDFIELD_MAESTRO,MID,Reijnders (NED),577.jpeg
+578,Midfield Maestros,NOR,Noruega,MIDFIELD_MAESTRO,MID,Ødegaard (NOR),
+579,Midfield Maestros,POR,Portugal,MIDFIELD_MAESTRO,MID,Vitinha (POR),
+580,Midfield Maestros,SCO,Escócia,MIDFIELD_MAESTRO,MID,McTominay (SCO),
+581,Midfield Maestros,ESP,Espanha,MIDFIELD_MAESTRO,MID,Rodri (ESP),
+582,Midfield Maestros,ESP,Espanha,MIDFIELD_MAESTRO,MID,Pedri (ESP),582.jpeg
+583,Midfield Maestros,SUI,Suíça,MIDFIELD_MAESTRO,MID,Xhaka (SUI),
+584,Midfield Maestros,USA,Estados Unidos,MIDFIELD_MAESTRO,MID,Adams (USA),
+585,Midfield Maestros,URU,Uruguai,MIDFIELD_MAESTRO,MID,Valverde (URU),585.jpeg
+586,Goal Machines,ARG,Argentina,GOAL_MACHINE,FWD,Alvarez (ARG),586.jpeg
+587,Goal Machines,BEL,Bélgica,GOAL_MACHINE,FWD,Lukaku (BEL),
+588,Goal Machines,BRA,Brasil,GOAL_MACHINE,FWD,Raphinha (BRA),588.jpeg
+589,Goal Machines,CAN,Canadá,GOAL_MACHINE,FWD,David (CAN),
+590,Goal Machines,COL,Colômbia,GOAL_MACHINE,FWD,Díaz (COL),
+591,Goal Machines,CRO,Croácia,GOAL_MACHINE,FWD,Kramarić (CRO),
+592,Goal Machines,ECU,Equador,GOAL_MACHINE,FWD,Valencia (ECU),
+593,Goal Machines,EGY,Egito,GOAL_MACHINE,FWD,Marmoush (EGY),
+594,Goal Machines,ENG,Inglaterra,GOAL_MACHINE,FWD,Rashford (ENG),594.jpeg
+595,Goal Machines,FRA,França,GOAL_MACHINE,FWD,Kolo Muani (FRA),
+596,Goal Machines,GER,Alemanha,GOAL_MACHINE,FWD,Havertz (GER),
+597,Goal Machines,CIV,Costa do Marfim,GOAL_MACHINE,FWD,Haller (CIV),
+598,Goal Machines,MEX,México,GOAL_MACHINE,FWD,Jiménez (MEX),
+599,Goal Machines,MAR,Marrocos,GOAL_MACHINE,FWD,En-Nesyri (MAR),
+600,Goal Machines,NED,Holanda,GOAL_MACHINE,FWD,Gakpo (NED),600.jpeg
+601,Goal Machines,NZL,Nova Zelândia,GOAL_MACHINE,FWD,Wood (NZL),
+602,Goal Machines,NOR,Noruega,GOAL_MACHINE,FWD,Sørloth (NOR),
+603,Goal Machines,SEN,Senegal,GOAL_MACHINE,FWD,Jackson (SEN),
+604,Goal Machines,ESP,Espanha,GOAL_MACHINE,FWD,Oyarzabal (ESP),604.jpeg
+605,Goal Machines,SUI,Suíça,GOAL_MACHINE,FWD,Embolo (SUI),
+606,Goal Machines,USA,Estados Unidos,GOAL_MACHINE,FWD,Pulisic (USA),
+607,Goal Machines,URU,Uruguai,GOAL_MACHINE,FWD,Núñez (URU),
+608,Master Rookies,ARG,Argentina,MASTER_ROOKIE,MID,Paz (ARG),
+609,Master Rookies,ARG,Argentina,MASTER_ROOKIE,FWD,Mastantuono (ARG),
+610,Master Rookies,BEL,Bélgica,MASTER_ROOKIE,DEF,Debast (BEL),
+611,Master Rookies,BRA,Brasil,MASTER_ROOKIE,DEF,Wesley (BRA),
+612,Master Rookies,BRA,Brasil,MASTER_ROOKIE,FWD,Estêvão (BRA),
+613,Master Rookies,CRO,Croácia,MASTER_ROOKIE,MID,Sučić (CRO),
+614,Master Rookies,ECU,Equador,MASTER_ROOKIE,MID,Páez (ECU),614.jpeg
+615,Master Rookies,ENG,Inglaterra,MASTER_ROOKIE,MID,Rogers (ENG),
+616,Master Rookies,FRA,França,MASTER_ROOKIE,FWD,Doué (FRA),
+617,Master Rookies,FRA,França,MASTER_ROOKIE,FWD,Barcola (FRA),
+618,Master Rookies,GER,Alemanha,MASTER_ROOKIE,FWD,Woltemade (GER),
+619,Master Rookies,NED,Holanda,MASTER_ROOKIE,FWD,Simons (NED),619.jpeg
+620,Master Rookies,NOR,Noruega,MASTER_ROOKIE,MID,Schjelderup (NOR),
+621,Master Rookies,PAR,Paraguai,MASTER_ROOKIE,MID,Gómez (PAR),
+622,Master Rookies,POR,Portugal,MASTER_ROOKIE,MID,João Neves (POR),622.jpeg
+623,Master Rookies,ESP,Espanha,MASTER_ROOKIE,DEF,Cubarsí (ESP),
+624,Especiais,,,EMBLEM,,Official Emblem,
+625,Especiais,,,MASCOT,GK,Official Mascot - Maple,625.jpeg
+626,Especiais,,,MASCOT,MID,Official Mascot - Clutch,626.jpeg
+627,Especiais,,,MASCOT,FWD,Official Mascot - Zayu,
+628,Especiais,,,ETERNOS_22,DEF,Eternos 22 - Defenders,
+629,Especiais,,,ETERNOS_22,MID,Eternos 22 - Midfielders,
+630,Especiais,ARG,Argentina,ETERNOS_22,FWD,Eternos 22 - Forwards,630.jpeg

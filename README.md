@@ -282,3 +282,11 @@ Criar a coleção é grátis; a loja exige assinatura mensal (cartão, com teste
 - **`/login?modo=cadastro&next=/assinar`** — abre na aba de cadastro e segue para a assinatura.
 - **`/termos`, `/privacidade`, `/cancelamento`, `/contato`** — textos em `content/legal.ts` (primeira versão, a revisar com advogado). Preencha `COMPANY` (razão social, CNPJ, endereço, e-mail, foro).
 - Endereços reservados para lojas: `lib/brand.ts` + **`supabase_migration_reserved_slugs.sql`**.
+
+## Várias coleções
+
+Cada coleção é uma linha em `albums` (`wc2026-panini` = Álbum Copa do Mundo 2026, `wc2026-adrenalyn` = Adrenalyn XL). O código de cada item é único na plataforma inteira: o Álbum Copa usa os códigos de sempre (`BRA1`, `FWC3`, `LIL1`…) e a Adrenalyn XL usa `AXL1`–`AXL630` — por isso `collection`, `sticker_prices`, pedidos e carrinhos não precisam de chave por coleção.
+
+- Migração: **`supabase_migration_collections.sql`** (Fase 1, só aditiva). Adrenalyn XL entra **inativa**; cria `user_albums` (coleções de cada pessoa, com nome próprio; trigger em `auth.users` para contas novas) e `shop_albums` (loja por coleção: ativa, pedido mínimo, preços por grupo em jsonb); adiciona `album_id` em `orders`, `cart_holds` e `collection_shares`.
+- Lista dos cards da Adrenalyn XL: **`data/adrenalyn-xl.csv`** (número, seção, seleção, tipo, posição, nome, imagem). As fotos originais ficam em `data/adrenalyn-xl/cards/` (fora do git).
+- Até as próximas fases, o app ainda lê o nome da coleção do `user_metadata` e os preços das colunas de `shops`; a migração que trocar isso recopia os valores.

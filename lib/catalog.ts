@@ -142,7 +142,8 @@ export const ADRENALYN: Catalog = {
   itemPlural: "cards",
   owned: { cell: "tenho", total: "Tenho", block: "cards" },
   searchPlaceholder: "Buscar jogador ou seleção (ex: messi)",
-  displayCode: numberOf,
+  // "AXL24" → "24"; Limited Editions (sem número oficial) → "LE12", "XL3"…
+  displayCode: (code) => code.replace(/^AXL/, ""),
   blocks: adrenalyn.blocks,
   total: adrenalyn.total,
   filters: [
@@ -150,22 +151,28 @@ export const ADRENALYN: Catalog = {
     { value: "TEAM", label: "Seleções" },
     { value: "SPECIAL", label: "Especiais" },
     { value: "CONTENDER", label: "Contenders" },
+    { value: "LIMITED", label: "Limited" },
   ],
   priceGroups: [
     { key: "TEAM", label: "Seleções" },
     { key: "SPECIAL", label: "Especiais" },
     { key: "CONTENDER", label: "Contenders" },
+    { key: "LIMITED", label: "Limited Editions" },
   ],
-  countsToward: () => true,
-  blockTag: (b) => (b.tipo === "TEAM" ? b.grupo : b.tipo === "CONTENDER" ? "Contenders" : "Especial"),
+  // As Limited Editions ficam fora do total de 630 (como as Legends no Álbum Copa).
+  countsToward: (b) => b.tipo !== "LIMITED",
+  blockTag: (b) =>
+    b.tipo === "TEAM" ? b.grupo : b.tipo === "CONTENDER" ? "Contenders" : b.tipo === "LIMITED" ? "Limited" : "Especial",
   isSpecial: (b) => b.tipo !== "TEAM",
-  blockRange: (b) => `${numberOf(b.codes[0])}–${numberOf(b.codes[b.codes.length - 1])}`,
+  blockRange: (b) =>
+    b.labels ? `${b.codes.length} cards` : `${numberOf(b.codes[0])}–${numberOf(b.codes[b.codes.length - 1])}`,
   // Seleções, Contenders e Especiais (Golden Ballers vem antes das seleções no checklist, mas fica junto
   // dos outros especiais no menu).
   menuSections: [
     { title: "Seleções", variant: "team", blocks: adrenalyn.blocks.filter((b) => b.tipo === "TEAM") },
     { title: "Contenders", variant: "cc", blocks: adrenalyn.blocks.filter((b) => b.tipo === "CONTENDER") },
     { title: "Especiais", variant: "fwc", blocks: adrenalyn.blocks.filter((b) => b.tipo === "SPECIAL") },
+    { title: "Limited Editions", variant: "leg", blocks: adrenalyn.blocks.filter((b) => b.tipo === "LIMITED") },
   ],
   menuLabel: (b) => b.nome,
   menuCode: (b) => (b.tipo === "TEAM" ? b.grupo : null),

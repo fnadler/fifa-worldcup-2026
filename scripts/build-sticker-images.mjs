@@ -98,8 +98,10 @@ for (const file of await readdir(LEGENDS_DIR)) {
 }
 
 for (const file of await readdir(ADRENALYN_DIR).catch(() => [])) {
-  const m = file.match(/^0*(\d+)\.(jpe?g|png|webp)$/i); // "limited-1.jpeg" etc. ficam de fora
-  const code = m && `AXL${m[1]}`;
+  // "024.jpeg" → AXL24; Limited Editions pelo próprio código ("AXLLE40.jpeg"). "limited-1.jpeg" etc. ficam de fora.
+  const m = file.match(/^0*(\d+)\.(jpe?g|png|webp)$/i);
+  const porCodigo = path.parse(file).name.toUpperCase();
+  const code = m ? `AXL${m[1]}` : validCodes.has(porCodigo) ? porCodigo : null;
   if (!code || !validCodes.has(code)) continue;
   sources.set(code, path.join(ADRENALYN_DIR, file));
 }

@@ -1,13 +1,18 @@
-// Gera lib/catalogs/adrenalyn-xl.json (blocos do catálogo da Adrenalyn XL) a partir de data/adrenalyn-xl.csv.
+// Gera lib/catalogs/adrenalyn-xl.json (blocos do catálogo da Adrenalyn XL) a partir de data/adrenalyn-xl.csv
+// (os 630 cards numerados) e data/adrenalyn-xl-limited.csv (Limited Editions, sem número: um bloco por
+// categoria, com o nome do jogador na célula, fora do total de 630 — como as Legends no Álbum Copa).
 // Uso: node scripts/build-adrenalyn-catalog.mjs
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
-const csv = await readFile(path.join(ROOT, "data/adrenalyn-xl.csv"), "utf8");
-const [header, ...lines] = csv.trim().split("\n");
-const cols = header.split(",");
-const rows = lines.map((l) => Object.fromEntries(l.split(",").map((v, i) => [cols[i], v])));
+async function readCsv(file) {
+  const csv = await readFile(path.join(ROOT, file), "utf8");
+  const [header, ...lines] = csv.trim().split("\n");
+  const cols = header.split(",");
+  return lines.map((l) => Object.fromEntries(l.split(",").map((v, i) => [cols[i], v])));
+}
+const rows = await readCsv("data/adrenalyn-xl.csv");
 
 // Seções do checklist → blocos do quadro. Seleções viram um bloco por país.
 const SECTION_IDS = {
@@ -46,5 +51,18 @@ for (const r of rows) {
 }
 
 const total = blocks.reduce((s, b) => s + b.codes.length, 0);
+
+for (const r of await readCsv("data/adrenalyn-xl-limited.csv")) {
+  const id = `axl-${r.tipo.toLowerCase().replace(/_/g, "-")}`;
+  let b = blocks[blocks.length - 1];
+  if (b.id !== id) {
+    b = { id, nome: r.categoria, tipo: "LIMITED", grupo: r.tipo, codes: [], labels: [], kinds: [] };
+    blocks.push(b);
+  }
+  b.codes.push(r.codigo);
+  b.labels.push(r.nome);
+  b.kinds.push(r.tipo);
+}
 await writeFile(path.join(ROOT, "lib/catalogs/adrenalyn-xl.json"), JSON.stringify({ total, blocks }) + "\n");
-console.log(`${blocks.length} blocos, ${total} cards`);
+const limited = blocks.filter((b) => b.tipo === "LIMITED").reduce((s, b) => s + b.codes.length, 0);
+console.log(`${blocks.length} blocos, ${total} cards + ${limited} Limited Editions`);

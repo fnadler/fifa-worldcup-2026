@@ -92,10 +92,10 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
   async function mudarStatus(order: Order, status: OrderStatus) {
     const aviso =
       status === "confirmado"
-        ? `Confirmar o pedido #${order.number}? As figurinhas serão baixadas da sua coleção.`
+        ? `Confirmar o pedido #${order.number}? Os itens serão baixados da sua coleção.`
         : order.status === "confirmado"
-          ? `Cancelar o pedido #${order.number}? As figurinhas voltam para a sua coleção.`
-          : `Cancelar o pedido #${order.number}? A reserva das figurinhas é liberada.`;
+          ? `Cancelar o pedido #${order.number}? Os itens voltam para a sua coleção.`
+          : `Cancelar o pedido #${order.number}? A reserva dos itens é liberada.`;
     if (!window.confirm(aviso)) return;
 
     setBusy(order.id);
@@ -157,7 +157,7 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
           ))}
         </div>
         <span className="order-hint">
-          Pedidos novos reservam as figurinhas por {RESERVA_HORAS}h. Sem confirmação nesse prazo, são cancelados e o estoque é
+          Pedidos novos reservam os itens por {RESERVA_HORAS}h. Sem confirmação nesse prazo, são cancelados e o estoque é
           liberado.
         </span>
       </div>

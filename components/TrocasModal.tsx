@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useCatalog } from "@/lib/CatalogContext";
 
 interface TrocasModalProps {
   lista: string;
@@ -9,6 +10,7 @@ interface TrocasModalProps {
 }
 
 export default function TrocasModal({ lista, totRepetidas, onClose }: TrocasModalProps) {
+  const catalog = useCatalog();
   const [copiado, setCopiado] = useState(false);
 
   async function copiar() {
@@ -31,7 +33,9 @@ export default function TrocasModal({ lista, totRepetidas, onClose }: TrocasModa
       <div className="modal-card trocas-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <span className="modal-title">Minhas repetidas</span>
-          <span className="modal-count">{totRepetidas} figurinhas</span>
+          <span className="modal-count">
+            {totRepetidas} {totRepetidas === 1 ? catalog.itemSingular : catalog.itemPlural}
+          </span>
           <div className="modal-header-spacer" />
           <button type="button" className="btn-primary" onClick={copiar}>
             {copiado ? "Copiado!" : "Copiar lista"}

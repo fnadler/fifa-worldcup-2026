@@ -276,15 +276,15 @@ export default function AdminSettings({
             <strong>Ainda não dá para abrir a loja.</strong>
             {stockSummary.repetidas === 0 ? (
               <span>
-                Você não tem nenhuma figurinha repetida para vender. Marque suas repetidas em <em>Minha coleção</em> —
-                só elas aparecem à venda.
+                Você não tem nenhum item repetido para vender. Marque suas repetidas em <em>Minha coleção</em> — só
+                elas aparecem à venda.
               </span>
             ) : (
               <>
                 <span>
-                  Você tem {stockSummary.repetidas} figurinha{stockSummary.repetidas === 1 ? "" : "s"} repetida
-                  {stockSummary.repetidas === 1 ? "" : "s"}, mas nenhuma com preço. Defina um preço por grupo (ex: todas
-                  as Seleções) ou por figurinha para ela aparecer na loja.
+                  Você tem {stockSummary.repetidas} {stockSummary.repetidas === 1 ? "item repetido" : "itens repetidos"}{" "}
+                  numa coleção à venda, mas nenhum com preço. Defina um preço por grupo (ex: todas as Seleções) ou
+                  individual para ele aparecer na loja.
                 </span>
                 <button type="button" className="btn-primary" onClick={onGoToPrices}>
                   Definir preços

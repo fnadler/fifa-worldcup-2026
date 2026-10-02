@@ -34,15 +34,15 @@ export default function HoldTimer({ expiresAt, variant = "full" }: HoldTimerProp
     <div className={`hold-timer ${expirou ? "is-expired" : urgente ? "is-urgent" : ""}`} role="status">
       {expirou ? (
         <>
-          <strong>Sua reserva expirou.</strong> As figurinhas voltaram a ficar disponíveis para outras pessoas. Ao
+          <strong>Sua reserva expirou.</strong> Os itens voltaram a ficar disponíveis para outras pessoas. Ao
           fechar o pedido, confirmamos o que ainda está disponível.
         </>
       ) : (
         <>
           <span className="hold-timer-clock">{mmss(restante)}</span>
           <span>
-            Suas figurinhas estão <strong>reservadas para você</strong> por {CARRINHO_MINUTOS} minutos. Feche o pedido
-            nesse prazo para garantir todas.
+            Seus itens estão <strong>reservados para você</strong> por {CARRINHO_MINUTOS} minutos. Feche o pedido
+            nesse prazo para garantir todos.
           </span>
         </>
       )}

@@ -16,12 +16,12 @@ export default function ContatoPage() {
           { h: "E-mail", p: [COMPANY.email, "Respondemos em até 2 dias úteis (pedidos sobre dados pessoais: em até 15 dias, conforme a LGPD)."] },
           {
             h: "Assinatura",
-            p: ["Para cancelar ou trocar o cartão, você não precisa falar com a gente: acesse Meu perfil → Assinatura da loja → Gerenciar assinatura."],
+            p: ["Para cancelar ou trocar o cartão, você não precisa falar com a gente: abra o menu da sua conta → Minha loja → Assinatura → Gerenciar assinatura."],
           },
           {
-            h: "Compras de figurinhas",
+            h: "Compras de figurinhas e cards",
             p: [
-              "Pedidos, pagamentos e entregas de figurinhas são combinados diretamente com o vendedor pelo WhatsApp. Se tiver um problema com uma compra, fale primeiro com o vendedor; se suspeitar de fraude, nos avise pelo e-mail acima.",
+              "Pedidos, pagamentos e entregas são combinados diretamente com o vendedor pelo WhatsApp. Se tiver um problema com uma compra, fale primeiro com o vendedor; se suspeitar de fraude, nos avise pelo e-mail acima.",
             ],
           },
           { h: "Empresa", p: [`${COMPANY.razaoSocial} · CNPJ ${COMPANY.cnpj}`, COMPANY.endereco] },

@@ -41,7 +41,7 @@ export default function StickerPreview({
   }, [onClose, onPrev, onNext]);
 
   return (
-    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label={`Figurinha ${code}`}>
+    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label={`Item ${displayCode(code)}`}>
       <div className="modal-card preview-card" onClick={(e) => e.stopPropagation()}>
         <div className="preview-media">
           {onPrev && (

@@ -5,7 +5,7 @@ export const landing = {
   meta: {
     title: "GN Coleciona — sua coleção organizada, suas repetidas à venda",
     description:
-      "Registre grátis cada figurinha do álbum da Copa 2026 e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam no seu WhatsApp.",
+      "Registre grátis cada figurinha e card das suas coleções — Álbum da Copa 2026, Adrenalyn XL e mais — e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam no seu WhatsApp.",
   },
 
   nav: [
@@ -16,10 +16,10 @@ export const landing = {
   ],
 
   hero: {
-    pill: "Álbum da Copa 2026",
+    pill: "Álbum da Copa 2026 · Adrenalyn XL",
     title: "Organize sua coleção. Venda suas repetidas.",
     subtitle:
-      "Registre grátis cada figurinha do álbum e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam direto no seu WhatsApp.",
+      "Registre grátis cada figurinha e card das suas coleções e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam direto no seu WhatsApp.",
     note: "Cancele quando quiser durante o teste, sem cobrança.",
     badgeTitle: "repetidas já na sua loja",
     badgeSub: "atualizado automaticamente",
@@ -29,9 +29,9 @@ export const landing = {
 
   split: {
     kicker: "Uma plataforma, dois jeitos de usar",
-    title: "Primeiro você completa o álbum. Depois, o que sobra vira renda.",
+    title: "Primeiro você completa a coleção. Depois, o que sobra vira renda.",
     colecao:
-      "Todas as figurinhas do álbum num quadro só — com foto de cada uma. Marque o que tem, quantas repetidas de cada e veja o que falta por seleção.",
+      "Cada coleção num quadro só — com foto de cada figurinha ou card. Marque o que tem, quantas repetidas de cada e veja o que falta por seleção.",
     loja: "Suas repetidas viram vitrine pública, com os seus preços e o seu endereço. Compradores montam o pedido e mandam para o seu WhatsApp.",
   },
 
@@ -46,10 +46,10 @@ export const landing = {
     ],
     features: [
       {
-        t: "O álbum inteiro em uma tela",
-        d: "Seleções, FWC History, Coca-Cola e as raras Legends, organizadas por grupo, com atalho para pular direto para qualquer uma.",
+        t: "Várias coleções na mesma conta",
+        d: "O Álbum da Copa 2026 (com FWC, Coca-Cola e as raras Legends) e os cards Adrenalyn XL, cada um com seu progresso. Troque de coleção com um toque.",
       },
-      { t: "Veja a foto de cada figurinha", d: "Alterne entre fotos e grade compacta. Um toque soma; a segunda unidade em diante já conta como repetida." },
+      { t: "Veja a foto de cada item", d: "Alterne entre fotos e grade compacta. Um toque soma; a segunda unidade em diante já conta como repetida." },
       { t: "Totais sempre à vista", d: "Coladas, repetidas e faltantes no geral e em cada seleção." },
       { t: "Lista de troca pronta", d: "Filtre só repetidas ou só faltantes e copie a lista para mandar no grupo." },
     ],
@@ -64,18 +64,18 @@ export const landing = {
     steps: [
       {
         t: "Repetidas viram estoque",
-        d: "Toda figurinha com mais de uma unidade na coleção aparece na loja, com foto e a quantidade disponível.",
+        d: "Toda figurinha ou card com mais de uma unidade na coleção aparece na loja, com foto e a quantidade disponível.",
       },
       { t: "Sua loja, seu endereço", d: "Link próprio (gncoleciona.com.br/sua-loja), sua imagem e seus preços: por grupo e individuais para as mais disputadas." },
       {
         t: "O comprador monta o pedido",
-        d: "As figurinhas ficam reservadas no carrinho enquanto ele fecha a compra — nada de vender a mesma duas vezes.",
+        d: "Os itens ficam reservados no carrinho enquanto ele fecha a compra — nada de vender o mesmo duas vezes.",
       },
       { t: "Pedido no seu WhatsApp", d: "Você confirma, combina pagamento e entrega. A loja se atualiza sozinha." },
     ],
     pricing: {
       title: "Preço do seu jeito",
-      subtitle: "Regra geral por grupo e exceções para as figurinhas que valem mais.",
+      subtitle: "Regra geral por grupo, em cada coleção, e exceções para os itens que valem mais.",
       grupo: [
         { nome: "Figurinhas de seleção", preco: "R$ 2,50" },
         { nome: "FWC History", preco: "R$ 4,00" },
@@ -104,8 +104,9 @@ export const landing = {
     free: {
       nome: "Coleção",
       items: [
-        "Registro completo do álbum, com fotos",
-        "Quantidade de repetidas por figurinha",
+        "Álbum da Copa 2026 e Adrenalyn XL, com fotos",
+        "Várias coleções na mesma conta",
+        "Quantidade de repetidas por item",
         "Totais por seleção e geral",
         "Lista de repetidas para troca",
         "Link público para mostrar sua coleção",
@@ -120,6 +121,7 @@ export const landing = {
         "Tudo do plano Coleção",
         "Loja com endereço próprio e sua imagem",
         "Repetidas viram estoque automaticamente",
+        "Venda de várias coleções na mesma loja",
         "Preços por grupo e individuais",
         "Reserva automática no carrinho",
         "Pedidos direto no seu WhatsApp",
@@ -143,16 +145,20 @@ export const landing = {
       r: "Sim. Durante o teste, cancelar significa não ser cobrado. Depois, o cancelamento encerra a renovação e a loja sai do ar ao fim do período já pago. Sua coleção continua salva e gratuita.",
     },
     {
-      p: "Preciso cadastrar as figurinhas da loja uma por uma?",
-      r: "Não. Toda figurinha com repetida na sua coleção entra automaticamente na loja. Você só define os preços: um valor por grupo e, se quiser, valores específicos para figurinhas individuais.",
+      p: "Quais coleções posso acompanhar?",
+      r: "Hoje, o Álbum da Copa do Mundo 2026 (Panini) e os cards Adrenalyn XL da Copa. Você pode acompanhar as duas na mesma conta, cada uma com seu progresso, sua lista de repetidas e seu link público — e outras coleções estão a caminho.",
+    },
+    {
+      p: "Preciso cadastrar os itens da loja um por um?",
+      r: "Não. Toda figurinha ou card com repetida na sua coleção entra automaticamente na loja. Você só define os preços: um valor por grupo e, se quiser, valores específicos para itens individuais.",
     },
     {
       p: "O comprador paga pelo site?",
-      r: "Não. O comprador escolhe as figurinhas e envia o pedido, que chega pronto no seu WhatsApp. Você confirma a disponibilidade e combina pagamento e entrega direto com ele.",
+      r: "Não. O comprador escolhe os itens e envia o pedido, que chega pronto no seu WhatsApp. Você confirma a disponibilidade e combina pagamento e entrega direto com ele.",
     },
     {
-      p: "E se duas pessoas quiserem a mesma figurinha?",
-      r: "Quem coloca no carrinho primeiro garante: a figurinha fica reservada por alguns minutos enquanto a pessoa fecha o pedido, e o pedido segura o estoque até você confirmar. Ao confirmar a venda, ela sai das suas repetidas — nada de vender a mesma figurinha duas vezes.",
+      p: "E se duas pessoas quiserem o mesmo item?",
+      r: "Quem coloca no carrinho primeiro garante: o item fica reservado por alguns minutos enquanto a pessoa fecha o pedido, e o pedido segura o estoque até você confirmar. Ao confirmar a venda, ele sai das suas repetidas — nada de vender o mesmo item duas vezes.",
     },
   ],
 

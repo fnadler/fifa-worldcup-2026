@@ -91,7 +91,7 @@ export default function LoginForm({ albums, initialMode = "signin", next }: Logi
       <div className="login-card">
         <div className="brand">
           <BrandLogo />
-          <span className="kicker">Controle de figurinhas</span>
+          <span className="kicker">Figurinhas e cards</span>
           <span className="title">{PLATFORM_NAME}</span>
         </div>
 

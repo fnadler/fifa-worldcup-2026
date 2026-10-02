@@ -15,7 +15,7 @@ interface SubscribePageProps {
 
 const BENEFICIOS = [
   "Sua loja com endereço próprio (/nome-da-sua-loja) e a sua imagem",
-  "Catálogo com fotos das suas repetidas, preços por grupo ou por figurinha",
+  "Catálogo com fotos das suas repetidas, em várias coleções, com preços por grupo ou por item",
   "Carrinho com reserva, pedido mínimo e pedidos direto no seu WhatsApp",
   "Painel de pedidos: confirmar, editar, dar baixa no estoque automaticamente",
 ];

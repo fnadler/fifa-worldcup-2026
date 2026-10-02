@@ -127,7 +127,7 @@ export default function OrderEditor({ order, stock, reservedOthers, pricing, sav
         <input
           type="search"
           className="search-input"
-          placeholder="Incluir figurinha: código ou nome (ex: BRA9, messi)"
+          placeholder="Incluir item: código, nº ou nome (ex: messi)"
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
         />

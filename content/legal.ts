@@ -40,7 +40,7 @@ export function termosDeUso(trialDays: number, graceDays: number): LegalDoc {
       {
         h: "1. O que é a GN Coleciona",
         p: [
-          "A GN Coleciona é uma ferramenta para colecionadores de figurinhas. Ela oferece: (a) a Coleção, gratuita, para registrar as figurinhas que você tem, as repetidas e as que faltam; e (b) a Loja, por assinatura, que transforma as suas figurinhas repetidas em um catálogo público com preços definidos por você, no qual compradores montam pedidos que são enviados ao seu WhatsApp.",
+          "A GN Coleciona é uma ferramenta para colecionadores de figurinhas e cards. Ela oferece: (a) a Coleção, gratuita, para registrar, em uma ou mais coleções (como álbuns de figurinhas e coleções de cards), os itens que você tem, as repetidas e os que faltam; e (b) a Loja, por assinatura, que transforma os seus itens repetidos em um catálogo público com preços definidos por você, no qual compradores montam pedidos que são enviados ao seu WhatsApp.",
           "A GN Coleciona é apenas uma vitrine tecnológica: não compra, não vende, não recebe pagamentos das vendas entre usuários, não faz entregas e não é parte das negociações entre lojistas e compradores.",
         ],
       },
@@ -50,7 +50,8 @@ export function termosDeUso(trialDays: number, graceDays: number): LegalDoc {
           "Usuário: qualquer pessoa com conta na plataforma.",
           "Lojista: usuário com assinatura ativa (ou em teste) que publica uma Loja.",
           "Comprador: pessoa que monta e envia um pedido pela Loja de um Lojista, com ou sem conta.",
-          "Pedido: a lista de figurinhas escolhidas pelo Comprador e enviada ao Lojista pelo WhatsApp.",
+          "Item: figurinha, card ou outro colecionável de uma coleção disponível na plataforma.",
+          "Pedido: a lista de itens de uma mesma coleção escolhidos pelo Comprador e enviada ao Lojista pelo WhatsApp.",
         ],
       },
       {

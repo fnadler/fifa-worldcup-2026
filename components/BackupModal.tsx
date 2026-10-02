@@ -43,7 +43,7 @@ export default function BackupModal({ mode, qtd, onClose, onRestore }: BackupMod
       const txt = backupText(qtd, true);
       const a = document.createElement("a");
       a.href = `data:application/json;charset=utf-8,${encodeURIComponent(txt)}`;
-      a.download = `figurinhas-copa2026-${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `gn-coleciona-backup-${new Date().toISOString().slice(0, 10)}.json`;
       a.rel = "noopener";
       document.body.appendChild(a);
       a.click();
@@ -82,7 +82,7 @@ export default function BackupModal({ mode, qtd, onClose, onRestore }: BackupMod
         <div className="modal-notice">
           {isImport
             ? "Cole aqui o texto do backup e clique em Restaurar. Isso substitui a base atual."
-            : `Este texto é a sua base completa (${count} figurinhas). Copie e guarde em uma nota, e-mail ou arquivo.`}
+            : `Este texto é a sua base completa, com todas as suas coleções (${count} ${count === 1 ? "item" : "itens"}). Copie e guarde em uma nota, e-mail ou arquivo.`}
         </div>
         {isImport ? (
           <textarea

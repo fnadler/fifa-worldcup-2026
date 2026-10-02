@@ -1,17 +1,17 @@
 import { PLATFORM_NAME } from "@/lib/brand";
 
 // Orientações mostradas no checkout, antes de confirmar o pedido. Tom de "dicas de quem já
-// compra figurinhas", para ajudar sem assustar; o aviso de responsabilidade vem por último.
+// compra figurinhas e cards", para ajudar sem assustar; o aviso de responsabilidade vem por último.
 const DICAS = [
   {
     icone: "📸",
-    titulo: "Peça fotos ou um vídeo das figurinhas",
-    texto: "É rapidinho e você confere que são exatamente as do seu pedido.",
+    titulo: "Peça fotos ou um vídeo dos itens",
+    texto: "É rapidinho e você confere que são exatamente os do seu pedido.",
   },
   {
     icone: "✅",
     titulo: "Pague depois de conferir",
-    texto: "Faça o Pix ou depósito só quando tiver certeza de que o vendedor tem as figurinhas.",
+    texto: "Faça o Pix ou depósito só quando tiver certeza de que o vendedor tem os itens.",
   },
   {
     icone: "📦",
@@ -55,7 +55,7 @@ export default function SafetyTips() {
       </ul>
       <p className="safety-tips-note">
         A {PLATFORM_NAME} é o catálogo que conecta você ao vendedor: não intermedia pagamentos nem entregas, e não se
-        responsabiliza pela venda de figurinhas entre colecionadores.
+        responsabiliza pela venda de figurinhas e cards entre colecionadores.
       </p>
     </section>
   );

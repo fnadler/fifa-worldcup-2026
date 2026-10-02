@@ -5,6 +5,7 @@ import { DEFAULT_CATALOG, getCatalog } from "@/lib/catalog";
 import { DEFAULT_COLLECTION_NAME } from "@/lib/brand";
 import PublicBoard from "@/components/PublicBoard";
 import type { Qtd } from "@/lib/types";
+import { fetchAll } from "@/lib/fetchAll";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +29,9 @@ export default async function PublicoPage({
   const codes = new Set(catalog.blocks.flatMap((b) => b.codes));
 
   const [{ data: rows }, { data: ua }, { data: owner }] = await Promise.all([
-    admin.from("collection").select("code, qty").eq("user_id", share.user_id),
+    fetchAll<{ code: string; qty: number }>((from, to) =>
+      admin.from("collection").select("code, qty").eq("user_id", share.user_id).gt("qty", 0).order("code").range(from, to)
+    ),
     admin.from("user_albums").select("collection_name").eq("user_id", share.user_id).eq("album_id", catalog.id).maybeSingle(),
     admin.auth.admin.getUserById(share.user_id),
   ]);

@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { fetchAll } from "./fetchAll";
 import type { Qtd } from "./types";
 
 // Marcações ainda não enviadas ao servidor — por conta, para nunca irem para a conta errada.
@@ -140,10 +141,9 @@ export async function fetchRemoteQtd(
   supabase: SupabaseClient,
   userId: string
 ): Promise<Qtd> {
-  const { data, error } = await supabase
-    .from("collection")
-    .select("code, qty")
-    .eq("user_id", userId);
+  const { data, error } = await fetchAll<{ code: string; qty: number }>((from, to) =>
+    supabase.from("collection").select("code, qty").eq("user_id", userId).gt("qty", 0).order("code").range(from, to)
+  );
   if (error) throw error;
   const qtd: Qtd = {};
   for (const row of data ?? []) {

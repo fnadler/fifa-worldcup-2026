@@ -15,6 +15,7 @@ import { hasShopAccess } from "@/lib/shopAccess";
 import ShopAdmin from "@/components/ShopAdmin";
 import type { Qtd } from "@/lib/types";
 import { PLATFORM_NAME } from "@/lib/brand";
+import { fetchAll } from "@/lib/fetchAll";
 
 export const dynamic = "force-dynamic";
 
@@ -80,14 +81,18 @@ export default async function VendasPage({
   await supabase.rpc("expire_orders", { p_seller: user.id });
 
   const [{ data: priceRows }, { data: orderRows }, { data: collectionRows }] = await Promise.all([
-    supabase.from("sticker_prices").select("code, price_cents").eq("user_id", user.id),
+    fetchAll<{ code: string; price_cents: number }>((from, to) =>
+      supabase.from("sticker_prices").select("code, price_cents").eq("user_id", user.id).order("code").range(from, to)
+    ),
     supabase
       .from("orders")
       .select(ORDER_COLUMNS)
       .eq("seller_id", user.id)
       .order("created_at", { ascending: false })
       .limit(500),
-    supabase.from("collection").select("code, qty").eq("user_id", user.id),
+    fetchAll<{ code: string; qty: number }>((from, to) =>
+      supabase.from("collection").select("code, qty").eq("user_id", user.id).gt("qty", 1).order("code").range(from, to)
+    ),
   ]);
 
   const individual: Record<string, number> = {};

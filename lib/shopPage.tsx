@@ -11,6 +11,7 @@ import { hasShopAccess } from "@/lib/shopAccess";
 import NoticeCard from "@/components/NoticeCard";
 import ShopBoard from "@/components/ShopBoard";
 import type { Qtd } from "@/lib/types";
+import { fetchAll } from "@/lib/fetchAll";
 
 // Página pública da loja, compartilhada por /<slug> (endereço amigável) e /loja/<token>
 // (link permanente antigo, que redireciona para o slug quando ele existe).
@@ -69,8 +70,13 @@ export async function renderShop(where: ShopLookup) {
   const cartId = readCartId((await cookies()).get(CART_COOKIE)?.value);
 
   const [{ data: rows }, { data: priceRows }, { data: reservedRows }, { data: ownHold }] = await Promise.all([
-    admin.from("collection").select("code, qty").eq("user_id", shop.user_id),
-    admin.from("sticker_prices").select("code, price_cents").eq("user_id", shop.user_id),
+    // só repetidas (qty > 1) interessam à loja
+    fetchAll<{ code: string; qty: number }>((from, to) =>
+      admin.from("collection").select("code, qty").eq("user_id", shop.user_id).gt("qty", 1).order("code").range(from, to)
+    ),
+    fetchAll<{ code: string; price_cents: number }>((from, to) =>
+      admin.from("sticker_prices").select("code, price_cents").eq("user_id", shop.user_id).order("code").range(from, to)
+    ),
     // reservas de pedidos + carrinhos de OUTRAS pessoas (o deste navegador não desconta dele)
     admin.rpc("reserved_qty", { p_seller: shop.user_id, p_exclude_cart: cartId }),
     cartId

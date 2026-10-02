@@ -8,6 +8,12 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
   return shopMetadata({ token: (await params).token });
 }
 
-export default async function LojaPorTokenPage({ params }: { params: Promise<{ token: string }> }) {
-  return renderShop({ token: (await params).token });
+export default async function LojaPorTokenPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ token: string }>;
+  searchParams: Promise<{ colecao?: string }>;
+}) {
+  return renderShop({ token: (await params).token }, (await searchParams).colecao);
 }

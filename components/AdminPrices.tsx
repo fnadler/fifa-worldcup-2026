@@ -10,6 +10,8 @@ import type { Qtd, TipoFiltro } from "@/lib/types";
 
 interface AdminPricesProps {
   userId: string;
+  /** Estado da coleção na loja — vai junto na gravação, para criar a linha sem ativá-la por engano. */
+  album: { enabled: boolean; minOrderCents: number };
   group: GroupPrices;
   setGroup: Dispatch<SetStateAction<GroupPrices>>;
   individual: Record<string, number>;
@@ -22,6 +24,7 @@ type Pincel = "set" | "clear";
 
 export default function AdminPrices({
   userId,
+  album,
   group,
   setGroup,
   individual,
@@ -30,6 +33,7 @@ export default function AdminPrices({
   onToast,
 }: AdminPricesProps) {
   const catalog = useCatalog();
+  const f = catalog.itemSingular === "figurinha";
   const [groupInputs, setGroupInputs] = useState<Record<string, string>>(() =>
     Object.fromEntries(catalog.priceGroups.map((g) => [g.key, centsToInput(group[g.key] ?? null)]))
   );
@@ -41,7 +45,7 @@ export default function AdminPrices({
   const [soEstoque, setSoEstoque] = useState(true);
   const [busca, setBusca] = useState("");
 
-  const pricing = useMemo(() => ({ group, individual }), [group, individual]);
+  const pricing = useMemo(() => ({ groups: { [catalog.id]: group }, individual }), [catalog.id, group, individual]);
 
   async function salvarGrupos(e: FormEvent) {
     e.preventDefault();
@@ -52,17 +56,21 @@ export default function AdminPrices({
       parsed[g.key] = v;
     }
     setSavingGroup(true);
+    // Grupos sem preço ficam de fora do jsonb (null = não vende o grupo).
+    const prices = Object.fromEntries(Object.entries(parsed).filter(([, v]) => v !== null));
     const { error } = await createClient()
-      .from("shops")
-      // Por enquanto os preços por grupo do Álbum Copa ficam em colunas de shops (Fase 3 → shop_albums).
-      .update({
-        price_fwc_cents: parsed.FWC,
-        price_team_cents: parsed.TEAM,
-        price_cc_cents: parsed.CC,
-        price_leg_cents: parsed.LEG,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("user_id", userId);
+      .from("shop_albums")
+      .upsert(
+        {
+          user_id: userId,
+          album_id: catalog.id,
+          enabled: album.enabled,
+          min_order_cents: album.minOrderCents,
+          group_prices: prices,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id,album_id" }
+      );
     setSavingGroup(false);
     if (error) return onToast("Não foi possível salvar os preços — tente de novo.");
     setGroup(parsed);
@@ -91,7 +99,7 @@ export default function AdminPrices({
 
     const cents = parseBRL(pincelInput);
     if (cents === null || Number.isNaN(cents)) {
-      onToast("Digite o preço a aplicar (ex: 3,00) antes de clicar nas figurinhas.");
+      onToast(`Digite o preço a aplicar (ex: 3,00) antes de clicar n${f ? "as" : "os"} ${catalog.itemPlural}.`);
       return;
     }
     setIndividual((prev) => {
@@ -133,8 +141,8 @@ export default function AdminPrices({
       <form className="admin-section" onSubmit={salvarGrupos}>
         <h2 className="admin-section-title">Preço por grupo</h2>
         <p className="modal-notice">
-          Vale para todas as figurinhas do grupo que não tenham preço individual. Deixe em branco para não vender o
-          grupo (a não ser as figurinhas com preço individual).
+          Vale para tod{f ? "as as" : "os os"} {catalog.itemPlural} do grupo que não tenham preço individual. Deixe em
+          branco para não vender o grupo (a não ser {f ? "as" : "os"} {catalog.itemPlural} com preço individual).
         </p>
         <div className="form-row">
           {catalog.priceGroups.map(({ key: t, label }) => (
@@ -160,8 +168,9 @@ export default function AdminPrices({
       <section className="admin-section">
         <h2 className="admin-section-title">Preço individual</h2>
         <p className="modal-notice">
-          Escolha o pincel e clique nas figurinhas (ou em “aplicar ao bloco”). O preço individual sobrepõe o do grupo.
-          {qtdIndividual > 0 && ` ${qtdIndividual} figurinha${qtdIndividual === 1 ? "" : "s"} com preço individual.`}
+          Escolha o pincel e clique n{f ? "as" : "os"} {catalog.itemPlural} (ou em “aplicar ao bloco”). O preço
+          individual sobrepõe o do grupo.
+          {qtdIndividual > 0 && ` ${qtdIndividual} ${qtdIndividual === 1 ? "item" : "itens"} com preço individual.`}
         </p>
 
         <div className="controls-row">
@@ -195,7 +204,7 @@ export default function AdminPrices({
         <div className="controls-row">
           <input
             type="search"
-            placeholder="Buscar seleção ou código (ex: BRA9)"
+            placeholder={catalog.searchPlaceholder}
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
             className="search-input"
@@ -281,7 +290,7 @@ export default function AdminPrices({
         ))}
         {visibleBlocks.length === 0 && (
           <div className="empty-message">
-            {soEstoque ? "Nenhuma repetida em estoque com esses filtros." : "Nenhuma figurinha com esses filtros."}
+            {soEstoque ? "Nenhuma repetida em estoque com esses filtros." : `Nenhum${f ? "a" : ""} ${catalog.itemSingular} com esses filtros.`}
           </div>
         )}
       </div>

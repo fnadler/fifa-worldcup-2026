@@ -1,5 +1,5 @@
-import { stickerName } from "./album";
-import { catalogOfCodes, lookupCode } from "./catalog";
+import { displayCode, stickerName } from "./album";
+import { CATALOGS, DEFAULT_CATALOG, catalogOfCodes, lookupCode } from "./catalog";
 import { normalizeWhatsapp } from "./phone";
 
 export { isValidPhoneBR, maskPhoneBR, normalizeWhatsapp, onlyDigits } from "./phone";
@@ -20,9 +20,47 @@ export interface CartHold {
 export type GroupPrices = Record<BlockType, number | null>;
 
 // Preços em centavos. Individual sobrepõe o do grupo; sem nenhum dos dois = não vendável.
+// O preço de grupo é por coleção (o tipo "TEAM" existe em mais de uma).
 export interface ShopPricing {
-  group: GroupPrices;
+  /** albums.id → preço por grupo daquela coleção (só as coleções à venda). */
+  groups: Record<string, GroupPrices>;
   individual: Record<string, number>;
+}
+
+/** Configuração da loja para uma coleção (tabela shop_albums). */
+export interface ShopAlbum {
+  albumId: string;
+  /** Coleção à venda na loja. */
+  enabled: boolean;
+  minOrderCents: number;
+  groupPrices: GroupPrices;
+}
+
+export interface ShopAlbumRow {
+  album_id: string;
+  enabled: boolean;
+  min_order_cents: number;
+  group_prices: GroupPrices | null;
+}
+
+export const SHOP_ALBUM_COLUMNS = "album_id, enabled, min_order_cents, group_prices";
+
+/** Uma entrada por coleção da plataforma; sem linha no banco = fora da loja (Álbum Copa: à venda). */
+export function shopAlbumsFromRows(rows: ShopAlbumRow[] | null): ShopAlbum[] {
+  return CATALOGS.map((c) => {
+    const r = rows?.find((x) => x.album_id === c.id);
+    return {
+      albumId: c.id,
+      enabled: r ? r.enabled : c.id === DEFAULT_CATALOG.id,
+      minOrderCents: r?.min_order_cents ?? 0,
+      groupPrices: r?.group_prices ?? {},
+    };
+  });
+}
+
+/** Preços de grupo das coleções à venda, no formato de ShopPricing.groups. */
+export function groupsOf(albums: ShopAlbum[]): Record<string, GroupPrices> {
+  return Object.fromEntries(albums.filter((a) => a.enabled).map((a) => [a.albumId, a.groupPrices]));
 }
 
 export interface ShopSettings {
@@ -35,7 +73,6 @@ export interface ShopSettings {
   enabled: boolean;
   sellerName: string;
   whatsapp: string;
-  minOrderCents: number;
 }
 
 export interface OrderItem {
@@ -60,6 +97,8 @@ export interface BuyerInfo {
 export interface Order {
   id: string;
   number: number;
+  /** Coleção do pedido (um pedido é sempre de uma coleção só). */
+  albumId: string;
   status: OrderStatus;
   buyer: BuyerInfo;
   items: OrderItem[];
@@ -82,16 +121,12 @@ export interface ShopRow {
   enabled: boolean;
   seller_name: string | null;
   whatsapp: string | null;
-  min_order_cents: number;
-  price_fwc_cents: number | null;
-  price_team_cents: number | null;
-  price_cc_cents: number | null;
-  price_leg_cents: number | null;
 }
 
 export interface OrderRow {
   id: string;
   number: number;
+  album_id: string | null;
   status: OrderStatus;
   buyer_name: string;
   buyer_email: string;
@@ -111,7 +146,7 @@ export interface OrderRow {
 }
 
 export const ORDER_COLUMNS =
-  "id, number, status, buyer_name, buyer_email, buyer_whatsapp, address_cep, address_street, address_number, address_complement, address_district, address_city, address_state, items, total_cents, created_at, reserved_until, cancel_reason";
+  "id, number, album_id, status, buyer_name, buyer_email, buyer_whatsapp, address_cep, address_street, address_number, address_complement, address_district, address_city, address_state, items, total_cents, created_at, reserved_until, cancel_reason";
 
 export function isKnownCode(code: string): boolean {
   return lookupCode(code) !== undefined;
@@ -130,8 +165,8 @@ export function describeSticker(code: string): string {
 export function priceFor(code: string, pricing: ShopPricing): number | null {
   const individual = pricing.individual[code];
   if (individual !== undefined) return individual;
-  const tipo = lookupCode(code)?.block.tipo;
-  return tipo ? (pricing.group[tipo] ?? null) : null;
+  const e = lookupCode(code);
+  return e ? (pricing.groups[e.catalog.id]?.[e.block.tipo] ?? null) : null;
 }
 
 // Só as repetidas estão à venda — a figurinha colada no álbum nunca sai.
@@ -148,12 +183,7 @@ export function settingsFromRow(row: ShopRow): ShopSettings {
     enabled: row.enabled,
     sellerName: row.seller_name ?? "",
     whatsapp: row.whatsapp ?? "",
-    minOrderCents: row.min_order_cents,
   };
-}
-
-export function groupPricesFromRow(row: ShopRow): GroupPrices {
-  return { FWC: row.price_fwc_cents, TEAM: row.price_team_cents, CC: row.price_cc_cents, LEG: row.price_leg_cents };
 }
 
 export function orderFromRow(row: OrderRow): Order {
@@ -178,6 +208,7 @@ export function orderFromRow(row: OrderRow): Order {
     createdAt: row.created_at,
     reservedUntil: row.reserved_until,
     cancelReason: row.cancel_reason,
+    albumId: row.album_id ?? DEFAULT_CATALOG.id,
   };
 }
 
@@ -260,7 +291,7 @@ export function orderMessage(
     linhas.push(`_${nome}_`);
     its.forEach((it) => {
       const nome = stickerName(it.code);
-      linhas.push(`• ${it.code}${nome ? ` ${nome}` : ""} — ${it.qty} × ${formatBRL(it.unit_cents)} = ${formatBRL(it.qty * it.unit_cents)}`);
+      linhas.push(`• ${displayCode(it.code)}${nome ? ` ${nome}` : ""} — ${it.qty} × ${formatBRL(it.unit_cents)} = ${formatBRL(it.qty * it.unit_cents)}`);
     });
   });
 

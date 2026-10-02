@@ -11,8 +11,10 @@ import {
   normalizeWhatsapp,
   parseBRL,
   shopPath,
+  type ShopAlbum,
   type ShopSettings,
 } from "@/lib/shop";
+import { getCatalog } from "@/lib/catalog";
 import BrandLogo from "./BrandLogo";
 
 const LOGO_BUCKET = "shop-logos";
@@ -29,6 +31,9 @@ interface AdminSettingsProps {
   userId: string;
   settings: ShopSettings;
   onSaved: (s: ShopSettings) => void;
+  /** Uma entrada por coleção: à venda e pedido mínimo. */
+  albums: ShopAlbum[];
+  onAlbumsSaved: (a: ShopAlbum[]) => void;
   onToast: (msg: string) => void;
   /** Repetidas em estoque e quantas delas têm preço (grupo ou individual). */
   stockSummary: { repetidas: number; vendaveis: number };
@@ -39,6 +44,8 @@ export default function AdminSettings({
   userId,
   settings,
   onSaved,
+  albums,
+  onAlbumsSaved,
   onToast,
   stockSummary,
   onGoToPrices,
@@ -47,7 +54,9 @@ export default function AdminSettings({
   const [semVenda, setSemVenda] = useState(false);
   const [sellerName, setSellerName] = useState(settings.sellerName);
   const [whatsapp, setWhatsapp] = useState(maskPhoneBR(settings.whatsapp));
-  const [minOrder, setMinOrder] = useState(centsToInput(settings.minOrderCents || null));
+  const [colecoes, setColecoes] = useState(() =>
+    albums.map((a) => ({ albumId: a.albumId, enabled: a.enabled, minOrder: centsToInput(a.minOrderCents || null) }))
+  );
   const [onlyAvailable, setOnlyAvailable] = useState(settings.onlyAvailable);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -86,8 +95,13 @@ export default function AdminSettings({
     e.preventDefault();
     setError(null);
 
-    const minCents = parseBRL(minOrder) ?? 0;
-    if (Number.isNaN(minCents)) return setError("Valor mínimo inválido. Use o formato 10,00.");
+    const minimos: Record<string, number> = {};
+    for (const c of colecoes) {
+      const v = parseBRL(c.minOrder) ?? 0;
+      if (Number.isNaN(v)) return setError(`Valor mínimo inválido em ${getCatalog(c.albumId).name}. Use o formato 10,00.`);
+      minimos[c.albumId] = v;
+    }
+    if (!colecoes.some((c) => c.enabled)) return setError("Deixe ao menos uma coleção à venda.");
 
     if (whatsapp && !isValidPhoneBR(whatsapp)) {
       return setError("WhatsApp inválido. Informe o DDD e o número: (11) 99999-8888.");
@@ -117,11 +131,25 @@ export default function AdminSettings({
         slug,
         only_available: onlyAvailable,
         whatsapp: whats || null,
-        min_order_cents: minCents,
         updated_at: new Date().toISOString(),
       })
       .eq("user_id", userId);
+    const albumsError = dbError
+      ? null
+      : (
+          await supabase.from("shop_albums").upsert(
+            colecoes.map((c) => ({
+              user_id: userId,
+              album_id: c.albumId,
+              enabled: c.enabled,
+              min_order_cents: minimos[c.albumId],
+              updated_at: new Date().toISOString(),
+            })),
+            { onConflict: "user_id,album_id" }
+          )
+        ).error;
     setSaving(false);
+    if (albumsError) return setError("Não foi possível salvar as coleções à venda — tente de novo.");
 
     if (dbError) {
       // 23505 = endereço já usado por outra loja (índice único); 23514 = endereço reservado/inválido
@@ -137,7 +165,13 @@ export default function AdminSettings({
     }
     setSellerName(nome);
     setWhatsapp(maskPhoneBR(whats));
-    onSaved({ ...settings, sellerName: nome, slug, onlyAvailable, whatsapp: whats, minOrderCents: minCents });
+    onSaved({ ...settings, sellerName: nome, slug, onlyAvailable, whatsapp: whats });
+    onAlbumsSaved(
+      albums.map((a) => {
+        const c = colecoes.find((x) => x.albumId === a.albumId)!;
+        return { ...a, enabled: c.enabled, minOrderCents: minimos[a.albumId] };
+      })
+    );
     onToast("Configurações salvas!");
   }
 
@@ -360,22 +394,46 @@ export default function AdminSettings({
               onChange={(e) => setWhatsapp(maskPhoneBR(e.target.value))}
             />
           </label>
-          <label className="form-label">
-            Valor mínimo do pedido (R$)
-            <input
-              className="login-input"
-              inputMode="decimal"
-              value={minOrder}
-              placeholder="0,00"
-              onChange={(e) => setMinOrder(e.target.value)}
-            />
-          </label>
+        </div>
+
+        <div className="shop-albums-settings">
+          <span className="form-label">Coleções à venda</span>
+          <span className="field-hint">
+            Cada coleção tem seus preços (aba Preços) e seu pedido mínimo. Um pedido é sempre de uma coleção só.
+          </span>
+          {colecoes.map((c) => (
+            <div key={c.albumId} className="shop-album-row">
+              <label className="check-row">
+                <input
+                  type="checkbox"
+                  checked={c.enabled}
+                  onChange={(e) =>
+                    setColecoes((cs) => cs.map((x) => (x.albumId === c.albumId ? { ...x, enabled: e.target.checked } : x)))
+                  }
+                />
+                <strong>{getCatalog(c.albumId).name}</strong>
+              </label>
+              <label className="form-label shop-album-min">
+                Pedido mínimo (R$)
+                <input
+                  className="login-input"
+                  inputMode="decimal"
+                  value={c.minOrder}
+                  placeholder="0,00"
+                  disabled={!c.enabled}
+                  onChange={(e) =>
+                    setColecoes((cs) => cs.map((x) => (x.albumId === c.albumId ? { ...x, minOrder: e.target.value } : x)))
+                  }
+                />
+              </label>
+            </div>
+          ))}
         </div>
 
         <label className="check-row">
           <input type="checkbox" checked={onlyAvailable} onChange={(e) => setOnlyAvailable(e.target.checked)} />
           <span>
-            <strong>Mostrar só as figurinhas à venda</strong>
+            <strong>Mostrar só o que está à venda</strong>
             <span className="field-hint">
               A loja exibe apenas o que tem preço e estoque — ideal se você vende só um tipo (ex: só Legends). Sem
               marcar, o comprador vê o catálogo completo e pode filtrar.

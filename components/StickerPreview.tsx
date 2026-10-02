@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect } from "react";
-import { cellText } from "@/lib/album";
+import { cellText, displayCode } from "@/lib/album";
 import { describeSticker, formatBRL } from "@/lib/shop";
 import { stickerImage } from "@/lib/stickerImages";
 
@@ -66,7 +66,7 @@ export default function StickerPreview({
 
         <div className="preview-info">
           <div className="preview-title">
-            <span className="cart-line-code">{code}</span>
+            <span className="cart-line-code">{displayCode(code)}</span>
             <span className="cart-line-meta">{describeSticker(code)}</span>
           </div>
           <div className="preview-buy">

@@ -4,7 +4,19 @@ import { HeaderActions, NavSwitch } from "./HeaderIcons";
 import UserMenu from "./UserMenu";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { isExpired, priceFor, shopPath, type GroupPrices, type Order, type ShopSettings } from "@/lib/shop";
+import {
+  groupsOf,
+  isExpired,
+  priceFor,
+  shopPath,
+  type GroupPrices,
+  type Order,
+  type ShopAlbum,
+  type ShopSettings,
+} from "@/lib/shop";
+import { getCatalog, lookupCode } from "@/lib/catalog";
+import { CatalogProvider } from "@/lib/CatalogContext";
+import type { SetStateAction } from "react";
 import { useNow } from "@/lib/useNow";
 import type { Qtd } from "@/lib/types";
 import AdminOrders from "./AdminOrders";
@@ -21,7 +33,8 @@ interface ShopAdminProps {
   /** Aba pedida na URL (?aba=pedidos|precos|config), ex: vindo do menu do usuário. */
   initialTab?: string;
   initialSettings: ShopSettings;
-  initialGroupPrices: GroupPrices;
+  /** Uma entrada por coleção da plataforma (shop_albums). */
+  initialAlbums: ShopAlbum[];
   initialIndividual: Record<string, number>;
   initialOrders: Order[];
   initialAvailable: Qtd;
@@ -37,7 +50,7 @@ export default function ShopAdmin({
   welcome = false,
   initialTab,
   initialSettings,
-  initialGroupPrices,
+  initialAlbums,
   initialIndividual,
   initialOrders,
   initialAvailable,
@@ -55,7 +68,16 @@ export default function ShopAdmin({
   const [settings, setSettings] = useState(initialSettings);
   const [orders, setOrders] = useState(initialOrders);
   const [available, setAvailable] = useState(initialAvailable);
-  const [groupPrices, setGroupPrices] = useState(initialGroupPrices);
+  const [albums, setAlbums] = useState(initialAlbums);
+  // Coleção mostrada na aba Preços: a primeira à venda.
+  const [precoAlbum, setPrecoAlbum] = useState(
+    () => (initialAlbums.find((a) => a.enabled) ?? initialAlbums[0]).albumId
+  );
+  const albumPreco = albums.find((a) => a.albumId === precoAlbum) ?? albums[0];
+  const setGroupPrices = (g: SetStateAction<GroupPrices>) =>
+    setAlbums((as) =>
+      as.map((a) => (a.albumId === precoAlbum ? { ...a, groupPrices: typeof g === "function" ? g(a.groupPrices) : g } : a))
+    );
   const [individual, setIndividual] = useState(initialIndividual);
   const [toast, setToast] = useState<string | null>(null);
 
@@ -65,12 +87,16 @@ export default function ShopAdmin({
   }, []);
 
   const now = useNow();
-  // Para abrir a loja é preciso ao menos 1 repetida em estoque com preço (grupo ou individual).
+  // Preços das coleções à venda (pedidos e resumo de estoque).
+  const pricing = useMemo(() => ({ groups: groupsOf(albums), individual }), [albums, individual]);
+
+  // Para abrir a loja é preciso ao menos 1 repetida em estoque com preço, numa coleção à venda.
   const stockSummary = useMemo(() => {
+    const aVenda = new Set(albums.filter((a) => a.enabled).map((a) => a.albumId));
     const codes = Object.keys(available).filter((c) => (available[c] ?? 0) > 0);
-    const pricing = { group: groupPrices, individual };
-    return { repetidas: codes.length, vendaveis: codes.filter((c) => priceFor(c, pricing) !== null).length };
-  }, [available, groupPrices, individual]);
+    const vendaveis = codes.filter((c) => aVenda.has(lookupCode(c)?.catalog.id ?? "") && priceFor(c, pricing) !== null);
+    return { repetidas: codes.length, vendaveis: vendaveis.length };
+  }, [albums, available, pricing]);
 
   const novos = orders.filter((o) => o.status === "novo" && !isExpired(o, now)).length;
 
@@ -126,28 +152,59 @@ export default function ShopAdmin({
         <AdminOrders
           orders={orders}
           stock={available}
-          pricing={{ group: groupPrices, individual }}
+          pricing={pricing}
           onOrdersChange={setOrders}
           onAvailableChange={setAvailable}
           onToast={showToast}
         />
       )}
       {aba === "precos" && (
+        <CatalogProvider value={getCatalog(albumPreco.albumId)}>
+          {albums.length > 1 && (
+            <div className="admin-album-picker">
+              <div className="segmented">
+                {albums.map((a) => (
+                  <button
+                    key={a.albumId}
+                    type="button"
+                    className={`chip ${a.albumId === albumPreco.albumId ? "active" : ""}`}
+                    onClick={() => setPrecoAlbum(a.albumId)}
+                  >
+                    {getCatalog(a.albumId).name}
+                  </button>
+                ))}
+              </div>
+              {!albumPreco.enabled && (
+                <span className="field-hint">
+                  Esta coleção não está à venda — os preços ficam guardados; ative em{" "}
+                  <button type="button" className="link-button" onClick={() => setAba("config")}>
+                    Configurações
+                  </button>
+                  .
+                </span>
+              )}
+            </div>
+          )}
         <AdminPrices
+          key={albumPreco.albumId}
           userId={userId}
-          group={groupPrices}
+          album={albumPreco}
+          group={albumPreco.groupPrices}
           setGroup={setGroupPrices}
           individual={individual}
           setIndividual={setIndividual}
           available={available}
           onToast={showToast}
         />
+        </CatalogProvider>
       )}
       {aba === "config" && (
         <AdminSettings
           userId={userId}
           settings={settings}
           onSaved={setSettings}
+          albums={albums}
+          onAlbumsSaved={setAlbums}
           onToast={showToast}
           stockSummary={stockSummary}
           onGoToPrices={() => setAba("precos")}

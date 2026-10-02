@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { describeSticker, type CartHold } from "./shop";
+import { DEFAULT_CATALOG } from "./catalog";
+import { displayCode } from "./album";
 import type { Qtd } from "./types";
 
 export interface CartAdjust {
@@ -26,8 +28,8 @@ function toQtd(items: { code: string; qty: number }[]): Qtd {
 
 export function describeAdjust(a: CartAdjust): string {
   return a.granted === 0
-    ? `${a.code} (${describeSticker(a.code)}) não está mais disponível`
-    : `${a.code}: só ${a.granted} de ${a.requested} disponíve${a.granted === 1 ? "l" : "is"}`;
+    ? `${displayCode(a.code)} (${describeSticker(a.code)}) não está mais disponível`
+    : `${displayCode(a.code)}: só ${a.granted} de ${a.requested} disponíve${a.granted === 1 ? "l" : "is"}`;
 }
 
 // Carrinho com reserva no servidor: cada alteração é aplicada na hora na tela e enviada
@@ -35,17 +37,21 @@ export function describeAdjust(a: CartAdjust): string {
 // realmente reservado. A resposta do servidor é a verdade final do carrinho.
 export function useCartHold({
   token,
+  albumId,
   available,
   initialHold,
   onToast,
 }: {
   token: string;
+  /** Um carrinho por coleção. */
+  albumId: string;
   /** Disponível para este comprador (já sem o que outros reservaram). */
   available: Qtd;
   initialHold: CartHold | null;
   onToast: (msg: string) => void;
 }) {
-  const storageKey = `copa2026-cart-${token}`;
+  // A chave do Álbum Copa continua a de antes (carrinhos já guardados no navegador).
+  const storageKey = albumId === DEFAULT_CATALOG.id ? `copa2026-cart-${token}` : `copa2026-cart-${token}:${albumId}`;
   const [cart, setCart] = useState<Qtd>(() => (initialHold ? toQtd(initialHold.items) : {}));
   const [expiresAt, setExpiresAt] = useState<string | null>(initialHold?.expiresAt ?? null);
   const [syncing, setSyncing] = useState(false);
@@ -98,7 +104,7 @@ export function useCartHold({
       const res = await fetch(`/api/loja/${token}/carrinho`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items }),
+        body: JSON.stringify({ albumId, items }),
       });
       const data = (await res.json()) as HoldResponse & { error?: string };
       if (!res.ok) {
@@ -118,7 +124,7 @@ export function useCartHold({
     } finally {
       if (seq === seqRef.current) setSyncing(false);
     }
-  }, [token, persist, onToast]);
+  }, [token, albumId, persist, onToast]);
 
   const schedule = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);

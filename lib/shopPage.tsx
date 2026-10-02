@@ -6,7 +6,9 @@ import { DEFAULT_SHOP_NAME, PLATFORM_NAME } from "@/lib/brand";
 import { CART_COOKIE, readCartId } from "@/lib/cartCookie";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-import { availableFromQty, groupPricesFromRow, shopPath, type ShopRow } from "@/lib/shop";
+import { availableFromQty, groupsOf, shopPath, type ShopRow } from "@/lib/shop";
+import { loadShopAlbums } from "@/lib/shopAlbums";
+import { catalogBySlug, getCatalog } from "@/lib/catalog";
 import { hasShopAccess } from "@/lib/shopAccess";
 import NoticeCard from "@/components/NoticeCard";
 import ShopBoard from "@/components/ShopBoard";
@@ -19,7 +21,7 @@ import { fetchAll } from "@/lib/fetchAll";
 type ShopLookup = { slug: string } | { token: string };
 
 const SHOP_COLUMNS =
-  "user_id, token, slug, logo_url, only_available, enabled, seller_name, whatsapp, min_order_cents, price_fwc_cents, price_team_cents, price_cc_cents, price_leg_cents";
+  "user_id, token, slug, logo_url, only_available, enabled, seller_name, whatsapp";
 
 async function findShop(where: ShopLookup) {
   const admin = createAdminClient();
@@ -35,11 +37,12 @@ export async function shopMetadata(where: ShopLookup): Promise<Metadata> {
   const nome = shop?.seller_name || DEFAULT_SHOP_NAME;
   return {
     title: `${nome} — ${PLATFORM_NAME}`,
-    description: `Figurinhas avulsas do álbum da Copa 2026 à venda na loja ${nome}.`,
+    description: `Figurinhas e cards avulsos à venda na loja ${nome}.`,
   };
 }
 
-export async function renderShop(where: ShopLookup) {
+/** `colecao`: endereço da coleção pedida na URL (?colecao=adrenalyn-xl). */
+export async function renderShop(where: ShopLookup, colecao?: string) {
   const admin = createAdminClient();
   const shop = await findShop(where);
 
@@ -65,6 +68,19 @@ export async function renderShop(where: ShopLookup) {
     );
   }
 
+  // Coleções à venda, na ordem da plataforma; a da URL (se à venda) ou a primeira.
+  const albums = await loadShopAlbums(admin, shop.user_id);
+  const aVenda = albums.filter((a) => a.enabled);
+  if (!aVenda.length) {
+    return (
+      <NoticeCard kicker="Loja" title={shop.seller_name || DEFAULT_SHOP_NAME}>
+        Esta loja não tem coleções à venda no momento. Volte mais tarde!
+      </NoticeCard>
+    );
+  }
+  const pedida = colecao ? catalogBySlug(colecao)?.id : undefined;
+  const atual = aVenda.find((a) => a.albumId === pedida) ?? aVenda[0];
+
   await admin.rpc("expire_orders", { p_seller: shop.user_id });
 
   const cartId = readCartId((await cookies()).get(CART_COOKIE)?.value);
@@ -85,6 +101,7 @@ export async function renderShop(where: ShopLookup) {
           .select("items, expires_at")
           .eq("cart_id", cartId)
           .eq("seller_id", shop.user_id)
+          .eq("album_id", atual.albumId)
           .gt("expires_at", new Date().toISOString())
           .maybeSingle<{ items: { code: string; qty: number }[]; expires_at: string }>()
       : Promise.resolve({ data: null }),
@@ -110,14 +127,20 @@ export async function renderShop(where: ShopLookup) {
 
   return (
     <ShopBoard
+      key={atual.albumId}
+      albumId={atual.albumId}
+      albums={aVenda.map((a) => {
+        const c = getCatalog(a.albumId);
+        return { albumId: c.id, slug: c.slug, name: c.name };
+      })}
       token={token}
       path={shopPath(shop)}
       shopName={shop.seller_name || DEFAULT_SHOP_NAME}
       logoUrl={shop.logo_url ?? null}
       onlyAvailable={shop.only_available ?? false}
-      minOrderCents={shop.min_order_cents}
+      minOrderCents={atual.minOrderCents}
       available={available}
-      pricing={{ group: groupPricesFromRow(shop), individual }}
+      pricing={{ groups: groupsOf(aVenda), individual }}
       initialHold={ownHold ? { items: ownHold.items, expiresAt: ownHold.expires_at } : null}
       owner={isOwner ? { email: user?.email ?? null, paused: !shop.enabled } : null}
     />

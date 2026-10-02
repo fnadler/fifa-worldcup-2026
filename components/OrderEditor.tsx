@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { stickerName } from "@/lib/album";
+import { displayCode, stickerName } from "@/lib/album";
 import { catalogOfCodes } from "@/lib/catalog";
 import { matchesSticker } from "@/lib/derive";
 import {
@@ -84,7 +84,7 @@ export default function OrderEditor({ order, stock, reservedOthers, pricing, sav
         return (
           <div key={r.code} className="order-editor-row">
             <div className="cart-line-info">
-              <span className="cart-line-code">{r.code}</span>
+              <span className="cart-line-code">{displayCode(r.code)}</span>
               <span className="cart-line-meta">
                 {describeSticker(r.code)} · {max} disponíve{max === 1 ? "l" : "is"}
               </span>
@@ -138,7 +138,7 @@ export default function OrderEditor({ order, stock, reservedOthers, pricing, sav
               const nome = stickerName(c);
               return (
                 <button key={c} type="button" disabled={max === 0} onClick={() => adicionar(c)}>
-                  <strong>{c}</strong> {nome ?? describeSticker(c)}
+                  <strong>{displayCode(c)}</strong> {nome ?? describeSticker(c)}
                   <span>{max === 0 ? "indisponível" : `${max} disp.`}</span>
                 </button>
               );

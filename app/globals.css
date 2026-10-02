@@ -2951,3 +2951,66 @@ button {
   border-radius: 2px;
   background: var(--pos);
 }
+
+/* ---------- loja com várias coleções ---------- */
+
+.shop-album-tabs {
+  margin-top: 12px;
+  align-self: flex-start;
+}
+.shop-album-tabs .chip {
+  text-decoration: none;
+}
+.admin-album-picker {
+  max-width: 1340px;
+  margin: 18px auto 0;
+  padding: 0 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+.link-button {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.order-album {
+  font-family: var(--font-barlow-condensed);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid var(--border-3);
+  border-radius: 6px;
+  padding: 2px 6px;
+}
+.shop-albums-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.shop-album-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-2);
+  border-radius: 10px;
+}
+.shop-album-min {
+  flex: 0 1 220px;
+}
+@media (max-width: 700px) {
+  .shop-album-tabs {
+    width: 100%;
+    overflow-x: auto;
+  }
+}

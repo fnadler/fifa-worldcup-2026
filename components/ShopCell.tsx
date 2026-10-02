@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { cellText, hasCellName, stickerName } from "@/lib/album";
+import { cellText, displayCode, hasCellName, stickerName } from "@/lib/album";
 import { formatBRL } from "@/lib/shop";
 import { stickerImage } from "@/lib/stickerImages";
 
@@ -25,7 +25,7 @@ export default function ShopCell({ code, price, available, inCart, view, onChang
   const esgotouNoCarrinho = inCart >= available;
 
   const nome = stickerName(code);
-  const id = nome ? `${code} ${nome}` : code;
+  const id = nome ? `${displayCode(code)} ${nome}` : displayCode(code);
   const title = !vendavel
     ? `${id} — indisponível`
     : `${id} — ${formatBRL(price)} · ${available} disponíve${available === 1 ? "l" : "is"}` +
@@ -68,7 +68,7 @@ export default function ShopCell({ code, price, available, inCart, view, onChang
       </button>
       <div className="shop-card-footer">
         <div className="shop-card-meta">
-          <span className="shop-card-code">{code}</span>
+          <span className="shop-card-code">{displayCode(code)}</span>
           {nome && <span className="shop-card-name">{nome}</span>}
           <span className="shop-card-price">{vendavel ? formatBRL(price) : "Indisponível"}</span>
         </div>

@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { anchorId, hasNamedStickers } from "@/lib/album";
-import { useCatalog } from "@/lib/CatalogContext";
+import { CatalogProvider } from "@/lib/CatalogContext";
+import { getCatalog } from "@/lib/catalog";
 import { matchesSticker } from "@/lib/derive";
 import { formatBRL, priceFor, type CartHold, type ShopPricing } from "@/lib/shop";
 import { useCartHold } from "@/lib/useCartHold";
@@ -21,6 +22,10 @@ import HoldTimer from "./HoldTimer";
 import { PLATFORM_NAME } from "@/lib/brand";
 
 interface ShopBoardProps {
+  /** Coleção exibida (albums.id) — um carrinho por coleção. */
+  albumId: string;
+  /** Coleções à venda na loja (abas quando há mais de uma). */
+  albums: { albumId: string; slug: string; name: string }[];
   token: string;
   /** Caminho público da loja (/slug ou /loja/token). */
   path: string;
@@ -45,6 +50,8 @@ const DISPS: { value: DispFiltro; label: string }[] = [
 ];
 
 export default function ShopBoard({
+  albumId,
+  albums,
   token,
   path,
   shopName,
@@ -56,7 +63,8 @@ export default function ShopBoard({
   initialHold,
   owner,
 }: ShopBoardProps) {
-  const catalog = useCatalog();
+  const catalog = getCatalog(albumId);
+  const itens = (n: number) => `${n} ${n === 1 ? catalog.itemSingular : catalog.itemPlural}`;
   const [tipo, setTipo] = useState<TipoFiltro>("ALL");
   const [dispEscolhido, setDisp] = useState<DispFiltro>("ALL");
   const disp: DispFiltro = onlyAvailable ? "AVAIL" : dispEscolhido;
@@ -82,6 +90,7 @@ export default function ShopBoard({
   // Carrinho com reserva de 10 min no servidor (ver useCartHold).
   const { cart, expiresAt, changeQty, remove, clear, flush, resetAfterOrder } = useCartHold({
     token,
+    albumId,
     available,
     initialHold,
     onToast: showToast,
@@ -103,8 +112,12 @@ export default function ShopBoard({
   const totalFigurinhas = lines.reduce((s, l) => s + l.qty, 0);
 
   const totalDisponivel = useMemo(
-    () => Object.keys(available).reduce((s, code) => s + (vendavel(code) ? available[code] : 0), 0),
-    [available, vendavel]
+    () =>
+      catalog.blocks.reduce(
+        (s, b) => s + b.codes.reduce((t, code) => t + (vendavel(code) ? available[code] : 0), 0),
+        0
+      ),
+    [catalog, available, vendavel]
   );
 
   const blocosComVenda = useMemo(
@@ -150,6 +163,7 @@ export default function ShopBoard({
   }
 
   return (
+    <CatalogProvider value={catalog}>
     <div className="app-shell has-cart-bar">
       <div className="header" ref={headerRef}>
         <div className="header-inner">
@@ -213,6 +227,21 @@ export default function ShopBoard({
             </button>
           </div>
 
+          {albums.length > 1 && (
+            <nav className="segmented shop-album-tabs" aria-label="Coleções à venda">
+              {albums.map((a) => (
+                <Link
+                  key={a.albumId}
+                  href={`${path}?colecao=${a.slug}`}
+                  className={`chip ${a.albumId === albumId ? "active" : ""}`}
+                  aria-current={a.albumId === albumId ? "page" : undefined}
+                >
+                  {a.name}
+                </Link>
+              ))}
+            </nav>
+          )}
+
           <div className={`filters-panel ${menuAberto ? "is-open" : ""}`}>
             <button
               type="button"
@@ -226,7 +255,7 @@ export default function ShopBoard({
             <div className="controls-row">
               <input
                 type="search"
-                placeholder="Buscar seleção ou código (ex: BRA9)"
+                placeholder={catalog.searchPlaceholder}
                 value={busca}
                 onChange={(e) => setBusca(e.target.value)}
                 className="search-input"
@@ -351,13 +380,17 @@ export default function ShopBoard({
             </div>
           </div>
         ))}
-        {visibleBlocks.length === 0 && <div className="empty-message">Nenhuma figurinha com esses filtros.</div>}
+        {visibleBlocks.length === 0 && (
+          <div className="empty-message">
+            Nenhum{catalog.itemSingular === "figurinha" ? "a" : ""} {catalog.itemSingular} com esses filtros.
+          </div>
+        )}
       </div>
 
       {totalFigurinhas > 0 && !cartAberto && !preview && (
         <button type="button" className="cart-float cart-float-desktop" onClick={() => setCartAberto(true)}>
           <span>
-            {totalFigurinhas} figurinha{totalFigurinhas === 1 ? "" : "s"} · <strong>{formatBRL(totalCents)}</strong>
+            {itens(totalFigurinhas)} · <strong>{formatBRL(totalCents)}</strong>
           </span>
           <HoldTimer expiresAt={expiresAt} variant="compact" />
           <span className="cart-float-cta">Ver carrinho →</span>
@@ -371,7 +404,7 @@ export default function ShopBoard({
             <strong>
               {totalFigurinhas === 0
                 ? "Seu carrinho está vazio"
-                : `${totalFigurinhas} figurinha${totalFigurinhas === 1 ? "" : "s"} · ${formatBRL(totalCents)}`}
+                : `${itens(totalFigurinhas)} · ${formatBRL(totalCents)}`}
             </strong>
             {minOrderCents > 0 ? (
               totalCents >= minOrderCents ? (
@@ -382,7 +415,7 @@ export default function ShopBoard({
                 </span>
               )
             ) : (
-              totalFigurinhas === 0 && <span className="cart-bar-note">Toque em + para adicionar figurinhas</span>
+              totalFigurinhas === 0 && <span className="cart-bar-note">Toque em + para adicionar {catalog.itemPlural}</span>
             )}
             {totalFigurinhas > 0 && <HoldTimer expiresAt={expiresAt} variant="compact" />}
           </div>
@@ -416,6 +449,7 @@ export default function ShopBoard({
       {cartAberto && (
         <CartModal
           token={token}
+          albumId={albumId}
           lines={lines}
           totalCents={totalCents}
           minOrderCents={minOrderCents}
@@ -429,5 +463,6 @@ export default function ShopBoard({
         />
       )}
     </div>
+    </CatalogProvider>
   );
 }

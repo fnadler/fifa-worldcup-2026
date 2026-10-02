@@ -5,7 +5,6 @@ import { createClient } from "@/lib/supabase/server";
 import {
   ORDER_COLUMNS,
   availableFromQty,
-  groupPricesFromRow,
   orderFromRow,
   settingsFromRow,
   type OrderRow,
@@ -16,6 +15,7 @@ import ShopAdmin from "@/components/ShopAdmin";
 import type { Qtd } from "@/lib/types";
 import { PLATFORM_NAME } from "@/lib/brand";
 import { fetchAll } from "@/lib/fetchAll";
+import { loadShopAlbums } from "@/lib/shopAlbums";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 const SHOP_COLUMNS =
-  "token, slug, logo_url, only_available, enabled, seller_name, whatsapp, min_order_cents, price_fwc_cents, price_team_cents, price_cc_cents, price_leg_cents";
+  "token, slug, logo_url, only_available, enabled, seller_name, whatsapp";
 
 export default async function VendasPage({
   searchParams,
@@ -80,7 +80,7 @@ export default async function VendasPage({
   // Pedidos novos com a reserva vencida viram "cancelado (expirado)" antes de listar.
   await supabase.rpc("expire_orders", { p_seller: user.id });
 
-  const [{ data: priceRows }, { data: orderRows }, { data: collectionRows }] = await Promise.all([
+  const [{ data: priceRows }, { data: orderRows }, { data: collectionRows }, albums] = await Promise.all([
     fetchAll<{ code: string; price_cents: number }>((from, to) =>
       supabase.from("sticker_prices").select("code, price_cents").eq("user_id", user.id).order("code").range(from, to)
     ),
@@ -93,6 +93,7 @@ export default async function VendasPage({
     fetchAll<{ code: string; qty: number }>((from, to) =>
       supabase.from("collection").select("code, qty").eq("user_id", user.id).gt("qty", 1).order("code").range(from, to)
     ),
+    loadShopAlbums(supabase, user.id),
   ]);
 
   const individual: Record<string, number> = {};
@@ -114,7 +115,7 @@ export default async function VendasPage({
       welcome={(await searchParams).assinatura === "ok"}
       initialTab={(await searchParams).aba}
       initialSettings={settingsFromRow(shop)}
-      initialGroupPrices={groupPricesFromRow(shop)}
+      initialAlbums={albums}
       initialIndividual={individual}
       initialOrders={((orderRows ?? []) as OrderRow[]).map(orderFromRow)}
       initialAvailable={available}

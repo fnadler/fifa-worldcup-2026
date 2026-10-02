@@ -23,6 +23,8 @@ import {
 import type { Qtd } from "@/lib/types";
 import { useNow } from "@/lib/useNow";
 import OrderEditor from "./OrderEditor";
+import { getCatalog } from "@/lib/catalog";
+import { displayCode } from "@/lib/album";
 
 interface AdminOrdersProps {
   orders: Order[];
@@ -180,6 +182,7 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
             <header className="order-header">
               <span className="order-number">#{o.number}</span>
               <span className={`order-status order-status-${ef.css}`}>{ef.label}</span>
+              <span className="order-album">{getCatalog(o.albumId).shortName}</span>
               <span className="order-date">{formatDateTimeBR(o.createdAt)}</span>
               {ativo && (
                 <span className="order-reserve">
@@ -213,12 +216,13 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
               ) : (
                 <div className="order-items">
                   <span className="order-items-title">
-                    {totalFigurinhas} figurinha{totalFigurinhas === 1 ? "" : "s"}
+                    {totalFigurinhas}{" "}
+                    {totalFigurinhas === 1 ? getCatalog(o.albumId).itemSingular : getCatalog(o.albumId).itemPlural}
                   </span>
                   {o.items.map((it) => (
                     <div key={it.code} className="order-item">
                       <span>
-                        <strong>{it.code}</strong>{" "}
+                        <strong>{displayCode(it.code)}</strong>{" "}
                         <span className="order-item-block">{describeSticker(it.code)}</span>
                       </span>
                       <span>

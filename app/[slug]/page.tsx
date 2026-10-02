@@ -12,8 +12,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return slugProblem(slug) ? {} : shopMetadata({ slug });
 }
 
-export default async function LojaPorSlugPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function LojaPorSlugPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ colecao?: string }>;
+}) {
   const { slug } = await params;
   if (slugProblem(slug)) notFound();
-  return renderShop({ slug });
+  return renderShop({ slug }, (await searchParams).colecao);
 }

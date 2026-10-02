@@ -3,8 +3,10 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { describeSticker, formatBRL, formatDateTimeBR, isValidPhoneBR, maskPhoneBR, type BuyerInfo } from "@/lib/shop";
 import type { CartAdjust } from "@/lib/useCartHold";
+import { useCatalog } from "@/lib/CatalogContext";
 import HoldTimer from "./HoldTimer";
 import SafetyTips from "./SafetyTips";
+import { displayCode } from "@/lib/album";
 
 export interface CartLine {
   code: string;
@@ -15,6 +17,7 @@ export interface CartLine {
 
 interface CartModalProps {
   token: string;
+  albumId: string;
   lines: CartLine[];
   totalCents: number;
   minOrderCents: number;
@@ -47,6 +50,7 @@ type Step = "cart" | "review" | "checkout" | "done";
 
 export default function CartModal({
   token,
+  albumId,
   lines,
   totalCents,
   minOrderCents,
@@ -58,6 +62,9 @@ export default function CartModal({
   onOrdered,
   onClose,
 }: CartModalProps) {
+  const catalog = useCatalog();
+  const plural = catalog.itemPlural;
+  const f = catalog.itemSingular === "figurinha";
   const [step, setStep] = useState<Step>("cart");
   const [buyer, setBuyer] = useState<BuyerInfo>(EMPTY_BUYER);
   const [honeypot, setHoneypot] = useState("");
@@ -104,7 +111,7 @@ export default function CartModal({
   }
 
   function limpar() {
-    if (window.confirm("Remover todas as figurinhas do carrinho?")) onClear();
+    if (window.confirm(`Remover tod${f ? "as as" : "os os"} ${plural} do carrinho?`)) onClear();
   }
 
   async function enviar(e: FormEvent) {
@@ -126,6 +133,7 @@ export default function CartModal({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          albumId,
           items: lines.map((l) => ({ code: l.code, qty: l.qty })),
           buyer,
           website: honeypot,
@@ -141,7 +149,7 @@ export default function CartModal({
       };
       if (!res.ok || !data.number || !data.whatsappUrl) {
         if (data.unavailable?.length) {
-          await revisar("Algumas figurinhas deixaram de estar disponíveis enquanto você preenchia os dados. Confira abaixo.");
+          await revisar(`Alguns itens deixaram de estar disponíveis enquanto você preenchia os dados. Confira abaixo.`);
           return;
         }
         setError(data.error ?? "Não foi possível registrar o pedido — tente de novo.");
@@ -172,7 +180,7 @@ export default function CartModal({
           </span>
           {step !== "done" && (
             <span className="modal-count">
-              {totalFigurinhas} figurinha{totalFigurinhas === 1 ? "" : "s"}
+              {totalFigurinhas} {totalFigurinhas === 1 ? catalog.itemSingular : plural}
             </span>
           )}
           <div className="modal-header-spacer" />
@@ -190,7 +198,7 @@ export default function CartModal({
               {lines.map((l) => (
                 <div key={l.code} className="cart-line">
                   <div className="cart-line-info">
-                    <span className="cart-line-code">{l.code}</span>
+                    <span className="cart-line-code">{displayCode(l.code)}</span>
                     <span className="cart-line-meta">
                       {describeSticker(l.code)} · {formatBRL(l.unitCents)} cada
                     </span>
@@ -250,10 +258,10 @@ export default function CartModal({
               <HoldTimer expiresAt={expiresAt} />
               {error && <div className="login-error">{error}</div>}
               {ajustes.length === 0 ? (
-                <div className="review-ok">✓ Todas as figurinhas do seu carrinho estão confirmadas.</div>
+                <div className="review-ok">✓ Todos os itens do seu carrinho estão confirmados.</div>
               ) : (
                 <div className="cart-warning">
-                  Algumas figurinhas foram reservadas por outra pessoa depois que sua reserva expirou. Seu carrinho foi
+                  Alguns itens foram reservados por outra pessoa depois que sua reserva expirou. Seu carrinho foi
                   ajustado:
                 </div>
               )}
@@ -263,7 +271,7 @@ export default function CartModal({
                   <div key={l.code} className={`cart-line review-line ${aj ? "is-adjusted" : ""}`}>
                     <span className="review-status">{aj ? "⚠" : "✓"}</span>
                     <div className="cart-line-info">
-                      <span className="cart-line-code">{l.code}</span>
+                      <span className="cart-line-code">{displayCode(l.code)}</span>
                       <span className="cart-line-meta">
                         {describeSticker(l.code)}
                         {aj && ` · só ${aj.granted} de ${aj.requested} disponíve${aj.granted === 1 ? "l" : "is"}`}
@@ -282,13 +290,13 @@ export default function CartModal({
                   <div key={a.code} className="cart-line review-line is-removed">
                     <span className="review-status">✗</span>
                     <div className="cart-line-info">
-                      <span className="cart-line-code">{a.code}</span>
+                      <span className="cart-line-code">{displayCode(a.code)}</span>
                       <span className="cart-line-meta">{describeSticker(a.code)} · não está mais disponível — removida</span>
                     </div>
                   </div>
                 ))}
               {lines.length === 0 && (
-                <div className="empty-message">Nenhuma das figurinhas do carrinho está mais disponível.</div>
+                <div className="empty-message">Nenhum dos itens do carrinho está mais disponível.</div>
               )}
             </div>
             <div className="cart-footer">
@@ -424,7 +432,7 @@ export default function CartModal({
             </p>
             {result.reservedUntil && (
               <p className="modal-notice">
-                As figurinhas ficam reservadas para você até <strong>{formatDateTimeBR(result.reservedUntil)}</strong>. Sem
+                Os itens ficam reservados para você até <strong>{formatDateTimeBR(result.reservedUntil)}</strong>. Sem
                 confirmação do vendedor até lá, o pedido é cancelado.
               </p>
             )}

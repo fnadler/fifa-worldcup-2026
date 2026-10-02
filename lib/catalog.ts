@@ -15,11 +15,19 @@ export interface MenuSection {
 export interface Catalog {
   /** Igual a albums.id no banco. */
   id: string;
+  /** Endereço da coleção (/colecao/<slug>) — igual a albums.slug. */
+  slug: string;
   name: string;
   /** Nome curto para textos ("Álbum Copa 2026"): pedido no WhatsApp, lista de repetidas. */
   shortName: string;
   itemSingular: string;
   itemPlural: string;
+  /** Palavras de posse: Álbum Copa "colada/Coladas/coladas"; cards "tenho/Tenho/cards". */
+  owned: { cell: string; total: string; block: string };
+  /** Exemplo na busca. */
+  searchPlaceholder: string;
+  /** Código como as pessoas conhecem ("BRA9"; na Adrenalyn só o número: "24"). */
+  displayCode(code: string): string;
   blocks: AlbumBlock[];
   /** Total que conta para Coladas/Faltam. */
   total: number;
@@ -72,10 +80,14 @@ const PANINI_VARIANT: Record<string, string> = { TEAM: "team", FWC: "fwc", CC: "
 
 export const PANINI: Catalog = {
   id: "wc2026-panini",
+  slug: "copa-2026",
   name: "Álbum Copa do Mundo 2026",
   shortName: "Álbum Copa 2026",
   itemSingular: "figurinha",
   itemPlural: "figurinhas",
+  owned: { cell: "colada", total: "Coladas", block: "coladas" },
+  searchPlaceholder: "Buscar seleção ou código (ex: BRA9)",
+  displayCode: (code) => code,
   blocks: panini.blocks,
   // 994: as Legends são uma coleção à parte — aparecem no quadro e têm seus próprios contadores
   // por bloco, mas não entram em Coladas/Faltam.
@@ -123,10 +135,14 @@ const adrenalyn = adrenalynJson as AlbumData;
 
 export const ADRENALYN: Catalog = {
   id: "wc2026-adrenalyn",
+  slug: "adrenalyn-xl",
   name: "Adrenalyn XL",
   shortName: "Adrenalyn XL",
   itemSingular: "card",
   itemPlural: "cards",
+  owned: { cell: "tenho", total: "Tenho", block: "cards" },
+  searchPlaceholder: "Buscar jogador ou seleção (ex: messi)",
+  displayCode: numberOf,
   blocks: adrenalyn.blocks,
   total: adrenalyn.total,
   filters: [
@@ -144,13 +160,13 @@ export const ADRENALYN: Catalog = {
   blockTag: (b) => (b.tipo === "TEAM" ? b.grupo : b.tipo === "CONTENDER" ? "Contenders" : "Especial"),
   isSpecial: (b) => b.tipo !== "TEAM",
   blockRange: (b) => `${numberOf(b.codes[0])}–${numberOf(b.codes[b.codes.length - 1])}`,
-  menuSections: sectionsBy(adrenalyn.blocks, (b) =>
-    b.tipo === "TEAM"
-      ? { title: "Seleções", variant: "team" }
-      : b.tipo === "CONTENDER"
-        ? { title: "Contenders", variant: "cc" }
-        : { title: "Especiais", variant: "fwc" }
-  ),
+  // Seleções, Contenders e Especiais (Golden Ballers vem antes das seleções no checklist, mas fica junto
+  // dos outros especiais no menu).
+  menuSections: [
+    { title: "Seleções", variant: "team", blocks: adrenalyn.blocks.filter((b) => b.tipo === "TEAM") },
+    { title: "Contenders", variant: "cc", blocks: adrenalyn.blocks.filter((b) => b.tipo === "CONTENDER") },
+    { title: "Especiais", variant: "fwc", blocks: adrenalyn.blocks.filter((b) => b.tipo === "SPECIAL") },
+  ],
   menuLabel: (b) => b.nome,
   menuCode: (b) => (b.tipo === "TEAM" ? b.grupo : null),
 };
@@ -161,9 +177,14 @@ export const CATALOGS: Catalog[] = [PANINI, ADRENALYN];
 export const DEFAULT_CATALOG = PANINI;
 
 const BY_ID = new Map(CATALOGS.map((c) => [c.id, c]));
+const BY_SLUG = new Map(CATALOGS.map((c) => [c.slug, c]));
 
 export function getCatalog(id: string | null | undefined): Catalog {
   return (id && BY_ID.get(id)) || DEFAULT_CATALOG;
+}
+
+export function catalogBySlug(slug: string): Catalog | undefined {
+  return BY_SLUG.get(slug);
 }
 
 export interface CodeEntry {

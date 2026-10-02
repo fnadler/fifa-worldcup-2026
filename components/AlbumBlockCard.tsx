@@ -1,6 +1,7 @@
 "use client";
 
 import { anchorId, hasNamedStickers } from "@/lib/album";
+import { useCatalog } from "@/lib/CatalogContext";
 import type { ModoClique, ViewMode, VisibleBlock } from "@/lib/types";
 import AlbumPhotoCard from "./AlbumPhotoCard";
 import StickerCell from "./StickerCell";
@@ -15,7 +16,8 @@ interface AlbumBlockCardProps {
 
 export default function AlbumBlockCard({ vb, modo = "add", onBump, readOnly, view = "grid" }: AlbumBlockCardProps) {
   const { block, tag, codigoBase, coladas, repetidas, pct, stickers } = vb;
-  const isSpecial = block.tipo !== "TEAM";
+  const catalog = useCatalog();
+  const isSpecial = catalog.isSpecial(block);
 
   return (
     <div id={anchorId(block)} className="block-card">
@@ -25,7 +27,7 @@ export default function AlbumBlockCard({ vb, modo = "add", onBump, readOnly, vie
         <span className="block-code-range">{codigoBase}</span>
         <div className="block-header-spacer" />
         <span className="block-summary-coladas">
-          {coladas}/{block.codes.length} coladas
+          {coladas}/{block.codes.length} {catalog.owned.block}
         </span>
         <span className="block-summary-repetidas">{repetidas} repetidas</span>
         <div className="progress-track">

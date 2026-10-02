@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { DEFAULT_ALBUM_ID, activeAlbums } from "@/lib/albums";
 import { profileFromMetadata } from "@/lib/profile";
 import { ownShop } from "@/lib/shopLink";
+import { ensureDefaultCollection, userCollections } from "@/lib/userCollections";
 import ProfilePage from "@/components/ProfilePage";
 import { PLATFORM_NAME } from "@/lib/brand";
 
@@ -22,15 +22,20 @@ export default async function PerfilPage() {
   if (!user) redirect("/login");
 
   const profile = profileFromMetadata(user.user_metadata);
-  const [shop, albums] = await Promise.all([ownShop(supabase, user.id), activeAlbums(supabase)]);
-  const albumName = albums.find((a) => a.id === (profile.album_id ?? DEFAULT_ALBUM_ID))?.name ?? null;
+  const [shop, primeiras] = await Promise.all([ownShop(supabase, user.id), userCollections(supabase, user.id)]);
+  let collections = primeiras;
+  if (!collections.length) {
+    await ensureDefaultCollection(supabase, user.id, profile.collection_name);
+    collections = await userCollections(supabase, user.id);
+  }
 
   return (
     <ProfilePage
       email={user.email ?? null}
       createdAt={user.created_at}
       profile={profile}
-      albumName={albumName}
+      userId={user.id}
+      collections={collections}
       shop={shop}
     />
   );

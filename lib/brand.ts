@@ -15,7 +15,7 @@ export const RESERVED_SLUGS = new Set([
   "admin", "app", "conta", "config", "configuracoes", "ajuda", "suporte", "termos", "privacidade",
   "icon", "apple-icon", "manifest", "favicon", "brand", "stickers", "static", "gn", "gnfigurinhas", "gncoleciona", "coleciona",
   // páginas públicas da plataforma (landing e institucionais)
-  "colecao", "contato", "cancelamento", "planos", "cadastro", "entrar", "sobre", "precos", "faq", "duvidas", "blog",
+  "colecao", "colecoes", "contato", "cancelamento", "planos", "cadastro", "entrar", "sobre", "precos", "faq", "duvidas", "blog",
   "landing", "home", "inicio", "site",
 ]);
 

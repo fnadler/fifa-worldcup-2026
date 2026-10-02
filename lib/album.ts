@@ -43,6 +43,31 @@ export function cellText(code: string): string {
   return e?.block.labels?.[e.index] ?? stickerLabel(code);
 }
 
+/** Código como as pessoas conhecem: "BRA9" no Álbum Copa, só o número na Adrenalyn ("24"). */
+export function displayCode(code: string): string {
+  const e = lookupCode(code);
+  return e ? e.catalog.displayCode(code) : code;
+}
+
+/** Posição do jogador (GK, DEF, MID, FWD), quando o catálogo tem. */
+export function itemPosition(code: string): string | null {
+  const e = lookupCode(code);
+  return e?.block.positions?.[e.index] ?? null;
+}
+
+export const POSITION_LABELS: Record<string, string> = {
+  GK: "Goleiro",
+  DEF: "Defensor",
+  MID: "Meio-campo",
+  FWD: "Atacante",
+};
+
+/** Tipo do card (BASE, ICON, CREST…), quando o catálogo tem. */
+export function itemKind(code: string): string | null {
+  const e = lookupCode(code);
+  return e?.block.kinds?.[e.index] ?? null;
+}
+
 export function stickerLabel(code: string): string {
   const num = code.replace(/^[A-Z]+/, "");
   return num || code;

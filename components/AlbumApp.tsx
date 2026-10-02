@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { deriveBoard } from "@/lib/derive";
-import { useCatalog } from "@/lib/CatalogContext";
+import { CatalogProvider } from "@/lib/CatalogContext";
+import { getCatalog } from "@/lib/catalog";
+import { LAST_COLLECTION_COOKIE, type UserCollection } from "@/lib/userCollections";
 import { purgeLegacyLocalData, readLocalQtd, writeLocalQtd } from "@/lib/localBackup";
 import { createClient } from "@/lib/supabase/client";
 import { useViewMode } from "@/lib/useViewMode";
@@ -19,9 +21,14 @@ interface AlbumAppProps {
   shopHref: string;
   shopActive: boolean;
   collectionName: string;
+  /** Coleção aberta (albums.id). */
+  albumId: string;
+  /** Todas as coleções da pessoa — seletor acima do título. */
+  collections: UserCollection[];
 }
 
-export default function AlbumApp({ initialUser, shopHref, shopActive, collectionName }: AlbumAppProps) {
+export default function AlbumApp({ initialUser, shopHref, shopActive, collectionName, albumId, collections }: AlbumAppProps) {
+  const catalog = getCatalog(albumId);
   const [qtd, setQtd] = useState<Qtd>({});
   const [syncStatus, setSyncStatus] = useState<SyncStatus>("idle");
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
@@ -145,7 +152,11 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
     });
   }, [initialUser.id]);
 
-  const catalog = useCatalog();
+  // /colecao volta para a última coleção aberta.
+  useEffect(() => {
+    document.cookie = `${LAST_COLLECTION_COOKIE}=${catalog.slug}; path=/; max-age=31536000; samesite=lax`;
+  }, [catalog.slug]);
+
   const derived = useMemo(
     () => deriveBoard(catalog, qtd, tipo, statusFiltro, busca),
     [catalog, qtd, tipo, statusFiltro, busca]
@@ -160,6 +171,7 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
   }
 
   return (
+    <CatalogProvider value={catalog}>
     <div className="app-shell">
       <Header
         headerRef={headerRef}
@@ -185,6 +197,7 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
         shopHref={shopHref}
         shopActive={shopActive}
         collectionName={collectionName}
+        collections={collections}
         onToast={showToast}
         onClearFilters={() => {
           setBusca("");
@@ -197,7 +210,7 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
         modo={modo}
         syncStatus={syncStatus}
         lastSyncedAt={lastSyncedAt}
-        qtdCount={Object.keys(qtd).length}
+        qtdCount={catalog.blocks.reduce((s, b) => s + b.codes.filter((c) => qtd[c] !== undefined).length, 0)}
       />
 
       <div className="board">
@@ -205,7 +218,7 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
           <AlbumBlockCard key={vb.block.id} vb={vb} modo={modo} onBump={bump} view={view} />
         ))}
         {derived.visibleBlocks.length === 0 && (
-          <div className="empty-message">Nenhuma figurinha com esses filtros.</div>
+          <div className="empty-message">Nenhum{catalog.itemSingular === "figurinha" ? "a" : ""} {catalog.itemSingular} com esses filtros.</div>
         )}
       </div>
 
@@ -228,5 +241,6 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
 
       {toast && <div className="toast">{toast}</div>}
     </div>
+    </CatalogProvider>
   );
 }

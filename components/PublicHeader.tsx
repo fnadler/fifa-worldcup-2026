@@ -7,7 +7,6 @@ import GroupMenu from "./GroupMenu";
 import { FiltersFooter, ViewToggleButton } from "./HeaderIcons";
 import type { ViewMode, StatusFiltro, TipoFiltro } from "@/lib/types";
 import BrandLogo from "./BrandLogo";
-import { PLATFORM_NAME } from "@/lib/brand";
 
 interface PublicHeaderProps {
   headerRef: RefObject<HTMLDivElement | null>;
@@ -52,7 +51,8 @@ export default function PublicHeader({
   onClearFilters,
   onAnchorClick,
 }: PublicHeaderProps) {
-  const tipos = useCatalog().filters;
+  const catalog = useCatalog();
+  const tipos = catalog.filters;
   const [menuAberto, setMenuAberto] = useState(false);
 
   function anchorClickAndClose(id: string) {
@@ -66,7 +66,7 @@ export default function PublicHeader({
         <div className="header-main-row">
           <div className="brand">
             <BrandLogo />
-            <span className="kicker">{PLATFORM_NAME}</span>
+            <span className="kicker">{catalog.name}</span>
             <span className="title">{collectionName}</span>
           </div>
 
@@ -76,7 +76,7 @@ export default function PublicHeader({
                 {totColadas}
                 <span className="denom">/{totGeral}</span>
               </span>
-              <span className="total-label">Coladas</span>
+              <span className="total-label">{catalog.owned.total}</span>
             </div>
             <div className="total-card">
               <span className="total-value" style={{ color: "var(--gold)" }}>
@@ -116,7 +116,7 @@ export default function PublicHeader({
           <div className="controls-row">
             <input
               type="search"
-              placeholder="Buscar seleção ou código (ex: BRA9)"
+              placeholder={catalog.searchPlaceholder}
               value={busca}
               onChange={(e) => onBusca(e.target.value)}
               className="search-input"

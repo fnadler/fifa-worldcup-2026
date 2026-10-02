@@ -1,4 +1,4 @@
-import { stickerName } from "./album";
+import { displayCode, stickerName } from "./album";
 import type { Catalog } from "./catalog";
 import type { Qtd, StatusFiltro, TipoFiltro, VisibleBlock } from "./types";
 
@@ -88,7 +88,7 @@ export function deriveBoard(
       .map((c) => {
         const n = (qtd[c] ?? 0) - 1;
         const nome = stickerName(c);
-        const rotulo = nome ? `${c} ${nome}` : c;
+        const rotulo = nome ? `${displayCode(c)} ${nome}` : displayCode(c);
         return n > 1 ? `${rotulo} (x${n})` : rotulo;
       });
     if (itens.length) linhas.push(`${b.nome}: ${itens.join(", ")}`);

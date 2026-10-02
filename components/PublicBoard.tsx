@@ -2,7 +2,8 @@
 
 import { useMemo, useRef, useState } from "react";
 import { deriveBoard } from "@/lib/derive";
-import { useCatalog } from "@/lib/CatalogContext";
+import { CatalogProvider } from "@/lib/CatalogContext";
+import { getCatalog } from "@/lib/catalog";
 import { useViewMode } from "@/lib/useViewMode";
 import type { Qtd, StatusFiltro, TipoFiltro } from "@/lib/types";
 import PublicHeader from "./PublicHeader";
@@ -11,16 +12,18 @@ import AlbumBlockCard from "./AlbumBlockCard";
 interface PublicBoardProps {
   qtd: Qtd;
   collectionName: string;
+  /** Coleção do link (albums.id). */
+  albumId: string;
 }
 
-export default function PublicBoard({ qtd, collectionName }: PublicBoardProps) {
+export default function PublicBoard({ qtd, collectionName, albumId }: PublicBoardProps) {
+  const catalog = getCatalog(albumId);
   const [tipo, setTipo] = useState<TipoFiltro>("ALL");
   const [statusFiltro, setStatusFiltro] = useState<StatusFiltro>("ALL");
   const [busca, setBusca] = useState("");
   const [view, setView] = useViewMode("copa2026-public-view");
   const headerRef = useRef<HTMLDivElement | null>(null);
 
-  const catalog = useCatalog();
   const derived = useMemo(
     () => deriveBoard(catalog, qtd, tipo, statusFiltro, busca),
     [catalog, qtd, tipo, statusFiltro, busca]
@@ -35,6 +38,7 @@ export default function PublicBoard({ qtd, collectionName }: PublicBoardProps) {
   }
 
   return (
+    <CatalogProvider value={catalog}>
     <div className="app-shell">
       <PublicHeader
         headerRef={headerRef}
@@ -67,7 +71,7 @@ export default function PublicBoard({ qtd, collectionName }: PublicBoardProps) {
         </span>
         <span className="legend-item">
           <i className="legend-swatch swatch-full" />
-          colada
+          {catalog.owned.cell}
         </span>
         <span className="legend-item">
           <i className="legend-swatch swatch-dup" />
@@ -80,9 +84,10 @@ export default function PublicBoard({ qtd, collectionName }: PublicBoardProps) {
           <AlbumBlockCard key={vb.block.id} vb={vb} readOnly view={view} />
         ))}
         {derived.visibleBlocks.length === 0 && (
-          <div className="empty-message">Nenhuma figurinha com esses filtros.</div>
+          <div className="empty-message">Nenhum{catalog.itemSingular === "figurinha" ? "a" : ""} {catalog.itemSingular} com esses filtros.</div>
         )}
       </div>
     </div>
+    </CatalogProvider>
   );
 }

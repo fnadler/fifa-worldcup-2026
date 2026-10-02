@@ -1,12 +1,13 @@
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { collectionTitle } from "@/lib/profile";
-import { ownShop } from "@/lib/shopLink";
-import AlbumApp from "@/components/AlbumApp";
+import { profileFromMetadata } from "@/lib/profile";
+import { LAST_COLLECTION_COOKIE, ensureDefaultCollection, userCollections } from "@/lib/userCollections";
 
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
+// /colecao abre a última coleção usada (cookie) ou a primeira da pessoa.
+export default async function ColecaoIndex() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -14,14 +15,14 @@ export default async function Home() {
 
   if (!user) redirect("/login");
 
-  const shop = await ownShop(supabase, user.id);
+  let collections = await userCollections(supabase, user.id);
+  if (!collections.length) {
+    await ensureDefaultCollection(supabase, user.id, profileFromMetadata(user.user_metadata).collection_name);
+    collections = await userCollections(supabase, user.id);
+  }
+  if (!collections.length) redirect("/colecoes");
 
-  return (
-    <AlbumApp
-      initialUser={{ id: user.id, email: user.email ?? null }}
-      shopHref={shop.href}
-      shopActive={shop.active}
-      collectionName={collectionTitle(user.user_metadata)}
-    />
-  );
+  const last = (await cookies()).get(LAST_COLLECTION_COOKIE)?.value;
+  const target = collections.find((c) => c.slug === last) ?? collections[0];
+  redirect(`/colecao/${target.slug}`);
 }

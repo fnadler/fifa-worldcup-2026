@@ -67,6 +67,9 @@ export default function UserMenu({ email, shopActive, onBackup, onImport }: User
           <Link href="/perfil" className="user-menu-item" role="menuitem" onClick={fechar}>
             Meu perfil
           </Link>
+          <Link href="/colecoes" className="user-menu-item" role="menuitem" onClick={fechar}>
+            Minhas coleções
+          </Link>
 
           <div className="user-menu-group" role="group" aria-label="Minha loja">
             <span className="user-menu-group-title">Minha loja</span>

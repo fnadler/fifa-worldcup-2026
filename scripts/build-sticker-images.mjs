@@ -1,7 +1,9 @@
 // Gera as imagens otimizadas das figurinhas a partir das fotos originais em /images
-// (que ficam fora do git — ~420 MB).
+// (que ficam fora do git — ~420 MB) e dos cards da Adrenalyn XL em data/adrenalyn-xl/cards
+// (também fora do git; nome = número do card, ex: "024.jpeg" → AXL24).
 //
-//   npm run images
+//   npm run images            — gera só o que ainda não existe em public/stickers
+//   npm run images -- --force — refaz todas
 //
 // Saída (versionada):
 //   public/stickers/thumb/<CODE>.webp  — 240px de largura, usada na grade da loja
@@ -12,7 +14,7 @@
 // zeros à esquerda ignorados). "FWC 00" é a figurinha de código "00" no álbum.
 // Legends: "67 - LAMINE OURO.jpg" — atleta (apelido, ver LEGEND_ALIASES) + tier; o número é ignorado.
 
-import { readdir, mkdir, writeFile, readFile } from "node:fs/promises";
+import { readdir, mkdir, writeFile, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 
@@ -21,8 +23,12 @@ const SRC_DIRS = ["selecoes", "fwc", "coca-cola"].map((d) => path.join(ROOT, "im
 const OUT = path.join(ROOT, "public", "stickers");
 const SIZES = { thumb: 240, large: 720 };
 
+const FORCE = process.argv.includes("--force");
 const album = JSON.parse(await readFile(path.join(ROOT, "album.json"), "utf8"));
-const validCodes = new Set(album.blocks.flatMap((b) => b.codes));
+const adrenalyn = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "adrenalyn-xl.json"), "utf8"));
+const allBlocks = [...album.blocks, ...adrenalyn.blocks];
+const validCodes = new Set(allBlocks.flatMap((b) => b.codes));
+const ADRENALYN_DIR = path.join(ROOT, "data", "adrenalyn-xl", "cards");
 
 const LEGENDS_DIR = path.join(ROOT, "images", "legends");
 const LEGEND_TIERS = { REGULAR: "LIL", LILAS: "LIL", BRONZE: "BRO", PRATA: "PRA", OURO: "OUR" };
@@ -91,9 +97,22 @@ for (const file of await readdir(LEGENDS_DIR)) {
   else sources.set(code, path.join(LEGENDS_DIR, file));
 }
 
+for (const file of await readdir(ADRENALYN_DIR).catch(() => [])) {
+  const m = file.match(/^0*(\d+)\.(jpe?g|png|webp)$/i); // "limited-1.jpeg" etc. ficam de fora
+  const code = m && `AXL${m[1]}`;
+  if (!code || !validCodes.has(code)) continue;
+  sources.set(code, path.join(ADRENALYN_DIR, file));
+}
+
 await Promise.all(Object.keys(SIZES).map((s) => mkdir(path.join(OUT, s), { recursive: true })));
 
-const codes = [...sources.keys()];
+const exists = async (f) => (await stat(f).catch(() => null)) !== null;
+const codes = [];
+for (const code of sources.keys()) {
+  const prontas = await Promise.all(Object.keys(SIZES).map((s) => exists(path.join(OUT, s, `${code}.webp`))));
+  if (FORCE || !prontas.every(Boolean)) codes.push(code);
+}
+console.log(`${codes.length} para gerar (${sources.size - codes.length} já existem).`);
 let done = 0;
 const queue = [...codes];
 async function worker() {
@@ -112,9 +131,9 @@ async function worker() {
 }
 await Promise.all(Array.from({ length: 6 }, worker));
 
-const ordered = album.blocks.flatMap((b) => b.codes).filter((c) => sources.has(c));
+const ordered = allBlocks.flatMap((b) => b.codes).filter((c) => sources.has(c));
 await writeFile(path.join(ROOT, "lib", "sticker-images.json"), JSON.stringify(ordered) + "\n");
 
 const missing = [...validCodes].filter((c) => !sources.has(c));
-console.log(`\n${ordered.length} figurinhas com foto.`);
+console.log(`\n${ordered.length} itens com foto.`);
 if (missing.length) console.log(`Sem foto (${missing.length}): ${missing.join(", ")}`);

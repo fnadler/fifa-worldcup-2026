@@ -8,7 +8,8 @@ import { CopyLinkButton, FiltersFooter, HeaderActions, NavSwitch, ViewToggleButt
 import GroupMenu from "./GroupMenu";
 import UserMenu from "./UserMenu";
 import BrandLogo from "./BrandLogo";
-import { PLATFORM_NAME } from "@/lib/brand";
+import CollectionSwitcher from "./CollectionSwitcher";
+import type { UserCollection } from "@/lib/userCollections";
 
 interface HeaderProps {
   headerRef: RefObject<HTMLDivElement | null>;
@@ -34,6 +35,7 @@ interface HeaderProps {
   shopHref: string;
   shopActive: boolean;
   collectionName: string;
+  collections: UserCollection[];
   onToast: (msg: string) => void;
   /** Volta busca, tipo e status ao padrão (botão "Limpar filtros" do celular). */
   onClearFilters: () => void;
@@ -50,9 +52,13 @@ const MODOS: { value: ModoClique; label: string }[] = [
   { value: "sub", label: "− Tirar" },
 ];
 
-// Link de visualização (somente leitura) do álbum — o token é criado na primeira vez.
-async function gerarLinkPublico(): Promise<string> {
-  const res = await fetch("/api/share-link", { method: "POST" });
+// Link de visualização (somente leitura) da coleção — o token é criado na primeira vez.
+async function gerarLinkPublico(albumId: string): Promise<string> {
+  const res = await fetch("/api/share-link", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ albumId }),
+  });
   if (!res.ok) throw new Error("request failed");
   const { token } = (await res.json()) as { token: string };
   return `${window.location.origin}/publico/${token}`;
@@ -82,10 +88,12 @@ export default function Header({
   shopHref,
   shopActive,
   collectionName,
+  collections,
   onToast,
   onClearFilters,
 }: HeaderProps) {
-  const tipos = useCatalog().filters;
+  const catalog = useCatalog();
+  const tipos = catalog.filters;
   const [menuAberto, setMenuAberto] = useState(false);
 
   function anchorClickAndClose(id: string) {
@@ -99,7 +107,7 @@ export default function Header({
         <div className="header-main-row">
           <div className="brand">
             <BrandLogo />
-            <span className="kicker">{PLATFORM_NAME}</span>
+            <CollectionSwitcher collections={collections} />
             <span className="title">{collectionName}</span>
           </div>
 
@@ -109,7 +117,7 @@ export default function Header({
                 {totColadas}
                 <span className="denom">/{totGeral}</span>
               </span>
-              <span className="total-label">Coladas</span>
+              <span className="total-label">{catalog.owned.total}</span>
             </div>
             <div className="total-card">
               <span className="total-value" style={{ color: "var(--gold)" }}>
@@ -152,9 +160,9 @@ export default function Header({
             <NavSwitch active="album" shopHref={shopHref} />
             <CopyLinkButton
               text="Copiar link"
-              label="Copiar link público do álbum"
-              url={gerarLinkPublico}
-              successMessage="Link público do álbum copiado!"
+              label="Copiar link público da coleção"
+              url={() => gerarLinkPublico(catalog.id)}
+              successMessage="Link público da coleção copiado!"
               onToast={onToast}
             />
             <UserMenu email={user.email} shopActive={shopActive} onBackup={onExportar} onImport={onImportar} />
@@ -174,7 +182,7 @@ export default function Header({
           <div className="controls-row">
             <input
               type="search"
-              placeholder="Buscar seleção ou código (ex: BRA9)"
+              placeholder={catalog.searchPlaceholder}
               value={busca}
               onChange={(e) => onBusca(e.target.value)}
               className="search-input"

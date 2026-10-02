@@ -1,29 +1,39 @@
 "use client";
 
+import Link from "next/link";
 import { useState, type FormEvent } from "react";
-import { parseProfileInput, type ProfileData } from "@/lib/profile";
+import { parseAccountInput, parseCollectionName, type ProfileData } from "@/lib/profile";
 import { maskPhoneBR } from "@/lib/phone";
 import { createClient } from "@/lib/supabase/client";
 import AccountHeader from "./AccountHeader";
 import { signOut } from "./UserMenu";
 import { NAME_MAX } from "@/lib/brand";
+import type { UserCollection } from "@/lib/userCollections";
 
 interface ProfilePageProps {
   email: string | null;
   createdAt: string;
   shop: { href: string; active: boolean };
   profile: ProfileData;
-  /** Nome da coleção (álbum) que a pessoa monta. */
-  albumName: string | null;
+  userId: string;
+  /** Coleções da pessoa, cada uma com o nome que ela deu. */
+  collections: UserCollection[];
 }
 
-export default function ProfilePage({ email, createdAt, shop, profile, albumName }: ProfilePageProps) {
+export default function ProfilePage({ email, createdAt, shop, profile, userId, collections }: ProfilePageProps) {
   const [fullName, setFullName] = useState(profile.full_name);
   const [whatsapp, setWhatsapp] = useState(maskPhoneBR(profile.whatsapp));
-  const [collectionName, setCollectionName] = useState(profile.collection_name);
   const [savingDados, setSavingDados] = useState(false);
   const [erroDados, setErroDados] = useState<string | null>(null);
   const [okDados, setOkDados] = useState(false);
+
+  const [nomes, setNomes] = useState<Record<string, string>>(() =>
+    Object.fromEntries(collections.map((c) => [c.albumId, c.collectionName]))
+  );
+  const [salvos, setSalvos] = useState(nomes);
+  const [savingNomes, setSavingNomes] = useState(false);
+  const [erroNomes, setErroNomes] = useState<string | null>(null);
+  const [okNomes, setOkNomes] = useState(false);
 
   const [senha, setSenha] = useState("");
   const [confirmacao, setConfirmacao] = useState("");
@@ -35,7 +45,7 @@ export default function ProfilePage({ email, createdAt, shop, profile, albumName
     e.preventDefault();
     setErroDados(null);
     setOkDados(false);
-    const parsed = parseProfileInput(fullName, whatsapp, collectionName);
+    const parsed = parseAccountInput(fullName, whatsapp);
     if ("error" in parsed) return setErroDados(parsed.error);
 
     setSavingDados(true);
@@ -44,8 +54,38 @@ export default function ProfilePage({ email, createdAt, shop, profile, albumName
     if (error) return setErroDados("Não foi possível salvar — tente de novo.");
     setFullName(parsed.data.full_name);
     setWhatsapp(maskPhoneBR(parsed.data.whatsapp));
-    setCollectionName(parsed.data.collection_name);
     setOkDados(true);
+  }
+
+  async function salvarNomes(e: FormEvent) {
+    e.preventDefault();
+    setErroNomes(null);
+    setOkNomes(false);
+    const limpos: Record<string, string> = {};
+    for (const c of collections) {
+      const parsed = parseCollectionName(nomes[c.albumId] ?? "");
+      if ("error" in parsed) return setErroNomes(`${c.albumName}: ${parsed.error}`);
+      limpos[c.albumId] = parsed.name;
+    }
+    const mudaram = collections.filter((c) => limpos[c.albumId] !== salvos[c.albumId]);
+    if (!mudaram.length) return setOkNomes(true);
+
+    setSavingNomes(true);
+    const supabase = createClient();
+    const results = await Promise.all(
+      mudaram.map((c) =>
+        supabase
+          .from("user_albums")
+          .update({ collection_name: limpos[c.albumId] })
+          .eq("user_id", userId)
+          .eq("album_id", c.albumId)
+      )
+    );
+    setSavingNomes(false);
+    if (results.some((r) => r.error)) return setErroNomes("Não foi possível salvar — tente de novo.");
+    setNomes(limpos);
+    setSalvos(limpos);
+    setOkNomes(true);
   }
 
   async function alterarSenha(e: FormEvent) {
@@ -78,8 +118,8 @@ export default function ProfilePage({ email, createdAt, shop, profile, albumName
       <div className="admin-page profile-page">
         <form className="admin-section admin-settings-form" onSubmit={salvarDados}>
           <h2 className="admin-section-title">Dados da conta</h2>
-          {(!profile.full_name || !profile.collection_name) && (
-            <p className="modal-notice">Complete seu cadastro: nome completo, WhatsApp e o nome da sua coleção.</p>
+          {(!profile.full_name || !profile.whatsapp) && (
+            <p className="modal-notice">Complete seu cadastro: nome completo e WhatsApp.</p>
           )}
           <label className="form-label">
             Nome completo
@@ -89,19 +129,6 @@ export default function ProfilePage({ email, createdAt, shop, profile, albumName
               maxLength={120}
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-            />
-          </label>
-          <label className="form-label">
-            Nome da coleção{" "}
-            <span className="field-hint">
-              aparece no topo da sua coleção · {collectionName.length}/{NAME_MAX}
-            </span>
-            <input
-              className="login-input"
-              maxLength={NAME_MAX}
-              placeholder="Ex: Coleção do João"
-              value={collectionName}
-              onChange={(e) => setCollectionName(e.target.value)}
             />
           </label>
           <div className="form-row">
@@ -124,7 +151,6 @@ export default function ProfilePage({ email, createdAt, shop, profile, albumName
             </label>
           </div>
           <span className="cart-note">
-            {albumName && <>Álbum: {albumName} · </>}
             Conta criada em {new Date(createdAt).toLocaleDateString("pt-BR", { dateStyle: "long" })}.
           </span>
           {erroDados && <div className="login-error">{erroDados}</div>}
@@ -132,6 +158,39 @@ export default function ProfilePage({ email, createdAt, shop, profile, albumName
           <div className="modal-actions">
             <button type="submit" className="btn-restore" disabled={savingDados}>
               {savingDados ? "Salvando…" : "Salvar dados"}
+            </button>
+          </div>
+        </form>
+
+        <form className="admin-section admin-settings-form" onSubmit={salvarNomes}>
+          <h2 className="admin-section-title">Minhas coleções</h2>
+          <p className="modal-notice">O nome aparece no topo de cada coleção e no link público dela.</p>
+          {collections.map((c) => (
+            <label key={c.albumId} className="form-label">
+              <span className="collection-name-label">
+                {c.albumName}
+                <Link href={`/colecao/${c.slug}`} className="field-hint">
+                  abrir
+                </Link>
+              </span>
+              <span className="field-hint">{(nomes[c.albumId] ?? "").length}/{NAME_MAX}</span>
+              <input
+                className="login-input"
+                maxLength={NAME_MAX}
+                placeholder="Ex: Coleção do João"
+                value={nomes[c.albumId] ?? ""}
+                onChange={(e) => setNomes((n) => ({ ...n, [c.albumId]: e.target.value }))}
+              />
+            </label>
+          ))}
+          {erroNomes && <div className="login-error">{erroNomes}</div>}
+          {okNomes && <div className="login-info">Nomes salvos!</div>}
+          <div className="modal-actions">
+            <Link href="/colecoes" className="btn-ghost">
+              + Adicionar coleção
+            </Link>
+            <button type="submit" className="btn-restore" disabled={savingNomes}>
+              {savingNomes ? "Salvando…" : "Salvar nomes"}
             </button>
           </div>
         </form>

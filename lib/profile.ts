@@ -26,17 +26,33 @@ export function collectionTitle(meta: Record<string, unknown> | undefined): stri
 }
 
 // Valida e normaliza o que o usuário digitou. Retorna a mensagem de erro ou os dados prontos.
+export function parseAccountInput(
+  fullName: string,
+  whatsapp: string
+): { error: string } | { data: Pick<ProfileData, "full_name" | "whatsapp"> } {
+  const nome = fullName.trim().replace(/\s+/g, " ");
+  if (nome.split(" ").length < 2) return { error: "Informe o nome completo (nome e sobrenome)." };
+  if (nome.length > 120) return { error: "Nome muito longo." };
+  if (!isValidPhoneBR(whatsapp)) return { error: "WhatsApp inválido. Informe o DDD e o número: (11) 99999-8888." };
+  return { data: { full_name: nome, whatsapp: normalizeWhatsapp(whatsapp) } };
+}
+
+export function parseCollectionName(collectionName: string): { error: string } | { name: string } {
+  const colecao = cleanName(collectionName);
+  if (colecao.length < 2) return { error: "Dê um nome para a sua coleção (ex: Coleção do João)." };
+  if (collectionName.trim().length > NAME_MAX) return { error: `O nome da coleção pode ter até ${NAME_MAX} caracteres.` };
+  return { name: colecao };
+}
+
+/** Cadastro: dados da conta + nome da primeira coleção. */
 export function parseProfileInput(
   fullName: string,
   whatsapp: string,
   collectionName: string
 ): { error: string } | { data: ProfileData } {
-  const nome = fullName.trim().replace(/\s+/g, " ");
-  if (nome.split(" ").length < 2) return { error: "Informe o nome completo (nome e sobrenome)." };
-  if (nome.length > 120) return { error: "Nome muito longo." };
-  if (!isValidPhoneBR(whatsapp)) return { error: "WhatsApp inválido. Informe o DDD e o número: (11) 99999-8888." };
-  const colecao = cleanName(collectionName);
-  if (colecao.length < 2) return { error: "Dê um nome para a sua coleção (ex: Coleção do João)." };
-  if (collectionName.trim().length > NAME_MAX) return { error: `O nome da coleção pode ter até ${NAME_MAX} caracteres.` };
-  return { data: { full_name: nome, whatsapp: normalizeWhatsapp(whatsapp), collection_name: colecao } };
+  const conta = parseAccountInput(fullName, whatsapp);
+  if ("error" in conta) return conta;
+  const colecao = parseCollectionName(collectionName);
+  if ("error" in colecao) return colecao;
+  return { data: { ...conta.data, collection_name: colecao.name } };
 }

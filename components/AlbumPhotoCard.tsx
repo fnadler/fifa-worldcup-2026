@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { cellText, stickerName } from "@/lib/album";
+import { POSITION_LABELS, cellText, displayCode, itemPosition, stickerName } from "@/lib/album";
+import { useCatalog } from "@/lib/CatalogContext";
 import { stickerImage } from "@/lib/stickerImages";
 import type { ModoClique } from "@/lib/types";
 
@@ -14,21 +15,28 @@ interface AlbumPhotoCardProps {
 }
 
 export default function AlbumPhotoCard({ code, qty, modo, onBump, readOnly }: AlbumPhotoCardProps) {
+  const { owned } = useCatalog();
   const nome = stickerName(code);
+  const pos = itemPosition(code);
   const img = stickerImage(code, "thumb");
   const stateClass = qty === 0 ? "album-card-empty" : qty === 1 ? "album-card-full" : "album-card-dup";
   const repetidas = qty - 1;
   const status =
-    qty === 0 ? "Falta" : qty === 1 ? "Colada" : `+${repetidas} repetida${repetidas === 1 ? "" : "s"}`;
+    qty === 0 ? "Falta" : qty === 1 ? owned.cell[0].toUpperCase() + owned.cell.slice(1) : `+${repetidas} repetida${repetidas === 1 ? "" : "s"}`;
 
-  const id = nome ? `${code} ${nome}` : code;
+  const id = nome ? `${displayCode(code)} ${nome}` : displayCode(code);
   const acao = modo === "add" ? "somar" : "tirar";
   const title = readOnly ? `${id} — ${status}` : `${id} — ${status} · toque para ${acao}, clique direito inverte`;
 
   const media = img ? (
     <Image src={img} alt={id} width={240} height={336} unoptimized loading="lazy" />
   ) : (
-    <span className="shop-card-placeholder">{cellText(code)}</span>
+    <span className="shop-card-placeholder" data-pos={pos ?? undefined}>
+      {cellText(code)}
+      {/* Sem foto (Adrenalyn): nome e posição no lugar da imagem. */}
+      {nome && !img && cellText(code) !== nome && <small className="placeholder-name">{nome}</small>}
+      {pos && !img && <small className="placeholder-pos">{POSITION_LABELS[pos]}</small>}
+    </span>
   );
 
   return (
@@ -56,7 +64,7 @@ export default function AlbumPhotoCard({ code, qty, modo, onBump, readOnly }: Al
       )}
       <div className="shop-card-footer">
         <div className="shop-card-meta">
-          <span className="shop-card-code">{nome ?? code}</span>
+          <span className="shop-card-code">{nome ?? displayCode(code)}</span>
           <span className="album-card-status">{status}</span>
         </div>
         {!readOnly &&

@@ -3,9 +3,16 @@ import { landing } from "@/content/landing";
 import { COLLECTION_PATH, signupThen } from "@/lib/routes";
 import { TRIAL_DAYS } from "@/lib/stripe";
 import MarketingLogo from "./Logo";
+import StickyCta from "./StickyCta";
 import { AnonOnly, SmartLink } from "./Session";
 
-// Topo da área pública. Na landing mostra as âncoras das seções; nas páginas institucionais,
+const CTA = {
+  anon: { href: signupThen("/assinar"), label: `Testar ${TRIAL_DAYS} dias grátis` },
+  authed: { href: COLLECTION_PATH, label: "Ir para minha coleção" },
+};
+
+// Topo da área pública. No celular, o CTA sai do topo e vira um botão fixo no rodapé ao rolar.
+// Na landing mostra as âncoras das seções; nas páginas institucionais,
 // links de volta para as seções da home.
 export default function MarketingNav({ anchorsBase = "" }: { anchorsBase?: string }) {
   return (
@@ -28,12 +35,9 @@ export default function MarketingNav({ anchorsBase = "" }: { anchorsBase?: strin
             Entrar
           </Link>
         </AnonOnly>
-        <SmartLink
-          className="mk-btn mk-btn-sm mk-btn-yellow"
-          anon={{ href: signupThen("/assinar"), label: `Testar ${TRIAL_DAYS} dias grátis` }}
-          authed={{ href: COLLECTION_PATH, label: "Ir para minha coleção" }}
-        />
+        <SmartLink className="mk-btn mk-btn-sm mk-btn-yellow mk-nav-cta" anon={CTA.anon} authed={CTA.authed} />
       </div>
+      <StickyCta anon={CTA.anon} authed={CTA.authed} />
     </nav>
   );
 }

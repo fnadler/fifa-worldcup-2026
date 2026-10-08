@@ -1200,21 +1200,19 @@ html:has(.mk) {
   line-height: 1.5;
   color: var(--gn-text-2);
 }
+/* Moldura na proporção de um card; a figurinha aparece inteira (contain) — cada coleção tem a sua proporção. */
 .mk-colecao-img {
   position: relative;
-  aspect-ratio: 5 / 6;
-  border-radius: 14px;
-  background: var(--gn-ink);
+  aspect-ratio: 3 / 4;
   display: grid;
   place-items: center;
-  overflow: hidden;
   margin-bottom: 6px;
 }
 .mk-colecao-img img {
-  height: 88%;
-  width: auto;
-  border-radius: 8px;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(6, 48, 26, 0.22));
 }
 .mk-colecao-img .mk-tag {
   position: absolute;
@@ -1227,6 +1225,7 @@ html:has(.mk) {
 }
 .mk-colecao-card.soon .mk-colecao-img {
   background: #e9eee8;
+  border-radius: 14px;
 }
 .mk-colecao-soon {
   font-family: var(--font-nunito), sans-serif;
@@ -1252,9 +1251,57 @@ html:has(.mk) {
 .mk-nav-official:hover {
   background: rgba(253, 202, 4, 0.14);
 }
+
+/* ---------- CTA fixo (celular) ---------- */
+
+.mk-sticky-cta {
+  display: none;
+}
 @media (max-width: 700px) {
+  .mk-nav {
+    flex-wrap: nowrap;
+    gap: 12px;
+  }
+  .mk-logo {
+    width: 100px;
+    height: 52px;
+  }
+  .mk-logo img {
+    width: 121px;
+    height: 121px;
+    margin: -34px 0 0 -10px;
+  }
+  .mk-nav-actions {
+    gap: 12px;
+  }
+  .mk-nav-cta {
+    display: none !important;
+  }
   .mk-nav-official {
     font-size: 13px;
     padding: 7px 11px;
+  }
+  .mk-sticky-cta {
+    display: block;
+    position: fixed;
+    z-index: 50;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    background: rgba(245, 247, 242, 0.94);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--gn-line);
+    transform: translateY(110%);
+    transition: transform 0.25s ease;
+  }
+  .mk-sticky-cta.on {
+    transform: none;
+  }
+  .mk-sticky-cta .mk-btn {
+    width: 100%;
+  }
+  .mk {
+    padding-bottom: 76px; /* o rodapé não fica escondido atrás do CTA fixo */
   }
 }

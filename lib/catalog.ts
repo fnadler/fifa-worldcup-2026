@@ -1,5 +1,6 @@
 import paniniJson from "@/album.json";
 import adrenalynJson from "./catalogs/adrenalyn-xl.json";
+import goldenJson from "./catalogs/golden-crumple.json";
 import type { AlbumBlock, AlbumData, BlockType, TipoFiltro } from "./types";
 
 // Cada coleção (álbum) da plataforma: blocos, filtros, grupos de preço e textos. O código de cada
@@ -178,9 +179,54 @@ export const ADRENALYN: Catalog = {
   menuCode: (b) => (b.tipo === "TEAM" ? b.grupo : null),
 };
 
+// ---------- Golden Crumple Edition 2026 ----------
+// As figurinhas do Álbum Copa (FWC + seleções) com layout dourado. Códigos com prefixo GC (GCBRA9),
+// mostrados sem ele.
+
+const golden = goldenJson as AlbumData;
+const goldenCode = (code: string) => code.replace(/^GC/, "");
+
+export const GOLDEN_CRUMPLE: Catalog = {
+  id: "wc2026-golden-crumple",
+  slug: "golden-crumple-2026",
+  name: "Golden Crumple Edition 2026",
+  shortName: "Golden Crumple 2026",
+  itemSingular: "figurinha",
+  itemPlural: "figurinhas",
+  owned: { cell: "colada", total: "Coladas", block: "coladas" },
+  searchPlaceholder: "Buscar seleção ou código (ex: BRA9)",
+  displayCode: goldenCode,
+  blocks: golden.blocks,
+  total: golden.total,
+  filters: [
+    { value: "ALL", label: "Todas" },
+    { value: "TEAM", label: "Seleções" },
+    { value: "FWC", label: "FWC" },
+  ],
+  priceGroups: [
+    { key: "FWC", label: "FWC" },
+    { key: "TEAM", label: "Seleções" },
+  ],
+  countsToward: () => true,
+  blockTag: paniniTag,
+  isSpecial: (b) => b.tipo !== "TEAM",
+  blockRange(b) {
+    if (b.tipo === "FWC") return "00 · FWC1–19";
+    const first = goldenCode(b.codes[0]);
+    const prefix = first.match(/^[A-Za-z]+/)?.[0] ?? "";
+    return `${prefix}${numberOf(first)}–${numberOf(b.codes[b.codes.length - 1])}`;
+  },
+  menuSections: sectionsBy(golden.blocks, (b) => ({
+    title: b.tipo === "TEAM" ? `Grupo ${b.grupo}` : "FWC",
+    variant: PANINI_VARIANT[b.tipo] ?? "team",
+  })),
+  menuLabel: (b) => (b.tipo === "FWC" ? "World Cup History" : b.nome),
+  menuCode: (b) => (b.tipo === "TEAM" ? b.id.replace(/^gc-/, "") : null),
+};
+
 // ---------- registro e índice global por código ----------
 
-export const CATALOGS: Catalog[] = [PANINI, ADRENALYN];
+export const CATALOGS: Catalog[] = [PANINI, ADRENALYN, GOLDEN_CRUMPLE];
 export const DEFAULT_CATALOG = PANINI;
 
 const BY_ID = new Map(CATALOGS.map((c) => [c.id, c]));

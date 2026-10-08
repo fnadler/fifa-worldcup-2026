@@ -46,3 +46,6 @@ next-env.d.ts
 
 # imagens originais (pesadas) da Adrenalyn XL — viram webp em public/ quando forem usadas
 /data/adrenalyn-xl/
+
+# PDFs da Golden Crumple Edition (~2,5 GB) — as fotos saem de images/golden_crumple
+/GOLD CRUMPLE EDITION*.pdf

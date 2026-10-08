@@ -1,6 +1,7 @@
 // Gera as imagens otimizadas das figurinhas a partir das fotos originais em /images
 // (que ficam fora do git — ~420 MB) e dos cards da Adrenalyn XL em data/adrenalyn-xl/cards
-// (também fora do git; nome = número do card, ex: "024.jpeg" → AXL24).
+// (também fora do git; nome = número do card, ex: "024.jpeg" → AXL24). Golden Crumple Edition:
+// images/golden_crumple/<CÓDIGO>.png (ex: "GCBRA9.png").
 //
 //   npm run images            — gera só o que ainda não existe em public/stickers
 //   npm run images -- --force — refaz todas
@@ -26,9 +27,12 @@ const SIZES = { thumb: 240, large: 720 };
 const FORCE = process.argv.includes("--force");
 const album = JSON.parse(await readFile(path.join(ROOT, "album.json"), "utf8"));
 const adrenalyn = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "adrenalyn-xl.json"), "utf8"));
-const allBlocks = [...album.blocks, ...adrenalyn.blocks];
+const golden = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "golden-crumple.json"), "utf8"));
+const allBlocks = [...album.blocks, ...adrenalyn.blocks, ...golden.blocks];
 const validCodes = new Set(allBlocks.flatMap((b) => b.codes));
 const ADRENALYN_DIR = path.join(ROOT, "data", "adrenalyn-xl", "cards");
+// Golden Crumple Edition: arquivo com o próprio código ("GCBRA9.png"), recortado dos PDFs da edição.
+const GOLDEN_DIR = path.join(ROOT, "images", "golden_crumple");
 
 const LEGENDS_DIR = path.join(ROOT, "images", "legends");
 const LEGEND_TIERS = { REGULAR: "LIL", LILAS: "LIL", BRONZE: "BRO", PRATA: "PRA", OURO: "OUR" };
@@ -104,6 +108,11 @@ for (const file of await readdir(ADRENALYN_DIR).catch(() => [])) {
   const code = m ? `AXL${m[1]}` : validCodes.has(porCodigo) ? porCodigo : null;
   if (!code || !validCodes.has(code)) continue;
   sources.set(code, path.join(ADRENALYN_DIR, file));
+}
+
+for (const file of await readdir(GOLDEN_DIR).catch(() => [])) {
+  const code = path.parse(file).name.toUpperCase();
+  if (validCodes.has(code) && code.startsWith("GC")) sources.set(code, path.join(GOLDEN_DIR, file));
 }
 
 await Promise.all(Object.keys(SIZES).map((s) => mkdir(path.join(OUT, s), { recursive: true })));

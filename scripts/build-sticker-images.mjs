@@ -25,6 +25,9 @@ const OUT = path.join(ROOT, "public", "stickers");
 const SIZES = { thumb: 240, large: 720 };
 
 const FORCE = process.argv.includes("--force");
+// Fotos já recortadas na proporção das outras, com fundo da mesma cor da margem: o trim comeria a margem
+// e deixaria a figurinha mais estreita (e mais alta na grade).
+const NO_TRIM = new Set(["EGY3"]);
 const album = JSON.parse(await readFile(path.join(ROOT, "album.json"), "utf8"));
 const adrenalyn = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "adrenalyn-xl.json"), "utf8"));
 const golden = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "golden-crumple.json"), "utf8"));
@@ -131,8 +134,9 @@ async function worker() {
     const code = queue.shift();
     const input = sources.get(code);
     for (const [size, width] of Object.entries(SIZES)) {
-      await sharp(input)
-        .trim({ threshold: 12 }) // algumas fotos (ex: Coca-Cola) vêm quadradas com margem branca
+      const img = sharp(input);
+      if (!NO_TRIM.has(code)) img.trim({ threshold: 12 }); // algumas fotos (ex: Coca-Cola) vêm quadradas com margem branca
+      await img
         .resize({ width, withoutEnlargement: true })
         .webp({ quality: size === "thumb" ? 72 : 80 })
         .toFile(path.join(OUT, size, `${code}.webp`));

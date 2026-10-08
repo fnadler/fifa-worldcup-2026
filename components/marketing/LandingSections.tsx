@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { landing, trialSteps } from "@/content/landing";
 import { COLLECTION_PATH, SIGNUP_PATH, signupThen } from "@/lib/routes";
 import Faq from "./Faq";
@@ -100,6 +101,40 @@ export function ValueSplit() {
           <p>{s.loja}</p>
         </div>
       </div>
+    </section>
+  );
+}
+
+export function CollectionsAvailable() {
+  const c = landing.colecoes;
+  return (
+    <section id="colecoes" className="mk-colecoes mk-container">
+      <div className="mk-section-head">
+        <span className="mk-kicker">{c.kicker}</span>
+        <h2 className="mk-h2">{c.title}</h2>
+        <p>{c.subtitle}</p>
+      </div>
+      <div className="mk-colecoes-grid">
+        {c.items.map((i) => (
+          <div key={i.nome} className="mk-colecao-card">
+            <div className="mk-colecao-img">
+              <Image src={`/stickers/thumb/${i.img}.webp`} alt="" width={240} height={336} unoptimized loading="lazy" />
+              {i.tag && <span className="mk-tag mk-tag-yellow">{i.tag}</span>}
+            </div>
+            <strong>{i.nome}</strong>
+            <p>{i.desc}</p>
+          </div>
+        ))}
+        <div className="mk-colecao-card soon">
+          <div className="mk-colecao-img">
+            <span className="mk-colecao-soon">2022</span>
+            <span className="mk-tag mk-tag-green">{c.soon.tag}</span>
+          </div>
+          <strong>{c.soon.nome}</strong>
+          <p>{c.soon.desc}</p>
+        </div>
+      </div>
+      <SmartLink className="mk-btn mk-btn-green" {...CTA_COLECAO} />
     </section>
   );
 }

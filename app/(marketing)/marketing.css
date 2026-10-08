@@ -1159,3 +1159,102 @@ html:has(.mk) {
     right: 4px;
   }
 }
+
+/* ---------- coleções disponíveis ---------- */
+
+.mk-colecoes {
+  padding-block: 56px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+.mk-colecoes .mk-section-head p {
+  font-size: 18px;
+  color: var(--gn-text-2);
+}
+.mk-colecoes > .mk-btn {
+  align-self: flex-start;
+}
+.mk-colecoes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  gap: 18px;
+}
+.mk-colecao-card {
+  background: var(--gn-surface);
+  border: 1px solid var(--gn-line);
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mk-colecao-card strong {
+  font-family: var(--font-nunito), sans-serif;
+  font-weight: 900;
+  font-size: 19px;
+  line-height: 1.15;
+}
+.mk-colecao-card p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--gn-text-2);
+}
+.mk-colecao-img {
+  position: relative;
+  aspect-ratio: 5 / 6;
+  border-radius: 14px;
+  background: var(--gn-ink);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.mk-colecao-img img {
+  height: 88%;
+  width: auto;
+  border-radius: 8px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+}
+.mk-colecao-img .mk-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+.mk-colecao-card.soon {
+  border-style: dashed;
+  background: transparent;
+}
+.mk-colecao-card.soon .mk-colecao-img {
+  background: #e9eee8;
+}
+.mk-colecao-soon {
+  font-family: var(--font-nunito), sans-serif;
+  font-weight: 900;
+  font-size: 56px;
+  color: #b9c8bd;
+}
+
+/* ---------- menu: loja oficial ---------- */
+
+.mk-nav-official {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--gn-yellow) !important;
+  border: 1.5px solid var(--gn-yellow);
+  border-radius: 999px;
+  padding: 8px 14px;
+  white-space: nowrap;
+}
+.mk-nav-official:hover {
+  background: rgba(253, 202, 4, 0.14);
+}
+@media (max-width: 700px) {
+  .mk-nav-official {
+    font-size: 13px;
+    padding: 7px 11px;
+  }
+}

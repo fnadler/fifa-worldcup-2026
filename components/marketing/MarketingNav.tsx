@@ -19,6 +19,10 @@ export default function MarketingNav({ anchorsBase = "" }: { anchorsBase?: strin
         ))}
       </div>
       <div className="mk-nav-actions">
+        <Link href={landing.lojaOficial.href} className="mk-nav-official">
+          <span aria-hidden="true">★</span>
+          {landing.lojaOficial.label}
+        </Link>
         <AnonOnly>
           <Link href="/login" className="mk-nav-login">
             Entrar

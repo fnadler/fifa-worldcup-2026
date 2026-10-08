@@ -6,6 +6,7 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import MarketingNav from "@/components/marketing/MarketingNav";
 import {
   CollectionSection,
+  CollectionsAvailable,
   FaqSection,
   FinalCta,
   Hero,
@@ -52,6 +53,7 @@ export default async function LandingPage() {
         <Hero trialDays={TRIAL_DAYS} />
       </section>
       <ValueSplit />
+      <CollectionsAvailable />
       <CollectionSection />
       <StoreSection />
       <Pricing price={price} trialDays={TRIAL_DAYS} />

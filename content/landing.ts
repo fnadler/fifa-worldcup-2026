@@ -5,18 +5,22 @@ export const landing = {
   meta: {
     title: "GN Coleciona — sua coleção organizada, suas repetidas à venda",
     description:
-      "Registre grátis cada figurinha e card das suas coleções — Álbum da Copa 2026, Adrenalyn XL e mais — e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam no seu WhatsApp.",
+      "Registre grátis cada figurinha e card das suas coleções — Álbum da Copa 2026, Legends, Gold Crumple Edition, Adrenalyn XL e mais — e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam no seu WhatsApp.",
   },
 
   nav: [
-    { href: "#colecao", label: "Coleção" },
+    { href: "#colecoes", label: "Coleções" },
+    { href: "#colecao", label: "Como funciona" },
     { href: "#loja", label: "Loja" },
     { href: "#planos", label: "Planos" },
     { href: "#faq", label: "Dúvidas" },
   ],
 
+  // Link em destaque no topo — a loja da própria plataforma.
+  lojaOficial: { href: "/loja-oficial", label: "Loja Oficial GN" },
+
   hero: {
-    pill: "Álbum da Copa 2026 · Adrenalyn XL",
+    pill: "Novo: Gold Crumple Edition 2026",
     title: "Organize sua coleção. Venda suas repetidas.",
     subtitle:
       "Registre grátis cada figurinha e card das suas coleções e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam direto no seu WhatsApp.",
@@ -35,6 +39,20 @@ export const landing = {
     loja: "Suas repetidas viram vitrine pública, com os seus preços e o seu endereço. Compradores montam o pedido e mandam para o seu WhatsApp.",
   },
 
+  // Coleções disponíveis. `img` é o código de uma figurinha com foto (public/stickers/thumb/<img>.webp).
+  colecoes: {
+    kicker: "Coleções disponíveis",
+    title: "Todas as suas coleções num lugar só.",
+    subtitle: "Acompanhe cada uma com fotos, progresso e repetidas — na mesma conta, grátis.",
+    items: [
+      { nome: "Álbum Copa 2026", desc: "As 994 figurinhas do álbum oficial Panini: seleções, FWC History e Coca-Cola.", img: "ARG17", tag: "" },
+      { nome: "Legends 2026", desc: "As 80 figurinhas raras das Legends, nas versões lilás, bronze, prata e ouro.", img: "OUR13", tag: "" },
+      { nome: "Gold Crumple Edition 2026", desc: "O álbum completo da Copa com o layout dourado — 980 figurinhas.", img: "GCARG17", tag: "Novo" },
+      { nome: "Adrenalyn XL 2026", desc: "Os 630 cards da Copa e as Limited Editions, com foto de cada card.", img: "AXL1", tag: "" },
+    ],
+    soon: { nome: "Álbum Copa Catar 2022", desc: "O álbum da Copa do Catar chega em breve.", tag: "Em breve" },
+  },
+
   colecao: {
     kicker: "Coleção · grátis para sempre",
     title: "Chega de caderninho e lista no bloco de notas.",
@@ -47,7 +65,7 @@ export const landing = {
     features: [
       {
         t: "Várias coleções na mesma conta",
-        d: "O Álbum da Copa 2026 (com FWC, Coca-Cola e as raras Legends) e os cards Adrenalyn XL, cada um com seu progresso. Troque de coleção com um toque.",
+        d: "O Álbum da Copa 2026 (com FWC, Coca-Cola e as raras Legends), a Gold Crumple Edition e os cards Adrenalyn XL, cada um com seu progresso. Troque de coleção com um toque.",
       },
       { t: "Veja a foto de cada item", d: "Alterne entre fotos e grade compacta. Um toque soma; a segunda unidade em diante já conta como repetida." },
       { t: "Totais sempre à vista", d: "Coladas, repetidas e faltantes no geral e em cada seleção." },
@@ -104,7 +122,7 @@ export const landing = {
     free: {
       nome: "Coleção",
       items: [
-        "Álbum da Copa 2026 e Adrenalyn XL, com fotos",
+        "Álbum da Copa 2026, Gold Crumple Edition e Adrenalyn XL, com fotos",
         "Várias coleções na mesma conta",
         "Quantidade de repetidas por item",
         "Totais por seleção e geral",
@@ -146,7 +164,7 @@ export const landing = {
     },
     {
       p: "Quais coleções posso acompanhar?",
-      r: "Hoje, o Álbum da Copa do Mundo 2026 (Panini) e os cards Adrenalyn XL da Copa. Você pode acompanhar as duas na mesma conta, cada uma com seu progresso, sua lista de repetidas e seu link público — e outras coleções estão a caminho.",
+      r: "Hoje, o Álbum da Copa do Mundo 2026 (Panini, com as Legends), a Gold Crumple Edition 2026 e os cards Adrenalyn XL da Copa. Você pode acompanhar todas na mesma conta, cada uma com seu progresso, sua lista de repetidas e seu link público — e o Álbum da Copa do Catar 2022 chega em breve.",
     },
     {
       p: "Preciso cadastrar os itens da loja um por um?",

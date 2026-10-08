@@ -1,11 +1,11 @@
--- Migração: coleção Golden Crumple Edition 2026. Idempotente — gerada por scripts/build-golden-crumple-catalog.mjs.
+-- Migração: coleção Gold Crumple Edition. Idempotente — gerada por scripts/build-golden-crumple-catalog.mjs.
 -- Rode depois de supabase_migration_adrenalyn_limited.sql.
 --
 -- As mesmas figurinhas do Álbum Copa (FWC + 48 seleções, 980 no total) com layout dourado; sem Coca-Cola
 -- e Legends. Códigos com prefixo GC (GCBRA9, GC00…). Fica fora da loja até o lojista ativar.
 
 insert into public.albums (id, name, slug, item_singular, item_plural, total_items, active, position)
-values ('wc2026-golden-crumple', 'Golden Crumple Edition 2026', 'golden-crumple-2026', 'figurinha', 'figurinhas', 980, true, 3)
+values ('wc2026-golden-crumple', 'Gold Crumple Edition', 'golden-crumple-2026', 'figurinha', 'figurinhas', 980, true, 3)
 on conflict (id) do update
   set name = excluded.name, slug = excluded.slug, item_singular = excluded.item_singular,
       item_plural = excluded.item_plural, total_items = excluded.total_items, active = excluded.active;

@@ -179,7 +179,7 @@ export const ADRENALYN: Catalog = {
   menuCode: (b) => (b.tipo === "TEAM" ? b.grupo : null),
 };
 
-// ---------- Golden Crumple Edition 2026 ----------
+// ---------- Gold Crumple Edition ----------
 // As figurinhas do Álbum Copa (FWC + seleções) com layout dourado. Códigos com prefixo GC (GCBRA9),
 // mostrados sem ele.
 
@@ -189,8 +189,8 @@ const goldenCode = (code: string) => code.replace(/^GC/, "");
 export const GOLDEN_CRUMPLE: Catalog = {
   id: "wc2026-golden-crumple",
   slug: "golden-crumple-2026",
-  name: "Golden Crumple Edition 2026",
-  shortName: "Golden Crumple 2026",
+  name: "Gold Crumple Edition",
+  shortName: "Gold Crumple",
   itemSingular: "figurinha",
   itemPlural: "figurinhas",
   owned: { cell: "colada", total: "Coladas", block: "coladas" },

@@ -1,6 +1,6 @@
 // Gera as imagens otimizadas das figurinhas a partir das fotos originais em /images
 // (que ficam fora do git — ~420 MB) e dos cards da Adrenalyn XL em data/adrenalyn-xl/cards
-// (também fora do git; nome = número do card, ex: "024.jpeg" → AXL24). Golden Crumple Edition:
+// (também fora do git; nome = número do card, ex: "024.jpeg" → AXL24). Gold Crumple Edition:
 // images/golden_crumple/<CÓDIGO>.png (ex: "GCBRA9.png").
 //
 //   npm run images            — gera só o que ainda não existe em public/stickers
@@ -31,7 +31,7 @@ const golden = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "gol
 const allBlocks = [...album.blocks, ...adrenalyn.blocks, ...golden.blocks];
 const validCodes = new Set(allBlocks.flatMap((b) => b.codes));
 const ADRENALYN_DIR = path.join(ROOT, "data", "adrenalyn-xl", "cards");
-// Golden Crumple Edition: arquivo com o próprio código ("GCBRA9.png"), recortado dos PDFs da edição.
+// Gold Crumple Edition: arquivo com o próprio código ("GCBRA9.png"), recortado dos PDFs da edição.
 const GOLDEN_DIR = path.join(ROOT, "images", "golden_crumple");
 
 const LEGENDS_DIR = path.join(ROOT, "images", "legends");

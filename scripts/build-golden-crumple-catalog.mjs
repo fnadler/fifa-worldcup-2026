@@ -1,4 +1,4 @@
-// Gera o catálogo da Golden Crumple Edition 2026 a partir do album.json: as mesmas figurinhas do Álbum Copa
+// Gera o catálogo da Gold Crumple Edition a partir do album.json: as mesmas figurinhas do Álbum Copa
 // (FWC + 48 seleções), com layout dourado — sem Coca-Cola e Legends, que não existem nessa edição.
 // Códigos próprios com prefixo GC ("BRA9" → "GCBRA9", "00" → "GC00"), porque o código é único na plataforma.
 //
@@ -12,7 +12,7 @@ import path from "node:path";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const ALBUM_ID = "wc2026-golden-crumple";
-const ALBUM_NAME = "Golden Crumple Edition 2026";
+const ALBUM_NAME = "Gold Crumple Edition";
 const SLUG = "golden-crumple-2026";
 
 const album = JSON.parse(await readFile(path.join(ROOT, "album.json"), "utf8"));
@@ -33,7 +33,7 @@ const rows = blocks.flatMap((b) =>
   )
 );
 
-const sql = `-- Migração: coleção Golden Crumple Edition 2026. Idempotente — gerada por scripts/build-golden-crumple-catalog.mjs.
+const sql = `-- Migração: coleção Gold Crumple Edition. Idempotente — gerada por scripts/build-golden-crumple-catalog.mjs.
 -- Rode depois de supabase_migration_adrenalyn_limited.sql.
 --
 -- As mesmas figurinhas do Álbum Copa (FWC + 48 seleções, ${total} no total) com layout dourado; sem Coca-Cola

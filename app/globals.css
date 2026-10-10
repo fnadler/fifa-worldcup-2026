@@ -3305,18 +3305,26 @@ button {
   }
 }
 
-/* ---------- desktop: busca menor; totais junto de Minhas coleções/Minha loja, na mesma altura ---------- */
+/* ---------- desktop: linha do título em 3 grupos; totais e Minhas coleções/Minha loja na mesma altura ---------- */
 
 @media (min-width: 701px) {
+  /* linha de filtros: busca larga e respiro entre os blocos (busca · categorias · grupos · status) */
+  .controls-row:not(.controls-row-2) {
+    gap: 10px 22px;
+  }
   .controls-row .search-input {
-    flex: 0 1 210px;
+    flex: 1 1 280px;
+  }
+  /* linha do título em 3 grupos, com o espaço livre entre eles:
+     logo + nome · totais · Minhas coleções/Minha loja + link + conta */
+  .header-main-row {
+    justify-content: space-between;
   }
   .header-main-row > .brand {
-    flex: 1 1 0;
+    flex: 0 1 auto;
+    justify-content: start; /* logo e nome juntos */
   }
-  /* totais encostam nos botões da direita — o espaço livre fica para o nome da coleção/loja */
   .totals-row {
-    margin-left: auto;
     gap: 6px;
     flex-wrap: nowrap;
   }

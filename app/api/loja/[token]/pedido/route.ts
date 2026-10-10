@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { CART_COOKIE, readCartId } from "@/lib/cartCookie";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { TOO_MANY, withinRateLimit, type RateRule } from "@/lib/rateLimit";
 import { hasShopAccess } from "@/lib/shopAccess";
 import { codeInAlbum, loadShopAlbums, parseAlbumId } from "@/lib/shopAlbums";
 import {
@@ -24,6 +25,12 @@ interface PedidoBody {
 }
 
 const REQUIRED: (keyof BuyerInfo)[] = ["name", "email", "whatsapp", "cep", "street", "number", "district", "city", "state"];
+
+// Por IP: pedidos enviados (cada um segura o estoque do lojista por 24h).
+const LIMITE: RateRule[] = [
+  { name: "pedido", windowSeconds: 600, max: 8 },
+  { name: "pedido-dia", windowSeconds: 86_400, max: 30 },
+];
 
 function str(v: unknown, max = 160): string {
   return typeof v === "string" ? v.trim().slice(0, max) : "";
@@ -87,6 +94,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ tok
 
   // ---------- loja, estoque e preços (sempre recalculados aqui, nunca confiando no cliente) ----------
   const admin = createAdminClient();
+  if (!(await withinRateLimit(admin, request, LIMITE))) return bad(TOO_MANY, 429);
+
   const { data: shop } = await admin
     .from("shops")
     .select("user_id, token, enabled, seller_name, whatsapp")

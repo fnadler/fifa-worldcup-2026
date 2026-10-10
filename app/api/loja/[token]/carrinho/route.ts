@@ -4,12 +4,18 @@ import { NextResponse } from "next/server";
 import { CART_COOKIE, CART_COOKIE_OPTIONS, readCartId } from "@/lib/cartCookie";
 import { CARRINHO_MINUTOS, priceFor, type ShopRow } from "@/lib/shop";
 import { codeInAlbum, loadShopAlbums, parseAlbumId } from "@/lib/shopAlbums";
+import { TOO_MANY, withinRateLimit, type RateRule } from "@/lib/rateLimit";
 import { hasShopAccess } from "@/lib/shopAccess";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // Reserva o carrinho do navegador por CARRINHO_MINUTOS (prazo contado do primeiro item, sem
 // renovar a cada alteração). Cada item é ajustado ao que estiver disponível para este carrinho;
 // a resposta traz o que foi reservado de fato e o que precisou ser ajustado.
+// Por IP: alterações de carrinho (cada clique agrupado vira uma chamada) e carrinhos novos (chamadas
+// sem o cookie do carrinho — é assim que um script reservaria o estoque várias vezes).
+const LIMITE: RateRule[] = [{ name: "carrinho", windowSeconds: 60, max: 120 }];
+const LIMITE_NOVO: RateRule[] = [{ name: "carrinho-novo", windowSeconds: 600, max: 20 }];
+
 export async function POST(request: Request, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
 
@@ -36,6 +42,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ tok
   if (pedidos.size > 300) return NextResponse.json({ error: "Carrinho grande demais." }, { status: 400 });
 
   const admin = createAdminClient();
+  const cookieStore = await cookies();
+  let cartId = readCartId(cookieStore.get(CART_COOKIE)?.value);
+  const novoCookie = !cartId;
+  if (!(await withinRateLimit(admin, request, novoCookie ? [...LIMITE, ...LIMITE_NOVO] : LIMITE))) {
+    return NextResponse.json({ error: TOO_MANY }, { status: 429 });
+  }
+
   const { data: shop } = await admin
     .from("shops")
     .select("user_id, token, enabled, seller_name, whatsapp")
@@ -62,9 +75,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ tok
   const pricing = { groups: { [albumId]: album.groupPrices }, individual };
   const items = [...pedidos].filter(([code]) => priceFor(code, pricing) !== null).map(([code, qty]) => ({ code, qty }));
 
-  const cookieStore = await cookies();
-  let cartId = readCartId(cookieStore.get(CART_COOKIE)?.value);
-  const novoCookie = !cartId;
   if (!cartId) cartId = randomUUID();
 
   const { data: held, error } = await admin

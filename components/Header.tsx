@@ -219,14 +219,9 @@ export default function Header({
               ))}
             </div>
 
-            <button type="button" className="icon-button export-button" data-tip="Exportar" aria-label="Exportar lista" onClick={onAbrirTrocas}>
-              <Icon name="export" />
-              <span>Exportar lista</span>
-            </button>
-
-            {modoSegment("modo-desktop")}
           </div>
 
+          {/* linha de controles e ações: como ver e marcar (esquerda) · exportar e lojas (direita) */}
           <div className="controls-row controls-row-2">
             <div className="segmented view-segment">
               {VIEW_OPTIONS.map((v) => (
@@ -240,6 +235,12 @@ export default function Header({
                 </button>
               ))}
             </div>
+            {modoSegment("modo-desktop")}
+            <div className="controls-spacer" />
+            <button type="button" className="icon-button export-button" data-tip="Exportar" aria-label="Exportar lista" onClick={onAbrirTrocas}>
+              <Icon name="export" />
+              <span>Exportar lista</span>
+            </button>
             {onAbrirLojas && (
               <button type="button" className="btn-lojas" onClick={onAbrirLojas}>
                 Onde comprar as que faltam

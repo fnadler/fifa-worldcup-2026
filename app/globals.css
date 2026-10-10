@@ -3022,7 +3022,6 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-left: auto;
   background: var(--gold);
   color: var(--on-gold);
   border: none;
@@ -3215,7 +3214,14 @@ button {
   display: none;
 }
 .modo-desktop {
-  margin-left: auto;
+  order: 0; /* .modo-segment tem order próprio para a linha do título (celular) */
+}
+.controls-spacer {
+  flex: 1;
+}
+/* linha de controles/ações um pouco afastada da linha de filtros */
+.controls-row-2 {
+  margin-top: 10px;
 }
 .export-button {
   position: relative;
@@ -3273,8 +3279,10 @@ button {
   .filters-panel.is-open .controls-row-2 {
     margin-top: 0;
   }
+  .controls-spacer {
+    display: none;
+  }
   .btn-lojas {
-    margin-left: 0;
     justify-content: center;
   }
   /* na gaveta, o exportar vira um botão de largura inteira com rótulo */
@@ -3294,5 +3302,49 @@ button {
   }
   .export-button[data-tip]::after {
     display: none;
+  }
+}
+
+/* ---------- desktop: busca menor; totais junto de Minhas coleções/Minha loja, na mesma altura ---------- */
+
+@media (min-width: 701px) {
+  .controls-row .search-input {
+    flex: 0 1 210px;
+  }
+  .header-main-row > .brand {
+    flex: 1 1 0;
+  }
+  /* totais encostam nos botões da direita — o espaço livre fica para o nome da coleção/loja */
+  .totals-row {
+    margin-left: auto;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+  .totals-row ~ .header-actions {
+    margin-left: 0;
+  }
+  .total-card {
+    height: 46px;
+    justify-content: center;
+    padding: 0 12px;
+    min-width: 78px;
+  }
+  .total-value {
+    font-size: 22px;
+  }
+  .total-value .denom {
+    font-size: 13px;
+  }
+  .total-label {
+    font-size: 9px;
+  }
+  .nav-switch {
+    height: 46px;
+    box-sizing: border-box;
+    align-items: stretch;
+  }
+  .nav-switch-item {
+    height: auto;
+    padding: 0 13px;
   }
 }

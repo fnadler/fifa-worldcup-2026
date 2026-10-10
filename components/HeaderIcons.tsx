@@ -83,7 +83,7 @@ export function IconLink({ href, icon, label }: { href: string; icon: IconName; 
 // `active` null = nenhuma das duas (ex: perfil, configurações da loja).
 export function NavSwitch({ active, shopHref }: { active: "album" | "shop" | null; shopHref: string }) {
   const itens = [
-    { key: "album" as const, href: COLLECTION_PATH, icon: "album" as const, label: "Minha coleção" },
+    { key: "album" as const, href: COLLECTION_PATH, icon: "album" as const, label: "Minhas coleções" },
     { key: "shop" as const, href: shopHref, icon: "store" as const, label: "Minha loja" },
   ];
   return (

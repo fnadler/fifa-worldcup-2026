@@ -16,8 +16,8 @@ export const landing = {
     { href: "#faq", label: "Dúvidas" },
   ],
 
-  // Link em destaque no topo — a loja da própria plataforma.
-  lojaOficial: { href: "/loja-oficial", label: "Loja Oficial GN" },
+  // Link em destaque no topo — a vitrine com todas as lojas (a oficial em destaque).
+  lojas: { href: "/lojas", label: "Lojas" },
 
   hero: {
     pill: "Novo: Gold Crumple Edition 2026",

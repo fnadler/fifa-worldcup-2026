@@ -1,76 +1,91 @@
 import "server-only";
-import { CATALOGS } from "./catalog";
+import { getCatalog } from "./catalog";
 import { fetchAll } from "./fetchAll";
 import { loadActiveShops } from "./shopDirectory";
 import { createAdminClient } from "./supabase/admin";
 
-// Lojas que têm o que falta na coleção de uma pessoa. Para cada coleção que ela já começou:
-// faltantes = itens que contam para o total (mais Legends/Limited, se ela já tiver alguma) sem nenhuma
-// unidade; a loja "casa" com os faltantes que tem repetidos. Não desconta reservas de carrinhos.
+// Lojas que têm o que falta em UMA coleção da pessoa, no total e por categoria (os tipos de bloco do
+// catálogo: Seleções, FWC, Coca-Cola, Legends…). Faltantes = itens sem nenhuma unidade; blocos fora do
+// total (Legends, Limited) só entram se ela já tiver algum item deles. A loja "casa" com os faltantes
+// que tem repetidos. Não desconta reservas de carrinhos.
 
-export interface ShopMatchAlbum {
-  albumId: string;
-  slug: string;
-  name: string;
+export interface MatchCount {
   /** Faltantes da pessoa que a loja tem. */
   matched: number;
-  /** Total de faltantes da pessoa nessa coleção. */
+  /** Total de faltantes da pessoa. */
   missing: number;
 }
 
-export interface ShopMatch {
+export interface MatchCategory {
+  key: string;
+  label: string;
+  missing: number;
+}
+
+export interface ShopMatch extends MatchCount {
   path: string;
   name: string;
   logoUrl: string | null;
   official: boolean;
-  matched: number;
-  albums: ShopMatchAlbum[];
+  /** Por categoria (chave = tipo do bloco) — só as que a pessoa tem faltantes. */
+  categories: Record<string, MatchCount>;
 }
 
-export async function matchShops(userId: string): Promise<ShopMatch[]> {
+export interface ShopMatchResult {
+  /** Endereço da coleção, para abrir a loja nela (?colecao=). */
+  slug: string;
+  missing: number;
+  categories: MatchCategory[];
+  shops: ShopMatch[];
+}
+
+export async function matchShops(userId: string, albumId: string): Promise<ShopMatchResult> {
+  const catalog = getCatalog(albumId);
+  const empty: ShopMatchResult = { slug: catalog.slug, missing: 0, categories: [], shops: [] };
+
   const admin = createAdminClient();
   const { data: rows } = await fetchAll<{ code: string }>((from, to) =>
     admin.from("collection").select("code").eq("user_id", userId).gt("qty", 0).order("code").range(from, to)
   );
   const owned = new Set((rows ?? []).map((r) => r.code));
-  if (!owned.size) return [];
 
-  // faltantes por coleção — só coleções em que a pessoa já tem algum item
-  const missing = new Map<string, Set<string>>();
-  for (const c of CATALOGS) {
-    const falta = new Set<string>();
-    let tem = false;
-    for (const b of c.blocks) {
-      const temNoBloco = b.codes.some((code) => owned.has(code));
-      tem ||= temNoBloco;
-      // blocos fora do total (Legends, Limited) só entram se ela já coleciona esse bloco
-      if (!c.countsToward(b) && !temNoBloco) continue;
-      for (const code of b.codes) if (!owned.has(code)) falta.add(code);
-    }
-    if (tem && falta.size) missing.set(c.id, falta);
+  // faltantes da coleção → categoria de cada um
+  const missing = new Map<string, string>();
+  let tem = false;
+  for (const b of catalog.blocks) {
+    const temNoBloco = b.codes.some((code) => owned.has(code));
+    tem ||= temNoBloco;
+    if (!catalog.countsToward(b) && !temNoBloco) continue;
+    for (const code of b.codes) if (!owned.has(code)) missing.set(code, b.tipo);
   }
-  if (!missing.size) return [];
+  // sem nenhum item, tudo "falta" — não há o que recomendar
+  if (!tem || !missing.size) return empty;
 
-  const out: ShopMatch[] = [];
+  const porCategoria = new Map<string, number>();
+  for (const tipo of missing.values()) porCategoria.set(tipo, (porCategoria.get(tipo) ?? 0) + 1);
+  const categories = catalog.filters
+    .filter((f) => porCategoria.has(f.value))
+    .map((f) => ({ key: f.value, label: f.label, missing: porCategoria.get(f.value)! }));
+
+  const shops: ShopMatch[] = [];
   for (const shop of await loadActiveShops()) {
     if (shop.userId === userId) continue;
-    const albums: ShopMatchAlbum[] = [];
-    for (const c of CATALOGS) {
-      const falta = missing.get(c.id);
-      const codes = shop.codes.get(c.id);
-      if (!falta || !codes) continue;
-      const matched = codes.reduce((n, code) => n + (falta.has(code) ? 1 : 0), 0);
-      if (matched) albums.push({ albumId: c.id, slug: c.slug, name: c.shortName, matched, missing: falta.size });
+    const matched = new Map<string, number>();
+    for (const code of shop.codes.get(catalog.id) ?? []) {
+      const tipo = missing.get(code);
+      if (tipo) matched.set(tipo, (matched.get(tipo) ?? 0) + 1);
     }
-    if (!albums.length) continue;
-    out.push({
+    if (!matched.size) continue; // não tem nada do que falta nessa coleção
+    shops.push({
       path: shop.path,
       name: shop.name,
       logoUrl: shop.logoUrl,
       official: shop.official,
-      matched: albums.reduce((n, a) => n + a.matched, 0),
-      albums,
+      matched: [...matched.values()].reduce((n, v) => n + v, 0),
+      missing: missing.size,
+      categories: Object.fromEntries(categories.map((c) => [c.key, { matched: matched.get(c.key) ?? 0, missing: c.missing }])),
     });
   }
-  return out.sort((a, b) => b.matched - a.matched || a.name.localeCompare(b.name));
+  shops.sort((a, b) => b.matched - a.matched || a.name.localeCompare(b.name));
+  return { slug: catalog.slug, missing: missing.size, categories, shops };
 }

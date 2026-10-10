@@ -234,7 +234,7 @@ export default function Header({
               Minhas repetidas
             </button>
             {onAbrirLojas && (
-              <button type="button" className="btn-ghost btn-lojas" onClick={onAbrirLojas}>
+              <button type="button" className="btn-lojas" onClick={onAbrirLojas}>
                 Onde comprar as que faltam
               </button>
             )}

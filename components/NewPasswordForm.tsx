@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { PLATFORM_NAME } from "@/lib/brand";
 import { COLLECTION_PATH } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/client";
-import BrandLogo from "./BrandLogo";
+import AuthShell from "./marketing/AuthShell";
 
 // Senha nova depois do link de recuperação (a pessoa já está com a sessão aberta pelo link).
 export default function NewPasswordForm({ email }: { email: string | null }) {
@@ -38,19 +37,7 @@ export default function NewPasswordForm({ email }: { email: string | null }) {
   }
 
   return (
-    <div className="login-shell">
-      <div className="login-card">
-        <div className="brand">
-          <BrandLogo />
-          <span className="kicker">Figurinhas e cards</span>
-          <span className="title">{PLATFORM_NAME}</span>
-        </div>
-
-        <div className="login-forgot-head">
-          <strong>Crie uma senha nova</strong>
-          <span>{email ? `Conta: ${email}` : "Escolha a senha que você vai usar para entrar."}</span>
-        </div>
-
+    <AuthShell title="Crie uma senha nova" subtitle={email ? `Conta: ${email}` : "Escolha a senha que você vai usar para entrar."}>
         <form onSubmit={salvar} className="login-form">
           <input
             type="password"
@@ -76,11 +63,10 @@ export default function NewPasswordForm({ email }: { email: string | null }) {
           />
           {erro && <div className="login-error">{erro}</div>}
           {ok && <div className="login-info">Senha alterada! Abrindo a sua coleção…</div>}
-          <button type="submit" className="btn-primary login-submit" disabled={saving || ok}>
+          <button type="submit" className="mk-btn mk-btn-yellow login-submit" disabled={saving || ok}>
             {saving ? "Salvando…" : "Salvar senha"}
           </button>
         </form>
-      </div>
-    </div>
+    </AuthShell>
   );
 }

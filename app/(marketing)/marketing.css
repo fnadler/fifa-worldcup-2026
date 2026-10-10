@@ -1459,3 +1459,172 @@ html:has(.mk) {
   color: var(--gn-muted);
 }
 
+
+/* ---------- telas de acesso (entrar, criar conta, senha) ---------- */
+
+.mk-auth {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.mk-auth-top {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 14px;
+}
+.mk-auth-back {
+  font-weight: 700;
+  font-size: 15px;
+  color: #fff !important;
+  opacity: 0.9;
+}
+.mk-auth-back:hover {
+  opacity: 1;
+  text-decoration: underline !important;
+}
+.mk-auth-main {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 16px 72px;
+}
+.mk-auth-card {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 32px 30px;
+  border-radius: 24px;
+  background: var(--gn-surface);
+  color: var(--gn-text);
+  box-shadow: 0 24px 60px rgba(6, 48, 26, 0.28);
+}
+.mk-auth-head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mk-auth-head h1 {
+  font-size: 30px;
+  line-height: 1.08;
+}
+.mk-auth-head p {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--gn-text-2);
+}
+/* os campos e avisos usam as classes do app (login-*), repintadas para o tema claro */
+.mk-auth .segmented {
+  background: var(--gn-bg);
+  border: 1px solid var(--gn-line);
+  border-radius: 999px;
+  padding: 4px;
+}
+.mk-auth .chip {
+  flex: 1;
+  border-radius: 999px;
+  padding: 10px 12px;
+  font-family: var(--font-nunito), sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--gn-muted);
+}
+.mk-auth .chip.active {
+  background: var(--gn-green);
+  color: #fff;
+}
+.mk-auth .login-mode-toggle {
+  margin: 0;
+}
+.mk-auth .login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.mk-auth .login-input {
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid var(--gn-line);
+  border-radius: 14px;
+  padding: 14px 16px;
+  color: var(--gn-text);
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: 16px;
+  outline: none;
+}
+.mk-auth .login-input::placeholder {
+  color: #8aa093;
+}
+.mk-auth .login-input:focus {
+  border-color: var(--gn-green);
+  box-shadow: 0 0 0 3px var(--gn-green-50);
+}
+.mk-auth .login-input:disabled {
+  background: var(--gn-bg);
+}
+.mk-auth .field-counter {
+  color: var(--gn-muted);
+}
+.mk-auth .login-submit {
+  width: 100%;
+  margin-top: 6px;
+  border: none;
+  cursor: pointer;
+}
+.mk-auth .login-submit:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.mk-auth .login-link {
+  align-self: flex-end;
+  color: var(--gn-green-600);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.mk-auth .login-link:hover {
+  color: var(--gn-green);
+  text-decoration: underline;
+}
+.mk-auth .login-link-center {
+  align-self: center;
+}
+.mk-auth .login-error,
+.mk-auth .login-info {
+  font-size: 14px;
+  line-height: 1.45;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.mk-auth .login-error {
+  color: #a3261a;
+  background: #fdecea;
+}
+.mk-auth .login-info {
+  color: var(--gn-green-600);
+  background: var(--gn-green-50);
+}
+@media (max-width: 700px) {
+  .mk-auth-card {
+    padding: 26px 20px;
+    border-radius: 20px;
+  }
+  .mk-auth-head h1 {
+    font-size: 26px;
+  }
+}
+@media (max-width: 700px) {
+  .mk:has(.mk-auth) {
+    padding-bottom: 0; /* aqui não há CTA fixo no rodapé */
+  }
+}

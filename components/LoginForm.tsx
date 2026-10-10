@@ -4,11 +4,17 @@ import { useState, type FormEvent } from "react";
 import { parseProfileInput } from "@/lib/profile";
 import { maskPhoneBR } from "@/lib/phone";
 import { createClient } from "@/lib/supabase/client";
-import BrandLogo from "./BrandLogo";
-import { NAME_MAX, PLATFORM_NAME } from "@/lib/brand";
+import AuthShell from "./marketing/AuthShell";
+import { NAME_MAX } from "@/lib/brand";
 
 // "forgot": pede só o e-mail e manda o link para criar uma senha nova.
 type Mode = "signin" | "signup" | "forgot";
+
+const HEAD: Record<Mode, { title: string; subtitle: string }> = {
+  signin: { title: "Bem-vindo de volta", subtitle: "Entre para abrir a sua coleção." },
+  signup: { title: "Crie sua conta grátis", subtitle: "Organize sua coleção e saiba na hora o que falta e o que sobra." },
+  forgot: { title: "Esqueceu a senha?", subtitle: "Informe o e-mail da sua conta. Enviamos um link para você criar uma senha nova." },
+};
 
 /** Tela onde a pessoa escolhe a senha nova, depois de abrir o link do e-mail. */
 export const NEW_PASSWORD_PATH = "/login/nova-senha";
@@ -112,20 +118,8 @@ export default function LoginForm({ albums, initialMode = "signin", next, initia
   }
 
   return (
-    <div className="login-shell">
-      <div className="login-card">
-        <div className="brand">
-          <BrandLogo />
-          <span className="kicker">Figurinhas e cards</span>
-          <span className="title">{PLATFORM_NAME}</span>
-        </div>
-
-        {mode === "forgot" ? (
-          <div className="login-forgot-head">
-            <strong>Esqueceu a senha?</strong>
-            <span>Informe o e-mail da sua conta. Enviamos um link para você criar uma senha nova.</span>
-          </div>
-        ) : (
+    <AuthShell title={HEAD[mode].title} subtitle={HEAD[mode].subtitle}>
+        {mode !== "forgot" && (
           <div className="segmented login-mode-toggle">
             <button
               type="button"
@@ -228,7 +222,7 @@ export default function LoginForm({ albums, initialMode = "signin", next, initia
           )}
           {error && <div className="login-error">{error}</div>}
           {info && <div className="login-info">{info}</div>}
-          <button type="submit" className="btn-primary login-submit" disabled={loading}>
+          <button type="submit" className="mk-btn mk-btn-yellow login-submit" disabled={loading}>
             {loading ? "Aguarde…" : mode === "signin" ? "Entrar" : mode === "signup" ? "Criar conta" : "Enviar link"}
           </button>
           {mode === "forgot" && (
@@ -237,7 +231,6 @@ export default function LoginForm({ albums, initialMode = "signin", next, initia
             </button>
           )}
         </form>
-      </div>
-    </div>
+    </AuthShell>
   );
 }

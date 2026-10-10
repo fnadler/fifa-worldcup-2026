@@ -44,6 +44,19 @@ export async function sendCommunityInviteOnce(admin: SupabaseClient, user: User)
   }
 }
 
+/** Envia o convite a uma conta só, pelo e-mail (teste antes do envio geral). Conta como o envio dela. */
+export async function sendCommunityInviteTo(email: string): Promise<Resultado | "nao-encontrado"> {
+  const admin = createAdminClient();
+  const alvo = email.trim().toLowerCase();
+  for (let page = 1; ; page++) {
+    const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 1000 });
+    if (error) throw error;
+    const user = data.users.find((u) => u.email?.toLowerCase() === alvo);
+    if (user) return sendCommunityInviteOnce(admin, user);
+    if (data.users.length < 1000) return "nao-encontrado";
+  }
+}
+
 export interface SweepOptions {
   /** Só contas criadas nos últimos N dias (a varredura diária); sem isso, todas as contas. */
   sinceDays?: number;

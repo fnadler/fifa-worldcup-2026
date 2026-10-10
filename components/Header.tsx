@@ -99,6 +99,31 @@ export default function Header({
   const tipos = catalog.filters;
   const [menuAberto, setMenuAberto] = useState(false);
 
+  // Totais: no celular ficam na linha do título; no desktop, no centro da linha de controles.
+  const totais = (extra: string) => (
+    <div className={`totals-row ${extra}`}>
+      <div className="total-card">
+        <span className="total-value" style={{ color: "var(--positive)" }}>
+          {totColadas}
+          <span className="denom">/{totGeral}</span>
+        </span>
+        <span className="total-label">{catalog.owned.total}</span>
+      </div>
+      <div className="total-card">
+        <span className="total-value" style={{ color: "var(--gold)" }}>
+          {totRepetidas}
+        </span>
+        <span className="total-label">Repetidas</span>
+      </div>
+      <div className="total-card">
+        <span className="total-value" style={{ color: "var(--danger)" }}>
+          {totFaltam}
+        </span>
+        <span className="total-label">Faltam</span>
+      </div>
+    </div>
+  );
+
   // Somar/Tirar: no celular fica na linha do título; no desktop, à direita da linha de filtros.
   const modoSegment = (extra: string) => (
     <div className={`segmented modo-segment ${extra}`}>
@@ -125,27 +150,7 @@ export default function Header({
             <span className="title">{collectionName}</span>
           </div>
 
-          <div className="totals-row">
-            <div className="total-card">
-              <span className="total-value" style={{ color: "var(--positive)" }}>
-                {totColadas}
-                <span className="denom">/{totGeral}</span>
-              </span>
-              <span className="total-label">{catalog.owned.total}</span>
-            </div>
-            <div className="total-card">
-              <span className="total-value" style={{ color: "var(--gold)" }}>
-                {totRepetidas}
-              </span>
-              <span className="total-label">Repetidas</span>
-            </div>
-            <div className="total-card">
-              <span className="total-value" style={{ color: "var(--danger)" }}>
-                {totFaltam}
-              </span>
-              <span className="total-label">Faltam</span>
-            </div>
-          </div>
+          {totais("totals-mobile")}
 
           {modoSegment("modo-mobile")}
 
@@ -159,8 +164,9 @@ export default function Header({
             Filtros
           </button>
 
+          <NavSwitch active="album" shopHref={shopHref} />
+
           <HeaderActions>
-            <NavSwitch active="album" shopHref={shopHref} />
             <CopyLinkButton
               text="Copiar link"
               label="Copiar link público da coleção"
@@ -223,6 +229,7 @@ export default function Header({
 
           {/* linha de controles e ações: como ver e marcar (esquerda) · exportar e lojas (direita) */}
           <div className="controls-row controls-row-2">
+            <div className="controls-group">
             <div className="segmented view-segment">
               {VIEW_OPTIONS.map((v) => (
                 <button
@@ -236,7 +243,9 @@ export default function Header({
               ))}
             </div>
             {modoSegment("modo-desktop")}
-            <div className="controls-spacer" />
+            </div>
+            {totais("totals-desktop")}
+            <div className="controls-group controls-group-end">
             <button type="button" className="icon-button export-button" data-tip="Exportar" aria-label="Exportar lista" onClick={onAbrirTrocas}>
               <Icon name="export" />
               <span>Exportar lista</span>
@@ -246,6 +255,7 @@ export default function Header({
                 Onde comprar as que faltam
               </button>
             )}
+            </div>
           </div>
 
           <FiltersFooter

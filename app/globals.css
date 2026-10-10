@@ -2633,7 +2633,8 @@ button {
   .header-actions > .user-menu-root {
     order: 3;
   }
-  .header-actions > .nav-switch {
+  .header-actions > .nav-switch,
+  .header-main-row > .nav-switch {
     order: 4;
     flex: 1 1 100%;
   }
@@ -3213,11 +3214,11 @@ button {
 .modo-mobile {
   display: none;
 }
+.controls-group {
+  display: contents; /* só agrupa no desktop */
+}
 .modo-desktop {
   order: 0; /* .modo-segment tem order próprio para a linha do título (celular) */
-}
-.controls-spacer {
-  flex: 1;
 }
 /* linha de controles/ações um pouco afastada da linha de filtros */
 .controls-row-2 {
@@ -3279,7 +3280,7 @@ button {
   .filters-panel.is-open .controls-row-2 {
     margin-top: 0;
   }
-  .controls-spacer {
+  .totals-desktop {
     display: none;
   }
   .btn-lojas {
@@ -3315,21 +3316,43 @@ button {
   .controls-row .search-input {
     flex: 1 1 280px;
   }
-  /* linha do título em 3 grupos, com o espaço livre entre eles:
-     logo + nome · totais · Minhas coleções/Minha loja + link + conta */
-  .header-main-row {
-    justify-content: space-between;
-  }
+  /* linha do título: logo + nome · Minhas coleções/Minha loja no centro · link + conta.
+     Os dois lados têm a mesma largura (flex: 1), o que deixa o controle do meio centralizado. */
   .header-main-row > .brand {
-    flex: 0 1 auto;
+    flex: 1 1 0;
     justify-content: start; /* logo e nome juntos */
+  }
+  .header-main-row > .nav-switch {
+    order: 3;
+    flex: none;
+  }
+  .header-main-row > .nav-switch ~ .header-actions {
+    flex: 1 1 0;
+    justify-content: flex-end;
+    margin-left: 0;
+  }
+  /* linha de controles: ver/marcar · totais no centro · exportar/lojas */
+  .controls-row-2 {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+  }
+  .controls-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .controls-group-end {
+    justify-content: flex-end;
+  }
+  .totals-mobile {
+    display: none;
   }
   .totals-row {
     gap: 6px;
     flex-wrap: nowrap;
   }
-  .totals-row ~ .header-actions {
-    margin-left: 0;
+  .totals-desktop {
+    order: 0; /* .totals-row tem order próprio para a linha do título (celular) */
   }
   .total-card {
     height: 46px;

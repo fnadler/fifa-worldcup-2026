@@ -3169,11 +3169,7 @@ button {
 
 /* ---------- coleção: cabeçalho em uma linha + linha de filtros ---------- */
 
-/* Somar/Tirar e a troca de coleção em botão: cada um só num tamanho de tela */
-.modo-mobile,
-.completar-mobile {
-  display: none;
-}
+/* a marca fica acima do nome; a troca de coleção é o botão (ao lado do nome / na linha de controles) */
 .collection-switcher-row {
   grid-column: auto;
   align-self: auto;
@@ -3197,6 +3193,9 @@ button {
 }
 .btn-completar {
   white-space: nowrap;
+}
+.completar-fixed {
+  display: none; /* só no celular */
 }
 
 /* tooltip dos botões de ícone */
@@ -3312,23 +3311,48 @@ button {
   opacity: 0.4;
   cursor: default;
 }
-.brand-eyebrow {
-  display: none; /* só no desktop — no celular esse lugar é da troca de coleção */
-}
-
 @media (max-width: 700px) {
-  .modo-mobile {
-    display: flex;
-  }
-  .completar-mobile {
-    display: block;
-  }
-  .completar-desktop,
-  .collection-switcher-row {
-    display: none; /* no celular: "Quero completar" na gaveta; troca de coleção acima do título */
-  }
   .icon-button[data-tip]::after {
     display: none;
+  }
+  /* totais na largura toda, divididos por igual */
+  .header-main-row > .totals-row {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+  .header-main-row > .totals-row .total-card {
+    flex: 1 1 0;
+    min-width: 0;
+    align-items: center;
+    padding: 8px 6px;
+  }
+  /* troca de coleção na linha de controles (onde ficava Somar/Tirar) */
+  .header-main-row > .collection-switcher-row {
+    order: 7;
+    min-width: 0;
+  }
+  .collection-switcher-button {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* "Quero completar" fixo no rodapé da tela (o do cabeçalho some) */
+  .header-main-row > .btn-completar {
+    display: none;
+  }
+  .completar-fixed {
+    display: block;
+    position: fixed;
+    z-index: 40;
+    left: 14px;
+    width: calc(100% - 28px);
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    padding: 14px;
+    font-size: 15px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  }
+  .app-shell:has(.completar-fixed) {
+    padding-bottom: 96px; /* o fim do quadro não fica atrás do botão */
   }
 }
 
@@ -3348,12 +3372,6 @@ button {
   .header-main-row > .brand {
     flex: 0 1 auto;
     justify-content: start; /* logo e nome juntos */
-  }
-  .brand > .collection-switcher {
-    display: none; /* a troca de coleção é o botão ao lado do nome */
-  }
-  .brand > .brand-eyebrow {
-    display: block; /* a marca acima do nome mantém o título centrado com a imagem */
   }
   .header-main-row > .collection-switcher-row {
     order: 2;

@@ -29,7 +29,7 @@ export default function LegendBar(props: LegendBarProps) {
   const isErrorish = syncStatus === "error" || syncStatus === "offline";
   const dica =
     modo === "add"
-      ? `Clique n${item === "figurinha" ? "a" : "o"} ${item} para somar uma unidade · clique direito (no celular, modo Tirar) para remover`
+      ? `Clique n${item === "figurinha" ? "a" : "o"} ${item} para somar uma unidade · para tirar, clique direito ou o “−” no modo Fotos`
       : "Modo TIRAR: cada clique remove uma unidade";
 
   return (

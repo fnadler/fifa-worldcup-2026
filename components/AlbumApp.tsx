@@ -35,7 +35,8 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
   const [tipo, setTipo] = useState<TipoFiltro>("ALL");
   const [statusFiltro, setStatusFiltro] = useState<StatusFiltro>("ALL");
-  const [modo, setModo] = useState<ModoClique>("add");
+  // Um clique soma; para tirar: clique direito (desktop) ou o "−" do modo Fotos.
+  const modo: ModoClique = "add";
   const [view, setView] = useViewMode("copa2026-album-view");
   const [busca, setBusca] = useState("");
   const [trocasAberto, setTrocasAberto] = useState(false);
@@ -166,6 +167,9 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
 
   const temItens = useMemo(() => catalog.blocks.some((b) => b.codes.some((c) => (qtd[c] ?? 0) > 0)), [catalog, qtd]);
 
+  // "Quero completar" só faz sentido com a coleção começada e ainda incompleta.
+  const podeCompletar = temItens && derived.totFaltam > 0;
+
   function scrollToBlock(id: string) {
     const el = document.getElementById(`bl-${id}`);
     if (!el || !headerRef.current) return;
@@ -191,10 +195,8 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
         onStatusFiltro={setStatusFiltro}
         view={view}
         onView={setView}
-        modo={modo}
-        onModo={setModo}
         onCompartilhar={() => setTrocasAberto(true)}
-        onAbrirLojas={temItens && derived.totFaltam > 0 ? () => setLojasAberto(true) : undefined}
+        onAbrirLojas={podeCompletar ? () => setLojasAberto(true) : undefined}
         onExportar={() => setBackupModo("export")}
         onImportar={() => setBackupModo("import")}
         onAnchorClick={scrollToBlock}
@@ -239,6 +241,13 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
           onClose={() => setBackupModo(null)}
           onRestore={restoreFromBackup}
         />
+      )}
+
+      {/* celular: "Quero completar" fixo no rodapé (fora do cabeçalho, que tem backdrop-filter) */}
+      {podeCompletar && (
+        <button type="button" className="btn-primary completar-fixed" onClick={() => setLojasAberto(true)}>
+          Quero completar
+        </button>
       )}
 
       {toast && <div className="toast">{toast}</div>}

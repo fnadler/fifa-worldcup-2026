@@ -4,7 +4,7 @@ import { useState, type RefObject } from "react";
 import { PLATFORM_NAME } from "@/lib/brand";
 import { VIEW_OPTIONS } from "@/lib/useViewMode";
 import { useCatalog } from "@/lib/CatalogContext";
-import type { ViewMode, AppUser, ModoClique, StatusFiltro, TipoFiltro } from "@/lib/types";
+import type { ViewMode, AppUser, StatusFiltro, TipoFiltro } from "@/lib/types";
 import { FiltersFooter, HeaderActions, Icon, NavSwitch, ViewToggleButton } from "./HeaderIcons";
 import GroupMenu from "./GroupMenu";
 import UserMenu from "./UserMenu";
@@ -26,8 +26,6 @@ interface HeaderProps {
   onStatusFiltro: (v: StatusFiltro) => void;
   view: ViewMode;
   onView: (v: ViewMode) => void;
-  modo: ModoClique;
-  onModo: (v: ModoClique) => void;
   /** Abre o modal de compartilhar (link público + listas de repetidas/faltantes). */
   onCompartilhar: () => void;
   /** Lojas com o que falta — só quando a pessoa já tem algum item (sem nada, tudo "falta"). */
@@ -50,11 +48,6 @@ const STATUSES: { value: StatusFiltro; label: string }[] = [
   { value: "MISS", label: "Só faltantes" },
 ];
 
-const MODOS: { value: ModoClique; label: string }[] = [
-  { value: "add", label: "+ Somar" },
-  { value: "sub", label: "− Tirar" },
-];
-
 export default function Header({
   headerRef,
   totColadas,
@@ -69,8 +62,6 @@ export default function Header({
   onStatusFiltro,
   view,
   onView,
-  modo,
-  onModo,
   onCompartilhar,
   onAbrirLojas,
   onExportar,
@@ -96,13 +87,12 @@ export default function Header({
     <div className="header" ref={headerRef}>
       <div className="header-inner">
         {/* Desktop, uma linha só: logo + nome · coleção · totais · Minhas coleções/Minha loja · compartilhar ·
-            conta · Quero completar. No celular os itens se reordenam em linhas (ver globals.css). */}
+            conta · Quero completar. No celular os itens se reordenam em linhas e "Quero completar" fica
+            fixo no rodapé da tela (ver globals.css). */}
         <div className="header-main-row">
           <div className="brand">
             <BrandLogo />
-            {/* desktop: a marca acima do nome (a troca de coleção é o botão ao lado); celular: a troca */}
-            <span className="kicker brand-eyebrow">{PLATFORM_NAME}</span>
-            <CollectionSwitcher collections={collections} />
+            <span className="kicker">{PLATFORM_NAME}</span>
             <span className="title">{collectionName}</span>
           </div>
 
@@ -130,15 +120,6 @@ export default function Header({
             </div>
           </div>
 
-          {/* Somar/Tirar só no celular (na grade não há clique direito para tirar) */}
-          <div className="segmented modo-segment modo-mobile">
-            {MODOS.map((m) => (
-              <button key={m.value} type="button" className={`chip ${modo === m.value ? "active" : ""}`} onClick={() => onModo(m.value)}>
-                {m.label}
-              </button>
-            ))}
-          </div>
-
           <ViewToggleButton view={view} onChange={onView} />
 
           <button
@@ -159,7 +140,7 @@ export default function Header({
           </HeaderActions>
 
           {onAbrirLojas && (
-            <button type="button" className="btn-primary btn-completar completar-desktop" onClick={onAbrirLojas}>
+            <button type="button" className="btn-primary btn-completar" onClick={onAbrirLojas}>
               Quero completar
             </button>
           )}
@@ -225,19 +206,6 @@ export default function Header({
                 </button>
               ))}
             </div>
-
-            {onAbrirLojas && (
-              <button
-                type="button"
-                className="btn-primary btn-completar completar-mobile"
-                onClick={() => {
-                  setMenuAberto(false);
-                  onAbrirLojas();
-                }}
-              >
-                Quero completar
-              </button>
-            )}
           </div>
 
           <FiltersFooter

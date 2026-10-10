@@ -85,6 +85,7 @@ export function deriveBoard(
   });
 
   // Listas em texto para o WhatsApp: um bloco por seleção/categoria, com emoji e uma linha em branco entre eles.
+  const RODAPE = "\n\nGerado em GN Coleciona - https://www.gncoleciona.com.br/";
   const bloco = (b: AlbumBlock, itens: string[]) => `${blockEmoji(catalog, b)} ${b.nome}\n${itens.join(", ")}`;
 
   const linhas: string[] = [];
@@ -100,7 +101,7 @@ export function deriveBoard(
     if (itens.length) linhas.push(bloco(b, itens));
   });
   const listaTrocas = linhas.length
-    ? `🔁 REPETIDAS — ${catalog.shortName.toUpperCase()}\n\n${linhas.join("\n\n")}`
+    ? `🔁 REPETIDAS — ${catalog.shortName.toUpperCase()}\n\n${linhas.join("\n\n")}${RODAPE}`
     : "Nenhuma repetida registrada ainda.";
 
   const faltas: string[] = [];
@@ -115,7 +116,7 @@ export function deriveBoard(
     if (itens.length) faltas.push(bloco(b, itens));
   });
   const listaFaltantes = faltas.length
-    ? `🔎 FALTANTES — ${catalog.shortName.toUpperCase()}\n\n${faltas.join("\n\n")}`
+    ? `🔎 FALTANTES — ${catalog.shortName.toUpperCase()}\n\n${faltas.join("\n\n")}${RODAPE}`
     : "Não falta nada — coleção completa!";
 
   return {

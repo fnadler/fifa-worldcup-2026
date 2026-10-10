@@ -31,6 +31,26 @@ export const landing = {
     grid: [1, 1, 2, 1, 0, 1, 1, 1, 3, 1, 1, 0, 1, 2, 1, 1, 1, 1, 0, 1],
   },
 
+  // Painel da marca nas telas de acesso (/login): entrar/senha e, no cadastro, os benefícios da conta.
+  auth: {
+    foot: "Grátis para colecionar. Sem cartão.",
+    signin: {
+      title: "Sua coleção está te esperando.",
+      subtitle: "Veja o que falta, o que sobra e onde encontrar as figurinhas que faltam.",
+    },
+    signup: {
+      pill: "Conta grátis para sempre",
+      title: "Tudo o que a sua coleção precisa, num lugar só.",
+      benefits: [
+        { t: "Todas as suas coleções", d: "Álbum da Copa 2026, Legends, Gold Crumple Edition e Adrenalyn XL na mesma conta." },
+        { t: "Foto de cada figurinha", d: "Marque com um toque o que você tem e veja os totais de coladas, repetidas e faltantes." },
+        { t: "Listas prontas para o WhatsApp", d: "Compartilhe suas repetidas e faltantes, ou o link da sua coleção." },
+        { t: "Ache quem tem o que falta", d: "Veja as lojas que têm as figurinhas que faltam para você completar." },
+        { t: "Comunidade de colecionadores", d: "Entre no grupo para trocar, comprar e vender." },
+      ],
+    },
+  },
+
   split: {
     kicker: "Uma plataforma, dois jeitos de usar",
     title: "Primeiro você completa a coleção. Depois, o que sobra vira renda.",

@@ -2,6 +2,7 @@ import Image from "next/image";
 import { landing, trialSteps } from "@/content/landing";
 import { COLLECTION_PATH, SIGNUP_PATH, signupThen } from "@/lib/routes";
 import Faq from "./Faq";
+import HeroMock from "./HeroMock";
 import { SmartLink } from "./Session";
 
 // Seções da landing. Markup estático (mocks ilustrativos); só os CTAs reagem à sessão.
@@ -19,7 +20,6 @@ const q = (n: number) => (n === 0 ? "q0" : n === 1 ? "q1" : "q2");
 
 export function Hero({ trialDays }: { trialDays: number }) {
   const h = landing.hero;
-  const repetidas = h.grid.reduce((s, n) => s + Math.max(n - 1, 0), 0);
   return (
     <div id="topo" className="mk-hero-grid mk-container">
       <div className="mk-hero-copy">
@@ -32,47 +32,7 @@ export function Hero({ trialDays }: { trialDays: number }) {
         </div>
         <span className="mk-hero-note">{h.note}</span>
       </div>
-      <div className="mk-hero-visual" aria-hidden="true">
-        <div className="mk-hero-card">
-          <div className="mk-hero-card-head">
-            <strong>Brasil</strong>
-            <small>BRA1–20</small>
-            <b>17/20</b>
-          </div>
-          <div className="mk-progress">
-            <div style={{ width: "85%" }} />
-          </div>
-          <div className="mk-grid-5">
-            {h.grid.map((n, i) => (
-              <div key={i} className={`mk-cell ${q(n)}`}>
-                {i + 1}
-                {n > 1 && <span className="mk-cell-badge">+{n - 1}</span>}
-              </div>
-            ))}
-          </div>
-          <div className="mk-legend">
-            <span>
-              <i style={{ background: "var(--gn-green)" }} />
-              tenho
-            </span>
-            <span>
-              <i style={{ background: "var(--gn-yellow)" }} />
-              repetida
-            </span>
-            <span>
-              <i style={{ border: "1.5px dashed #b9cabf" }} />
-              falta
-            </span>
-          </div>
-        </div>
-        <div className="mk-hero-badge">
-          <span>{repetidas}</span>
-          <div>
-            <strong>{h.badgeTitle}</strong>
-            <small>{h.badgeSub}</small>
-          </div>
-        </div>
-      </div>
+      <HeroMock />
     </div>
   );
 }

@@ -1462,50 +1462,121 @@ html:has(.mk) {
 
 /* ---------- telas de acesso (entrar, criar conta, senha) ---------- */
 
+/* desktop: duas metades — painel da marca (esquerda) e formulário (direita) */
 .mk-auth {
   min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  background: var(--gn-surface);
+}
+.mk-auth-side {
   display: flex;
   flex-direction: column;
+  gap: 28px;
+  padding: 28px clamp(28px, 5vw, 64px) 32px;
 }
-.mk-auth-top {
+.mk-auth-side > * {
   position: relative;
   z-index: 1;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-block: 14px;
 }
-.mk-auth-back {
-  font-weight: 700;
-  font-size: 15px;
-  color: #fff !important;
-  opacity: 0.9;
-}
-.mk-auth-back:hover {
-  opacity: 1;
-  text-decoration: underline !important;
-}
-.mk-auth-main {
-  position: relative;
-  z-index: 1;
+.mk-auth-side-body {
   flex: 1;
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   justify-content: center;
-  padding: 24px 16px 72px;
+  gap: 32px;
+  max-width: 520px;
+}
+.mk-auth-pitch {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.mk-auth-pitch h2 {
+  font-size: clamp(30px, 3.2vw, 44px);
+  line-height: 1.06;
+}
+.mk-auth-pitch p {
+  font-size: 18px;
+  line-height: 1.5;
+  opacity: 0.92;
+}
+.mk-auth-side .mk-hero-visual {
+  justify-content: flex-start;
+  padding: 6px 0 26px;
+  max-width: 400px;
+}
+.mk-auth-side .mk-hero-badge {
+  right: -18px;
+}
+.mk-auth-benefits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.mk-auth-benefits li {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.mk-auth-benefits li > span {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--gn-yellow);
+  color: var(--gn-ink);
+  font-weight: 900;
+  font-size: 15px;
+}
+.mk-auth-benefits strong {
+  font-family: var(--font-nunito), sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+}
+.mk-auth-benefits p {
+  margin-top: 2px;
+  font-size: 15px;
+  line-height: 1.45;
+  opacity: 0.9;
+}
+.mk-auth-side-foot {
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.85;
+}
+.mk-auth-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 32px 24px 48px;
+  position: relative;
+}
+.mk-auth-back {
+  position: absolute;
+  top: 26px;
+  right: 28px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--gn-muted) !important;
+}
+.mk-auth-back:hover {
+  color: var(--gn-green-600) !important;
 }
 .mk-auth-card {
   width: 100%;
-  max-width: 440px;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 32px 30px;
-  border-radius: 24px;
-  background: var(--gn-surface);
   color: var(--gn-text);
-  box-shadow: 0 24px 60px rgba(6, 48, 26, 0.28);
 }
 .mk-auth-head {
   display: flex;
@@ -1513,7 +1584,7 @@ html:has(.mk) {
   gap: 8px;
 }
 .mk-auth-head h1 {
-  font-size: 30px;
+  font-size: 32px;
   line-height: 1.08;
 }
 .mk-auth-head p {
@@ -1614,13 +1685,32 @@ html:has(.mk) {
   color: var(--gn-green-600);
   background: var(--gn-green-50);
 }
-@media (max-width: 700px) {
-  .mk-auth-card {
-    padding: 26px 20px;
-    border-radius: 20px;
+/* celular e telas estreitas: o painel vira uma faixa só com o logo; o formulário vem logo abaixo */
+@media (max-width: 900px) {
+  .mk-auth {
+    display: flex;
+    flex-direction: column;
+  }
+  .mk-auth-side {
+    padding: 10px 20px;
+    gap: 0;
+  }
+  .mk-auth-side-body,
+  .mk-auth-side-foot {
+    display: none;
+  }
+  .mk-auth-main {
+    flex: 1;
+    justify-content: flex-start;
+    padding: 28px 20px 48px;
+  }
+  .mk-auth-back {
+    position: static;
+    align-self: flex-end;
+    order: 2;
   }
   .mk-auth-head h1 {
-    font-size: 26px;
+    font-size: 27px;
   }
 }
 @media (max-width: 700px) {

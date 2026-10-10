@@ -118,7 +118,7 @@ export default function LoginForm({ albums, initialMode = "signin", next, initia
   }
 
   return (
-    <AuthShell title={HEAD[mode].title} subtitle={HEAD[mode].subtitle}>
+    <AuthShell title={HEAD[mode].title} subtitle={HEAD[mode].subtitle} variant={mode}>
         {mode !== "forgot" && (
           <div className="segmented login-mode-toggle">
             <button

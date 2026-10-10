@@ -3018,47 +3018,6 @@ button {
 
 /* ---------- lojas com o que falta (coleção) ---------- */
 
-/* botão em destaque: verde da marca, com um ponto pulsando */
-.btn-lojas {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--gold);
-  color: var(--on-gold);
-  border: none;
-  border-radius: 9px;
-  padding: 10px 14px;
-  font-family: var(--font-barlow-condensed);
-  font-weight: 700;
-  font-size: 14px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  box-shadow: 0 0 0 3px rgba(255, 207, 77, 0.22);
-}
-.btn-lojas:hover {
-  background: var(--gold-hover);
-}
-.btn-lojas::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--on-gold);
-  animation: lojas-pulse 1.6s ease-in-out infinite;
-}
-@keyframes lojas-pulse {
-  50% {
-    opacity: 0.25;
-    transform: scale(0.7);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .btn-lojas::before {
-    animation: none;
-  }
-}
-
 .modal-card.match-card {
   max-height: 88vh;
 }
@@ -3208,23 +3167,13 @@ button {
   background: var(--accent);
 }
 
-/* ---------- coleção: linha de filtros e exportar ---------- */
+/* ---------- coleção: cabeçalho em uma linha + linha de filtros ---------- */
 
-/* desktop: Somar/Tirar vai para a direita da linha de filtros (no celular fica na linha do título) */
-.modo-mobile {
+/* Somar/Tirar e a troca de coleção em botão: cada um só num tamanho de tela */
+.modo-mobile,
+.completar-mobile {
   display: none;
 }
-.controls-group {
-  display: contents; /* só agrupa no desktop */
-}
-.modo-desktop {
-  order: 0; /* .modo-segment tem order próprio para a linha do título (celular) */
-}
-/* linha de controles/ações (vem primeiro), um pouco afastada da linha de filtros abaixo */
-.controls-row-2 {
-  margin: 4px 0 10px;
-}
-/* seletor de coleção como botão da linha de controles */
 .collection-switcher-row {
   grid-column: auto;
   align-self: auto;
@@ -3237,15 +3186,24 @@ button {
   border-color: var(--border-4);
   white-space: nowrap;
 }
-.export-button {
+.chip-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.chip-icon svg {
+  width: 15px;
+  height: 15px;
+}
+.btn-completar {
+  white-space: nowrap;
+}
+
+/* tooltip dos botões de ícone */
+.icon-button[data-tip] {
   position: relative;
-  flex: none;
 }
-.export-button > span {
-  display: none; /* rótulo só na gaveta do celular */
-}
-/* tooltip */
-.export-button[data-tip]::after {
+.icon-button[data-tip]::after {
   content: attr(data-tip);
   position: absolute;
   top: calc(100% + 8px);
@@ -3266,10 +3224,36 @@ button {
   transition: opacity 0.15s ease, transform 0.15s ease;
   z-index: 45;
 }
-.export-button[data-tip]:hover::after,
-.export-button[data-tip]:focus-visible::after {
+.icon-button[data-tip]:hover::after,
+.icon-button[data-tip]:focus-visible::after {
   opacity: 1;
   transform: translate(-50%, 0);
+}
+
+/* modal de compartilhar */
+.share-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-1);
+}
+.share-section strong {
+  display: block;
+  font-size: 14px;
+  color: var(--text-1);
+}
+.share-section small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-5);
+  word-break: break-all;
+}
+.share-lists {
+  border-bottom: none;
+  padding-bottom: 4px;
 }
 .export-actions {
   display: flex;
@@ -3283,105 +3267,68 @@ button {
   display: inline-flex;
   align-items: center;
 }
+
 @media (max-width: 700px) {
   .modo-mobile {
     display: flex;
   }
-  .modo-desktop {
-    display: none;
+  .completar-mobile {
+    display: block;
   }
-  .filters-panel.is-open .controls-row-2 {
-    margin: 0;
-    order: 2; /* na gaveta, os filtros vêm antes das ações */
-  }
-  .filters-panel.is-open .controls-row-filters {
-    order: 1;
-  }
-  .filters-panel.is-open .filters-footer {
-    order: 3;
-  }
+  .completar-desktop,
   .collection-switcher-row {
-    display: none; /* no celular a troca fica acima do título */
+    display: none; /* no celular: "Quero completar" na gaveta; troca de coleção acima do título */
   }
-  .totals-desktop {
-    display: none;
-  }
-  .btn-lojas {
-    justify-content: center;
-  }
-  /* na gaveta, o exportar vira um botão de largura inteira com rótulo */
-  .export-button {
-    width: 100% !important;
-    height: 40px !important;
-    border-radius: 9px;
-    gap: 8px;
-  }
-  .export-button > span {
-    display: inline;
-    font-family: var(--font-barlow-condensed);
-    font-weight: 600;
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  .export-button[data-tip]::after {
+  .icon-button[data-tip]::after {
     display: none;
   }
 }
 
-/* ---------- desktop: linha do título em 3 grupos; totais e Minhas coleções/Minha loja na mesma altura ---------- */
-
 @media (min-width: 701px) {
-  /* linha de filtros: busca larga e respiro entre os blocos (busca · categorias · grupos · status) */
+  /* linha de filtros: Fotos/Grade · busca larga · categorias · grupos · status */
   .controls-row-filters {
     gap: 10px 22px;
+    margin-top: 8px;
   }
   .controls-row .search-input {
-    flex: 1 1 280px;
+    flex: 1 1 260px;
   }
-  /* linha do título: logo + nome · Minhas coleções/Minha loja no centro · link + conta.
-     Os dois lados têm a mesma largura (flex: 1), o que deixa o controle do meio centralizado. */
+  /* linha única: logo + nome · coleção | totais · Minhas coleções/Minha loja · compartilhar · conta · CTA */
+  .header-main-row {
+    gap: 12px;
+  }
   .header-main-row > .brand {
-    flex: 1 1 0;
+    flex: 0 1 auto;
     justify-content: start; /* logo e nome juntos */
   }
-  .header-main-row > .nav-switch {
-    order: 3;
-    flex: none;
+  .brand > .collection-switcher {
+    display: none; /* a troca de coleção é o botão ao lado do nome */
   }
-  .header-main-row > .nav-switch ~ .header-actions {
-    flex: 1 1 0;
-    justify-content: flex-end;
-    margin-left: 0;
-  }
-  /* linha de controles: ver/marcar · totais no centro · exportar/lojas */
-  .controls-row-2 {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-  }
-  .controls-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .controls-group-end {
-    justify-content: flex-end;
-  }
-  .totals-mobile {
-    display: none;
+  .header-main-row > .collection-switcher-row {
+    order: 2;
   }
   .totals-row {
+    order: 3;
+    margin-left: auto;
     gap: 6px;
     flex-wrap: nowrap;
   }
-  .totals-desktop {
-    order: 0; /* .totals-row tem order próprio para a linha do título (celular) */
+  .header-main-row > .nav-switch {
+    order: 4;
+    flex: none;
+  }
+  .header-main-row > .nav-switch ~ .header-actions {
+    order: 5;
+    margin-left: 0;
+  }
+  .header-main-row > .btn-completar {
+    order: 6;
   }
   .total-card {
     height: 46px;
     justify-content: center;
     padding: 0 12px;
-    min-width: 78px;
+    min-width: 74px;
   }
   .total-value {
     font-size: 22px;
@@ -3400,5 +3347,11 @@ button {
   .nav-switch-item {
     height: auto;
     padding: 0 13px;
+  }
+}
+/* telas médias: Minhas coleções/Minha loja só com ícone, para a linha caber */
+@media (min-width: 701px) and (max-width: 1320px) {
+  .header-main-row > .nav-switch .header-label {
+    display: none;
   }
 }

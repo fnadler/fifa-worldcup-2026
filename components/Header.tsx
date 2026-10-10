@@ -4,7 +4,7 @@ import { useState, type RefObject } from "react";
 import { VIEW_OPTIONS } from "@/lib/useViewMode";
 import { useCatalog } from "@/lib/CatalogContext";
 import type { ViewMode, AppUser, ModoClique, StatusFiltro, TipoFiltro } from "@/lib/types";
-import { CopyLinkButton, FiltersFooter, HeaderActions, Icon, NavSwitch, ViewToggleButton } from "./HeaderIcons";
+import { FiltersFooter, HeaderActions, Icon, NavSwitch, ViewToggleButton } from "./HeaderIcons";
 import GroupMenu from "./GroupMenu";
 import UserMenu from "./UserMenu";
 import BrandLogo from "./BrandLogo";
@@ -27,7 +27,8 @@ interface HeaderProps {
   onView: (v: ViewMode) => void;
   modo: ModoClique;
   onModo: (v: ModoClique) => void;
-  onAbrirTrocas: () => void;
+  /** Abre o modal de compartilhar (link público + listas de repetidas/faltantes). */
+  onCompartilhar: () => void;
   /** Lojas com o que falta — só quando a pessoa já tem algum item (sem nada, tudo "falta"). */
   onAbrirLojas?: () => void;
   onExportar: () => void;
@@ -38,7 +39,6 @@ interface HeaderProps {
   shopActive: boolean;
   collectionName: string;
   collections: UserCollection[];
-  onToast: (msg: string) => void;
   /** Volta busca, tipo e status ao padrão (botão "Limpar filtros" do celular). */
   onClearFilters: () => void;
 }
@@ -53,18 +53,6 @@ const MODOS: { value: ModoClique; label: string }[] = [
   { value: "add", label: "+ Somar" },
   { value: "sub", label: "− Tirar" },
 ];
-
-// Link de visualização (somente leitura) da coleção — o token é criado na primeira vez.
-async function gerarLinkPublico(albumId: string): Promise<string> {
-  const res = await fetch("/api/share-link", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ albumId }),
-  });
-  if (!res.ok) throw new Error("request failed");
-  const { token } = (await res.json()) as { token: string };
-  return `${window.location.origin}/publico/${token}`;
-}
 
 export default function Header({
   headerRef,
@@ -82,7 +70,7 @@ export default function Header({
   onView,
   modo,
   onModo,
-  onAbrirTrocas,
+  onCompartilhar,
   onAbrirLojas,
   onExportar,
   onImportar,
@@ -92,48 +80,11 @@ export default function Header({
   shopActive,
   collectionName,
   collections,
-  onToast,
   onClearFilters,
 }: HeaderProps) {
   const catalog = useCatalog();
   const tipos = catalog.filters;
   const [menuAberto, setMenuAberto] = useState(false);
-
-  // Totais: no celular ficam na linha do título; no desktop, no centro da linha de controles.
-  const totais = (extra: string) => (
-    <div className={`totals-row ${extra}`}>
-      <div className="total-card">
-        <span className="total-value" style={{ color: "var(--positive)" }}>
-          {totColadas}
-          <span className="denom">/{totGeral}</span>
-        </span>
-        <span className="total-label">{catalog.owned.total}</span>
-      </div>
-      <div className="total-card">
-        <span className="total-value" style={{ color: "var(--gold)" }}>
-          {totRepetidas}
-        </span>
-        <span className="total-label">Repetidas</span>
-      </div>
-      <div className="total-card">
-        <span className="total-value" style={{ color: "var(--danger)" }}>
-          {totFaltam}
-        </span>
-        <span className="total-label">Faltam</span>
-      </div>
-    </div>
-  );
-
-  // Somar/Tirar: no celular fica na linha do título; no desktop, à direita da linha de filtros.
-  const modoSegment = (extra: string) => (
-    <div className={`segmented modo-segment ${extra}`}>
-      {MODOS.map((m) => (
-        <button key={m.value} type="button" className={`chip ${modo === m.value ? "active" : ""}`} onClick={() => onModo(m.value)}>
-          {m.label}
-        </button>
-      ))}
-    </div>
-  );
 
   function anchorClickAndClose(id: string) {
     setMenuAberto(false);
@@ -143,6 +94,8 @@ export default function Header({
   return (
     <div className="header" ref={headerRef}>
       <div className="header-inner">
+        {/* Desktop, uma linha só: logo + nome · coleção · totais · Minhas coleções/Minha loja · compartilhar ·
+            conta · Quero completar. No celular os itens se reordenam em linhas (ver globals.css). */}
         <div className="header-main-row">
           <div className="brand">
             <BrandLogo />
@@ -150,9 +103,38 @@ export default function Header({
             <span className="title">{collectionName}</span>
           </div>
 
-          {totais("totals-mobile")}
+          <CollectionSwitcher collections={collections} variant="button" />
 
-          {modoSegment("modo-mobile")}
+          <div className="totals-row">
+            <div className="total-card">
+              <span className="total-value" style={{ color: "var(--positive)" }}>
+                {totColadas}
+                <span className="denom">/{totGeral}</span>
+              </span>
+              <span className="total-label">{catalog.owned.total}</span>
+            </div>
+            <div className="total-card">
+              <span className="total-value" style={{ color: "var(--gold)" }}>
+                {totRepetidas}
+              </span>
+              <span className="total-label">Repetidas</span>
+            </div>
+            <div className="total-card">
+              <span className="total-value" style={{ color: "var(--danger)" }}>
+                {totFaltam}
+              </span>
+              <span className="total-label">Faltam</span>
+            </div>
+          </div>
+
+          {/* Somar/Tirar só no celular (na grade não há clique direito para tirar) */}
+          <div className="segmented modo-segment modo-mobile">
+            {MODOS.map((m) => (
+              <button key={m.value} type="button" className={`chip ${modo === m.value ? "active" : ""}`} onClick={() => onModo(m.value)}>
+                {m.label}
+              </button>
+            ))}
+          </div>
 
           <ViewToggleButton view={view} onChange={onView} />
 
@@ -167,15 +149,17 @@ export default function Header({
           <NavSwitch active="album" shopHref={shopHref} />
 
           <HeaderActions>
-            <CopyLinkButton
-              text="Copiar link"
-              label="Copiar link público da coleção"
-              url={() => gerarLinkPublico(catalog.id)}
-              successMessage="Link público da coleção copiado!"
-              onToast={onToast}
-            />
+            <button type="button" className="icon-button" data-tip="Compartilhar" aria-label="Compartilhar coleção" onClick={onCompartilhar}>
+              <Icon name="export" />
+            </button>
             <UserMenu email={user.email} shopActive={shopActive} onBackup={onExportar} onImport={onImportar} />
           </HeaderActions>
+
+          {onAbrirLojas && (
+            <button type="button" className="btn-primary btn-completar completar-desktop" onClick={onAbrirLojas}>
+              Quero completar
+            </button>
+          )}
         </div>
 
         <div className={`filters-panel ${menuAberto ? "is-open" : ""}`}>
@@ -188,40 +172,21 @@ export default function Header({
             ×
           </button>
 
-          {/* linha de controles e ações: como ver e marcar (esquerda) · exportar e lojas (direita) */}
-          <div className="controls-row controls-row-2">
-            <div className="controls-group">
-            <CollectionSwitcher collections={collections} variant="button" />
+          <div className="controls-row controls-row-filters">
             <div className="segmented view-segment">
               {VIEW_OPTIONS.map((v) => (
                 <button
                   key={v.value}
                   type="button"
-                  className={`chip ${view === v.value ? "active" : ""}`}
+                  className={`chip chip-icon ${view === v.value ? "active" : ""}`}
                   onClick={() => onView(v.value)}
                 >
+                  <Icon name={v.value === "grid" ? "grid" : "photo"} />
                   {v.label}
                 </button>
               ))}
             </div>
-            {modoSegment("modo-desktop")}
-            </div>
-            {totais("totals-desktop")}
-            <div className="controls-group controls-group-end">
-            <button type="button" className="icon-button export-button" data-tip="Exportar" aria-label="Exportar lista" onClick={onAbrirTrocas}>
-              <Icon name="export" />
-              <span>Exportar lista</span>
-            </button>
-            {onAbrirLojas && (
-              <button type="button" className="btn-lojas" onClick={onAbrirLojas}>
-                Onde comprar as que faltam
-              </button>
-            )}
-            </div>
-          </div>
 
-          {/* linha de filtros (a última) */}
-          <div className="controls-row controls-row-filters">
             <input
               type="search"
               placeholder={catalog.searchPlaceholder}
@@ -258,6 +223,18 @@ export default function Header({
               ))}
             </div>
 
+            {onAbrirLojas && (
+              <button
+                type="button"
+                className="btn-primary btn-completar completar-mobile"
+                onClick={() => {
+                  setMenuAberto(false);
+                  onAbrirLojas();
+                }}
+              >
+                Quero completar
+              </button>
+            )}
           </div>
 
           <FiltersFooter

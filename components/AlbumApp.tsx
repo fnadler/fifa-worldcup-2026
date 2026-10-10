@@ -13,7 +13,7 @@ import type { AppUser, ModoClique, Qtd, StatusFiltro, SyncStatus, TipoFiltro } f
 import Header from "./Header";
 import LegendBar from "./LegendBar";
 import AlbumBlockCard from "./AlbumBlockCard";
-import ExportModal from "./ExportModal";
+import ShareModal from "./ShareModal";
 import BackupModal from "./BackupModal";
 import ShopMatchModal from "./ShopMatchModal";
 
@@ -193,7 +193,7 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
         onView={setView}
         modo={modo}
         onModo={setModo}
-        onAbrirTrocas={() => setTrocasAberto(true)}
+        onCompartilhar={() => setTrocasAberto(true)}
         onAbrirLojas={temItens && derived.totFaltam > 0 ? () => setLojasAberto(true) : undefined}
         onExportar={() => setBackupModo("export")}
         onImportar={() => setBackupModo("import")}
@@ -203,7 +203,6 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
         shopActive={shopActive}
         collectionName={collectionName}
         collections={collections}
-        onToast={showToast}
         onClearFilters={() => {
           setBusca("");
           setTipo("ALL");
@@ -228,7 +227,7 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
       </div>
 
       {trocasAberto && (
-        <ExportModal repetidas={derived.listaTrocas} faltantes={derived.listaFaltantes} onClose={() => setTrocasAberto(false)} />
+        <ShareModal repetidas={derived.listaTrocas} faltantes={derived.listaFaltantes} onClose={() => setTrocasAberto(false)} />
       )}
 
       {lojasAberto && <ShopMatchModal onClose={() => setLojasAberto(false)} />}

@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { useCatalog } from "@/lib/CatalogContext";
+import { Icon } from "./HeaderIcons";
 
 // Compartilhar a coleção: o link público (somente leitura) e as listas em texto para mandar no
 // WhatsApp — repetidas (para troca/venda) ou faltantes.
 
 type Aba = "rep" | "miss";
+type Secao = "link" | "lista";
 
 interface ShareModalProps {
   repetidas: string;
@@ -28,6 +30,7 @@ async function gerarLinkPublico(albumId: string): Promise<string> {
 
 export default function ShareModal({ repetidas, faltantes, onClose }: ShareModalProps) {
   const catalog = useCatalog();
+  const [secao, setSecao] = useState<Secao>("link");
   const [aba, setAba] = useState<Aba>("rep");
   const [copiado, setCopiado] = useState(false);
   const [link, setLink] = useState<{ estado: "idle" | "busy" | "ok" | "erro"; url?: string }>({ estado: "idle" });
@@ -74,42 +77,58 @@ export default function ShareModal({ repetidas, faltantes, onClose }: ShareModal
           </button>
         </div>
 
-        <div className="share-section">
-          <div>
-            <strong>Link da coleção</strong>
-            <small>
-              {link.estado === "ok"
-                ? link.url
-                : link.estado === "erro"
-                  ? "Não foi possível gerar o link — tente de novo."
-                  : "Quem abrir vê a sua coleção, sem poder alterar."}
-            </small>
-          </div>
-          <button type="button" className="btn-ghost" onClick={copiarLink} disabled={link.estado === "busy"}>
-            {link.estado === "ok" ? "Link copiado!" : "Copiar link"}
+        {/* abas: cada uma com as suas ações */}
+        <div className="share-tabs" role="tablist">
+          <button type="button" role="tab" aria-selected={secao === "link"} className={secao === "link" ? "active" : ""} onClick={() => setSecao("link")}>
+            <Icon name="link" />
+            Link da coleção
+          </button>
+          <button type="button" role="tab" aria-selected={secao === "lista"} className={secao === "lista" ? "active" : ""} onClick={() => setSecao("lista")}>
+            <Icon name="export" />
+            Lista de figurinhas
           </button>
         </div>
 
-        <div className="share-section share-lists">
-          <strong>Lista em texto</strong>
-          <div className="segmented">
-            <button type="button" className={`chip ${aba === "rep" ? "active" : ""}`} onClick={() => trocar("rep")}>
-              Repetidas
-            </button>
-            <button type="button" className={`chip ${aba === "miss" ? "active" : ""}`} onClick={() => trocar("miss")}>
-              Faltantes
+        {secao === "link" ? (
+          <div className="share-link">
+            <p>Um endereço para mostrar a sua coleção. Quem abrir vê tudo o que você tem e o que falta, sem poder alterar.</p>
+            {link.estado === "ok" && <code>{link.url}</code>}
+            {link.estado === "erro" && <small>Não foi possível gerar o link — tente de novo.</small>}
+            <button type="button" className="btn-primary btn-with-icon" onClick={copiarLink} disabled={link.estado === "busy"}>
+              <Icon name={link.estado === "ok" ? "check" : "link"} />
+              {link.estado === "ok" ? "Link copiado!" : "Copiar link"}
             </button>
           </div>
-        </div>
-        <div className="trocas-body">{lista}</div>
-        <div className="export-actions">
-          <button type="button" className="btn-ghost" onClick={copiarLista}>
-            {copiado ? "Copiado!" : "Copiar lista"}
-          </button>
-          <a className="btn-primary" href={`https://wa.me/?text=${encodeURIComponent(lista)}`} target="_blank" rel="noopener noreferrer">
-            Enviar no WhatsApp
-          </a>
-        </div>
+        ) : (
+          <>
+            <div className="share-lists">
+              <div className="segmented">
+                <button type="button" className={`chip ${aba === "rep" ? "active" : ""}`} onClick={() => trocar("rep")}>
+                  Repetidas
+                </button>
+                <button type="button" className={`chip ${aba === "miss" ? "active" : ""}`} onClick={() => trocar("miss")}>
+                  Faltantes
+                </button>
+              </div>
+            </div>
+            <div className="trocas-body">{lista}</div>
+            <div className="export-actions">
+              <button type="button" className="btn-ghost btn-with-icon" onClick={copiarLista}>
+                <Icon name={copiado ? "check" : "copy"} />
+                {copiado ? "Copiado!" : "Copiar lista"}
+              </button>
+              <a
+                className="btn-primary btn-with-icon"
+                href={`https://wa.me/?text=${encodeURIComponent(lista)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Icon name="whatsapp" />
+                Enviar no WhatsApp
+              </a>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

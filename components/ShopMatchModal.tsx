@@ -71,8 +71,15 @@ export default function ShopMatchModal({ onClose }: { onClose: () => void }) {
               Tudo · {data.missing.toLocaleString("pt-BR")}
             </button>
             {data.categories.map((c) => (
-              <button key={c.key} type="button" className={`chip ${categoria === c.key ? "active" : ""}`} onClick={() => setCategoria(c.key)}>
-                {c.label} · {c.missing.toLocaleString("pt-BR")}
+              <button
+                key={c.key}
+                type="button"
+                className={`chip ${categoria === c.key ? "active" : ""}`}
+                onClick={() => setCategoria(c.key)}
+                disabled={c.missing === 0}
+                title={c.missing === 0 ? "Você já tem todas dessa categoria" : undefined}
+              >
+                {c.label} · {c.missing === 0 ? "completa" : c.missing.toLocaleString("pt-BR")}
               </button>
             ))}
           </div>
@@ -104,9 +111,9 @@ export default function ShopMatchModal({ onClose }: { onClose: () => void }) {
                   </div>
                   <Bar label={categoria ? "Total da coleção" : "Do que falta para você"} count={s} main={!categoria} />
                   {data.categories.length > 1 &&
-                    data.categories.map((c) => (
-                      <Bar key={c.key} label={c.label} count={s.categories[c.key]} main={categoria === c.key} />
-                    ))}
+                    data.categories
+                      .filter((c) => c.missing > 0)
+                      .map((c) => <Bar key={c.key} label={c.label} count={s.categories[c.key]} main={categoria === c.key} />)}
                 </div>
               </Link>
             ))}

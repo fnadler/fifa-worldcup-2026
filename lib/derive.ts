@@ -1,6 +1,7 @@
 import { displayCode, stickerName } from "./album";
+import { blockEmoji } from "./blockEmoji";
 import type { Catalog } from "./catalog";
-import type { Qtd, StatusFiltro, TipoFiltro, VisibleBlock } from "./types";
+import type { AlbumBlock, Qtd, StatusFiltro, TipoFiltro, VisibleBlock } from "./types";
 
 export interface DerivedBoard {
   totColadas: number;
@@ -83,6 +84,9 @@ export function deriveBoard(
     });
   });
 
+  // Listas em texto para o WhatsApp: um bloco por seleção/categoria, com emoji e uma linha em branco entre eles.
+  const bloco = (b: AlbumBlock, itens: string[]) => `${blockEmoji(catalog, b)} ${b.nome}\n${itens.join(", ")}`;
+
   const linhas: string[] = [];
   blocks.forEach((b) => {
     const itens = b.codes
@@ -93,10 +97,10 @@ export function deriveBoard(
         const rotulo = nome ? `${displayCode(c)} ${nome}` : displayCode(c);
         return n > 1 ? `${rotulo} (x${n})` : rotulo;
       });
-    if (itens.length) linhas.push(`${b.nome}: ${itens.join(", ")}`);
+    if (itens.length) linhas.push(bloco(b, itens));
   });
   const listaTrocas = linhas.length
-    ? `REPETIDAS — ${catalog.shortName.toUpperCase()}\n\n${linhas.join("\n")}`
+    ? `🔁 REPETIDAS — ${catalog.shortName.toUpperCase()}\n\n${linhas.join("\n\n")}`
     : "Nenhuma repetida registrada ainda.";
 
   const faltas: string[] = [];
@@ -108,10 +112,10 @@ export function deriveBoard(
         const nome = stickerName(c);
         return nome ? `${displayCode(c)} ${nome}` : displayCode(c);
       });
-    if (itens.length) faltas.push(`${b.nome}: ${itens.join(", ")}`);
+    if (itens.length) faltas.push(bloco(b, itens));
   });
   const listaFaltantes = faltas.length
-    ? `FALTANTES — ${catalog.shortName.toUpperCase()}\n\n${faltas.join("\n")}`
+    ? `🔎 FALTANTES — ${catalog.shortName.toUpperCase()}\n\n${faltas.join("\n\n")}`
     : "Não falta nada — coleção completa!";
 
   return {

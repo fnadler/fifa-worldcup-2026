@@ -52,6 +52,18 @@ const PATHS = {
       <path d="M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" />
     </>
   ),
+  copy: (
+    <>
+      <rect x="9" y="9" width="11" height="11" rx="2" />
+      <path d="M5 15V6a2 2 0 0 1 2-2h9" />
+    </>
+  ),
+  whatsapp: (
+    <>
+      <path d="M4 20l1.3-4A8 8 0 1 1 8.2 19L4 20Z" />
+      <path d="M9.3 9.2c0 3 2.5 5.5 5.5 5.5" />
+    </>
+  ),
   user: (
     <>
       <circle cx="12" cy="8" r="4" />

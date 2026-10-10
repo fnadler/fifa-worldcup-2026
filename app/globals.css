@@ -3230,30 +3230,76 @@ button {
   transform: translate(-50%, 0);
 }
 
-/* modal de compartilhar */
-.share-section {
+/* modal de compartilhar: abas (link · lista), cada uma com as suas ações */
+.share-tabs {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 18px;
   border-bottom: 1px solid var(--border-1);
 }
-.share-section strong {
-  display: block;
-  font-size: 14px;
-  color: var(--text-1);
-}
-.share-section small {
-  display: block;
-  margin-top: 2px;
-  font-size: 12px;
+.share-tabs button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 10px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
   color: var(--text-5);
+  font-family: var(--font-barlow-condensed);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.share-tabs button:hover {
+  color: var(--text-2);
+}
+.share-tabs button.active {
+  color: var(--text-1);
+  border-bottom-color: var(--accent);
+}
+.share-link {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px 18px 22px;
+}
+.share-link p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+.share-link code {
+  align-self: stretch;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: var(--field);
+  border: 1px solid var(--border-3);
+  font-size: 13px;
+  color: var(--text-2);
   word-break: break-all;
 }
+.share-link small {
+  color: var(--danger);
+  font-size: 13px;
+}
 .share-lists {
-  border-bottom: none;
-  padding-bottom: 4px;
+  display: flex;
+  padding: 14px 18px 4px;
+}
+.btn-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+.btn-with-icon svg {
+  width: 16px;
+  height: 16px;
 }
 .export-actions {
   display: flex;
@@ -3262,10 +3308,12 @@ button {
   padding: 14px 18px;
   border-top: 1px solid var(--border-1);
 }
-.export-actions a.btn-primary {
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
+.chip:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.brand-eyebrow {
+  display: none; /* só no desktop — no celular esse lugar é da troca de coleção */
 }
 
 @media (max-width: 700px) {
@@ -3303,6 +3351,9 @@ button {
   }
   .brand > .collection-switcher {
     display: none; /* a troca de coleção é o botão ao lado do nome */
+  }
+  .brand > .brand-eyebrow {
+    display: block; /* a marca acima do nome mantém o título centrado com a imagem */
   }
   .header-main-row > .collection-switcher-row {
     order: 2;

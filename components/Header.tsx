@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type RefObject } from "react";
+import { PLATFORM_NAME } from "@/lib/brand";
 import { VIEW_OPTIONS } from "@/lib/useViewMode";
 import { useCatalog } from "@/lib/CatalogContext";
 import type { ViewMode, AppUser, ModoClique, StatusFiltro, TipoFiltro } from "@/lib/types";
@@ -99,6 +100,8 @@ export default function Header({
         <div className="header-main-row">
           <div className="brand">
             <BrandLogo />
+            {/* desktop: a marca acima do nome (a troca de coleção é o botão ao lado); celular: a troca */}
+            <span className="kicker brand-eyebrow">{PLATFORM_NAME}</span>
             <CollectionSwitcher collections={collections} />
             <span className="title">{collectionName}</span>
           </div>

@@ -27,7 +27,7 @@ export interface ShopMatch extends MatchCount {
   name: string;
   logoUrl: string | null;
   official: boolean;
-  /** Por categoria (chave = tipo do bloco) — só as que a pessoa tem faltantes. */
+  /** Por categoria (chave = tipo do bloco). */
   categories: Record<string, MatchCount>;
 }
 
@@ -63,9 +63,10 @@ export async function matchShops(userId: string, albumId: string): Promise<ShopM
 
   const porCategoria = new Map<string, number>();
   for (const tipo of missing.values()) porCategoria.set(tipo, (porCategoria.get(tipo) ?? 0) + 1);
+  // todas as categorias da coleção (com 0 quando a pessoa já tem tudo dela) — o filtro mostra todas
   const categories = catalog.filters
-    .filter((f) => porCategoria.has(f.value))
-    .map((f) => ({ key: f.value, label: f.label, missing: porCategoria.get(f.value)! }));
+    .filter((f) => f.value !== "ALL")
+    .map((f) => ({ key: f.value, label: f.label, missing: porCategoria.get(f.value) ?? 0 }));
 
   const shops: ShopMatch[] = [];
   for (const shop of await loadActiveShops()) {

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useCatalog } from "@/lib/CatalogContext";
@@ -43,23 +44,43 @@ export default function CollectionSwitcher({ collections, variant }: { collectio
       {open && (
         <div className="user-menu collection-switcher-menu" role="menu">
           <span className="user-menu-group-title">Minhas coleções</span>
-          {collections.map((c) => (
-            <Link
-              key={c.albumId}
-              href={`/colecao/${c.slug}`}
-              role="menuitem"
-              className={`user-menu-item collection-switcher-item ${c.albumId === catalog.id ? "is-current" : ""}`}
-              onClick={() => setOpen(false)}
-            >
-              <strong>{collectionTitleOf(c)}</strong>
-              <span>{c.albumName}</span>
+          <div className="collection-cards" style={{ ["--cols" as string]: Math.min(collections.length + 1, 3) }}>
+            {collections.map((c) => {
+              const current = c.albumId === catalog.id;
+              return (
+                <Link
+                  key={c.albumId}
+                  href={`/colecao/${c.slug}`}
+                  role="menuitem"
+                  className={`collection-card${current ? " is-current" : ""}`}
+                  aria-current={current ? "page" : undefined}
+                  onClick={() => setOpen(false)}
+                >
+                  <span className="collection-card-cover">
+                    <Cover slug={c.slug} name={c.albumName} />
+                    {current && <em>Aberta</em>}
+                  </span>
+                  <strong>{c.albumName}</strong>
+                  <small>{collectionTitleOf(c)}</small>
+                </Link>
+              );
+            })}
+            <Link href="/colecoes" role="menuitem" className="collection-card collection-card-add" onClick={() => setOpen(false)}>
+              <span className="collection-card-cover">
+                <b aria-hidden="true">+</b>
+              </span>
+              <strong>Adicionar coleção</strong>
             </Link>
-          ))}
-          <Link href="/colecoes" role="menuitem" className="user-menu-item user-menu-cta" onClick={() => setOpen(false)}>
-            + Adicionar coleção
-          </Link>
+          </div>
         </div>
       )}
     </div>
   );
+}
+
+// Capa do álbum (public/brand/albums/<slug>.webp). Sem arquivo, fica o nome sobre o fundo do card.
+function Cover({ slug, name }: { slug: string; name: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return <span className="collection-card-nocover">{name}</span>;
+  return <Image src={`/brand/albums/${slug}.webp`} alt="" width={240} height={320} unoptimized onError={() => setFailed(true)} />;
 }

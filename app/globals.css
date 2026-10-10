@@ -2953,38 +2953,98 @@ button {
 
 /* ---------- /colecoes ---------- */
 
+.collections-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
 .collections-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 220px));
+  gap: 16px;
 }
 .collection-option {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 16px;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
   border: 1px solid var(--border-2);
-  border-radius: 12px;
+  border-radius: 14px;
   background: var(--card);
 }
 .collection-option.is-highlight {
   border-color: var(--accent);
   box-shadow: 0 0 0 1px var(--accent);
 }
+.collection-option-cover {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 3 / 4;
+  border-radius: 9px;
+  overflow: hidden;
+  background: var(--bg);
+}
+.collection-option-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.collection-option-cover > span {
+  padding: 12px;
+  text-align: center;
+  font-family: var(--font-barlow-condensed);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text-4);
+}
+.collection-option-cover em {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--positive);
+  color: #06301a;
+  font-family: var(--font-barlow-condensed);
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 .collection-option-info {
   display: flex;
   flex-direction: column;
   gap: 2px;
   min-width: 0;
+  flex: 1;
 }
 .collection-option-info strong {
   font-size: 16px;
+  line-height: 1.2;
   color: var(--text-1);
 }
 .collection-option-info span {
   font-size: 13px;
   color: var(--text-5);
+}
+.collection-option > .btn-ghost,
+.collection-option > .btn-primary {
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+}
+@media (max-width: 700px) {
+  .collections-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .collection-option {
+    padding: 8px;
+  }
 }
 .collection-name-label {
   display: inline-flex;

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { albumCover } from "@/lib/albumCovers";
 import { activeAlbums } from "@/lib/albums";
 import { CATALOGS } from "@/lib/catalog";
 import { ownShop } from "@/lib/shopLink";
@@ -43,6 +44,7 @@ export default async function ColecoesPage({ searchParams }: { searchParams: Pro
         name: c.name,
         total: c.total,
         itemPlural: c.itemPlural,
+        cover: albumCover(c.slug),
         owned: mine.find((m) => m.albumId === c.id)?.collectionName ?? (minhas.has(c.id) ? "" : null),
       }))}
     />

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -13,6 +14,8 @@ interface Option {
   name: string;
   total: number;
   itemPlural: string;
+  /** Capa do álbum (public/brand/albums); null = sem capa. */
+  cover: string | null;
   /** Nome que a pessoa deu, "" se tem sem nome, null se ainda não tem a coleção. */
   owned: string | null;
 }
@@ -48,39 +51,60 @@ export default function CollectionsPage({ userId, email, shop, highlight, nextPo
     router.push(`/colecao/${o.slug}`);
   }
 
+  // volta para de onde a pessoa veio; aberta direto (sem histórico), vai para a coleção
+  function voltar() {
+    if (window.history.length > 1) router.back();
+    else router.push("/colecao");
+  }
+
   return (
     <div className="app-shell">
       <AccountHeader title="Coleções" email={email} shop={shop} />
 
       <div className="admin-page">
         <section className="admin-section">
-          <h2 className="admin-section-title">Escolha o que colecionar</h2>
+          <div className="collections-head">
+            <button type="button" className="btn-ghost collections-back" onClick={voltar}>
+              ← Voltar
+            </button>
+            <h2 className="admin-section-title">Escolha o que colecionar</h2>
+          </div>
           <p className="modal-notice">
             Cada coleção tem seu próprio progresso, lista de repetidas e link público. Você pode acompanhar várias ao
-            mesmo tempo e trocar entre elas pelo nome acima do título.
+            mesmo tempo e trocar entre elas pelo botão da coleção, no topo.
           </p>
           {erro && <div className="login-error">{erro}</div>}
           <div className="collections-grid">
-            {options.map((o) => (
-              <div key={o.albumId} className={`collection-option ${highlight === o.slug ? "is-highlight" : ""}`}>
-                <div className="collection-option-info">
-                  <strong>{o.name}</strong>
-                  <span>
-                    {o.total} {o.itemPlural}
-                    {o.owned !== null && <> · {o.owned || DEFAULT_COLLECTION_NAME}</>}
-                  </span>
+            {options.map((o) => {
+              const tem = o.owned !== null;
+              return (
+                <div
+                  key={o.albumId}
+                  className={`collection-option${tem ? " is-owned" : ""}${highlight === o.slug ? " is-highlight" : ""}`}
+                >
+                  <div className="collection-option-cover">
+                    {o.cover ? <Image src={o.cover} alt="" width={480} height={640} unoptimized /> : <span>{o.name}</span>}
+                    {tem && <em>Na sua conta</em>}
+                  </div>
+                  <div className="collection-option-info">
+                    <strong>{o.name}</strong>
+                    <span>
+                      {o.total.toLocaleString("pt-BR")} {o.itemPlural}
+                    </span>
+                    {tem && <span>{o.owned || DEFAULT_COLLECTION_NAME}</span>}
+                  </div>
+                  {tem ? (
+                    <Link href={`/colecao/${o.slug}`} className="btn-ghost">
+                      Abrir
+                    </Link>
+                  ) : (
+                    <button type="button" className="btn-primary" disabled={adding !== null} onClick={() => void adicionar(o)}>
+                      {adding === o.albumId ? "Adicionando…" : "Adicionar"}
+                    </button>
+                  )}
                 </div>
-                {o.owned !== null ? (
-                  <Link href={`/colecao/${o.slug}`} className="btn-ghost">
-                    Abrir
-                  </Link>
-                ) : (
-                  <button type="button" className="btn-primary" disabled={adding !== null} onClick={() => void adicionar(o)}>
-                    {adding === o.albumId ? "Adicionando…" : "Adicionar"}
-                  </button>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       </div>

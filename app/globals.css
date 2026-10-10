@@ -3424,3 +3424,59 @@ button {
     display: none;
   }
 }
+
+/* ---------- convite da comunidade (topo da coleção) ---------- */
+
+.community-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 1340px;
+  width: calc(100% - 36px);
+  margin: 16px auto 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(37, 211, 102, 0.45);
+  border-radius: 12px;
+  background: rgba(37, 211, 102, 0.08);
+}
+.community-banner-icon {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #25d366;
+  color: #06301a;
+}
+.community-banner-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+  color: var(--text-3);
+}
+.community-banner-text strong {
+  font-size: 15px;
+  color: var(--text-1);
+}
+.community-banner-cta {
+  flex: none;
+  text-decoration: none;
+  white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .community-banner {
+    flex-wrap: wrap;
+  }
+  .community-banner-text {
+    flex-basis: calc(100% - 100px);
+  }
+  .community-banner-cta {
+    flex: 1;
+    text-align: center;
+    order: 3;
+  }
+}

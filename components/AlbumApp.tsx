@@ -16,6 +16,7 @@ import AlbumBlockCard from "./AlbumBlockCard";
 import ShareModal from "./ShareModal";
 import BackupModal from "./BackupModal";
 import ShopMatchModal from "./ShopMatchModal";
+import CommunityBanner from "./CommunityBanner";
 
 interface AlbumAppProps {
   initialUser: AppUser;
@@ -211,6 +212,8 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
           setStatusFiltro("ALL");
         }}
       />
+
+      <CommunityBanner />
 
       <LegendBar
         modo={modo}

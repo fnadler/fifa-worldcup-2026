@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { COMMUNITY_URL } from "@/lib/community";
 import { Icon } from "./HeaderIcons";
 
 interface UserMenuProps {
@@ -70,6 +71,11 @@ export default function UserMenu({ email, shopActive, onBackup, onImport }: User
           <Link href="/colecoes" className="user-menu-item" role="menuitem" onClick={fechar}>
             Minhas coleções
           </Link>
+          {COMMUNITY_URL && (
+            <a href={COMMUNITY_URL} className="user-menu-item" role="menuitem" target="_blank" rel="noopener noreferrer" onClick={fechar}>
+              Comunidade no WhatsApp
+            </a>
+          )}
 
           <div className="user-menu-group" role="group" aria-label="Minha loja">
             <span className="user-menu-group-title">Minha loja</span>

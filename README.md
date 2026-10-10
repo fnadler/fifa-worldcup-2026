@@ -294,3 +294,18 @@ Cada coleção é uma linha em `albums` (`wc2026-panini` = Álbum Copa do Mundo 
 - No código, cada coleção é um `Catalog` em **`lib/catalog.ts`** (blocos, filtros, grupos de preço, etiquetas, textos). Funções por código (`stickerName`, `describeSticker`, `priceFor`…) usam um índice global; o que percorre blocos recebe o catálogo — nos componentes, via `useCatalog()` (`lib/CatalogContext.tsx`, padrão: Álbum Copa). O catálogo da Adrenalyn (`lib/catalogs/adrenalyn-xl.json`) é gerado do CSV com `node scripts/build-adrenalyn-catalog.mjs`.
 - **Fase 2** (`supabase_migration_collections_phase2.sql`): Adrenalyn XL ativa, um link público por coleção, `colecoes` reservado. Rotas: `/colecao` abre a última coleção usada (cookie `gn_colecao`), `/colecao/<slug>` (`copa-2026`, `adrenalyn-xl`) abre uma coleção, `/colecoes` adiciona coleções. O nome de cada coleção fica em `user_albums.collection_name` (editável em Meu perfil). Fotos dos cards: `npm run images` (lê `data/adrenalyn-xl/cards/NNN.jpeg`; gera só o que falta, `-- --force` refaz tudo).
 - **Fase 3** (`supabase_migration_collections_phase3.sql`): a loja vende várias coleções. `shop_albums` guarda, por coleção, se está à venda, o pedido mínimo e o preço por grupo (as colunas `price_*_cents`/`min_order_cents` de `shops` ficam só como legado). Carrinho por coleção (`cart_holds` com `album_id` na chave; `hold_cart`/`place_order` recebem `p_album`) e o pedido grava a coleção. Vitrine: abas `?colecao=<slug>` quando há mais de uma à venda. Admin: seletor de coleção em Preços; "Coleções à venda" em Configurações.
+
+## Comunidade no WhatsApp
+
+Convite para o grupo de WhatsApp dos colecionadores, por e-mail e dentro da plataforma. Tudo depende de variáveis de ambiente — sem elas, nada aparece nem é enviado:
+
+- `NEXT_PUBLIC_WHATSAPP_GROUP_URL` — link de convite do grupo (`https://chat.whatsapp.com/...`). Liga o aviso no topo da coleção (`components/CommunityBanner.tsx`, some depois de fechado) e o item "Comunidade no WhatsApp" no menu da conta.
+- `RESEND_API_KEY` e `EMAIL_FROM` — envio pelo [Resend](https://resend.com) (`lib/email/resend.ts`); o remetente precisa ser de um domínio verificado lá (padrão: `GN Coleciona <comunidade@gncoleciona.com.br>`).
+- `CRON_SECRET` — protege `/api/cron/convite-comunidade`.
+
+Migração: **`supabase_migration_community_invites.sql`** (tabela `community_invites`, uma linha por conta que já recebeu). O e-mail (`lib/email/communityInvite.ts`; prévia em `/api/comunidade/preview`, só em desenvolvimento) sai uma vez por conta:
+
+- na confirmação do cadastro (`app/auth/callback`);
+- na varredura diária (`vercel.json`, 10h de Brasília), para contas dos últimos 7 dias que ainda não receberam;
+- para quem já tinha conta, chamando à mão: `curl -H "Authorization: Bearer $CRON_SECRET" "https://www.gncoleciona.com.br/api/cron/convite-comunidade?todos=1&limite=200"` (acrescente `&teste=1` para só contar; repita até `pendentes` chegar a 0).
+

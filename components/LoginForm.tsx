@@ -7,7 +7,11 @@ import { createClient } from "@/lib/supabase/client";
 import BrandLogo from "./BrandLogo";
 import { NAME_MAX, PLATFORM_NAME } from "@/lib/brand";
 
-type Mode = "signin" | "signup";
+// "forgot": pede só o e-mail e manda o link para criar uma senha nova.
+type Mode = "signin" | "signup" | "forgot";
+
+/** Tela onde a pessoa escolhe a senha nova, depois de abrir o link do e-mail. */
+export const NEW_PASSWORD_PATH = "/login/nova-senha";
 
 interface LoginFormProps {
   /** Coleções ativas. Com mais de uma, a criação de conta pede para escolher. */
@@ -16,9 +20,11 @@ interface LoginFormProps {
   initialMode?: Mode;
   /** Para onde seguir depois de entrar/cadastrar (já validado no servidor). */
   next: string;
+  /** Aviso inicial (ex: link de e-mail inválido ou vencido). */
+  initialError?: string | null;
 }
 
-export default function LoginForm({ albums, initialMode = "signin", next }: LoginFormProps) {
+export default function LoginForm({ albums, initialMode = "signin", next, initialError = null }: LoginFormProps) {
   const [mode, setMode] = useState<Mode>(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,7 +32,7 @@ export default function LoginForm({ albums, initialMode = "signin", next }: Logi
   const [whatsapp, setWhatsapp] = useState("");
   const [collectionName, setCollectionName] = useState("");
   const [albumId, setAlbumId] = useState(albums.length === 1 ? albums[0].id : "");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(initialError);
   const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -42,6 +48,25 @@ export default function LoginForm({ albums, initialMode = "signin", next }: Logi
     setInfo(null);
     setLoading(true);
     const supabase = createClient();
+
+    if (mode === "forgot") {
+      // O link volta por /auth/callback (ou /auth/confirm), que abre a sessão e segue para a tela de senha nova.
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(NEW_PASSWORD_PATH)}`,
+      });
+      setLoading(false);
+      if (resetError) {
+        setError(
+          resetError.status === 429
+            ? "Muitos pedidos em pouco tempo. Espere alguns minutos e tente de novo."
+            : "Não foi possível enviar o e-mail — tente de novo."
+        );
+        return;
+      }
+      // mesma resposta existindo ou não a conta (não revela quem tem cadastro)
+      setInfo("Se existir uma conta com esse e-mail, enviamos um link para criar uma senha nova. Confira também a caixa de spam.");
+      return;
+    }
 
     if (mode === "signin") {
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
@@ -95,22 +120,29 @@ export default function LoginForm({ albums, initialMode = "signin", next }: Logi
           <span className="title">{PLATFORM_NAME}</span>
         </div>
 
-        <div className="segmented login-mode-toggle">
-          <button
-            type="button"
-            className={`chip ${mode === "signin" ? "active" : ""}`}
-            onClick={() => switchMode("signin")}
-          >
-            Entrar
-          </button>
-          <button
-            type="button"
-            className={`chip ${mode === "signup" ? "active" : ""}`}
-            onClick={() => switchMode("signup")}
-          >
-            Criar conta
-          </button>
-        </div>
+        {mode === "forgot" ? (
+          <div className="login-forgot-head">
+            <strong>Esqueceu a senha?</strong>
+            <span>Informe o e-mail da sua conta. Enviamos um link para você criar uma senha nova.</span>
+          </div>
+        ) : (
+          <div className="segmented login-mode-toggle">
+            <button
+              type="button"
+              className={`chip ${mode === "signin" ? "active" : ""}`}
+              onClick={() => switchMode("signin")}
+            >
+              Entrar
+            </button>
+            <button
+              type="button"
+              className={`chip ${mode === "signup" ? "active" : ""}`}
+              onClick={() => switchMode("signup")}
+            >
+              Criar conta
+            </button>
+          </div>
+        )}
 
         <form onSubmit={onSubmit} className="login-form">
           {mode === "signup" && (
@@ -177,21 +209,33 @@ export default function LoginForm({ albums, initialMode = "signin", next }: Logi
             onChange={(e) => setEmail(e.target.value)}
             className="login-input"
           />
-          <input
-            type="password"
-            required
-            minLength={6}
-            autoComplete={mode === "signin" ? "current-password" : "new-password"}
-            placeholder="Senha"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="login-input"
-          />
+          {mode !== "forgot" && (
+            <input
+              type="password"
+              required
+              minLength={6}
+              autoComplete={mode === "signin" ? "current-password" : "new-password"}
+              placeholder="Senha"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="login-input"
+            />
+          )}
+          {mode === "signin" && (
+            <button type="button" className="login-link" onClick={() => switchMode("forgot")}>
+              Esqueci minha senha
+            </button>
+          )}
           {error && <div className="login-error">{error}</div>}
           {info && <div className="login-info">{info}</div>}
           <button type="submit" className="btn-primary login-submit" disabled={loading}>
-            {loading ? "Aguarde…" : mode === "signin" ? "Entrar" : "Criar conta"}
+            {loading ? "Aguarde…" : mode === "signin" ? "Entrar" : mode === "signup" ? "Criar conta" : "Enviar link"}
           </button>
+          {mode === "forgot" && (
+            <button type="button" className="login-link login-link-center" onClick={() => switchMode("signin")}>
+              ← Voltar para entrar
+            </button>
+          )}
         </form>
       </div>
     </div>

@@ -3480,3 +3480,36 @@ button {
     order: 3;
   }
 }
+
+/* ---------- login: esqueci minha senha ---------- */
+
+.login-link {
+  align-self: flex-end;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text-4);
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.login-link:hover {
+  color: var(--text-1);
+}
+.login-link-center {
+  align-self: center;
+  margin-top: 4px;
+}
+.login-forgot-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-4);
+}
+.login-forgot-head strong {
+  font-size: 16px;
+  color: var(--text-1);
+}

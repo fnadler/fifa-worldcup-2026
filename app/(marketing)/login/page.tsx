@@ -22,7 +22,11 @@ export default async function LoginPage({
     <LoginForm
       initialMode={modo === "cadastro" ? "signup" : "signin"}
       next={safeNext(next)}
-      initialError={authError ? "Esse link não vale mais (já foi usado ou venceu). Peça um novo em “Esqueci minha senha”." : null}
+      initialError={
+        authError
+          ? "Não foi possível abrir esse link aqui: ele já foi usado, venceu ou foi aberto em outro navegador. Se você acabou de confirmar o cadastro, é só entrar com seu e-mail e senha. Para trocar a senha, peça um novo link em “Esqueci minha senha”."
+          : null
+      }
     />
   );
 }

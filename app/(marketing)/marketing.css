@@ -1901,3 +1901,27 @@ html:has(.mk) {
     width: 100%;
   }
 }
+
+/* cadastro: aguardando a confirmação do e-mail */
+.mk-auth .login-confirm p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--gn-text-2);
+}
+.mk-auth .login-confirm p strong {
+  color: var(--gn-text);
+  overflow-wrap: anywhere;
+}
+.mk-auth .login-confirm .login-confirm-hint {
+  font-size: 14px;
+  color: var(--gn-muted);
+}
+.mk-auth .login-confirm .mk-btn-ghost-green {
+  border: 2px solid var(--gn-green);
+  background: transparent;
+  margin-top: 0;
+}
+.mk-auth .login-confirm .login-submit:disabled {
+  cursor: not-allowed;
+}

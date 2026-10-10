@@ -1479,6 +1479,19 @@ html:has(.mk) {
   position: relative;
   z-index: 1;
 }
+.mk-auth-side-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.mk-auth-back-mobile {
+  display: none;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff !important;
+  opacity: 0.92;
+}
 .mk-auth-side-body {
   flex: 1;
   display: flex;
@@ -1705,9 +1718,10 @@ html:has(.mk) {
     padding: 28px 20px 48px;
   }
   .mk-auth-back {
-    position: static;
-    align-self: flex-end;
-    order: 2;
+    display: none;
+  }
+  .mk-auth-back-mobile {
+    display: inline;
   }
   .mk-auth-head h1 {
     font-size: 27px;

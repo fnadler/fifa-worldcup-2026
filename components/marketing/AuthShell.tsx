@@ -58,7 +58,13 @@ export default function AuthShell({
   return (
     <div className="mk-auth">
       <aside className="mk-hero mk-auth-side">
-        <MarketingLogo />
+        <div className="mk-auth-side-top">
+          <MarketingLogo />
+          {/* celular: o "voltar" fica na faixa verde, à direita do logo */}
+          <Link href="/" className="mk-auth-back-mobile">
+            ← Voltar ao site
+          </Link>
+        </div>
         <div className="mk-auth-side-body">
           <Panel variant={variant} />
         </div>

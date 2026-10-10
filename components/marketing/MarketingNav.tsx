@@ -12,6 +12,7 @@ const CTA = {
 };
 
 // Topo da área pública. No celular, o CTA sai do topo e vira um botão fixo no rodapé ao rolar.
+// Hierarquia no desktop: links de texto (Lojas com selo "novo") → Entrar (secundário) → CTA (primário).
 // Na landing mostra as âncoras das seções; nas páginas institucionais,
 // links de volta para as seções da home.
 export default function MarketingNav({ anchorsBase = "" }: { anchorsBase?: string }) {
@@ -24,8 +25,13 @@ export default function MarketingNav({ anchorsBase = "" }: { anchorsBase?: strin
             {l.label}
           </a>
         ))}
+        <Link href={landing.lojas.href} className="mk-nav-lojas">
+          {landing.lojas.label}
+          <em>{landing.lojas.badge}</em>
+        </Link>
       </div>
       <div className="mk-nav-actions">
+        {/* no celular os links somem; as lojas ficam ao lado do logo */}
         <Link href={landing.lojas.href} className="mk-nav-official">
           <span aria-hidden="true">★</span>
           {landing.lojas.label}

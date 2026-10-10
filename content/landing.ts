@@ -11,13 +11,13 @@ export const landing = {
   nav: [
     { href: "#colecoes", label: "Coleções" },
     { href: "#colecao", label: "Como funciona" },
-    { href: "#loja", label: "Loja" },
+    { href: "#loja", label: "Vender" },
     { href: "#planos", label: "Planos" },
     { href: "#faq", label: "Dúvidas" },
   ],
 
   // Link em destaque no topo — a vitrine com todas as lojas (a oficial em destaque).
-  lojas: { href: "/lojas", label: "Lojas" },
+  lojas: { href: "/lojas", label: "Lojas", badge: "novo" },
 
   hero: {
     pill: "Novo: Gold Crumple Edition 2026",

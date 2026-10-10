@@ -9,7 +9,7 @@ import type { DirectoryShop } from "@/lib/shopDirectory";
 
 function Logo({ shop }: { shop: DirectoryShop }) {
   return shop.logoUrl ? (
-    <Image src={shop.logoUrl} alt="" width={160} height={160} unoptimized />
+    <Image src={shop.logoUrl} alt="" width={400} height={400} unoptimized />
   ) : (
     <span>{shop.name.trim().charAt(0).toUpperCase()}</span>
   );
@@ -21,9 +21,9 @@ function ShopCard({ shop, albumId }: { shop: DirectoryShop; albumId: string | nu
     <Link href={shop.path} className={`mk-shop-card${shop.official ? " official" : ""}`}>
       <div className="mk-shop-logo">
         <Logo shop={shop} />
+        {shop.official && <span className="mk-shop-official">★ Loja oficial</span>}
       </div>
       <div className="mk-shop-info">
-        {shop.official && <span className="mk-shop-official">★ Loja oficial</span>}
         <strong>{shop.name}</strong>
         <div className="mk-shop-badges">
           {shop.albums.map((a) => (
@@ -36,9 +36,6 @@ function ShopCard({ shop, albumId }: { shop: DirectoryShop; albumId: string | nu
           {items.toLocaleString("pt-BR")} {items === 1 ? "item único" : "itens únicos"}
         </small>
       </div>
-      <span className="mk-shop-go" aria-hidden="true">
-        Ver loja →
-      </span>
     </Link>
   );
 }
@@ -54,8 +51,6 @@ export default function ShopDirectory({
   // só coleções que alguma loja vende
   const opcoes = collections.filter((c) => shops.some((s) => s.albums.some((a) => a.albumId === c.albumId)));
   const visiveis = albumId ? shops.filter((s) => s.albums.some((a) => a.albumId === albumId)) : shops;
-  const oficial = visiveis.find((s) => s.official);
-  const outras = visiveis.filter((s) => !s.official);
 
   return (
     <>
@@ -69,15 +64,15 @@ export default function ShopDirectory({
           </button>
         ))}
       </div>
-      {oficial && <ShopCard shop={oficial} albumId={albumId} />}
-      {outras.length > 0 ? (
+      {visiveis.length > 0 ? (
         <div className="mk-shop-grid">
-          {outras.map((s) => (
+          {/* a oficial já vem primeiro (listShops) */}
+          {visiveis.map((s) => (
             <ShopCard key={s.path} shop={s} albumId={albumId} />
           ))}
         </div>
       ) : (
-        !oficial && <p className="mk-shop-empty">Nenhuma loja vende essa coleção no momento.</p>
+        <p className="mk-shop-empty">Nenhuma loja vende essa coleção no momento.</p>
       )}
     </>
   );

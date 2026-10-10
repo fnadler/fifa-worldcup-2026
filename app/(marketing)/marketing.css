@@ -1925,3 +1925,18 @@ html:has(.mk) {
 .mk-auth .login-confirm .login-submit:disabled {
   cursor: not-allowed;
 }
+.mk-auth .login-confirm-ok {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--gn-green-50);
+  color: var(--gn-green);
+  font-size: 28px;
+  font-weight: 900;
+}
+.mk-auth .login-confirm a.login-submit {
+  text-align: center;
+  text-decoration: none;
+}

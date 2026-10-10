@@ -4,6 +4,16 @@ import { createServerClient } from "@supabase/ssr";
 // Next.js 16 renamed the middleware.js convention to proxy.js (same mechanics,
 // runs on every request to refresh the Supabase auth cookie).
 export async function proxy(request: NextRequest) {
+  // Link de confirmação que caiu na página inicial com ?code= (o Supabase volta para o Site URL quando
+  // o endereço pedido não está na lista de "Redirect URLs"): segue para quem troca o código pela sessão.
+  const { pathname, searchParams } = request.nextUrl;
+  if (pathname === "/" && searchParams.has("code")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/callback";
+    url.search = `?code=${encodeURIComponent(searchParams.get("code")!)}&next=${encodeURIComponent("/login/confirmado")}`;
+    return NextResponse.redirect(url);
+  }
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(

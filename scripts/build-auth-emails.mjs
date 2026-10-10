@@ -93,7 +93,8 @@ const emails = {
   }),
 
   // Authentication → Emails → Templates → "Confirm signup"
-  // ConfirmationURL: mantém o destino escolhido no cadastro (ex: /assinar) e passa por /auth/callback.
+  // token_hash: o link abre em qualquer aparelho e não depende da lista de "Redirect URLs" do Supabase
+  // (app/auth/confirm). `destino` leva o endereço pedido no cadastro, de onde sai o ?next= (ex: /assinar).
   "supabase-confirmar-cadastro.html": layout({
     subject: "Confirme seu e-mail — GN Coleciona",
     preheader: "Falta só um clique para começar a sua coleção.",
@@ -103,7 +104,7 @@ const emails = {
       "Depois é só marcar as figurinhas e os cards que você já tem: a plataforma mostra na hora o que falta e o que sobra.",
     ],
     button: "Confirmar meu e-mail",
-    url: "{{ .ConfirmationURL }}",
+    url: "{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup&destino={{ .RedirectTo }}",
     note: "Você recebeu este e-mail porque alguém criou uma conta na GN Coleciona com este endereço. Se não foi você, é só ignorar: nenhuma conta será ativada.",
   }),
 };

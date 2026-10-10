@@ -32,7 +32,7 @@
             <table role="presentation" cellpadding="0" cellspacing="0">
               <tr>
                 <td align="center" bgcolor="#fdca04" style="border-radius:999px;">
-                  <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:16px 34px;font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:20px;font-weight:bold;color:#06301a;text-decoration:none;">Confirmar meu e-mail</a>
+                  <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup&destino={{ .RedirectTo }}" style="display:inline-block;padding:16px 34px;font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:20px;font-weight:bold;color:#06301a;text-decoration:none;">Confirmar meu e-mail</a>
                 </td>
               </tr>
             </table>
@@ -41,7 +41,7 @@
         <tr>
           <td align="center" style="padding:0 32px 26px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:20px;color:#5b7566;">
             Se o botão não abrir, copie este endereço e cole no navegador:<br>
-            <a href="{{ .ConfirmationURL }}" style="color:#027a2c;word-break:break-all;">{{ .ConfirmationURL }}</a>
+            <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup&destino={{ .RedirectTo }}" style="color:#027a2c;word-break:break-all;">{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup&destino={{ .RedirectTo }}</a>
           </td>
         </tr>
         <tr>

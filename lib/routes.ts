@@ -1,6 +1,8 @@
 // Rotas principais. A "/" é a landing pública; a área do colecionador fica em /colecao.
 export const COLLECTION_PATH = "/colecao";
 export const SIGNUP_PATH = "/login?modo=cadastro";
+/** Tela "e-mail confirmado", aberta pelo link de confirmação do cadastro. */
+export const SIGNUP_CONFIRMED_PATH = "/login/confirmado";
 
 /**
  * Aceita só caminhos internos em ?next= (evita redirecionar para sites externos). Além de "//" e "/\\",

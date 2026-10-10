@@ -188,7 +188,40 @@ export default function Header({
             ×
           </button>
 
-          <div className="controls-row">
+          {/* linha de controles e ações: como ver e marcar (esquerda) · exportar e lojas (direita) */}
+          <div className="controls-row controls-row-2">
+            <div className="controls-group">
+            <CollectionSwitcher collections={collections} variant="button" />
+            <div className="segmented view-segment">
+              {VIEW_OPTIONS.map((v) => (
+                <button
+                  key={v.value}
+                  type="button"
+                  className={`chip ${view === v.value ? "active" : ""}`}
+                  onClick={() => onView(v.value)}
+                >
+                  {v.label}
+                </button>
+              ))}
+            </div>
+            {modoSegment("modo-desktop")}
+            </div>
+            {totais("totals-desktop")}
+            <div className="controls-group controls-group-end">
+            <button type="button" className="icon-button export-button" data-tip="Exportar" aria-label="Exportar lista" onClick={onAbrirTrocas}>
+              <Icon name="export" />
+              <span>Exportar lista</span>
+            </button>
+            {onAbrirLojas && (
+              <button type="button" className="btn-lojas" onClick={onAbrirLojas}>
+                Onde comprar as que faltam
+              </button>
+            )}
+            </div>
+          </div>
+
+          {/* linha de filtros (a última) */}
+          <div className="controls-row controls-row-filters">
             <input
               type="search"
               placeholder={catalog.searchPlaceholder}
@@ -225,37 +258,6 @@ export default function Header({
               ))}
             </div>
 
-          </div>
-
-          {/* linha de controles e ações: como ver e marcar (esquerda) · exportar e lojas (direita) */}
-          <div className="controls-row controls-row-2">
-            <div className="controls-group">
-            <div className="segmented view-segment">
-              {VIEW_OPTIONS.map((v) => (
-                <button
-                  key={v.value}
-                  type="button"
-                  className={`chip ${view === v.value ? "active" : ""}`}
-                  onClick={() => onView(v.value)}
-                >
-                  {v.label}
-                </button>
-              ))}
-            </div>
-            {modoSegment("modo-desktop")}
-            </div>
-            {totais("totals-desktop")}
-            <div className="controls-group controls-group-end">
-            <button type="button" className="icon-button export-button" data-tip="Exportar" aria-label="Exportar lista" onClick={onAbrirTrocas}>
-              <Icon name="export" />
-              <span>Exportar lista</span>
-            </button>
-            {onAbrirLojas && (
-              <button type="button" className="btn-lojas" onClick={onAbrirLojas}>
-                Onde comprar as que faltam
-              </button>
-            )}
-            </div>
           </div>
 
           <FiltersFooter

@@ -6,7 +6,8 @@ import { useCatalog } from "@/lib/CatalogContext";
 import { collectionTitleOf, type UserCollection } from "@/lib/userCollections";
 
 // Acima do título: a coleção aberta (ex: "Adrenalyn XL ▾") e a troca para as outras da pessoa.
-export default function CollectionSwitcher({ collections }: { collections: UserCollection[] }) {
+// `variant="button"`: o mesmo menu num botão da linha de controles (desktop).
+export default function CollectionSwitcher({ collections, variant }: { collections: UserCollection[]; variant?: "button" }) {
   const catalog = useCatalog();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -28,16 +29,16 @@ export default function CollectionSwitcher({ collections }: { collections: UserC
   }, [open]);
 
   return (
-    <div className="collection-switcher" ref={rootRef}>
+    <div className={`collection-switcher${variant === "button" ? " collection-switcher-row" : ""}`} ref={rootRef}>
       <button
         type="button"
-        className="kicker collection-switcher-toggle"
+        className={variant === "button" ? "btn-ghost collection-switcher-button" : "kicker collection-switcher-toggle"}
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-haspopup="menu"
         title="Trocar de coleção"
       >
-        {catalog.name} <span className="collection-switcher-caret">▾</span>
+        {variant === "button" ? catalog.shortName : catalog.name} <span className="collection-switcher-caret">▾</span>
       </button>
       {open && (
         <div className="user-menu collection-switcher-menu" role="menu">

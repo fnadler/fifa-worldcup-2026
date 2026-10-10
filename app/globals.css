@@ -3220,9 +3220,22 @@ button {
 .modo-desktop {
   order: 0; /* .modo-segment tem order próprio para a linha do título (celular) */
 }
-/* linha de controles/ações um pouco afastada da linha de filtros */
+/* linha de controles/ações (vem primeiro), um pouco afastada da linha de filtros abaixo */
 .controls-row-2 {
-  margin-top: 10px;
+  margin: 4px 0 10px;
+}
+/* seletor de coleção como botão da linha de controles */
+.collection-switcher-row {
+  grid-column: auto;
+  align-self: auto;
+}
+.collection-switcher-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--gold);
+  border-color: var(--border-4);
+  white-space: nowrap;
 }
 .export-button {
   position: relative;
@@ -3278,7 +3291,17 @@ button {
     display: none;
   }
   .filters-panel.is-open .controls-row-2 {
-    margin-top: 0;
+    margin: 0;
+    order: 2; /* na gaveta, os filtros vêm antes das ações */
+  }
+  .filters-panel.is-open .controls-row-filters {
+    order: 1;
+  }
+  .filters-panel.is-open .filters-footer {
+    order: 3;
+  }
+  .collection-switcher-row {
+    display: none; /* no celular a troca fica acima do título */
   }
   .totals-desktop {
     display: none;
@@ -3310,7 +3333,7 @@ button {
 
 @media (min-width: 701px) {
   /* linha de filtros: busca larga e respiro entre os blocos (busca · categorias · grupos · status) */
-  .controls-row:not(.controls-row-2) {
+  .controls-row-filters {
     gap: 10px 22px;
   }
   .controls-row .search-input {

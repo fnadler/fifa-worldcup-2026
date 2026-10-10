@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useCatalog } from "@/lib/CatalogContext";
 
 interface GroupMenuProps {
@@ -13,6 +13,22 @@ export default function GroupMenu({ onSelect, onlyIds }: GroupMenuProps) {
   const catalog = useCatalog();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  // Desktop: o painel (largo, posicionado em relação ao cabeçalho) abre logo abaixo do botão, alinhado
+  // a ele até onde couber na tela. No celular vale o CSS.
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    const toggle = toggleRef.current;
+    if (!open || !panel || !toggle || window.innerWidth <= 700) return;
+    const parent = (panel.offsetParent as HTMLElement | null)?.getBoundingClientRect();
+    if (!parent) return;
+    const btn = toggle.getBoundingClientRect();
+    const left = Math.max(18, Math.min(btn.left - parent.left, parent.width - panel.offsetWidth - 18));
+    panel.style.left = `${left}px`;
+    panel.style.top = `${btn.bottom - parent.top + 8}px`;
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -48,12 +64,13 @@ export default function GroupMenu({ onSelect, onlyIds }: GroupMenuProps) {
         className={`btn-ghost group-menu-toggle ${open ? "is-open" : ""}`}
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
+        ref={toggleRef}
       >
         Grupos <span className="group-menu-caret">▾</span>
       </button>
 
       {open && (
-        <div className="group-menu-panel" role="menu">
+        <div className="group-menu-panel" role="menu" ref={panelRef}>
           {sections.map((s) => (
             <div key={s.title} className={`group-menu-section group-menu-${s.variant}`}>
               <span className="group-menu-title">{s.title}</span>

@@ -33,7 +33,8 @@ export async function POST(request: Request) {
   const { error } = await supabase.from("collection_shares").insert({ token, user_id: user.id, album_id: albumId });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[share-link]", user.id, error);
+    return NextResponse.json({ error: "Não foi possível criar o link — tente de novo." }, { status: 500 });
   }
 
   return NextResponse.json({ token });

@@ -1,3 +1,4 @@
+import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { sendCommunityInviteTo, sweepCommunityInvites } from "@/lib/communityInvite";
 
@@ -11,9 +12,16 @@ import { sendCommunityInviteTo, sweepCommunityInvites } from "@/lib/communityInv
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
+// comparação em tempo constante: não revela, pelo tempo de resposta, quanto do segredo já está certo
+function mesmoTexto(a: string, b: string): boolean {
+  const x = Buffer.from(a);
+  const y = Buffer.from(b);
+  return x.length === y.length && timingSafeEqual(x, y);
+}
+
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET;
-  if (!secret || request.headers.get("authorization") !== `Bearer ${secret}`) {
+  if (!secret || !mesmoTexto(request.headers.get("authorization") ?? "", `Bearer ${secret}`)) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 

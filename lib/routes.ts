@@ -2,9 +2,14 @@
 export const COLLECTION_PATH = "/colecao";
 export const SIGNUP_PATH = "/login?modo=cadastro";
 
-/** Aceita só caminhos internos em ?next= (evita redirecionar para sites externos). */
+/**
+ * Aceita só caminhos internos em ?next= (evita redirecionar para sites externos). Além de "//" e "/\\",
+ * recusa barra invertida e caracteres de controle em qualquer posição: o navegador descarta tab e quebra
+ * de linha ao montar o endereço, então "/<tab>/site.com" viraria "//site.com".
+ */
 export function safeNext(next: string | null | undefined, fallback = COLLECTION_PATH): string {
-  if (!next || !next.startsWith("/") || next.startsWith("//") || next.startsWith("/\\")) return fallback;
+  if (!next || !next.startsWith("/") || next.startsWith("//")) return fallback;
+  if (/[\\\u0000-\u001f\u007f]/.test(next)) return fallback;
   return next;
 }
 

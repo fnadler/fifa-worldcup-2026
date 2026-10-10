@@ -3014,3 +3014,129 @@ button {
     overflow-x: auto;
   }
 }
+
+/* ---------- lojas com o que falta (coleção) ---------- */
+
+.modal-card.match-card {
+  max-height: 88vh;
+}
+.match-card .modal-header {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border-1);
+}
+.match-body {
+  padding: 14px 18px 18px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.match-note {
+  margin: 8px 0;
+  color: var(--text-4);
+  font-size: 14px;
+}
+.match-shop {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--border-2);
+  border-radius: 14px;
+  background: var(--total-card);
+}
+.match-logo {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--cell-empty);
+  display: grid;
+  place-items: center;
+}
+.match-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.match-logo span {
+  font-family: var(--font-bebas-neue);
+  font-size: 30px;
+  color: var(--accent);
+}
+.match-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.match-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.match-name strong {
+  font-size: 16px;
+  color: var(--text-1);
+}
+.match-name em {
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: var(--on-gold);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.match-album {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: inherit;
+  text-decoration: none;
+}
+.match-album-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.match-album-head b {
+  font-family: var(--font-barlow-condensed);
+  font-size: 18px;
+  color: var(--gold);
+}
+.match-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--cell-empty);
+  overflow: hidden;
+}
+.match-bar div {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+}
+.match-album small {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--text-5);
+}
+.match-album small i {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--positive);
+}
+.match-album:hover small i {
+  text-decoration: underline;
+}

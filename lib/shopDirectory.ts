@@ -27,7 +27,14 @@ export interface DirectoryShop {
   items: number;
 }
 
-export async function listShops(): Promise<DirectoryShop[]> {
+/** Loja ativa com os códigos à venda (repetidas) de cada coleção — base de /lojas e da busca por faltantes. */
+export interface ActiveShop extends Omit<DirectoryShop, "albums" | "items"> {
+  userId: string;
+  /** Coleções à venda → códigos com repetida. */
+  codes: Map<string, string[]>;
+}
+
+export async function loadActiveShops(): Promise<ActiveShop[]> {
   const admin = createAdminClient();
   const { data: shops } = await admin
     .from("shops")
@@ -52,37 +59,53 @@ export async function listShops(): Promise<DirectoryShop[]> {
       .map((e) => e.user_id)
   );
 
-  // itens únicos por loja e coleção
-  const count = new Map<string, Map<string, number>>();
+  // códigos com repetida por loja e coleção
+  const byShop = new Map<string, Map<string, string[]>>();
   for (const r of rows ?? []) {
     const albumId = lookupCode(r.code)?.catalog.id;
     if (!albumId) continue;
-    const m = count.get(r.user_id) ?? new Map<string, number>();
-    m.set(albumId, (m.get(albumId) ?? 0) + 1);
-    count.set(r.user_id, m);
+    const m = byShop.get(r.user_id) ?? new Map<string, string[]>();
+    const list = m.get(albumId) ?? [];
+    list.push(r.code);
+    m.set(albumId, list);
+    byShop.set(r.user_id, m);
   }
 
-  const out: DirectoryShop[] = [];
+  const out: ActiveShop[] = [];
   for (const s of shops) {
     if (!ativos.has(s.user_id)) continue;
     const config = shopAlbumsFromRows(((albumRows ?? []) as (ShopAlbumRow & { user_id: string })[]).filter((r) => r.user_id === s.user_id));
-    const albums = config
-      .filter((a) => a.enabled)
-      .map((a) => {
-        const c = getCatalog(a.albumId);
-        return { albumId: c.id, slug: c.slug, name: c.shortName, items: count.get(s.user_id)?.get(c.id) ?? 0 };
-      });
-    if (!albums.length) continue;
+    const aVenda = config.filter((a) => a.enabled);
+    if (!aVenda.length) continue;
     out.push({
+      userId: s.user_id,
       path: shopPath(s),
       slug: s.slug,
       name: s.seller_name || DEFAULT_SHOP_NAME,
       logoUrl: s.logo_url,
       official: s.slug === OFFICIAL_SHOP_SLUG,
-      albums,
-      items: albums.reduce((n, a) => n + a.items, 0),
+      codes: new Map(aVenda.map((a) => [a.albumId, byShop.get(s.user_id)?.get(a.albumId) ?? []])),
     });
   }
+  return out;
+}
+
+export async function listShops(): Promise<DirectoryShop[]> {
+  const out = (await loadActiveShops()).map((shop): DirectoryShop => {
+    const albums = [...shop.codes].map(([albumId, list]) => {
+      const c = getCatalog(albumId);
+      return { albumId: c.id, slug: c.slug, name: c.shortName, items: list.length };
+    });
+    return {
+      path: shop.path,
+      slug: shop.slug,
+      name: shop.name,
+      logoUrl: shop.logoUrl,
+      official: shop.official,
+      albums,
+      items: albums.reduce((n, a) => n + a.items, 0),
+    };
+  });
   // loja oficial primeiro; depois as com mais itens
   return out.sort((a, b) => Number(b.official) - Number(a.official) || b.items - a.items || a.name.localeCompare(b.name));
 }

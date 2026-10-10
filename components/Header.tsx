@@ -28,6 +28,8 @@ interface HeaderProps {
   modo: ModoClique;
   onModo: (v: ModoClique) => void;
   onAbrirTrocas: () => void;
+  /** Lojas com o que falta — só quando a pessoa já tem algum item (sem nada, tudo "falta"). */
+  onAbrirLojas?: () => void;
   onExportar: () => void;
   onImportar: () => void;
   onAnchorClick: (id: string) => void;
@@ -81,6 +83,7 @@ export default function Header({
   modo,
   onModo,
   onAbrirTrocas,
+  onAbrirLojas,
   onExportar,
   onImportar,
   onAnchorClick,
@@ -230,6 +233,11 @@ export default function Header({
             <button type="button" className="btn-primary" onClick={onAbrirTrocas}>
               Minhas repetidas
             </button>
+            {onAbrirLojas && (
+              <button type="button" className="btn-ghost btn-lojas" onClick={onAbrirLojas}>
+                Onde comprar as que faltam
+              </button>
+            )}
             <GroupMenu onSelect={anchorClickAndClose} />
           </div>
 

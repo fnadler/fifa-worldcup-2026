@@ -15,6 +15,7 @@ import LegendBar from "./LegendBar";
 import AlbumBlockCard from "./AlbumBlockCard";
 import TrocasModal from "./TrocasModal";
 import BackupModal from "./BackupModal";
+import ShopMatchModal from "./ShopMatchModal";
 
 interface AlbumAppProps {
   initialUser: AppUser;
@@ -38,6 +39,7 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
   const [view, setView] = useViewMode("copa2026-album-view");
   const [busca, setBusca] = useState("");
   const [trocasAberto, setTrocasAberto] = useState(false);
+  const [lojasAberto, setLojasAberto] = useState(false);
   const [backupModo, setBackupModo] = useState<"export" | "import" | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
@@ -162,6 +164,8 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
     [catalog, qtd, tipo, statusFiltro, busca]
   );
 
+  const temItens = useMemo(() => catalog.blocks.some((b) => b.codes.some((c) => (qtd[c] ?? 0) > 0)), [catalog, qtd]);
+
   function scrollToBlock(id: string) {
     const el = document.getElementById(`bl-${id}`);
     if (!el || !headerRef.current) return;
@@ -190,6 +194,7 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
         modo={modo}
         onModo={setModo}
         onAbrirTrocas={() => setTrocasAberto(true)}
+        onAbrirLojas={temItens && derived.totFaltam > 0 ? () => setLojasAberto(true) : undefined}
         onExportar={() => setBackupModo("export")}
         onImportar={() => setBackupModo("import")}
         onAnchorClick={scrollToBlock}
@@ -229,6 +234,8 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
           onClose={() => setTrocasAberto(false)}
         />
       )}
+
+      {lojasAberto && <ShopMatchModal onClose={() => setLojasAberto(false)} />}
 
       {backupModo && (
         <BackupModal

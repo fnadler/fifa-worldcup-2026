@@ -4,7 +4,7 @@ import { useState, type RefObject } from "react";
 import { VIEW_OPTIONS } from "@/lib/useViewMode";
 import { useCatalog } from "@/lib/CatalogContext";
 import type { ViewMode, AppUser, ModoClique, StatusFiltro, TipoFiltro } from "@/lib/types";
-import { CopyLinkButton, FiltersFooter, HeaderActions, NavSwitch, ViewToggleButton } from "./HeaderIcons";
+import { CopyLinkButton, FiltersFooter, HeaderActions, Icon, NavSwitch, ViewToggleButton } from "./HeaderIcons";
 import GroupMenu from "./GroupMenu";
 import UserMenu from "./UserMenu";
 import BrandLogo from "./BrandLogo";
@@ -99,6 +99,17 @@ export default function Header({
   const tipos = catalog.filters;
   const [menuAberto, setMenuAberto] = useState(false);
 
+  // Somar/Tirar: no celular fica na linha do título; no desktop, à direita da linha de filtros.
+  const modoSegment = (extra: string) => (
+    <div className={`segmented modo-segment ${extra}`}>
+      {MODOS.map((m) => (
+        <button key={m.value} type="button" className={`chip ${modo === m.value ? "active" : ""}`} onClick={() => onModo(m.value)}>
+          {m.label}
+        </button>
+      ))}
+    </div>
+  );
+
   function anchorClickAndClose(id: string) {
     setMenuAberto(false);
     onAnchorClick(id);
@@ -136,18 +147,7 @@ export default function Header({
             </div>
           </div>
 
-          <div className="segmented modo-segment">
-            {MODOS.map((m) => (
-              <button
-                key={m.value}
-                type="button"
-                className={`chip ${modo === m.value ? "active" : ""}`}
-                onClick={() => onModo(m.value)}
-              >
-                {m.label}
-              </button>
-            ))}
-          </div>
+          {modoSegment("modo-mobile")}
 
           <ViewToggleButton view={view} onChange={onView} />
 
@@ -204,18 +204,7 @@ export default function Header({
               ))}
             </div>
 
-            <div className="segmented view-segment">
-              {VIEW_OPTIONS.map((v) => (
-                <button
-                  key={v.value}
-                  type="button"
-                  className={`chip ${view === v.value ? "active" : ""}`}
-                  onClick={() => onView(v.value)}
-                >
-                  {v.label}
-                </button>
-              ))}
-            </div>
+            <GroupMenu onSelect={anchorClickAndClose} />
 
             <div className="segmented">
               {STATUSES.map((s) => (
@@ -230,15 +219,32 @@ export default function Header({
               ))}
             </div>
 
-            <button type="button" className="btn-primary" onClick={onAbrirTrocas}>
-              Minhas repetidas
+            <button type="button" className="icon-button export-button" data-tip="Exportar" aria-label="Exportar lista" onClick={onAbrirTrocas}>
+              <Icon name="export" />
+              <span>Exportar lista</span>
             </button>
+
+            {modoSegment("modo-desktop")}
+          </div>
+
+          <div className="controls-row controls-row-2">
+            <div className="segmented view-segment">
+              {VIEW_OPTIONS.map((v) => (
+                <button
+                  key={v.value}
+                  type="button"
+                  className={`chip ${view === v.value ? "active" : ""}`}
+                  onClick={() => onView(v.value)}
+                >
+                  {v.label}
+                </button>
+              ))}
+            </div>
             {onAbrirLojas && (
               <button type="button" className="btn-lojas" onClick={onAbrirLojas}>
                 Onde comprar as que faltam
               </button>
             )}
-            <GroupMenu onSelect={anchorClickAndClose} />
           </div>
 
           <FiltersFooter

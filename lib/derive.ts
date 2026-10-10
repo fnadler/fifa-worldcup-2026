@@ -9,6 +9,8 @@ export interface DerivedBoard {
   totFaltam: number;
   visibleBlocks: VisibleBlock[];
   listaTrocas: string;
+  /** Faltantes em texto, para mandar no grupo (blocos fora do total só entram se a pessoa já tiver algum item deles). */
+  listaFaltantes: string;
 }
 
 // Busca por código (BRA9) ou, quando houver, pelo nome da figurinha (ex: "messi"), sem acento.
@@ -97,6 +99,21 @@ export function deriveBoard(
     ? `REPETIDAS — ${catalog.shortName.toUpperCase()}\n\n${linhas.join("\n")}`
     : "Nenhuma repetida registrada ainda.";
 
+  const faltas: string[] = [];
+  blocks.forEach((b) => {
+    if (!catalog.countsToward(b) && !b.codes.some((c) => (qtd[c] ?? 0) > 0)) return;
+    const itens = b.codes
+      .filter((c) => (qtd[c] ?? 0) === 0)
+      .map((c) => {
+        const nome = stickerName(c);
+        return nome ? `${displayCode(c)} ${nome}` : displayCode(c);
+      });
+    if (itens.length) faltas.push(`${b.nome}: ${itens.join(", ")}`);
+  });
+  const listaFaltantes = faltas.length
+    ? `FALTANTES — ${catalog.shortName.toUpperCase()}\n\n${faltas.join("\n")}`
+    : "Não falta nada — coleção completa!";
+
   return {
     totColadas,
     totRepetidas,
@@ -104,5 +121,6 @@ export function deriveBoard(
     totFaltam: total - totColadas,
     visibleBlocks,
     listaTrocas,
+    listaFaltantes,
   };
 }

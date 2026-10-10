@@ -13,7 +13,7 @@ import type { AppUser, ModoClique, Qtd, StatusFiltro, SyncStatus, TipoFiltro } f
 import Header from "./Header";
 import LegendBar from "./LegendBar";
 import AlbumBlockCard from "./AlbumBlockCard";
-import TrocasModal from "./TrocasModal";
+import ExportModal from "./ExportModal";
 import BackupModal from "./BackupModal";
 import ShopMatchModal from "./ShopMatchModal";
 
@@ -228,11 +228,7 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
       </div>
 
       {trocasAberto && (
-        <TrocasModal
-          lista={derived.listaTrocas}
-          totRepetidas={derived.totRepetidas}
-          onClose={() => setTrocasAberto(false)}
-        />
+        <ExportModal repetidas={derived.listaTrocas} faltantes={derived.listaFaltantes} onClose={() => setTrocasAberto(false)} />
       )}
 
       {lojasAberto && <ShopMatchModal onClose={() => setLojasAberto(false)} />}

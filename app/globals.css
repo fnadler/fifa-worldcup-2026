@@ -3022,8 +3022,9 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--accent);
-  color: var(--on-accent);
+  margin-left: auto;
+  background: var(--gold);
+  color: var(--on-gold);
   border: none;
   border-radius: 9px;
   padding: 10px 14px;
@@ -3033,17 +3034,17 @@ button {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
-  box-shadow: 0 0 0 3px rgba(0, 196, 106, 0.22);
+  box-shadow: 0 0 0 3px rgba(255, 207, 77, 0.22);
 }
 .btn-lojas:hover {
-  filter: brightness(1.08);
+  background: var(--gold-hover);
 }
 .btn-lojas::before {
   content: "";
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--on-accent);
+  background: var(--on-gold);
   animation: lojas-pulse 1.6s ease-in-out infinite;
 }
 @keyframes lojas-pulse {
@@ -3205,4 +3206,93 @@ button {
 }
 .match-row.main .match-bar div {
   background: var(--accent);
+}
+
+/* ---------- coleção: linha de filtros e exportar ---------- */
+
+/* desktop: Somar/Tirar vai para a direita da linha de filtros (no celular fica na linha do título) */
+.modo-mobile {
+  display: none;
+}
+.modo-desktop {
+  margin-left: auto;
+}
+.export-button {
+  position: relative;
+  flex: none;
+}
+.export-button > span {
+  display: none; /* rótulo só na gaveta do celular */
+}
+/* tooltip */
+.export-button[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translate(-50%, -4px);
+  background: var(--text-1);
+  color: var(--bg);
+  font-family: var(--font-barlow-condensed);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 9px;
+  border-radius: 7px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 45;
+}
+.export-button[data-tip]:hover::after,
+.export-button[data-tip]:focus-visible::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.export-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--border-1);
+}
+.export-actions a.btn-primary {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+@media (max-width: 700px) {
+  .modo-mobile {
+    display: flex;
+  }
+  .modo-desktop {
+    display: none;
+  }
+  .filters-panel.is-open .controls-row-2 {
+    margin-top: 0;
+  }
+  .btn-lojas {
+    margin-left: 0;
+    justify-content: center;
+  }
+  /* na gaveta, o exportar vira um botão de largura inteira com rótulo */
+  .export-button {
+    width: 100% !important;
+    height: 40px !important;
+    border-radius: 9px;
+    gap: 8px;
+  }
+  .export-button > span {
+    display: inline;
+    font-family: var(--font-barlow-condensed);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .export-button[data-tip]::after {
+    display: none;
+  }
 }

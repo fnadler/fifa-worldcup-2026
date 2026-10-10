@@ -1732,3 +1732,172 @@ html:has(.mk) {
     padding-bottom: 0; /* aqui não há CTA fixo no rodapé */
   }
 }
+
+/* ---------- boas-vindas: escolher as coleções (/colecoes/comecar) ---------- */
+
+.mk-onb {
+  min-height: 100vh;
+  background: var(--gn-bg);
+}
+.mk-onb-top {
+  padding: 10px 24px;
+}
+.mk-onb-top > * {
+  position: relative;
+  z-index: 1;
+}
+.mk-onb-main {
+  padding-block: 44px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  max-width: 1040px;
+}
+.mk-onb-main .mk-section-head p {
+  font-size: 18px;
+  color: var(--gn-text-2);
+}
+.mk-onb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 20px;
+}
+.mk-onb-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 14px 18px;
+  border-radius: 20px;
+  border: 2px solid var(--gn-line);
+  background: var(--gn-surface);
+  color: var(--gn-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+.mk-onb-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(6, 48, 26, 0.12);
+}
+.mk-onb-card.on {
+  border-color: var(--gn-green);
+  box-shadow: 0 0 0 4px var(--gn-green-50);
+}
+.mk-onb-check {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  z-index: 1;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border: 2px solid var(--gn-line);
+  color: transparent;
+  font-weight: 900;
+  font-size: 15px;
+}
+.mk-onb-card.on .mk-onb-check {
+  background: var(--gn-green);
+  border-color: var(--gn-green);
+  color: #fff;
+}
+.mk-onb-cover {
+  display: block;
+  aspect-ratio: 3 / 4;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--gn-bg);
+  margin-bottom: 8px;
+}
+.mk-onb-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* sem capa: uma figurinha da coleção, inteira, sobre um fundo */
+.mk-onb-cover.is-fallback {
+  background: linear-gradient(160deg, #f6d86b, #c9961a);
+  display: grid;
+  place-items: center;
+}
+.mk-onb-cover.is-fallback img {
+  width: 72%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+}
+.mk-onb-card strong {
+  font-family: var(--font-nunito), sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+  line-height: 1.15;
+}
+.mk-onb-card small {
+  font-size: 14px;
+  color: var(--gn-muted);
+  font-weight: 600;
+}
+.mk-onb-foot {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.mk-onb-name {
+  flex: 1 1 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gn-text-2);
+}
+.mk-onb .login-input {
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid var(--gn-line);
+  border-radius: 14px;
+  padding: 14px 16px;
+  color: var(--gn-text);
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: 16px;
+  outline: none;
+}
+.mk-onb .login-input:focus {
+  border-color: var(--gn-green);
+  box-shadow: 0 0 0 3px var(--gn-green-50);
+}
+.mk-onb-foot .mk-btn {
+  border: none;
+  cursor: pointer;
+}
+.mk-onb-foot .mk-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.mk-onb .login-error {
+  color: #a3261a;
+  background: #fdecea;
+  font-size: 14px;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+@media (max-width: 700px) {
+  .mk:has(.mk-onb) {
+    padding-bottom: 0;
+  }
+  .mk-onb-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .mk-onb-foot .mk-btn {
+    width: 100%;
+  }
+}

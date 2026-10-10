@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { ONBOARDING_PATH, needsOnboarding } from "@/lib/onboarding";
 import { profileFromMetadata } from "@/lib/profile";
 import { LAST_COLLECTION_COOKIE, ensureDefaultCollection, userCollections } from "@/lib/userCollections";
 
@@ -14,6 +15,8 @@ export default async function ColecaoIndex() {
   } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
+  // conta nova: primeiro escolhe as coleções
+  if (needsOnboarding(user.user_metadata)) redirect(ONBOARDING_PATH);
 
   let collections = await userCollections(supabase, user.id);
   if (!collections.length) {

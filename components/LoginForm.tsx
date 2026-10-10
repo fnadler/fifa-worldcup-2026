@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { parseProfileInput } from "@/lib/profile";
+import { parseAccountInput } from "@/lib/profile";
 import { maskPhoneBR } from "@/lib/phone";
 import { createClient } from "@/lib/supabase/client";
 import AuthShell from "./marketing/AuthShell";
-import { NAME_MAX } from "@/lib/brand";
 
 // "forgot": pede só o e-mail e manda o link para criar uma senha nova.
 type Mode = "signin" | "signup" | "forgot";
@@ -20,8 +19,6 @@ const HEAD: Record<Mode, { title: string; subtitle: string }> = {
 export const NEW_PASSWORD_PATH = "/login/nova-senha";
 
 interface LoginFormProps {
-  /** Coleções ativas. Com mais de uma, a criação de conta pede para escolher. */
-  albums: { id: string; name: string }[];
   /** Aba inicial: /login?modo=cadastro abre direto em "Criar conta". */
   initialMode?: Mode;
   /** Para onde seguir depois de entrar/cadastrar (já validado no servidor). */
@@ -30,14 +27,12 @@ interface LoginFormProps {
   initialError?: string | null;
 }
 
-export default function LoginForm({ albums, initialMode = "signin", next, initialError = null }: LoginFormProps) {
+export default function LoginForm({ initialMode = "signin", next, initialError = null }: LoginFormProps) {
   const [mode, setMode] = useState<Mode>(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
-  const [collectionName, setCollectionName] = useState("");
-  const [albumId, setAlbumId] = useState(albums.length === 1 ? albums[0].id : "");
   const [error, setError] = useState<string | null>(initialError);
   const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -85,12 +80,7 @@ export default function LoginForm({ albums, initialMode = "signin", next, initia
       return;
     }
 
-    if (albums.length > 1 && !albumId) {
-      setLoading(false);
-      setError("Escolha qual coleção você vai montar.");
-      return;
-    }
-    const profile = parseProfileInput(fullName, whatsapp, collectionName);
+    const profile = parseAccountInput(fullName, whatsapp);
     if ("error" in profile) {
       setLoading(false);
       setError(profile.error);
@@ -102,7 +92,8 @@ export default function LoginForm({ albums, initialMode = "signin", next, initia
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
-        data: { ...profile.data, ...(albumId ? { album_id: albumId } : {}) }, // vai para o user_metadata
+        // user_metadata; as coleções são escolhidas depois de confirmar o e-mail (lib/onboarding.ts)
+        data: { ...profile.data, onboarding: "pending" },
       },
     });
     setLoading(false);
@@ -141,24 +132,6 @@ export default function LoginForm({ albums, initialMode = "signin", next, initia
         <form onSubmit={onSubmit} className="login-form">
           {mode === "signup" && (
             <>
-              {albums.length > 1 && (
-                <select
-                  required
-                  className="login-input login-select"
-                  value={albumId}
-                  onChange={(e) => setAlbumId(e.target.value)}
-                  aria-label="Coleção que você vai montar"
-                >
-                  <option value="" disabled>
-                    Qual coleção você vai montar?
-                  </option>
-                  {albums.map((a) => (
-                    <option key={a.id} value={a.id}>
-                      {a.name}
-                    </option>
-                  ))}
-                </select>
-              )}
               <input
                 required
                 autoComplete="name"
@@ -179,19 +152,6 @@ export default function LoginForm({ albums, initialMode = "signin", next, initia
                 onChange={(e) => setWhatsapp(maskPhoneBR(e.target.value))}
                 className="login-input"
               />
-              <div className="field-with-counter">
-                <input
-                  required
-                  placeholder="Nome da sua coleção (ex: Coleção do João)"
-                  maxLength={NAME_MAX}
-                  value={collectionName}
-                  onChange={(e) => setCollectionName(e.target.value)}
-                  className="login-input"
-                />
-                <span className="field-counter">
-                  {collectionName.length}/{NAME_MAX}
-                </span>
-              </div>
             </>
           )}
           <input

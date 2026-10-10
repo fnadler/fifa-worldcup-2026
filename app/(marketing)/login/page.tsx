@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import { activeAlbums } from "@/lib/albums";
 import { safeNext } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import LoginForm from "@/components/LoginForm";
@@ -21,7 +20,6 @@ export default async function LoginPage({
 
   return (
     <LoginForm
-      albums={await activeAlbums(supabase)}
       initialMode={modo === "cadastro" ? "signup" : "signin"}
       next={safeNext(next)}
       initialError={authError ? "Esse link não vale mais (já foi usado ou venceu). Peça um novo em “Esqueci minha senha”." : null}

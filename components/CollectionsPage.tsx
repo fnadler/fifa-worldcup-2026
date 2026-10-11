@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { DEFAULT_COLLECTION_NAME } from "@/lib/brand";
+import { getCatalog } from "@/lib/catalog";
+import { forgetLocalCodes } from "@/lib/localBackup";
 import AccountHeader from "./AccountHeader";
 
 interface Option {
@@ -13,9 +15,14 @@ interface Option {
   slug: string;
   name: string;
   total: number;
+  itemSingular: string;
   itemPlural: string;
   /** Capa do álbum (public/brand/albums); null = sem capa. */
   cover: string | null;
+  /** Itens que a pessoa marcou nesta coleção. */
+  marked: number;
+  /** A coleção está à venda na loja da pessoa. */
+  inShop: boolean;
   /** Nome que a pessoa deu, "" se tem sem nome, null se ainda não tem a coleção. */
   owned: string | null;
 }
@@ -34,6 +41,9 @@ export default function CollectionsPage({ userId, email, shop, highlight, nextPo
   const router = useRouter();
   const [adding, setAdding] = useState<string | null>(null);
   const [erro, setErro] = useState<string | null>(null);
+  const [removendo, setRemovendo] = useState<Option | null>(null);
+  const [apagando, setApagando] = useState(false);
+  const [erroRemover, setErroRemover] = useState<string | null>(null);
 
   async function adicionar(o: Option) {
     setErro(null);
@@ -49,6 +59,25 @@ export default function CollectionsPage({ userId, email, shop, highlight, nextPo
       return setErro("Não foi possível adicionar a coleção — tente de novo.");
     }
     router.push(`/colecao/${o.slug}`);
+  }
+
+  async function remover(o: Option) {
+    setErroRemover(null);
+    setApagando(true);
+    const res = await fetch("/api/colecoes/remover", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ albumId: o.albumId }),
+    }).catch(() => null);
+    setApagando(false);
+    if (!res?.ok) {
+      const data = (await res?.json().catch(() => null)) as { error?: string } | null;
+      return setErroRemover(data?.error ?? "Não foi possível remover a coleção — tente de novo.");
+    }
+    // limpa também a cópia local do navegador, para as marcações não voltarem
+    forgetLocalCodes(userId, getCatalog(o.albumId).blocks.flatMap((b) => b.codes));
+    setRemovendo(null);
+    router.refresh();
   }
 
   // volta para de onde a pessoa veio; aberta direto (sem histórico), vai para a coleção
@@ -94,9 +123,21 @@ export default function CollectionsPage({ userId, email, shop, highlight, nextPo
                     {tem && <span>{o.owned || DEFAULT_COLLECTION_NAME}</span>}
                   </div>
                   {tem ? (
-                    <Link href={`/colecao/${o.slug}`} className="btn-ghost">
-                      Abrir
-                    </Link>
+                    <>
+                      <Link href={`/colecao/${o.slug}`} className="btn-ghost">
+                        Abrir
+                      </Link>
+                      <button
+                        type="button"
+                        className="collection-option-remove"
+                        onClick={() => {
+                          setErroRemover(null);
+                          setRemovendo(o);
+                        }}
+                      >
+                        Remover coleção
+                      </button>
+                    </>
                   ) : (
                     <button type="button" className="btn-primary" disabled={adding !== null} onClick={() => void adicionar(o)}>
                       {adding === o.albumId ? "Adicionando…" : "Adicionar"}
@@ -108,6 +149,56 @@ export default function CollectionsPage({ userId, email, shop, highlight, nextPo
           </div>
         </section>
       </div>
+
+      {removendo && (
+        <div
+          className="modal-overlay"
+          role="alertdialog"
+          aria-modal="true"
+          aria-label="Remover coleção"
+          onClick={() => !apagando && setRemovendo(null)}
+        >
+          <div className="modal-card remove-collection-card" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <span className="modal-title">Remover {removendo.name}?</span>
+            </div>
+            <div className="remove-collection-body">
+              <p>
+                {removendo.marked > 0 ? (
+                  <>
+                    Tod{f(removendo) ? "as as" : "os os"}{" "}
+                    <strong>
+                      {removendo.marked.toLocaleString("pt-BR")} {removendo.marked === 1 ? removendo.itemSingular : removendo.itemPlural}
+                    </strong>{" "}
+                    que você marcou nesta coleção, incluindo as repetidas, serão apagad{f(removendo) ? "as" : "os"}.
+                  </>
+                ) : (
+                  <>Esta coleção sai da sua conta.</>
+                )}{" "}
+                O link público dela também deixa de funcionar.
+              </p>
+              {removendo.inShop && (
+                <p>
+                  Sua loja vende as repetidas desta coleção: sem elas, a loja fica <strong>sem itens à venda</strong>{" "}
+                  nesta coleção.
+                </p>
+              )}
+              <p className="remove-collection-warn">Esta ação não pode ser desfeita.</p>
+              {erroRemover && <div className="login-error">{erroRemover}</div>}
+            </div>
+            <div className="modal-actions">
+              <button type="button" className="btn-ghost" disabled={apagando} onClick={() => setRemovendo(null)}>
+                Cancelar
+              </button>
+              <button type="button" className="btn-danger" disabled={apagando} onClick={() => void remover(removendo)}>
+                {apagando ? "Removendo…" : "Remover coleção"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+const f = (o: Option) => o.itemSingular === "figurinha";

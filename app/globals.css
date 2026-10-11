@@ -3750,3 +3750,144 @@ button {
   height: 18px;
   flex: none;
 }
+
+/* ---------- /colecoes: remover coleção ---------- */
+
+.collection-option-remove {
+  align-self: center;
+  padding: 2px 6px;
+  border: none;
+  background: none;
+  color: var(--text-5);
+  font-family: var(--font-barlow);
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.collection-option-remove:hover {
+  color: var(--danger);
+}
+.modal-card.remove-collection-card {
+  max-width: 460px;
+  gap: 14px;
+  padding: 20px;
+}
+.remove-collection-card .modal-actions {
+  justify-content: flex-end;
+}
+.remove-collection-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+.remove-collection-body p {
+  margin: 0;
+}
+.remove-collection-body strong {
+  color: var(--text-1);
+}
+.remove-collection-warn {
+  color: var(--danger);
+  font-weight: 700;
+}
+.btn-danger {
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--danger);
+  background: var(--danger);
+  color: #fff;
+  font-family: var(--font-barlow);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-danger:hover {
+  filter: brightness(1.1);
+}
+.btn-danger:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* ---------- loja sem itens à venda ---------- */
+
+.shop-empty {
+  max-width: 560px;
+  margin: 48px auto;
+  padding: 36px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  border: 1px dashed var(--border-3);
+  border-radius: 16px;
+  background: var(--card);
+}
+.shop-empty-icon {
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--card-header);
+  color: var(--gold);
+}
+.shop-empty h2 {
+  margin: 4px 0 0;
+  font-family: var(--font-barlow-condensed);
+  font-size: 24px;
+  line-height: 1.15;
+  color: var(--text-1);
+}
+.shop-empty p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-4);
+}
+.shop-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.shop-empty-actions > span {
+  flex-basis: 100%;
+  font-family: var(--font-barlow-condensed);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-6);
+}
+.shop-empty-owner {
+  width: 100%;
+  margin-top: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-radius: 12px;
+  background: var(--card-header);
+  border: 1px solid var(--border-2);
+}
+.shop-empty-owner strong {
+  font-family: var(--font-barlow-condensed);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+@media (max-width: 700px) {
+  .shop-empty {
+    margin: 24px 14px;
+    padding: 28px 18px;
+  }
+}

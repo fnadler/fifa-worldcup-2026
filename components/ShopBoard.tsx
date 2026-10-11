@@ -108,6 +108,7 @@ export default function ShopBoard({
     return out;
   }, [catalog, cart, pricing, available]);
 
+  const fem = catalog.itemSingular === "figurinha";
   const totalCents = lines.reduce((s, l) => s + l.qty * l.unitCents, 0);
   const totalFigurinhas = lines.reduce((s, l) => s + l.qty, 0);
 
@@ -325,6 +326,57 @@ export default function ShopBoard({
         </div>
       )}
 
+      {totalDisponivel === 0 ? (
+        <div className="shop-empty">
+          <span className="shop-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5v-9Z" />
+              <path d="M3 7.5 12 12l9-4.5M12 12v9" />
+            </svg>
+          </span>
+          <h2>
+            Nenhum{fem ? "a" : ""} {catalog.itemSingular} à venda por aqui ainda
+          </h2>
+          <p>
+            {shopName} não tem {catalog.itemPlural} de {catalog.name} à venda no momento. O estoque muda sempre: vale
+            voltar em breve.
+          </p>
+          {albums.length > 1 && (
+            <div className="shop-empty-actions">
+              <span>Outras coleções desta loja</span>
+              {albums
+                .filter((a) => a.albumId !== albumId)
+                .map((a) => (
+                  <Link key={a.albumId} href={`${path}?colecao=${a.slug}`} className="btn-ghost">
+                    {a.name}
+                  </Link>
+                ))}
+            </div>
+          )}
+          {owner ? (
+            <div className="shop-empty-owner">
+              <strong>Só você vê esta dica</strong>
+              <p>
+                A loja vende as suas repetidas que têm preço. Marque as repetidas na sua coleção e defina os preços
+                para {fem ? "elas" : "eles"} aparecerem aqui.
+              </p>
+              <div className="shop-empty-actions">
+                <Link href={`/colecao/${catalog.slug}`} className="btn-primary">
+                  Marcar repetidas
+                </Link>
+                <Link href="/vendas?aba=precos" className="btn-ghost">
+                  Definir preços
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <Link href="/lojas" className="btn-ghost">
+              Ver outras lojas
+            </Link>
+          )}
+        </div>
+      ) : (
+      <>
       <div className="legend-bar">
         <span className="legend-label">Legenda</span>
         <span className="legend-item">
@@ -382,10 +434,12 @@ export default function ShopBoard({
         ))}
         {visibleBlocks.length === 0 && (
           <div className="empty-message">
-            Nenhum{catalog.itemSingular === "figurinha" ? "a" : ""} {catalog.itemSingular} com esses filtros.
+            Nenhum{fem ? "a" : ""} {catalog.itemSingular} com esses filtros.
           </div>
         )}
       </div>
+      </>
+      )}
 
       {totalFigurinhas > 0 && !cartAberto && !preview && (
         <button type="button" className="cart-float cart-float-desktop" onClick={() => setCartAberto(true)}>

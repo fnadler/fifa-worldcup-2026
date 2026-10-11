@@ -49,6 +49,24 @@ export function writeLocalQtd(userId: string, qtd: Qtd): void {
   }
 }
 
+/** Coleção removida: tira os códigos dela da cópia local e das marcações ainda não enviadas. */
+export function forgetLocalCodes(userId: string, codes: string[]): void {
+  if (typeof window === "undefined") return;
+  const drop = new Set(codes);
+  const qtd = readLocalQtd(userId);
+  writeLocalQtd(userId, Object.fromEntries(Object.entries(qtd).filter(([code]) => !drop.has(code))));
+  try {
+    const key = `copa2026-pending-writes-v1:${userId}`;
+    const raw = window.localStorage.getItem(key);
+    if (raw) {
+      const pend = JSON.parse(raw) as Record<string, unknown>;
+      window.localStorage.setItem(key, JSON.stringify(Object.fromEntries(Object.entries(pend).filter(([code]) => !drop.has(code)))));
+    }
+  } catch {
+    // armazenamento indisponível — o servidor continua sendo a fonte da verdade
+  }
+}
+
 export function backupText(qtd: Qtd, pretty = false): string {
   const payload: BackupShape = { v: 1, atualizado: new Date().toISOString(), qtd };
   return JSON.stringify(payload, null, pretty ? 2 : 0);

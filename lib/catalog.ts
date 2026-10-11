@@ -1,7 +1,7 @@
 import paniniJson from "@/album.json";
 import adrenalynJson from "./catalogs/adrenalyn-xl.json";
 import goldenJson from "./catalogs/golden-crumple.json";
-import type { AlbumBlock, AlbumData, BlockType, TipoFiltro } from "./types";
+import type { AlbumBlock, AlbumData, TipoFiltro } from "./types";
 
 // Cada coleção (álbum) da plataforma: blocos, filtros, grupos de preço e textos. O código de cada
 // item é único na plataforma inteira (BRA1, LIL3, AXL24…), então funções por código (nome, bloco,
@@ -34,8 +34,11 @@ export interface Catalog {
   total: number;
   /** Filtro por tipo — o primeiro é sempre "ALL". */
   filters: { value: TipoFiltro; label: string }[];
-  /** Grupos de preço da loja, na ordem do formulário. */
-  priceGroups: { key: BlockType; label: string }[];
+  /**
+   * Grupos de preço da loja, na ordem do formulário. A chave é o tipo do bloco ("TEAM") ou, para dividir
+   * um tipo pelos cards dele, "tipo:tipo do card" ("TEAM:ICON") — ver priceFor em lib/shop.ts.
+   */
+  priceGroups: { key: string; label: string }[];
   countsToward(block: AlbumBlock): boolean;
   /** Etiqueta do bloco no quadro ("Grupo C", "FWC"…). */
   blockTag(block: AlbumBlock): string;
@@ -154,8 +157,12 @@ export const ADRENALYN: Catalog = {
     { value: "CONTENDER", label: "Contenders" },
     { value: "LIMITED", label: "Limited" },
   ],
+  // Nas seleções o preço é por tipo de card (cada seleção tem 1 Fan Favourite, 1 escudo, 1 Icon e 9 Heroes).
   priceGroups: [
-    { key: "TEAM", label: "Seleções" },
+    { key: "TEAM:FAN_FAVOURITE", label: "Fan Favourites" },
+    { key: "TEAM:CREST", label: "Escudos" },
+    { key: "TEAM:ICON", label: "Icons" },
+    { key: "TEAM:BASE", label: "Heroes" },
     { key: "SPECIAL", label: "Especiais" },
     { key: "CONTENDER", label: "Contenders" },
     { key: "LIMITED", label: "Limited Editions" },

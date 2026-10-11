@@ -20,7 +20,8 @@ export interface CartHold {
 export type GroupPrices = Record<BlockType, number | null>;
 
 // Preços em centavos. Individual sobrepõe o do grupo; sem nenhum dos dois = não vendável.
-// O preço de grupo é por coleção (o tipo "TEAM" existe em mais de uma).
+// O preço de grupo é por coleção (o tipo "TEAM" existe em mais de uma). A chave é o tipo do bloco
+// ("TEAM") ou "tipo:tipo do card" ("TEAM:ICON") — ver Catalog.priceGroups.
 export interface ShopPricing {
   /** albums.id → preço por grupo daquela coleção (só as coleções à venda). */
   groups: Record<string, GroupPrices>;
@@ -166,7 +167,12 @@ export function priceFor(code: string, pricing: ShopPricing): number | null {
   const individual = pricing.individual[code];
   if (individual !== undefined) return individual;
   const e = lookupCode(code);
-  return e ? (pricing.groups[e.catalog.id]?.[e.block.tipo] ?? null) : null;
+  if (!e) return null;
+  const group = pricing.groups[e.catalog.id];
+  // Preço do tipo do card dentro do bloco ("TEAM:ICON"), se a coleção divide assim; senão o do bloco.
+  // O do bloco também cobre lojas que salvaram os preços antes de a divisão existir.
+  const kind = e.block.kinds?.[e.index];
+  return (kind ? group?.[`${e.block.tipo}:${kind}`] : undefined) ?? group?.[e.block.tipo] ?? null;
 }
 
 // Só as repetidas estão à venda — a figurinha colada no álbum nunca sai.

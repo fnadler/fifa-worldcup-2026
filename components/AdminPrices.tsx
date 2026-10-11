@@ -35,7 +35,8 @@ export default function AdminPrices({
   const catalog = useCatalog();
   const f = catalog.itemSingular === "figurinha";
   const [groupInputs, setGroupInputs] = useState<Record<string, string>>(() =>
-    Object.fromEntries(catalog.priceGroups.map((g) => [g.key, centsToInput(group[g.key] ?? null)]))
+    // grupo dividido por tipo de card ("TEAM:ICON") sem preço próprio ainda: começa com o do bloco ("TEAM")
+    Object.fromEntries(catalog.priceGroups.map((g) => [g.key, centsToInput(group[g.key] ?? group[g.key.split(":")[0]] ?? null)]))
   );
   const [savingGroup, setSavingGroup] = useState(false);
 

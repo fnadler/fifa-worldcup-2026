@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { COMPANY } from "@/content/legal";
-
-const INSTAGRAM_URL = "https://www.instagram.com/gncoleciona";
+import { INSTAGRAM_URL } from "@/lib/community";
 
 export default function MarketingFooter() {
   return (

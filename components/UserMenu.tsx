@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { COMMUNITY_URL } from "@/lib/community";
+import { COMMUNITY_URL, INSTAGRAM_URL } from "@/lib/community";
 import { Icon } from "./HeaderIcons";
 
 interface UserMenuProps {
@@ -123,6 +123,16 @@ export default function UserMenu({ email, shopActive, onBackup, onImport }: User
               )}
             </div>
           )}
+
+          <div className="user-menu-group" role="group" aria-label="GN Coleciona">
+            <span className="user-menu-group-title">GN Coleciona</span>
+            <Link href="/" className="user-menu-item" role="menuitem" onClick={fechar}>
+              Ir para o site
+            </Link>
+            <a href={INSTAGRAM_URL} className="user-menu-item" role="menuitem" target="_blank" rel="noopener noreferrer" onClick={fechar}>
+              Instagram
+            </a>
+          </div>
 
           <button type="button" className="user-menu-item user-menu-signout" role="menuitem" onClick={() => void signOut()}>
             Sair

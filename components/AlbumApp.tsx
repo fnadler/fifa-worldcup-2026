@@ -14,7 +14,6 @@ import Header from "./Header";
 import LegendBar from "./LegendBar";
 import AlbumBlockCard from "./AlbumBlockCard";
 import ShareModal from "./ShareModal";
-import BackupModal from "./BackupModal";
 import ShopMatchModal from "./ShopMatchModal";
 import CommunityBanner from "./CommunityBanner";
 
@@ -42,7 +41,6 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
   const [busca, setBusca] = useState("");
   const [trocasAberto, setTrocasAberto] = useState(false);
   const [lojasAberto, setLojasAberto] = useState(false);
-  const [backupModo, setBackupModo] = useState<"export" | "import" | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
   const headerRef = useRef<HTMLDivElement | null>(null);
@@ -148,14 +146,6 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
     });
   }, [initialUser.id]);
 
-  const restoreFromBackup = useCallback((novo: Qtd) => {
-    setQtd(novo);
-    writeLocalQtd(initialUser.id, novo);
-    Object.entries(novo).forEach(([code, value]) => {
-      if (value > 0) syncRef.current?.schedule(code, value);
-    });
-  }, [initialUser.id]);
-
   // /colecao volta para a última coleção aberta.
   useEffect(() => {
     document.cookie = `${LAST_COLLECTION_COOKIE}=${catalog.slug}; path=/; max-age=31536000; samesite=lax`;
@@ -198,8 +188,6 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
         onView={setView}
         onCompartilhar={() => setTrocasAberto(true)}
         onAbrirLojas={podeCompletar ? () => setLojasAberto(true) : undefined}
-        onExportar={() => setBackupModo("export")}
-        onImportar={() => setBackupModo("import")}
         onAnchorClick={scrollToBlock}
         user={initialUser}
         shopHref={shopHref}
@@ -236,15 +224,6 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
       )}
 
       {lojasAberto && <ShopMatchModal onClose={() => setLojasAberto(false)} />}
-
-      {backupModo && (
-        <BackupModal
-          mode={backupModo}
-          qtd={qtd}
-          onClose={() => setBackupModo(null)}
-          onRestore={restoreFromBackup}
-        />
-      )}
 
       {/* celular: "Quero completar" fixo no rodapé (fora do cabeçalho, que tem backdrop-filter) */}
       {podeCompletar && (

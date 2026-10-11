@@ -3669,3 +3669,59 @@ button {
   font-size: 16px;
   color: var(--text-1);
 }
+
+/* ---------- menu da conta no celular: tela cheia com rolagem ---------- */
+
+.user-menu.user-menu-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  min-width: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--bg);
+  padding: 0 16px calc(24px + env(safe-area-inset-bottom));
+  gap: 2px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.user-menu-sheet-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 -16px 6px;
+  padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-2);
+}
+.user-menu-sheet-head strong {
+  font-family: var(--font-barlow-condensed);
+  font-size: 20px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-1);
+}
+.user-menu-sheet-head .icon-button {
+  font-size: 24px;
+  line-height: 1;
+}
+.user-menu-sheet .user-menu-item {
+  padding: 14px 10px;
+  font-size: 16px;
+}
+.user-menu-sheet .user-menu-group {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-1);
+}
+.user-menu-sheet .user-menu-group-title {
+  font-size: 12px;
+}
+.user-menu-sheet .auth-status {
+  font-size: 13px;
+}

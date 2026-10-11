@@ -30,8 +30,6 @@ interface HeaderProps {
   onCompartilhar: () => void;
   /** Lojas com o que falta — só quando a pessoa já tem algum item (sem nada, tudo "falta"). */
   onAbrirLojas?: () => void;
-  onExportar: () => void;
-  onImportar: () => void;
   onAnchorClick: (id: string) => void;
   user: AppUser;
   shopHref: string;
@@ -64,8 +62,6 @@ export default function Header({
   onView,
   onCompartilhar,
   onAbrirLojas,
-  onExportar,
-  onImportar,
   onAnchorClick,
   user,
   shopHref,
@@ -136,7 +132,7 @@ export default function Header({
             <button type="button" className="icon-button" data-tip="Compartilhar" aria-label="Compartilhar coleção" onClick={onCompartilhar}>
               <Icon name="export" />
             </button>
-            <UserMenu email={user.email} shopActive={shopActive} onBackup={onExportar} onImport={onImportar} />
+            <UserMenu email={user.email} shopActive={shopActive} />
           </HeaderActions>
 
           {onAbrirLojas && (

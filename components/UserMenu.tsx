@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { createClient } from "@/lib/supabase/client";
 import { COMMUNITY_URL, INSTAGRAM_URL } from "@/lib/community";
 import { Icon } from "./HeaderIcons";
@@ -10,9 +11,6 @@ interface UserMenuProps {
   email: string | null;
   /** Loja ativa (assinatura/acesso): mostra o grupo "Minha loja" completo; senão, só "Assine já". */
   shopActive: boolean;
-  /** Só no álbum: exportar/importar a base de figurinhas. */
-  onBackup?: () => void;
-  onImport?: () => void;
 }
 
 export async function signOut() {
@@ -27,14 +25,31 @@ const LOJA_ITENS = [
   { href: "/assinatura", label: "Assinatura" },
 ];
 
-export default function UserMenu({ email, shopActive, onBackup, onImport }: UserMenuProps) {
+// Celular: o menu vira uma tela cheia com rolagem (mesmo corte do CSS).
+const MOBILE_QUERY = "(max-width: 700px)";
+
+function subscribeMobile(onChange: () => void) {
+  const mq = window.matchMedia(MOBILE_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
+
+export default function UserMenu({ email, shopActive }: UserMenuProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const mobile = useSyncExternalStore(
+    subscribeMobile,
+    () => window.matchMedia(MOBILE_QUERY).matches,
+    () => false
+  );
 
   useEffect(() => {
     if (!open) return;
     function onDocClick(e: MouseEvent) {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+      const t = e.target as Node;
+      // no celular o menu é renderizado fora do cabeçalho (portal), então confere os dois
+      if (!rootRef.current?.contains(t) && !menuRef.current?.contains(t)) setOpen(false);
     }
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
@@ -47,22 +62,20 @@ export default function UserMenu({ email, shopActive, onBackup, onImport }: User
     };
   }, [open]);
 
+  // tela cheia aberta: a página de trás não rola
+  useEffect(() => {
+    if (!open || !mobile) return;
+    const anterior = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = anterior;
+    };
+  }, [open, mobile]);
+
   const fechar = () => setOpen(false);
 
-  return (
-    <div className="user-menu-root" ref={rootRef}>
-      <button
-        type="button"
-        className="icon-button"
-        onClick={() => setOpen((v) => !v)}
-        title="Minha conta"
-        aria-label="Minha conta"
-        aria-expanded={open}
-      >
-        <Icon name="user" />
-      </button>
-      {open && (
-        <div className="user-menu" role="menu">
+  const itens = (
+    <>
           {email && <span className="auth-status">{email}</span>}
 
           <Link href="/perfil" className="user-menu-item" role="menuitem" onClick={fechar}>
@@ -92,38 +105,6 @@ export default function UserMenu({ email, shopActive, onBackup, onImport }: User
             )}
           </div>
 
-          {(onBackup || onImport) && (
-            <div className="user-menu-group" role="group" aria-label="Coleção">
-              <span className="user-menu-group-title">Coleção</span>
-              {onBackup && (
-                <button
-                  type="button"
-                  className="user-menu-item"
-                  role="menuitem"
-                  onClick={() => {
-                    fechar();
-                    onBackup();
-                  }}
-                >
-                  Backup
-                </button>
-              )}
-              {onImport && (
-                <button
-                  type="button"
-                  className="user-menu-item"
-                  role="menuitem"
-                  onClick={() => {
-                    fechar();
-                    onImport();
-                  }}
-                >
-                  Importar
-                </button>
-              )}
-            </div>
-          )}
-
           <div className="user-menu-group" role="group" aria-label="GN Coleciona">
             <span className="user-menu-group-title">GN Coleciona</span>
             <Link href="/" className="user-menu-item" role="menuitem" onClick={fechar}>
@@ -137,8 +118,41 @@ export default function UserMenu({ email, shopActive, onBackup, onImport }: User
           <button type="button" className="user-menu-item user-menu-signout" role="menuitem" onClick={() => void signOut()}>
             Sair
           </button>
-        </div>
-      )}
+    </>
+  );
+
+  return (
+    <div className="user-menu-root" ref={rootRef}>
+      <button
+        type="button"
+        className="icon-button"
+        onClick={() => setOpen((v) => !v)}
+        title="Minha conta"
+        aria-label="Minha conta"
+        aria-expanded={open}
+      >
+        <Icon name="user" />
+      </button>
+      {open &&
+        (mobile ? (
+          // fora do cabeçalho: o blur dele prenderia a tela cheia dentro da própria faixa
+          createPortal(
+            <div className="user-menu user-menu-sheet" role="dialog" aria-modal="true" aria-label="Minha conta" ref={menuRef}>
+              <div className="user-menu-sheet-head">
+                <strong>Minha conta</strong>
+                <button type="button" className="icon-button" onClick={fechar} aria-label="Fechar menu">
+                  ×
+                </button>
+              </div>
+              {itens}
+            </div>,
+            document.body
+          )
+        ) : (
+          <div className="user-menu" role="menu" ref={menuRef}>
+            {itens}
+          </div>
+        ))}
     </div>
   );
 }

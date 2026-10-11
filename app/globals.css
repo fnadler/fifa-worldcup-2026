@@ -3725,3 +3725,23 @@ button {
 .user-menu-sheet .auth-status {
   font-size: 13px;
 }
+
+/* menu da conta: convite da comunidade em destaque (verde do WhatsApp) */
+.user-menu .user-menu-item.user-menu-community {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 2px 0 4px;
+  background: rgba(37, 211, 102, 0.14);
+  border: 1px solid rgba(37, 211, 102, 0.45);
+  color: #25d366 !important;
+  font-weight: 700;
+}
+.user-menu .user-menu-item.user-menu-community:hover {
+  background: rgba(37, 211, 102, 0.24);
+}
+.user-menu-community svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}

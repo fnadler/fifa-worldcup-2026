@@ -84,12 +84,6 @@ export default function UserMenu({ email, shopActive }: UserMenuProps) {
           <Link href="/colecoes" className="user-menu-item" role="menuitem" onClick={fechar}>
             Minhas coleções
           </Link>
-          {COMMUNITY_URL && (
-            <a href={COMMUNITY_URL} className="user-menu-item" role="menuitem" target="_blank" rel="noopener noreferrer" onClick={fechar}>
-              Comunidade no WhatsApp
-            </a>
-          )}
-
           <div className="user-menu-group" role="group" aria-label="Minha loja">
             <span className="user-menu-group-title">Minha loja</span>
             {shopActive ? (
@@ -107,6 +101,19 @@ export default function UserMenu({ email, shopActive }: UserMenuProps) {
 
           <div className="user-menu-group" role="group" aria-label="GN Coleciona">
             <span className="user-menu-group-title">GN Coleciona</span>
+            {COMMUNITY_URL && (
+              <a
+                href={COMMUNITY_URL}
+                className="user-menu-item user-menu-community"
+                role="menuitem"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={fechar}
+              >
+                <Icon name="whatsapp" />
+                Comunidade no WhatsApp
+              </a>
+            )}
             <Link href="/" className="user-menu-item" role="menuitem" onClick={fechar}>
               Ir para o site
             </Link>

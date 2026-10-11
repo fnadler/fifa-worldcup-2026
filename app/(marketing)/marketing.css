@@ -1106,6 +1106,11 @@ html:has(.mk) {
 .mk-footer a:hover {
   color: #fff;
 }
+.mk-footer-social {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
 .mk-footer small {
   flex-basis: 100%;
   font-size: 12px;

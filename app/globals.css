@@ -3727,7 +3727,12 @@ button {
 }
 
 /* menu da conta: convite da comunidade em destaque (verde do WhatsApp) */
+/* largura do menu suspenso: cabe "Comunidade no WhatsApp" com o ícone numa linha só */
+.user-menu-root > .user-menu {
+  min-width: 270px;
+}
 .user-menu .user-menu-item.user-menu-community {
+  white-space: nowrap;
   display: flex;
   align-items: center;
   gap: 8px;

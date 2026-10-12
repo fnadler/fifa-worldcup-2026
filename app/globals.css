@@ -4263,29 +4263,35 @@ button {
   background: var(--card);
   border-top: 1px solid var(--border-1);
 }
-/* preço e "restam N" à esquerda; à direita o mesmo "+" / − n + das figurinhas */
+/* linha 1: preço e, à direita, o mesmo "+" / − n + das figurinhas; linha 2: "restam N" na largura
+   toda — assim a etiqueta nunca disputa espaço com o controle */
 .product-card-foot {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  gap: 8px 10px;
   padding: 12px 14px 14px;
 }
 .product-card-foot > div:first-child {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 5px;
-  min-width: 0;
+  display: contents;
 }
 .product-card-foot strong {
+  grid-column: 1;
+  grid-row: 1;
   font-family: var(--font-barlow-condensed);
   font-size: 22px;
   line-height: 1.1;
   color: var(--gold);
 }
-.product-card-foot > .stepper {
-  flex: none;
+.product-card-foot > .stepper,
+.product-card-foot > .shop-card-add {
+  grid-column: 2;
+  grid-row: 1;
+}
+.product-card-foot .product-left {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  justify-self: start;
 }
 /* quantas unidades restam: sempre à vista, para dar urgência */
 .product-left {

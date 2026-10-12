@@ -146,7 +146,7 @@ export async function renderShop(where: ShopLookup, colecao?: string) {
       albumId={atual?.albumId ?? DEFAULT_CATALOG.id}
       albums={aVenda.map((a) => {
         const c = getCatalog(a.albumId);
-        return { albumId: c.id, slug: c.slug, name: c.name };
+        return { albumId: c.id, slug: c.slug, name: c.shortName }; // nome curto: cabe nas abas
       })}
       products={products.map((p) => ({ code: p.code, title: p.title, description: p.description, priceCents: p.priceCents, imageUrl: p.imageUrl }))}
       token={token}

@@ -3166,9 +3166,16 @@ button {
   flex: 0 1 220px;
 }
 @media (max-width: 700px) {
+  /* abas da loja: todas à vista, em duas colunas, sem rolagem lateral */
   .shop-album-tabs {
     width: 100%;
-    overflow-x: auto;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .shop-album-tabs .chip {
+    flex: 1 1 calc(50% - 4px);
+    text-align: center;
+    white-space: nowrap;
   }
 }
 
@@ -4295,6 +4302,12 @@ button {
   order: 3;
   margin: 8px auto 0 0;
   max-width: 100%;
+}
+@media (min-width: 701px) {
+  .product-card-foot strong {
+    font-size: 17px;
+    font-weight: 700;
+  }
 }
 /* no detalhe do produto há espaço: preço maior */
 .product-detail-info .product-card-foot strong {

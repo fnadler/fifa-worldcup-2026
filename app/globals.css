@@ -4161,25 +4161,36 @@ button {
   white-space: pre-line;
   overflow-wrap: anywhere;
 }
+/* preço e "restam N" numa linha (quebra se não couber); o botão ocupa a largura toda, embaixo */
 .product-card-foot {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 10px;
   padding: 12px 14px 14px;
 }
+.product-card-foot > div:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 10px;
+  min-width: 0;
+}
 .product-card-foot strong {
-  display: block;
   font-family: var(--font-barlow-condensed);
   font-size: 22px;
   color: var(--gold);
+}
+.product-card-foot > .btn-primary,
+.product-card-foot > .stepper {
+  width: 100%;
+  justify-content: center;
 }
 /* quantas unidades restam: sempre à vista, para dar urgência */
 .product-left {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  margin-top: 4px;
   padding: 3px 9px;
   border-radius: 999px;
   background: rgba(255, 207, 77, 0.14);
@@ -4326,15 +4337,6 @@ button {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
     padding: 12px;
-  }
-  .product-card-foot {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .product-card-foot .btn-primary,
-  .product-card-foot .stepper {
-    width: 100%;
-    justify-content: center;
   }
   .admin-product {
     flex-wrap: wrap;

@@ -1,9 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { describeSticker, type CartHold } from "./shop";
-import { DEFAULT_CATALOG } from "./catalog";
-import { displayCode } from "./album";
+import { itemLabel, type CartHold } from "./shop";
 import type { Qtd } from "./types";
 
 export interface CartAdjust {
@@ -26,32 +24,35 @@ function toQtd(items: { code: string; qty: number }[]): Qtd {
   return out;
 }
 
-export function describeAdjust(a: CartAdjust): string {
+/** `name`: título do produto, quando o item é um produto. */
+export function describeAdjust(a: CartAdjust, name?: string): string {
+  const l = itemLabel(a.code, name);
+  const quem = l.meta ? `${l.title} (${l.meta})` : l.title;
   return a.granted === 0
-    ? `${displayCode(a.code)} (${describeSticker(a.code)}) não está mais disponível`
-    : `${displayCode(a.code)}: só ${a.granted} de ${a.requested} disponíve${a.granted === 1 ? "l" : "is"}`;
+    ? `${quem} não está mais disponível`
+    : `${quem}: só ${a.granted} de ${a.requested} disponíve${a.granted === 1 ? "l" : "is"}`;
 }
 
 // Carrinho com reserva no servidor: cada alteração é aplicada na hora na tela e enviada
 // (agrupada) para /api/loja/<token>/carrinho, que reserva por 10 min e devolve o que foi
-// realmente reservado. A resposta do servidor é a verdade final do carrinho.
+// realmente reservado. A resposta do servidor é a verdade final do carrinho. Um carrinho por
+// loja, com itens de todas as coleções à venda e produtos.
 export function useCartHold({
   token,
-  albumId,
   available,
   initialHold,
   onToast,
+  nameOf,
 }: {
   token: string;
-  /** Um carrinho por coleção. */
-  albumId: string;
-  /** Disponível para este comprador (já sem o que outros reservaram). */
+  /** Disponível para este comprador (já sem o que outros reservaram), de todas as coleções e produtos. */
   available: Qtd;
   initialHold: CartHold | null;
   onToast: (msg: string) => void;
+  /** Título de um produto pelo código (para os avisos de ajuste). */
+  nameOf?: (code: string) => string | undefined;
 }) {
-  // A chave do Álbum Copa continua a de antes (carrinhos já guardados no navegador).
-  const storageKey = albumId === DEFAULT_CATALOG.id ? `copa2026-cart-${token}` : `copa2026-cart-${token}:${albumId}`;
+  const storageKey = `gn-cart-${token}`;
   const [cart, setCart] = useState<Qtd>(() => (initialHold ? toQtd(initialHold.items) : {}));
   const [expiresAt, setExpiresAt] = useState<string | null>(initialHold?.expiresAt ?? null);
   const [syncing, setSyncing] = useState(false);
@@ -104,7 +105,7 @@ export function useCartHold({
       const res = await fetch(`/api/loja/${token}/carrinho`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ albumId, items }),
+        body: JSON.stringify({ items }),
       });
       const data = (await res.json()) as HoldResponse & { error?: string };
       if (!res.ok) {
@@ -116,7 +117,7 @@ export function useCartHold({
       persist(next);
       setCart(next);
       setExpiresAt(data.expiresAt);
-      if (data.adjusted.length && !silent) onToast(data.adjusted.map(describeAdjust).join(" · "));
+      if (data.adjusted.length && !silent) onToast(data.adjusted.map((a) => describeAdjust(a, nameOf?.(a.code))).join(" · "));
       return data;
     } catch {
       onToast("Sem conexão — o carrinho não foi reservado. Tente de novo.");
@@ -124,7 +125,7 @@ export function useCartHold({
     } finally {
       if (seq === seqRef.current) setSyncing(false);
     }
-  }, [token, albumId, persist, onToast]);
+  }, [token, persist, onToast, nameOf]);
 
   const schedule = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);

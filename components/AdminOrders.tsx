@@ -5,12 +5,14 @@ import { createClient } from "@/lib/supabase/client";
 import {
   ORDER_COLUMNS,
   RESERVA_HORAS,
-  describeSticker,
   formatAddress,
   formatBRL,
   formatDateTimeBR,
   isExpired,
+  itemLabel,
+  itemOrder,
   orderFromRow,
+  orderGroups,
   orderMessage,
   reservedByCode,
   whatsappLink,
@@ -23,12 +25,10 @@ import {
 import type { Qtd } from "@/lib/types";
 import { useNow } from "@/lib/useNow";
 import OrderEditor from "./OrderEditor";
-import { getCatalog } from "@/lib/catalog";
-import { displayCode } from "@/lib/album";
 
 interface AdminOrdersProps {
   orders: Order[];
-  /** Repetidas em estoque (qty - 1), sem descontar reservas. */
+  /** Estoque por código — repetidas (qty - 1) e produtos —, sem descontar reservas. */
   stock: Qtd;
   pricing: ShopPricing;
   onOrdersChange: Dispatch<SetStateAction<Order[]>>;
@@ -92,9 +92,9 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
   async function mudarStatus(order: Order, status: OrderStatus) {
     const aviso =
       status === "confirmado"
-        ? `Confirmar o pedido #${order.number}? Os itens serão baixados da sua coleção.`
+        ? `Confirmar o pedido #${order.number}? Os itens serão baixados do seu estoque.`
         : order.status === "confirmado"
-          ? `Cancelar o pedido #${order.number}? Os itens voltam para a sua coleção.`
+          ? `Cancelar o pedido #${order.number}? Os itens voltam para o seu estoque.`
           : `Cancelar o pedido #${order.number}? A reserva dos itens é liberada.`;
     if (!window.confirm(aviso)) return;
 
@@ -182,7 +182,7 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
             <header className="order-header">
               <span className="order-number">#{o.number}</span>
               <span className={`order-status order-status-${ef.css}`}>{ef.label}</span>
-              <span className="order-album">{getCatalog(o.albumId).shortName}</span>
+              <span className="order-album">{orderGroups(o.items).join(" + ")}</span>
               <span className="order-date">{formatDateTimeBR(o.createdAt)}</span>
               {ativo && (
                 <span className="order-reserve">
@@ -216,20 +216,23 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
               ) : (
                 <div className="order-items">
                   <span className="order-items-title">
-                    {totalFigurinhas}{" "}
-                    {totalFigurinhas === 1 ? getCatalog(o.albumId).itemSingular : getCatalog(o.albumId).itemPlural}
+                    {totalFigurinhas} {totalFigurinhas === 1 ? "item" : "itens"}
                   </span>
-                  {o.items.map((it) => (
-                    <div key={it.code} className="order-item">
-                      <span>
-                        <strong>{displayCode(it.code)}</strong>{" "}
-                        <span className="order-item-block">{describeSticker(it.code)}</span>
-                      </span>
-                      <span>
-                        {it.qty} × {formatBRL(it.unit_cents)}
-                      </span>
-                    </div>
-                  ))}
+                  {[...o.items]
+                    .sort((a, b) => itemOrder(a.code) - itemOrder(b.code))
+                    .map((it) => {
+                      const l = itemLabel(it.code, it.name);
+                      return (
+                        <div key={it.code} className="order-item">
+                          <span>
+                            <strong>{l.title}</strong> <span className="order-item-block">{l.meta || l.group}</span>
+                          </span>
+                          <span>
+                            {it.qty} × {formatBRL(it.unit_cents)}
+                          </span>
+                        </div>
+                      );
+                    })}
                 </div>
               )}
             </div>

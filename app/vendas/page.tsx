@@ -16,6 +16,7 @@ import type { Qtd } from "@/lib/types";
 import { PLATFORM_NAME } from "@/lib/brand";
 import { fetchAll } from "@/lib/fetchAll";
 import { loadShopAlbums } from "@/lib/shopAlbums";
+import { loadShopProducts } from "@/lib/shopProducts";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
 };
 
 const SHOP_COLUMNS =
-  "token, slug, logo_url, only_available, enabled, seller_name, whatsapp";
+  "token, slug, logo_url, only_available, enabled, seller_name, whatsapp, order_min_cents";
 
 export default async function VendasPage({
   searchParams,
@@ -80,7 +81,7 @@ export default async function VendasPage({
   // Pedidos novos com a reserva vencida viram "cancelado (expirado)" antes de listar.
   await supabase.rpc("expire_orders", { p_seller: user.id });
 
-  const [{ data: priceRows }, { data: orderRows }, { data: collectionRows }, albums] = await Promise.all([
+  const [{ data: priceRows }, { data: orderRows }, { data: collectionRows }, albums, products] = await Promise.all([
     fetchAll<{ code: string; price_cents: number }>((from, to) =>
       supabase.from("sticker_prices").select("code, price_cents").eq("user_id", user.id).order("code").range(from, to)
     ),
@@ -94,6 +95,7 @@ export default async function VendasPage({
       supabase.from("collection").select("code, qty").eq("user_id", user.id).gt("qty", 1).order("code").range(from, to)
     ),
     loadShopAlbums(supabase, user.id),
+    loadShopProducts(supabase, user.id),
   ]);
 
   const individual: Record<string, number> = {};
@@ -101,11 +103,14 @@ export default async function VendasPage({
     individual[r.code as string] = r.price_cents as number;
   });
 
-  // Estoque bruto (repetidas). As reservas saem dos pedidos novos, calculadas no cliente.
+  // Estoque bruto por código: repetidas e produtos. As reservas saem dos pedidos novos, calculadas no cliente.
   const available: Qtd = {};
   (collectionRows ?? []).forEach((r) => {
     const n = availableFromQty(r.qty as number);
     if (n > 0) available[r.code as string] = n;
+  });
+  products.forEach((p) => {
+    if (p.stock > 0) available[p.code] = p.stock;
   });
 
   return (
@@ -119,6 +124,7 @@ export default async function VendasPage({
       initialIndividual={individual}
       initialOrders={((orderRows ?? []) as OrderRow[]).map(orderFromRow)}
       initialAvailable={available}
+      initialProducts={products}
     />
   );
 }

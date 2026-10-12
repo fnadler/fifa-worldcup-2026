@@ -3,9 +3,9 @@ import { NextResponse } from "next/server";
 import { CART_COOKIE, readCartId } from "@/lib/cartCookie";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { TOO_MANY, withinRateLimit, type RateRule } from "@/lib/rateLimit";
-import { hasShopAccess } from "@/lib/shopAccess";
-import { codeInAlbum, loadShopAlbums, parseAlbumId } from "@/lib/shopAlbums";
+import { loadShopForOrder, validItemCode } from "@/lib/shopCart";
 import {
+  isProductCode,
   isValidPhoneBR,
   onlyDigits,
   orderMessage,
@@ -13,11 +13,9 @@ import {
   whatsappLink,
   type BuyerInfo,
   type OrderItem,
-  type ShopRow,
 } from "@/lib/shop";
 
 interface PedidoBody {
-  albumId?: unknown;
   items?: { code?: unknown; qty?: unknown }[];
   buyer?: Partial<Record<keyof BuyerInfo, unknown>>;
   website?: unknown; // honeypot — humanos não veem esse campo
@@ -42,7 +40,7 @@ function bad(error: string, status = 400) {
 
 function indisponivel(codes: string[]) {
   return NextResponse.json(
-    { error: `Não há mais disponibilidade para: ${codes.join(", ")}. Ajuste o carrinho e tente de novo.`, unavailable: codes },
+    { error: "Alguns itens não estão mais disponíveis. Ajuste o carrinho e tente de novo.", unavailable: codes },
     { status: 409 }
   );
 }
@@ -80,70 +78,49 @@ export async function POST(request: Request, { params }: { params: Promise<{ tok
   if (onlyDigits(buyer.cep).length !== 8) return bad("CEP inválido.");
   if (!/^[A-Z]{2}$/.test(buyer.state)) return bad("UF inválida.");
 
-  // ---------- itens (todos da mesma coleção) ----------
-  const albumId = parseAlbumId(body.albumId);
-  if (!albumId) return bad("Coleção inválida.");
+  // ---------- itens (de qualquer coleção à venda e produtos da loja) ----------
   const pedidos = new Map<string, number>();
   for (const raw of body.items ?? []) {
     const code = typeof raw.code === "string" ? raw.code : "";
     const qty = typeof raw.qty === "number" ? raw.qty : NaN;
-    if (!codeInAlbum(code, albumId) || !Number.isInteger(qty) || qty < 1 || qty > 99) return bad("Item inválido no carrinho.");
+    if (!validItemCode(code) || !Number.isInteger(qty) || qty < 1 || qty > 99) return bad("Item inválido no carrinho.");
     pedidos.set(code, (pedidos.get(code) ?? 0) + qty);
   }
   if (!pedidos.size) return bad("O carrinho está vazio.");
+  if (pedidos.size > 300) return bad("Carrinho grande demais.");
 
   // ---------- loja, estoque e preços (sempre recalculados aqui, nunca confiando no cliente) ----------
   const admin = createAdminClient();
   if (!(await withinRateLimit(admin, request, LIMITE))) return bad(TOO_MANY, 429);
 
-  const { data: shop } = await admin
-    .from("shops")
-    .select("user_id, token, enabled, seller_name, whatsapp")
-    .eq("token", token)
-    .maybeSingle<ShopRow & { user_id: string }>();
-
-  if (!shop) return bad("Loja não encontrada.", 404);
-  if (!shop.enabled || !(await hasShopAccess(admin, shop.user_id))) return bad("Esta loja não está recebendo pedidos no momento.", 409);
+  const found = await loadShopForOrder(admin, token, [...pedidos.keys()]);
+  if (!found.ok) return bad(found.error, found.status);
+  const { shop, pricing } = found;
   if (!shop.whatsapp) return bad("O anunciante ainda não configurou o WhatsApp da loja.", 409);
-  const album = (await loadShopAlbums(admin, shop.user_id)).find((a) => a.albumId === albumId);
-  if (!album?.enabled) return bad("Esta coleção não está à venda nesta loja.", 409);
-
-  const codes = [...pedidos.keys()];
-  const { data: priceRows } = await admin
-    .from("sticker_prices")
-    .select("code, price_cents")
-    .eq("user_id", shop.user_id)
-    .in("code", codes);
-
-  const individual: Record<string, number> = {};
-  (priceRows ?? []).forEach((r) => {
-    individual[r.code as string] = r.price_cents as number;
-  });
-  const pricing = { groups: { [albumId]: album.groupPrices }, individual };
 
   const items: OrderItem[] = [];
   const semPreco: string[] = [];
   for (const [code, qty] of pedidos) {
     const unit = priceFor(code, pricing);
     if (unit === null) semPreco.push(code);
-    else items.push({ code, qty, unit_cents: unit });
+    // o título do produto fica guardado no pedido (o lojista pode editar ou apagar o produto depois)
+    else items.push({ code, qty, unit_cents: unit, ...(isProductCode(code) ? { name: pricing.products?.[code]?.title } : {}) });
   }
   if (semPreco.length) return indisponivel(semPreco);
 
   const totalCents = items.reduce((s, it) => s + it.qty * it.unit_cents, 0);
-  if (totalCents < album.minOrderCents) return bad("O pedido não atingiu o valor mínimo.");
+  if (totalCents < (shop.order_min_cents ?? 0)) return bad("O pedido não atingiu o valor mínimo.");
 
   // Estoque (repetidas - reservas de outros pedidos) é checado e reservado atomicamente no banco.
   // O carrinho do próprio comprador não conta como reserva de terceiros (e vira o pedido).
   const cartId = readCartId((await cookies()).get(CART_COOKIE)?.value);
   const { data: placed, error } = await admin
-    .rpc("place_order", {
+    .rpc("place_shop_order", {
       p_seller: shop.user_id,
       p_items: items,
       p_total_cents: totalCents,
       p_buyer: buyer,
       p_cart_id: cartId,
-      p_album: albumId,
     })
     .single<{ id: string; number: number; reserved_until: string }>();
 

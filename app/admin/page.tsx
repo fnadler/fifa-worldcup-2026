@@ -154,6 +154,7 @@ export default async function AdminPage() {
                           {a.name}: {n(a.items)}
                         </small>
                       ))}
+                      {u.shop!.products > 0 && <small>Produtos: {n(u.shop!.products)}</small>}
                     </td>
                     <td>{n(u.shop!.orders.novo)}</td>
                     <td>{n(u.shop!.orders.confirmado)}</td>

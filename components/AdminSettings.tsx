@@ -31,12 +31,12 @@ interface AdminSettingsProps {
   userId: string;
   settings: ShopSettings;
   onSaved: (s: ShopSettings) => void;
-  /** Uma entrada por coleção: à venda e pedido mínimo. */
+  /** Uma entrada por coleção: à venda ou não. */
   albums: ShopAlbum[];
   onAlbumsSaved: (a: ShopAlbum[]) => void;
   onToast: (msg: string) => void;
-  /** Repetidas em estoque e quantas delas têm preço (grupo ou individual). */
-  stockSummary: { repetidas: number; vendaveis: number };
+  /** Repetidas em estoque, itens vendáveis (repetidas com preço + produtos com estoque) e produtos ativos. */
+  stockSummary: { repetidas: number; vendaveis: number; produtos: number };
   onGoToPrices: () => void;
 }
 
@@ -55,8 +55,9 @@ export default function AdminSettings({
   const [sellerName, setSellerName] = useState(settings.sellerName);
   const [whatsapp, setWhatsapp] = useState(maskPhoneBR(settings.whatsapp));
   const [colecoes, setColecoes] = useState(() =>
-    albums.map((a) => ({ albumId: a.albumId, enabled: a.enabled, minOrder: centsToInput(a.minOrderCents || null) }))
+    albums.map((a) => ({ albumId: a.albumId, enabled: a.enabled }))
   );
+  const [minOrder, setMinOrder] = useState(centsToInput(settings.minOrderCents || null));
   const [onlyAvailable, setOnlyAvailable] = useState(settings.onlyAvailable);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -95,13 +96,12 @@ export default function AdminSettings({
     e.preventDefault();
     setError(null);
 
-    const minimos: Record<string, number> = {};
-    for (const c of colecoes) {
-      const v = parseBRL(c.minOrder) ?? 0;
-      if (Number.isNaN(v)) return setError(`Valor mínimo inválido em ${getCatalog(c.albumId).name}. Use o formato 10,00.`);
-      minimos[c.albumId] = v;
+    const minimo = parseBRL(minOrder) ?? 0;
+    if (Number.isNaN(minimo)) return setError("Pedido mínimo inválido. Use o formato 10,00.");
+    // uma loja só de produtos pode ficar sem coleção à venda
+    if (!colecoes.some((c) => c.enabled) && stockSummary.produtos === 0) {
+      return setError("Deixe ao menos uma coleção à venda (ou cadastre um produto na aba Produtos).");
     }
-    if (!colecoes.some((c) => c.enabled)) return setError("Deixe ao menos uma coleção à venda.");
 
     if (whatsapp && !isValidPhoneBR(whatsapp)) {
       return setError("WhatsApp inválido. Informe o DDD e o número: (11) 99999-8888.");
@@ -131,6 +131,7 @@ export default function AdminSettings({
         slug,
         only_available: onlyAvailable,
         whatsapp: whats || null,
+        order_min_cents: minimo,
         updated_at: new Date().toISOString(),
       })
       .eq("user_id", userId);
@@ -142,7 +143,6 @@ export default function AdminSettings({
               user_id: userId,
               album_id: c.albumId,
               enabled: c.enabled,
-              min_order_cents: minimos[c.albumId],
               updated_at: new Date().toISOString(),
             })),
             { onConflict: "user_id,album_id" }
@@ -165,11 +165,11 @@ export default function AdminSettings({
     }
     setSellerName(nome);
     setWhatsapp(maskPhoneBR(whats));
-    onSaved({ ...settings, sellerName: nome, slug, onlyAvailable, whatsapp: whats });
+    onSaved({ ...settings, sellerName: nome, slug, onlyAvailable, whatsapp: whats, minOrderCents: minimo });
     onAlbumsSaved(
       albums.map((a) => {
         const c = colecoes.find((x) => x.albumId === a.albumId)!;
-        return { ...a, enabled: c.enabled, minOrderCents: minimos[a.albumId] };
+        return { ...a, enabled: c.enabled };
       })
     );
     onToast("Configurações salvas!");
@@ -399,7 +399,8 @@ export default function AdminSettings({
         <div className="shop-albums-settings">
           <span className="form-label">Coleções à venda</span>
           <span className="field-hint">
-            Cada coleção tem seus preços (aba Preços) e seu pedido mínimo. Um pedido é sempre de uma coleção só.
+            Cada coleção tem seus preços (aba Preços). O comprador pode juntar itens de todas as coleções e produtos no
+            mesmo pedido.
           </span>
           {colecoes.map((c) => (
             <div key={c.albumId} className="shop-album-row">
@@ -413,21 +414,22 @@ export default function AdminSettings({
                 />
                 <strong>{getCatalog(c.albumId).name}</strong>
               </label>
-              <label className="form-label shop-album-min">
-                Pedido mínimo (R$)
-                <input
-                  className="login-input"
-                  inputMode="decimal"
-                  value={c.minOrder}
-                  placeholder="0,00"
-                  disabled={!c.enabled}
-                  onChange={(e) =>
-                    setColecoes((cs) => cs.map((x) => (x.albumId === c.albumId ? { ...x, minOrder: e.target.value } : x)))
-                  }
-                />
-              </label>
             </div>
           ))}
+        </div>
+
+        <div className="form-row">
+          <label className="form-label">
+            Pedido mínimo da loja (R$)
+            <input
+              className="login-input"
+              inputMode="decimal"
+              value={minOrder}
+              placeholder="0,00"
+              onChange={(e) => setMinOrder(e.target.value)}
+            />
+            <span className="field-hint">Vale para o total do carrinho, somando todas as coleções e produtos. Em branco = sem mínimo.</span>
+          </label>
         </div>
 
         <label className="check-row">

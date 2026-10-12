@@ -1,14 +1,13 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
-import { describeSticker, formatBRL, formatDateTimeBR, isValidPhoneBR, maskPhoneBR, type BuyerInfo } from "@/lib/shop";
+import { Fragment, useEffect, useState, type FormEvent } from "react";
+import { formatBRL, formatDateTimeBR, isValidPhoneBR, itemLabel, maskPhoneBR, type BuyerInfo, type ItemLabel } from "@/lib/shop";
 import type { CartAdjust } from "@/lib/useCartHold";
-import { useCatalog } from "@/lib/CatalogContext";
 import HoldTimer from "./HoldTimer";
 import SafetyTips from "./SafetyTips";
-import { displayCode } from "@/lib/album";
 
-export interface CartLine {
+/** Linha do carrinho: figurinha/card de qualquer coleção da loja ou produto. */
+export interface CartLine extends ItemLabel {
   code: string;
   qty: number;
   available: number;
@@ -17,7 +16,6 @@ export interface CartLine {
 
 interface CartModalProps {
   token: string;
-  albumId: string;
   lines: CartLine[];
   totalCents: number;
   minOrderCents: number;
@@ -27,6 +25,8 @@ interface CartModalProps {
   /** Revalida (e reserva de novo) o carrinho no servidor; devolve o que precisou ser ajustado. */
   onReview: () => Promise<{ adjusted: CartAdjust[] } | null>;
   expiresAt: string | null;
+  /** Título de um produto pelo código (itens que saíram do carrinho não têm mais linha). */
+  nameOf?: (code: string) => string | undefined;
   onOrdered: () => void;
   onClose: () => void;
 }
@@ -50,7 +50,6 @@ type Step = "cart" | "review" | "checkout" | "done";
 
 export default function CartModal({
   token,
-  albumId,
   lines,
   totalCents,
   minOrderCents,
@@ -59,12 +58,14 @@ export default function CartModal({
   onClear,
   onReview,
   expiresAt,
+  nameOf,
   onOrdered,
   onClose,
 }: CartModalProps) {
-  const catalog = useCatalog();
-  const plural = catalog.itemPlural;
-  const f = catalog.itemSingular === "figurinha";
+  // com itens de mais de um grupo (coleções, produtos), cada grupo ganha um título na lista
+  const variosGrupos = new Set(lines.map((l) => l.group)).size > 1;
+  const cabecalho = (i: number) =>
+    variosGrupos && lines[i].group !== lines[i - 1]?.group ? <div className="cart-group-title">{lines[i].group}</div> : null;
   const [step, setStep] = useState<Step>("cart");
   const [buyer, setBuyer] = useState<BuyerInfo>(EMPTY_BUYER);
   const [honeypot, setHoneypot] = useState("");
@@ -111,7 +112,7 @@ export default function CartModal({
   }
 
   function limpar() {
-    if (window.confirm(`Remover tod${f ? "as as" : "os os"} ${plural} do carrinho?`)) onClear();
+    if (window.confirm("Remover todos os itens do carrinho?")) onClear();
   }
 
   async function enviar(e: FormEvent) {
@@ -133,7 +134,6 @@ export default function CartModal({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          albumId,
           items: lines.map((l) => ({ code: l.code, qty: l.qty })),
           buyer,
           website: honeypot,
@@ -180,7 +180,7 @@ export default function CartModal({
           </span>
           {step !== "done" && (
             <span className="modal-count">
-              {totalFigurinhas} {totalFigurinhas === 1 ? catalog.itemSingular : plural}
+              {totalFigurinhas} {totalFigurinhas === 1 ? "item" : "itens"}
             </span>
           )}
           <div className="modal-header-spacer" />
@@ -195,12 +195,15 @@ export default function CartModal({
               {lines.length > 0 && <HoldTimer expiresAt={expiresAt} />}
               {error && <div className="login-error">{error}</div>}
               {lines.length === 0 && <div className="empty-message">Seu carrinho está vazio.</div>}
-              {lines.map((l) => (
-                <div key={l.code} className="cart-line">
+              {lines.map((l, i) => (
+                <Fragment key={l.code}>
+                {cabecalho(i)}
+                <div className="cart-line">
                   <div className="cart-line-info">
-                    <span className="cart-line-code">{displayCode(l.code)}</span>
+                    <span className="cart-line-code">{l.title}</span>
                     <span className="cart-line-meta">
-                      {describeSticker(l.code)} · {formatBRL(l.unitCents)} cada
+                      {l.meta && `${l.meta} · `}
+                      {formatBRL(l.unitCents)} cada
                     </span>
                   </div>
                   <div className="stepper">
@@ -218,10 +221,11 @@ export default function CartModal({
                     </button>
                   </div>
                   <span className="cart-line-total">{formatBRL(l.qty * l.unitCents)}</span>
-                  <button type="button" className="cart-line-remove" onClick={() => onRemove(l.code)} aria-label={`Remover ${l.code}`}>
+                  <button type="button" className="cart-line-remove" onClick={() => onRemove(l.code)} aria-label={`Remover ${l.title}`}>
                     ×
                   </button>
                 </div>
+                </Fragment>
               ))}
             </div>
             <div className="cart-footer">
@@ -265,16 +269,18 @@ export default function CartModal({
                   ajustado:
                 </div>
               )}
-              {lines.map((l) => {
+              {lines.map((l, i) => {
                 const aj = ajustes.find((a) => a.code === l.code);
                 return (
-                  <div key={l.code} className={`cart-line review-line ${aj ? "is-adjusted" : ""}`}>
+                  <Fragment key={l.code}>
+                  {cabecalho(i)}
+                  <div className={`cart-line review-line ${aj ? "is-adjusted" : ""}`}>
                     <span className="review-status">{aj ? "⚠" : "✓"}</span>
                     <div className="cart-line-info">
-                      <span className="cart-line-code">{displayCode(l.code)}</span>
+                      <span className="cart-line-code">{l.title}</span>
                       <span className="cart-line-meta">
-                        {describeSticker(l.code)}
-                        {aj && ` · só ${aj.granted} de ${aj.requested} disponíve${aj.granted === 1 ? "l" : "is"}`}
+                        {l.meta}
+                        {aj && `${l.meta ? " · " : ""}só ${aj.granted} de ${aj.requested} disponíve${aj.granted === 1 ? "l" : "is"}`}
                       </span>
                     </div>
                     <span className="review-qty">
@@ -282,19 +288,23 @@ export default function CartModal({
                     </span>
                     <span className="cart-line-total">{formatBRL(l.qty * l.unitCents)}</span>
                   </div>
+                  </Fragment>
                 );
               })}
               {ajustes
                 .filter((a) => a.granted === 0)
-                .map((a) => (
-                  <div key={a.code} className="cart-line review-line is-removed">
-                    <span className="review-status">✗</span>
-                    <div className="cart-line-info">
-                      <span className="cart-line-code">{displayCode(a.code)}</span>
-                      <span className="cart-line-meta">{describeSticker(a.code)} · não está mais disponível — removida</span>
+                .map((a) => {
+                  const l = itemLabel(a.code, nameOf?.(a.code));
+                  return (
+                    <div key={a.code} className="cart-line review-line is-removed">
+                      <span className="review-status">✗</span>
+                      <div className="cart-line-info">
+                        <span className="cart-line-code">{l.title}</span>
+                        <span className="cart-line-meta">{l.meta && `${l.meta} · `}não está mais disponível — saiu do carrinho</span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               {lines.length === 0 && (
                 <div className="empty-message">Nenhum dos itens do carrinho está mais disponível.</div>
               )}

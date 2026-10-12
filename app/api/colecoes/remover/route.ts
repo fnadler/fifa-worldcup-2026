@@ -15,15 +15,19 @@ export async function POST(request: Request) {
   const albumId = typeof body.albumId === "string" && CATALOGS.some((c) => c.id === body.albumId) ? body.albumId : null;
   if (!albumId) return NextResponse.json({ error: "Coleção inválida." }, { status: 400 });
 
+  const codes = getCatalog(albumId).blocks.flatMap((b) => b.codes);
+
   // Pedidos novos ainda dentro do prazo seguram repetidas desta coleção: sem elas, o lojista não
-  // conseguiria confirmar. Precisa resolver os pedidos antes.
-  const { count: abertos } = await supabase
+  // conseguiria confirmar. Precisa resolver os pedidos antes. (Um pedido pode misturar coleções.)
+  const { data: novos } = await supabase
     .from("orders")
-    .select("id", { count: "exact", head: true })
+    .select("items")
     .eq("seller_id", user.id)
-    .eq("album_id", albumId)
     .eq("status", "novo")
-    .gt("reserved_until", new Date().toISOString());
+    .gt("reserved_until", new Date().toISOString())
+    .returns<{ items: { code: string }[] }[]>();
+  const daColecao = new Set(codes);
+  const abertos = (novos ?? []).filter((o) => o.items.some((it) => daColecao.has(it.code))).length;
   if (abertos) {
     return NextResponse.json(
       {
@@ -34,7 +38,6 @@ export async function POST(request: Request) {
   }
 
   // As marcações ficam numa tabela só (collection), por código — apaga em lotes os códigos da coleção.
-  const codes = getCatalog(albumId).blocks.flatMap((b) => b.codes);
   for (let i = 0; i < codes.length; i += 200) {
     const { error } = await supabase.from("collection").delete().eq("user_id", user.id).in("code", codes.slice(i, i + 200));
     if (error) {

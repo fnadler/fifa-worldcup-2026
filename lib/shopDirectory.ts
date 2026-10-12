@@ -6,7 +6,8 @@ import { shopAlbumsFromRows, shopPath, type ShopAlbumRow } from "./shop";
 import { createAdminClient } from "./supabase/admin";
 
 // Lista pública de lojas (/lojas): lojas ligadas, com acesso à vitrine em dia e ao menos uma coleção
-// à venda. Itens únicos = códigos com repetida (qty > 1) nas coleções à venda — sem somar o estoque.
+// à venda ou um produto ativo com estoque. Itens únicos = códigos com repetida (qty > 1) nas coleções
+// à venda, mais os produtos — sem somar o estoque.
 
 export const OFFICIAL_SHOP_SLUG = "loja-oficial";
 
@@ -24,6 +25,8 @@ export interface DirectoryShop {
   logoUrl: string | null;
   official: boolean;
   albums: DirectoryAlbum[];
+  /** Produtos especiais à venda (ativos e com estoque). */
+  products: number;
   items: number;
 }
 
@@ -44,13 +47,16 @@ export async function loadActiveShops(): Promise<ActiveShop[]> {
   if (!shops?.length) return [];
 
   const ids = shops.map((s) => s.user_id);
-  const [{ data: ents }, { data: albumRows }, { data: rows }] = await Promise.all([
+  const [{ data: ents }, { data: albumRows }, { data: rows }, { data: productRows }] = await Promise.all([
     admin.from("shop_entitlements").select("user_id, expires_at").in("user_id", ids),
     admin.from("shop_albums").select("user_id, album_id, enabled, min_order_cents, group_prices").in("user_id", ids),
     fetchAll<{ user_id: string; code: string }>((from, to) =>
       admin.from("collection").select("user_id, code").in("user_id", ids).gt("qty", 1).order("user_id").order("code").range(from, to)
     ),
+    admin.from("shop_products").select("user_id").in("user_id", ids).eq("active", true).gt("stock", 0),
   ]);
+  const produtos = new Map<string, number>();
+  for (const p of (productRows ?? []) as { user_id: string }[]) produtos.set(p.user_id, (produtos.get(p.user_id) ?? 0) + 1);
 
   const now = new Date();
   const ativos = new Set(
@@ -76,8 +82,10 @@ export async function loadActiveShops(): Promise<ActiveShop[]> {
     if (!ativos.has(s.user_id)) continue;
     const config = shopAlbumsFromRows(((albumRows ?? []) as (ShopAlbumRow & { user_id: string })[]).filter((r) => r.user_id === s.user_id));
     const aVenda = config.filter((a) => a.enabled);
-    if (!aVenda.length) continue;
+    const products = produtos.get(s.user_id) ?? 0;
+    if (!aVenda.length && !products) continue;
     out.push({
+      products,
       userId: s.user_id,
       path: shopPath(s),
       slug: s.slug,
@@ -103,7 +111,8 @@ export async function listShops(): Promise<DirectoryShop[]> {
       logoUrl: shop.logoUrl,
       official: shop.official,
       albums,
-      items: albums.reduce((n, a) => n + a.items, 0),
+      products: shop.products,
+      items: albums.reduce((n, a) => n + a.items, 0) + shop.products,
     };
   });
   // loja oficial primeiro; depois as com mais itens

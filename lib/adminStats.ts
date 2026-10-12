@@ -39,7 +39,9 @@ export interface AdminShop {
   /** Status da assinatura no Stripe (trialing, active, past_due…), se houver. */
   subscription: string | null;
   albums: { name: string; items: number }[];
-  /** Itens únicos à venda (códigos com repetida nas coleções à venda) — mesma conta de /lojas. */
+  /** Produtos especiais ativos e com estoque. */
+  products: number;
+  /** Itens únicos à venda (códigos com repetida nas coleções à venda, mais os produtos) — mesma conta de /lojas. */
   items: number;
   orders: { novo: number; confirmado: number; cancelado: number };
   /** Valor dos pedidos confirmados, em centavos. */
@@ -146,7 +148,7 @@ const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
 
 export async function loadAdminStats(): Promise<AdminStats> {
   const admin = createAdminClient();
-  const [users, stats, { data: userAlbums }, { data: shops }, { data: ents }, { data: subs }, { data: shopAlbums }, { data: orders }] =
+  const [users, stats, { data: userAlbums }, { data: shops }, { data: ents }, { data: subs }, { data: shopAlbums }, { data: orders }, { data: productRows }] =
     await Promise.all([
       allUsers(admin),
       collectionStats(admin),
@@ -160,7 +162,10 @@ export async function loadAdminStats(): Promise<AdminStats> {
       fetchAll<{ seller_id: string; status: "novo" | "confirmado" | "cancelado"; total_cents: number }>((from, to) =>
         admin.from("orders").select("seller_id, status, total_cents").order("created_at").order("id").range(from, to)
       ),
+      admin.from("shop_products").select("user_id").eq("active", true).gt("stock", 0),
     ]);
+  const productsOf = new Map<string, number>();
+  for (const p of (productRows ?? []) as { user_id: string }[]) productsOf.set(p.user_id, (productsOf.get(p.user_id) ?? 0) + 1);
 
   const now = Date.now();
   const DAY = 86_400_000;
@@ -205,7 +210,9 @@ export async function loadAdminStats(): Promise<AdminStats> {
         items: stat.get(`${u.id}|${c.id}`)?.itens_repetidos ?? 0,
       }));
       const o = ordersOf.get(u.id);
+      const prods = productsOf.get(u.id) ?? 0;
       shop = {
+        products: prods,
         name: row.seller_name || DEFAULT_SHOP_NAME,
         path: shopPath(row),
         enabled: row.enabled,
@@ -213,7 +220,7 @@ export async function loadAdminStats(): Promise<AdminStats> {
         access: acc,
         subscription: subStatus.get(u.id) ?? null,
         albums,
-        items: albums.reduce((n, a) => n + a.items, 0),
+        items: albums.reduce((n, a) => n + a.items, 0) + prods,
         orders: { novo: o?.novo ?? 0, confirmado: o?.confirmado ?? 0, cancelado: o?.cancelado ?? 0 },
         confirmedCents: o?.cents ?? 0,
       };

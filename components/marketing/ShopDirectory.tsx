@@ -31,6 +31,7 @@ function ShopCard({ shop, albumId }: { shop: DirectoryShop; albumId: string | nu
               {a.name}
             </span>
           ))}
+          {shop.products > 0 && <span>Produtos</span>}
         </div>
         <small>
           {items.toLocaleString("pt-BR")} {items === 1 ? "item único" : "itens únicos"}

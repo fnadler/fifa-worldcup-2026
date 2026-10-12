@@ -21,6 +21,7 @@ export async function signOut() {
 const LOJA_ITENS = [
   { href: "/vendas?aba=pedidos", label: "Pedidos" },
   { href: "/vendas?aba=precos", label: "Definir preços" },
+  { href: "/vendas?aba=produtos", label: "Produtos" },
   { href: "/vendas?aba=config", label: "Configurações" },
   { href: "/assinatura", label: "Assinatura" },
 ];

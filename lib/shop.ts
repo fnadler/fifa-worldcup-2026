@@ -8,8 +8,62 @@ import type { BlockType } from "./types";
 export type OrderStatus = "novo" | "confirmado" | "cancelado";
 export type CancelReason = "manual" | "expirado" | "assinatura" | null;
 
-export const RESERVA_HORAS = 24; // pedido novo segura as figurinhas por 24h
-export const CARRINHO_MINUTOS = 10; // carrinho segura as figurinhas por 10 min
+export const RESERVA_HORAS = 24; // pedido novo segura os itens por 24h
+export const CARRINHO_MINUTOS = 10; // carrinho segura os itens por 10 min
+
+// ---------- produtos especiais (kits, dispensers…) ----------
+// No carrinho e nos pedidos o produto usa o código "PRD:<id>" — convive com os códigos das figurinhas.
+
+export const PRODUCT_PREFIX = "PRD:";
+export const PRODUCTS_TAB = "produtos"; // ?colecao=produtos na loja
+export const MAX_PRODUCTS = 60;
+export const PRODUCT_TITLE_MAX = 80;
+export const PRODUCT_DESCRIPTION_MAX = 600;
+export const PRODUCT_STOCK_MAX = 9999;
+
+export const isProductCode = (code: string) => code.startsWith(PRODUCT_PREFIX);
+export const productCode = (id: string) => `${PRODUCT_PREFIX}${id}`;
+
+export interface ShopProduct {
+  id: string;
+  code: string;
+  title: string;
+  description: string;
+  priceCents: number;
+  stock: number;
+  imageUrl: string | null;
+  active: boolean;
+}
+
+export interface ShopProductRow {
+  id: string;
+  title: string;
+  description: string;
+  price_cents: number;
+  stock: number;
+  image_url: string | null;
+  active: boolean;
+}
+
+export const PRODUCT_COLUMNS = "id, title, description, price_cents, stock, image_url, active";
+
+export function productFromRow(r: ShopProductRow): ShopProduct {
+  return {
+    id: r.id,
+    code: productCode(r.id),
+    title: r.title,
+    description: r.description,
+    priceCents: r.price_cents,
+    stock: r.stock,
+    imageUrl: r.image_url,
+    active: r.active,
+  };
+}
+
+/** Produtos no formato de ShopPricing.products (código → preço e título). */
+export function productsPricing(products: ShopProduct[]): Record<string, { cents: number; title: string }> {
+  return Object.fromEntries(products.map((p) => [p.code, { cents: p.priceCents, title: p.title }]));
+}
 
 export interface CartHold {
   items: { code: string; qty: number }[];
@@ -26,6 +80,8 @@ export interface ShopPricing {
   /** albums.id → preço por grupo daquela coleção (só as coleções à venda). */
   groups: Record<string, GroupPrices>;
   individual: Record<string, number>;
+  /** Produtos à venda: código ("PRD:<id>") → preço e título. */
+  products?: Record<string, { cents: number; title: string }>;
 }
 
 /** Configuração da loja para uma coleção (tabela shop_albums). */
@@ -74,12 +130,16 @@ export interface ShopSettings {
   enabled: boolean;
   sellerName: string;
   whatsapp: string;
+  /** Pedido mínimo da loja inteira (soma do carrinho), em centavos. */
+  minOrderCents: number;
 }
 
 export interface OrderItem {
   code: string;
   qty: number;
   unit_cents: number;
+  /** Título do produto no momento do pedido (só para códigos "PRD:"). */
+  name?: string;
 }
 
 export interface BuyerInfo {
@@ -98,8 +158,6 @@ export interface BuyerInfo {
 export interface Order {
   id: string;
   number: number;
-  /** Coleção do pedido (um pedido é sempre de uma coleção só). */
-  albumId: string;
   status: OrderStatus;
   buyer: BuyerInfo;
   items: OrderItem[];
@@ -122,12 +180,12 @@ export interface ShopRow {
   enabled: boolean;
   seller_name: string | null;
   whatsapp: string | null;
+  order_min_cents?: number | null;
 }
 
 export interface OrderRow {
   id: string;
   number: number;
-  album_id: string | null;
   status: OrderStatus;
   buyer_name: string;
   buyer_email: string;
@@ -147,7 +205,7 @@ export interface OrderRow {
 }
 
 export const ORDER_COLUMNS =
-  "id, number, album_id, status, buyer_name, buyer_email, buyer_whatsapp, address_cep, address_street, address_number, address_complement, address_district, address_city, address_state, items, total_cents, created_at, reserved_until, cancel_reason";
+  "id, number, status, buyer_name, buyer_email, buyer_whatsapp, address_cep, address_street, address_number, address_complement, address_district, address_city, address_state, items, total_cents, created_at, reserved_until, cancel_reason";
 
 export function isKnownCode(code: string): boolean {
   return lookupCode(code) !== undefined;
@@ -164,6 +222,7 @@ export function describeSticker(code: string): string {
 }
 
 export function priceFor(code: string, pricing: ShopPricing): number | null {
+  if (isProductCode(code)) return pricing.products?.[code]?.cents ?? null;
   const individual = pricing.individual[code];
   if (individual !== undefined) return individual;
   const e = lookupCode(code);
@@ -173,6 +232,36 @@ export function priceFor(code: string, pricing: ShopPricing): number | null {
   // O do bloco também cobre lojas que salvaram os preços antes de a divisão existir.
   const kind = e.block.kinds?.[e.index];
   return (kind ? group?.[`${e.block.tipo}:${kind}`] : undefined) ?? group?.[e.block.tipo] ?? null;
+}
+
+/** Como um item aparece em listas (carrinho, pedido): título, detalhe e o grupo a que pertence. */
+export interface ItemLabel {
+  title: string;
+  meta: string;
+  /** Nome curto da coleção, ou "Produtos". */
+  group: string;
+}
+
+export const PRODUCTS_GROUP = "Produtos";
+
+/** `name`: título do produto, quando o código é de produto (vem do pedido ou da lista de produtos). */
+export function itemLabel(code: string, name?: string): ItemLabel {
+  if (isProductCode(code)) return { title: name || "Produto", meta: "", group: PRODUCTS_GROUP };
+  return { title: displayCode(code), meta: describeSticker(code), group: lookupCode(code)?.catalog.shortName ?? "" };
+}
+
+/** Posição do item para ordenar: coleções na ordem da plataforma, itens na ordem do álbum; produtos no fim. */
+export function itemOrder(code: string): number {
+  if (isProductCode(code)) return Number.MAX_SAFE_INTEGER;
+  const e = lookupCode(code);
+  if (!e) return Number.MAX_SAFE_INTEGER - 1;
+  return CATALOGS.indexOf(e.catalog) * 1_000_000 + e.catalog.blocks.indexOf(e.block) * 1_000 + e.index;
+}
+
+/** Grupos presentes num pedido, na ordem ("Álbum Copa 2026", "Adrenalyn XL", "Produtos"). */
+export function orderGroups(items: OrderItem[]): string[] {
+  const sorted = [...items].sort((a, b) => itemOrder(a.code) - itemOrder(b.code));
+  return [...new Set(sorted.map((it) => itemLabel(it.code, it.name).group))];
 }
 
 // Só as repetidas estão à venda — a figurinha colada no álbum nunca sai.
@@ -189,6 +278,7 @@ export function settingsFromRow(row: ShopRow): ShopSettings {
     enabled: row.enabled,
     sellerName: row.seller_name ?? "",
     whatsapp: row.whatsapp ?? "",
+    minOrderCents: row.order_min_cents ?? 0,
   };
 }
 
@@ -214,7 +304,6 @@ export function orderFromRow(row: OrderRow): Order {
     createdAt: row.created_at,
     reservedUntil: row.reserved_until,
     cancelReason: row.cancel_reason,
-    albumId: row.album_id ?? DEFAULT_CATALOG.id,
   };
 }
 
@@ -286,32 +375,49 @@ export function orderMessage(
   buyer: BuyerInfo,
   reservedUntil?: string
 ): string {
-  const porBloco = new Map<string, OrderItem[]>();
-  items.forEach((it) => {
-    const nome = blockNameFor(it.code);
-    porBloco.set(nome, [...(porBloco.get(nome) ?? []), it]);
-  });
+  const sorted = [...items].sort((a, b) => itemOrder(a.code) - itemOrder(b.code));
+  const grupos = orderGroups(items);
+  const linha = (it: OrderItem, rotulo: string) =>
+    `• ${rotulo} — ${it.qty} × ${formatBRL(it.unit_cents)} = ${formatBRL(it.qty * it.unit_cents)}`;
 
+  // Uma seção por coleção (só com título quando o pedido mistura grupos), com os itens por bloco.
   const linhas: string[] = [];
-  porBloco.forEach((its, nome) => {
-    linhas.push(`_${nome}_`);
-    its.forEach((it) => {
-      const nome = stickerName(it.code);
-      linhas.push(`• ${displayCode(it.code)}${nome ? ` ${nome}` : ""} — ${it.qty} × ${formatBRL(it.unit_cents)} = ${formatBRL(it.qty * it.unit_cents)}`);
-    });
-  });
+  for (const grupo of grupos) {
+    const doGrupo = sorted.filter((it) => itemLabel(it.code, it.name).group === grupo);
+    if (grupos.length > 1) linhas.push(`*${grupo}*`);
+    if (grupo === PRODUCTS_GROUP) {
+      doGrupo.forEach((it) => linhas.push(linha(it, it.name || "Produto")));
+    } else {
+      let bloco = "";
+      for (const it of doGrupo) {
+        const nomeBloco = blockNameFor(it.code);
+        if (nomeBloco !== bloco) {
+          bloco = nomeBloco;
+          linhas.push(`_${bloco}_`);
+        }
+        const nome = stickerName(it.code);
+        linhas.push(linha(it, `${displayCode(it.code)}${nome ? ` ${nome}` : ""}`));
+      }
+    }
+    if (grupos.length > 1) {
+      linhas.push(`Subtotal: ${formatBRL(doGrupo.reduce((s, it) => s + it.qty * it.unit_cents, 0))}`, "");
+    }
+  }
+  if (grupos.length > 1) linhas.pop();
 
-  const catalog = catalogOfCodes(items.map((it) => it.code));
-  const totalFigurinhas = items.reduce((s, it) => s + it.qty, 0);
-  const itemLabel = totalFigurinhas === 1 ? catalog.itemSingular : catalog.itemPlural;
-  const reservados = catalog.itemSingular === "card" ? "Cards reservados" : "Figurinhas reservadas";
+  const totalItens = items.reduce((s, it) => s + it.qty, 0);
+  // pedido de uma coleção só: fala a língua dela ("figurinhas"/"cards"); misto: "itens"
+  const stickers = items.filter((it) => !isProductCode(it.code));
+  const catalog = grupos.length === 1 && stickers.length ? catalogOfCodes(stickers.map((it) => it.code)) : null;
+  const itemLabelTxt = catalog ? (totalItens === 1 ? catalog.itemSingular : catalog.itemPlural) : totalItens === 1 ? "item" : "itens";
+  const reservados = catalog ? (catalog.itemSingular === "card" ? "Cards reservados" : "Figurinhas reservadas") : "Itens reservados";
 
   return [
-    `*Pedido #${number} — ${catalog.shortName}*`,
+    `*Pedido #${number} — ${grupos.join(" + ")}*`,
     "",
     ...linhas,
     "",
-    `*Total: ${formatBRL(totalCents)}* (${totalFigurinhas} ${itemLabel}) — frete a combinar`,
+    `*Total: ${formatBRL(totalCents)}* (${totalItens} ${itemLabelTxt}) — frete a combinar`,
     ...(reservedUntil ? [`${reservados} até ${formatDateTimeBR(reservedUntil)}.`] : []),
     "",
     "*Comprador*",

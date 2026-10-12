@@ -1,12 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { anchorId, hasNamedStickers } from "@/lib/album";
 import { CatalogProvider } from "@/lib/CatalogContext";
 import { getCatalog } from "@/lib/catalog";
 import { matchesSticker } from "@/lib/derive";
-import { formatBRL, priceFor, type CartHold, type ShopPricing } from "@/lib/shop";
+import { PRODUCTS_GROUP, PRODUCTS_TAB, formatBRL, itemLabel, itemOrder, priceFor, type CartHold, type ShopPricing } from "@/lib/shop";
 import { useCartHold } from "@/lib/useCartHold";
 import type { Qtd, TipoFiltro } from "@/lib/types";
 import { VIEW_OPTIONS, useViewMode } from "@/lib/useViewMode";
@@ -21,11 +22,24 @@ import LogoPreview from "./LogoPreview";
 import HoldTimer from "./HoldTimer";
 import { PLATFORM_NAME } from "@/lib/brand";
 
+/** Produto na vitrine (o estoque disponível vem em `available`, pelo código). */
+export interface ShopBoardProduct {
+  code: string;
+  title: string;
+  description: string;
+  priceCents: number;
+  imageUrl: string | null;
+}
+
 interface ShopBoardProps {
-  /** Coleção exibida (albums.id) — um carrinho por coleção. */
+  /** Aba aberta: uma coleção (`albumId`) ou os produtos da loja. */
+  tab: "album" | "products";
+  /** Coleção exibida (albums.id). Na aba de produtos só define o vocabulário do cabeçalho. */
   albumId: string;
-  /** Coleções à venda na loja (abas quando há mais de uma). */
+  /** Coleções à venda na loja (abas, junto com "Produtos" quando há produtos). */
   albums: { albumId: string; slug: string; name: string }[];
+  /** Produtos ativos da loja. */
+  products: ShopBoardProduct[];
   token: string;
   /** Caminho público da loja (/slug ou /loja/token). */
   path: string;
@@ -33,7 +47,9 @@ interface ShopBoardProps {
   logoUrl: string | null;
   /** Configuração da loja: mostrar só o que está à venda (sem o filtro de disponibilidade). */
   onlyAvailable: boolean;
+  /** Pedido mínimo da loja (soma do carrinho, que pode ter itens de várias coleções e produtos). */
   minOrderCents: number;
+  /** Disponível por código, de todas as coleções à venda e produtos. */
   available: Qtd;
   pricing: ShopPricing;
   /** Reserva ativa do carrinho deste navegador (cookie), se houver. */
@@ -50,8 +66,10 @@ const DISPS: { value: DispFiltro; label: string }[] = [
 ];
 
 export default function ShopBoard({
+  tab,
   albumId,
   albums,
+  products,
   token,
   path,
   shopName,
@@ -64,7 +82,9 @@ export default function ShopBoard({
   owner,
 }: ShopBoardProps) {
   const catalog = getCatalog(albumId);
-  const itens = (n: number) => `${n} ${n === 1 ? catalog.itemSingular : catalog.itemPlural}`;
+  // o carrinho mistura coleções e produtos: fala "itens"
+  const itens = (n: number) => `${n} ${n === 1 ? "item" : "itens"}`;
+  const naAbaProdutos = tab === "products";
   const [tipo, setTipo] = useState<TipoFiltro>("ALL");
   const [dispEscolhido, setDisp] = useState<DispFiltro>("ALL");
   const disp: DispFiltro = onlyAvailable ? "AVAIL" : dispEscolhido;
@@ -88,25 +108,27 @@ export default function ShopBoard({
   );
 
   // Carrinho com reserva de 10 min no servidor (ver useCartHold).
+  const nameOf = useCallback((code: string) => pricing.products?.[code]?.title, [pricing]);
   const { cart, expiresAt, changeQty, remove, clear, flush, resetAfterOrder } = useCartHold({
     token,
-    albumId,
     available,
     initialHold,
     onToast: showToast,
+    nameOf,
   });
 
-  const lines: CartLine[] = useMemo(() => {
-    const out: CartLine[] = [];
-    catalog.blocks.forEach((b) =>
-      b.codes.forEach((code) => {
-        const qty = cart[code];
-        const unit = priceFor(code, pricing);
-        if (qty && unit !== null) out.push({ code, qty, available: available[code] ?? 0, unitCents: unit });
-      })
-    );
-    return out;
-  }, [catalog, cart, pricing, available]);
+  // Carrinho inteiro (todas as coleções e produtos), na ordem dos álbuns; produtos por último.
+  const lines: CartLine[] = useMemo(
+    () =>
+      Object.keys(cart)
+        .sort((a, b) => itemOrder(a) - itemOrder(b))
+        .flatMap((code) => {
+          const unit = priceFor(code, pricing);
+          if (!cart[code] || unit === null) return [];
+          return [{ code, qty: cart[code], available: available[code] ?? 0, unitCents: unit, ...itemLabel(code, nameOf(code)) }];
+        }),
+    [cart, pricing, available, nameOf]
+  );
 
   const fem = catalog.itemSingular === "figurinha";
   const totalCents = lines.reduce((s, l) => s + l.qty * l.unitCents, 0);
@@ -114,11 +136,10 @@ export default function ShopBoard({
 
   const totalDisponivel = useMemo(
     () =>
-      catalog.blocks.reduce(
-        (s, b) => s + b.codes.reduce((t, code) => t + (vendavel(code) ? available[code] : 0), 0),
-        0
-      ),
-    [catalog, available, vendavel]
+      naAbaProdutos
+        ? products.reduce((t, p) => t + (available[p.code] ?? 0), 0)
+        : catalog.blocks.reduce((s, b) => s + b.codes.reduce((t, code) => t + (vendavel(code) ? available[code] : 0), 0), 0),
+    [naAbaProdutos, products, catalog, available, vendavel]
   );
 
   const blocosComVenda = useMemo(
@@ -198,15 +219,14 @@ export default function ShopBoard({
               )}
             </div>
 
-            <ViewToggleButton view={view} onChange={changeView} />
-
-            <button
-              type="button"
-              className="btn-ghost mobile-menu-button"
-              onClick={() => setMenuAberto((v) => !v)}
-            >
-              Filtros
-            </button>
+            {!naAbaProdutos && (
+              <>
+                <ViewToggleButton view={view} onChange={changeView} />
+                <button type="button" className="btn-ghost mobile-menu-button" onClick={() => setMenuAberto((v) => !v)}>
+                  Filtros
+                </button>
+              </>
+            )}
 
             {owner && (
               <HeaderActions>
@@ -228,21 +248,29 @@ export default function ShopBoard({
             </button>
           </div>
 
-          {albums.length > 1 && (
-            <nav className="segmented shop-album-tabs" aria-label="Coleções à venda">
-              {albums.map((a) => (
+          {albums.length + (products.length ? 1 : 0) > 1 && (
+            <nav className="segmented shop-album-tabs" aria-label="Seções da loja">
+              {albums.map((a) => {
+                const on = !naAbaProdutos && a.albumId === albumId;
+                return (
+                  <Link key={a.albumId} href={`${path}?colecao=${a.slug}`} className={`chip ${on ? "active" : ""}`} aria-current={on ? "page" : undefined}>
+                    {a.name}
+                  </Link>
+                );
+              })}
+              {products.length > 0 && (
                 <Link
-                  key={a.albumId}
-                  href={`${path}?colecao=${a.slug}`}
-                  className={`chip ${a.albumId === albumId ? "active" : ""}`}
-                  aria-current={a.albumId === albumId ? "page" : undefined}
+                  href={`${path}?colecao=${PRODUCTS_TAB}`}
+                  className={`chip ${naAbaProdutos ? "active" : ""}`}
+                  aria-current={naAbaProdutos ? "page" : undefined}
                 >
-                  {a.name}
+                  {PRODUCTS_GROUP}
                 </Link>
-              ))}
+              )}
             </nav>
           )}
 
+          {!naAbaProdutos && (
           <div className={`filters-panel ${menuAberto ? "is-open" : ""}`}>
             <button
               type="button"
@@ -316,6 +344,7 @@ export default function ShopBoard({
               }}
             />
           </div>
+          )}
         </div>
       </div>
 
@@ -326,7 +355,47 @@ export default function ShopBoard({
         </div>
       )}
 
-      {totalDisponivel === 0 ? (
+      {naAbaProdutos ? (
+        <div className="product-grid">
+          {products.map((p) => {
+            const disp = available[p.code] ?? 0;
+            const noCarrinho = cart[p.code] ?? 0;
+            return (
+              <article key={p.code} className={`product-card${disp === 0 ? " is-out" : ""}`}>
+                <div className="product-card-img">
+                  {p.imageUrl ? <Image src={p.imageUrl} alt="" width={640} height={640} unoptimized /> : <span aria-hidden="true">📦</span>}
+                  {disp === 0 && <em>Esgotado</em>}
+                </div>
+                <div className="product-card-body">
+                  <h3>{p.title}</h3>
+                  {p.description && <p>{p.description}</p>}
+                </div>
+                <div className="product-card-foot">
+                  <div>
+                    <strong>{formatBRL(p.priceCents)}</strong>
+                    {disp > 0 && <small>{disp === 1 ? "última unidade" : `${disp} disponíveis`}</small>}
+                  </div>
+                  {noCarrinho > 0 ? (
+                    <div className="stepper">
+                      <button type="button" onClick={() => changeQty(p.code, -1)} aria-label={`Tirar um ${p.title}`}>
+                        −
+                      </button>
+                      <span>{noCarrinho}</span>
+                      <button type="button" onClick={() => changeQty(p.code, 1)} disabled={noCarrinho >= disp} aria-label={`Mais um ${p.title}`}>
+                        +
+                      </button>
+                    </div>
+                  ) : (
+                    <button type="button" className="btn-primary" disabled={disp === 0} onClick={() => changeQty(p.code, 1)}>
+                      Adicionar
+                    </button>
+                  )}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      ) : totalDisponivel === 0 ? (
         <div className="shop-empty">
           <span className="shop-empty-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -341,9 +410,9 @@ export default function ShopBoard({
             {shopName} não tem {catalog.itemPlural} de {catalog.name} à venda no momento. O estoque muda sempre: vale
             voltar em breve.
           </p>
-          {albums.length > 1 && (
+          {albums.length + (products.length ? 1 : 0) > 1 && (
             <div className="shop-empty-actions">
-              <span>Outras coleções desta loja</span>
+              <span>Também nesta loja</span>
               {albums
                 .filter((a) => a.albumId !== albumId)
                 .map((a) => (
@@ -351,6 +420,11 @@ export default function ShopBoard({
                     {a.name}
                   </Link>
                 ))}
+              {products.length > 0 && (
+                <Link href={`${path}?colecao=${PRODUCTS_TAB}`} className="btn-ghost">
+                  {PRODUCTS_GROUP}
+                </Link>
+              )}
             </div>
           )}
           {owner ? (
@@ -469,7 +543,11 @@ export default function ShopBoard({
                 </span>
               )
             ) : (
-              totalFigurinhas === 0 && <span className="cart-bar-note">Toque em + para adicionar {catalog.itemPlural}</span>
+              totalFigurinhas === 0 && (
+                <span className="cart-bar-note">
+                  {naAbaProdutos ? "Toque em Adicionar para montar o pedido" : `Toque em + para adicionar ${catalog.itemPlural}`}
+                </span>
+              )
             )}
             {totalFigurinhas > 0 && <HoldTimer expiresAt={expiresAt} variant="compact" />}
           </div>
@@ -503,11 +581,11 @@ export default function ShopBoard({
       {cartAberto && (
         <CartModal
           token={token}
-          albumId={albumId}
           lines={lines}
           totalCents={totalCents}
           minOrderCents={minOrderCents}
           expiresAt={expiresAt}
+          nameOf={nameOf}
           onChange={changeQty}
           onRemove={remove}
           onClear={clear}

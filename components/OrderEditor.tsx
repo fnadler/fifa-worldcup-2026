@@ -1,13 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { displayCode, stickerName } from "@/lib/album";
-import { catalogOfCodes } from "@/lib/catalog";
+import { getCatalog } from "@/lib/catalog";
 import { matchesSticker } from "@/lib/derive";
 import {
   centsToInput,
-  describeSticker,
   formatBRL,
+  isProductCode,
+  itemLabel,
   parseBRL,
   priceFor,
   type Order,
@@ -17,7 +17,7 @@ import {
 
 interface OrderEditorProps {
   order: Order;
-  /** Repetidas em estoque por código (qty - 1). */
+  /** Estoque por código: repetidas (qty - 1) e produtos. */
   stock: Record<string, number>;
   /** Reservado por OUTROS pedidos novos dentro do prazo. */
   reservedOthers: Record<string, number>;
@@ -29,21 +29,25 @@ interface OrderEditorProps {
 
 interface Row {
   code: string;
+  /** Título do produto (códigos "PRD:"), guardado no pedido. */
+  name?: string;
   qty: number;
   unit: string; // input em reais ("2,50")
 }
 
 export default function OrderEditor({ order, stock, reservedOthers, pricing, saving, onSave, onCancel }: OrderEditorProps) {
   const [rows, setRows] = useState<Row[]>(() =>
-    order.items.map((it) => ({ code: it.code, qty: it.qty, unit: centsToInput(it.unit_cents) }))
+    order.items.map((it) => ({ code: it.code, name: it.name, qty: it.qty, unit: centsToInput(it.unit_cents) }))
   );
   const [busca, setBusca] = useState("");
   const [erro, setErro] = useState<string | null>(null);
-  // Um pedido é sempre de uma coleção só: as sugestões vêm dela.
+  // Dá para incluir itens de qualquer coleção à venda e produtos da loja.
   const allCodes = useMemo(
-    () => catalogOfCodes(order.items.map((it) => it.code)).blocks.flatMap((b) => b.codes),
-    [order.items]
+    () => Object.keys(pricing.groups).flatMap((albumId) => getCatalog(albumId).blocks.flatMap((b) => b.codes)),
+    [pricing.groups]
   );
+  const nameOf = (r: { code: string; name?: string }) => r.name ?? pricing.products?.[r.code]?.title;
+  const label = (r: { code: string; name?: string }) => itemLabel(r.code, nameOf(r));
 
   // Máximo que este pedido pode ter de cada código: repetidas - reservas dos outros pedidos.
   const maxFor = (code: string) => Math.max((stock[code] ?? 0) - (reservedOthers[code] ?? 0), 0);
@@ -52,15 +56,21 @@ export default function OrderEditor({ order, stock, reservedOthers, pricing, sav
     const q = busca.trim().toLowerCase();
     if (q.length < 2) return [];
     const noPedido = new Set(rows.map((r) => r.code));
-    return allCodes.filter((c) => !noPedido.has(c) && matchesSticker(c, q)).slice(0, 8);
-  }, [allCodes, busca, rows]);
+    const produtos = Object.entries(pricing.products ?? {})
+      .filter(([code, p]) => !noPedido.has(code) && p.title.toLowerCase().includes(q))
+      .map(([code]) => code);
+    return [...produtos, ...allCodes.filter((c) => !noPedido.has(c) && matchesSticker(c, q))].slice(0, 8);
+  }, [allCodes, busca, rows, pricing.products]);
 
   function update(code: string, patch: Partial<Row>) {
     setRows((prev) => prev.map((r) => (r.code === code ? { ...r, ...patch } : r)));
   }
 
   function adicionar(code: string) {
-    setRows((prev) => [...prev, { code, qty: 1, unit: centsToInput(priceFor(code, pricing) ?? 0) }]);
+    setRows((prev) => [
+      ...prev,
+      { code, name: pricing.products?.[code]?.title, qty: 1, unit: centsToInput(priceFor(code, pricing) ?? 0) },
+    ]);
     setBusca("");
   }
 
@@ -71,22 +81,30 @@ export default function OrderEditor({ order, stock, reservedOthers, pricing, sav
     setErro(null);
     if (!parsed.length) return setErro("O pedido precisa ter pelo menos um item — para desistir, cancele o pedido.");
     const invalido = parsed.find((r) => r.cents === null || Number.isNaN(r.cents));
-    if (invalido) return setErro(`Preço inválido para ${invalido.code}. Use o formato 2,50.`);
+    if (invalido) return setErro(`Preço inválido para ${label(invalido).title}. Use o formato 2,50.`);
     const excedido = parsed.find((r) => r.qty > maxFor(r.code));
-    if (excedido) return setErro(`Só há ${maxFor(excedido.code)} disponível(is) de ${excedido.code}.`);
-    onSave(parsed.map((r) => ({ code: r.code, qty: r.qty, unit_cents: r.cents as number })));
+    if (excedido) return setErro(`Só há ${maxFor(excedido.code)} disponível(is) de ${label(excedido).title}.`);
+    onSave(
+      parsed.map((r) => ({
+        code: r.code,
+        qty: r.qty,
+        unit_cents: r.cents as number,
+        ...(isProductCode(r.code) ? { name: nameOf(r) } : {}),
+      }))
+    );
   }
 
   return (
     <div className="order-editor">
       {parsed.map((r) => {
         const max = maxFor(r.code);
+        const l = label(r);
         return (
           <div key={r.code} className="order-editor-row">
             <div className="cart-line-info">
-              <span className="cart-line-code">{displayCode(r.code)}</span>
+              <span className="cart-line-code">{l.title}</span>
               <span className="cart-line-meta">
-                {describeSticker(r.code)} · {max} disponíve{max === 1 ? "l" : "is"}
+                {l.meta || l.group} · {max} disponíve{max === 1 ? "l" : "is"}
               </span>
             </div>
             <div className="stepper">
@@ -105,7 +123,7 @@ export default function OrderEditor({ order, stock, reservedOthers, pricing, sav
                 inputMode="decimal"
                 value={r.unit}
                 onChange={(e) => update(r.code, { unit: e.target.value })}
-                aria-label={`Preço unitário de ${r.code}`}
+                aria-label={`Preço unitário de ${l.title}`}
               />
             </label>
             <span className="cart-line-total">
@@ -115,7 +133,7 @@ export default function OrderEditor({ order, stock, reservedOthers, pricing, sav
               type="button"
               className="cart-line-remove"
               onClick={() => setRows((prev) => prev.filter((x) => x.code !== r.code))}
-              aria-label={`Excluir ${r.code}`}
+              aria-label={`Excluir ${l.title}`}
             >
               ×
             </button>
@@ -127,7 +145,7 @@ export default function OrderEditor({ order, stock, reservedOthers, pricing, sav
         <input
           type="search"
           className="search-input"
-          placeholder="Incluir item: código, nº ou nome (ex: messi)"
+          placeholder="Incluir item: código, nº, nome ou produto (ex: messi)"
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
         />
@@ -135,10 +153,10 @@ export default function OrderEditor({ order, stock, reservedOthers, pricing, sav
           <div className="order-editor-suggestions">
             {sugestoes.map((c) => {
               const max = maxFor(c);
-              const nome = stickerName(c);
+              const l = label({ code: c });
               return (
                 <button key={c} type="button" disabled={max === 0} onClick={() => adicionar(c)}>
-                  <strong>{displayCode(c)}</strong> {nome ?? describeSticker(c)}
+                  <strong>{l.title}</strong> {l.meta || l.group}
                   <span>{max === 0 ? "indisponível" : `${max} disp.`}</span>
                 </button>
               );

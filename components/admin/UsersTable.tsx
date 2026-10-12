@@ -97,7 +97,8 @@ export default function UsersTable({ users }: { users: AdminUser[] }) {
                       </small>
                       <small>
                         {u.shop.items.toLocaleString("pt-BR")} itens à venda
-                        {u.shop.albums.length > 0 && ` (${u.shop.albums.map((a) => `${a.name}: ${a.items}`).join(", ")})`}
+                        {(u.shop.albums.length > 0 || u.shop.products > 0) &&
+                          ` (${[...u.shop.albums.map((a) => `${a.name}: ${a.items}`), ...(u.shop.products ? [`Produtos: ${u.shop.products}`] : [])].join(", ")})`}
                       </small>
                       <small>
                         Pedidos: {u.shop.orders.novo} novos · {u.shop.orders.confirmado} confirmados ({brl(u.shop.confirmedCents)}) ·{" "}

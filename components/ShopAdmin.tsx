@@ -7,11 +7,15 @@ import { useSearchParams } from "next/navigation";
 import {
   groupsOf,
   isExpired,
+  isProductCode,
   priceFor,
+  productsPricing,
+  reservedByCode,
   shopPath,
   type GroupPrices,
   type Order,
   type ShopAlbum,
+  type ShopProduct,
   type ShopSettings,
 } from "@/lib/shop";
 import { getCatalog, lookupCode } from "@/lib/catalog";
@@ -21,6 +25,7 @@ import { useNow } from "@/lib/useNow";
 import type { Qtd } from "@/lib/types";
 import AdminOrders from "./AdminOrders";
 import AdminPrices from "./AdminPrices";
+import AdminProducts from "./AdminProducts";
 import AdminSettings from "./AdminSettings";
 import BrandLogo from "./BrandLogo";
 import { DEFAULT_SHOP_NAME, PLATFORM_NAME } from "@/lib/brand";
@@ -30,19 +35,22 @@ interface ShopAdminProps {
   email: string | null;
   /** Acabou de assinar (volta do checkout): mostra boas-vindas e abre nas configurações. */
   welcome?: boolean;
-  /** Aba pedida na URL (?aba=pedidos|precos|config), ex: vindo do menu do usuário. */
+  /** Aba pedida na URL (?aba=pedidos|precos|produtos|config), ex: vindo do menu do usuário. */
   initialTab?: string;
   initialSettings: ShopSettings;
   /** Uma entrada por coleção da plataforma (shop_albums). */
   initialAlbums: ShopAlbum[];
   initialIndividual: Record<string, number>;
   initialOrders: Order[];
+  /** Estoque por código: repetidas (qty - 1) e produtos. */
   initialAvailable: Qtd;
+  initialProducts: ShopProduct[];
 }
 
-type Aba = "pedidos" | "precos" | "config";
+type Aba = "pedidos" | "precos" | "produtos" | "config";
 
-const isAba = (v: string | null | undefined): v is Aba => v === "pedidos" || v === "precos" || v === "config";
+const isAba = (v: string | null | undefined): v is Aba =>
+  v === "pedidos" || v === "precos" || v === "produtos" || v === "config";
 
 export default function ShopAdmin({
   userId,
@@ -54,6 +62,7 @@ export default function ShopAdmin({
   initialIndividual,
   initialOrders,
   initialAvailable,
+  initialProducts,
 }: ShopAdminProps) {
   const [aba, setAba] = useState<Aba>(
     isAba(initialTab) ? initialTab : welcome || !initialSettings.whatsapp ? "config" : "pedidos"
@@ -69,6 +78,7 @@ export default function ShopAdmin({
   const [orders, setOrders] = useState(initialOrders);
   const [available, setAvailable] = useState(initialAvailable);
   const [albums, setAlbums] = useState(initialAlbums);
+  const [products, setProducts] = useState(initialProducts);
   // Coleção mostrada na aba Preços: a primeira à venda.
   const [precoAlbum, setPrecoAlbum] = useState(
     () => (initialAlbums.find((a) => a.enabled) ?? initialAlbums[0]).albumId
@@ -87,22 +97,30 @@ export default function ShopAdmin({
   }, []);
 
   const now = useNow();
-  // Preços das coleções à venda (pedidos e resumo de estoque).
-  const pricing = useMemo(() => ({ groups: groupsOf(albums), individual }), [albums, individual]);
+  // Preços das coleções à venda e dos produtos ativos (pedidos e resumo de estoque).
+  const pricing = useMemo(
+    () => ({ groups: groupsOf(albums), individual, products: productsPricing(products.filter((p) => p.active)) }),
+    [albums, individual, products]
+  );
 
-  // Para abrir a loja é preciso ao menos 1 repetida em estoque com preço, numa coleção à venda.
+  // Para abrir a loja é preciso ao menos 1 item vendável: repetida com preço numa coleção à venda,
+  // ou produto ativo com estoque.
   const stockSummary = useMemo(() => {
     const aVenda = new Set(albums.filter((a) => a.enabled).map((a) => a.albumId));
     const codes = Object.keys(available).filter((c) => (available[c] ?? 0) > 0);
-    const vendaveis = codes.filter((c) => aVenda.has(lookupCode(c)?.catalog.id ?? "") && priceFor(c, pricing) !== null);
-    return { repetidas: codes.length, vendaveis: vendaveis.length };
-  }, [albums, available, pricing]);
+    const repetidas = codes.filter((c) => !isProductCode(c));
+    const vendaveis = codes.filter(
+      (c) => priceFor(c, pricing) !== null && (isProductCode(c) || aVenda.has(lookupCode(c)?.catalog.id ?? ""))
+    );
+    return { repetidas: repetidas.length, vendaveis: vendaveis.length, produtos: products.filter((p) => p.active).length };
+  }, [albums, available, pricing, products]);
 
   const novos = orders.filter((o) => o.status === "novo" && !isExpired(o, now)).length;
 
   const ABAS: { value: Aba; label: string }[] = [
     { value: "pedidos", label: novos ? `Pedidos (${novos})` : "Pedidos" },
     { value: "precos", label: "Preços" },
+    { value: "produtos", label: products.length ? `Produtos (${products.length})` : "Produtos" },
     { value: "config", label: "Configurações" },
   ];
 
@@ -197,6 +215,17 @@ export default function ShopAdmin({
           onToast={showToast}
         />
         </CatalogProvider>
+      )}
+      {aba === "produtos" && (
+        <AdminProducts
+          userId={userId}
+          products={products}
+          setProducts={setProducts}
+          stock={available}
+          setStock={setAvailable}
+          reserved={reservedByCode(orders, now)}
+          onToast={showToast}
+        />
       )}
       {aba === "config" && (
         <AdminSettings

@@ -373,7 +373,21 @@ export default function ShopBoard({
                 <div className="product-card-foot">
                   <div>
                     <strong>{formatBRL(p.priceCents)}</strong>
-                    {disp > 0 && <small>{disp === 1 ? "última unidade" : `${disp} disponíveis`}</small>}
+                    {disp === 1 ? (
+                      <span className="product-left is-last">
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <path d="M12 3 2 20h20L12 3Z" />
+                          <path d="M12 10v4M12 17.2v.3" />
+                        </svg>
+                        Última unidade!
+                      </span>
+                    ) : (
+                      disp > 0 && (
+                        <span className="product-left">
+                          Restam <b>{disp}</b> unidades
+                        </span>
+                      )
+                    )}
                   </div>
                   {noCarrinho > 0 ? (
                     <div className="stepper">

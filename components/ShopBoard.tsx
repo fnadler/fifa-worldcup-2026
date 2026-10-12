@@ -94,6 +94,7 @@ export default function ShopBoard({
   const [view, changeView] = useViewMode("copa2026-shop-view");
   const [preview, setPreview] = useState<string | null>(null);
   const [logoAberto, setLogoAberto] = useState(false);
+  const [produtoAberto, setProdutoAberto] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const headerRef = useRef<HTMLDivElement | null>(null);
 
@@ -183,6 +184,50 @@ export default function ShopBoard({
     const y = el.getBoundingClientRect().top + window.scrollY - offset;
     window.scrollTo({ top: y, behavior: "smooth" });
   }
+
+  // Preço, unidades que restam e botão de compra de um produto (no card e no detalhe).
+  function compra(p: ShopBoardProduct) {
+    const disp = available[p.code] ?? 0;
+    const noCarrinho = cart[p.code] ?? 0;
+    return (
+      <div className="product-card-foot">
+        <div>
+          <strong>{formatBRL(p.priceCents)}</strong>
+          {disp === 1 ? (
+            <span className="product-left is-last">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 3 2 20h20L12 3Z" />
+                <path d="M12 10v4M12 17.2v.3" />
+              </svg>
+              Última unidade!
+            </span>
+          ) : (
+            disp > 0 && (
+              <span className="product-left">
+                Restam <b>{disp}</b> unidades
+              </span>
+            )
+          )}
+        </div>
+        {noCarrinho > 0 ? (
+          <div className="stepper">
+            <button type="button" onClick={() => changeQty(p.code, -1)} aria-label={`Tirar um ${p.title}`}>
+              −
+            </button>
+            <span>{noCarrinho}</span>
+            <button type="button" onClick={() => changeQty(p.code, 1)} disabled={noCarrinho >= disp} aria-label={`Mais um ${p.title}`}>
+              +
+            </button>
+          </div>
+        ) : (
+          <button type="button" className="btn-primary" disabled={disp === 0} onClick={() => changeQty(p.code, 1)}>
+            {disp === 0 ? "Esgotado" : "Adicionar ao carrinho"}
+          </button>
+        )}
+      </div>
+    );
+  }
+  const detalhe = produtoAberto ? products.find((p) => p.code === produtoAberto) : undefined;
 
   return (
     <CatalogProvider value={catalog}>
@@ -359,52 +404,24 @@ export default function ShopBoard({
         <div className="product-grid">
           {products.map((p) => {
             const disp = available[p.code] ?? 0;
-            const noCarrinho = cart[p.code] ?? 0;
+            // texto longo: corta em 3 linhas no card e oferece "Ver mais" (abre o detalhe)
+            const longo = p.description.length > 110 || p.description.split("\n").length > 3;
             return (
               <article key={p.code} className={`product-card${disp === 0 ? " is-out" : ""}`}>
-                <div className="product-card-img">
-                  {p.imageUrl ? <Image src={p.imageUrl} alt="" width={640} height={640} unoptimized /> : <span aria-hidden="true">📦</span>}
+                <button type="button" className="product-card-img" onClick={() => setProdutoAberto(p.code)} aria-label={`Ver detalhes de ${p.title}`}>
+                  {p.imageUrl ? <Image src={p.imageUrl} alt="" width={640} height={800} unoptimized /> : <span aria-hidden="true">📦</span>}
                   {disp === 0 && <em>Esgotado</em>}
-                </div>
+                </button>
                 <div className="product-card-body">
                   <h3>{p.title}</h3>
                   {p.description && <p>{p.description}</p>}
-                </div>
-                <div className="product-card-foot">
-                  <div>
-                    <strong>{formatBRL(p.priceCents)}</strong>
-                    {disp === 1 ? (
-                      <span className="product-left is-last">
-                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                          <path d="M12 3 2 20h20L12 3Z" />
-                          <path d="M12 10v4M12 17.2v.3" />
-                        </svg>
-                        Última unidade!
-                      </span>
-                    ) : (
-                      disp > 0 && (
-                        <span className="product-left">
-                          Restam <b>{disp}</b> unidades
-                        </span>
-                      )
-                    )}
-                  </div>
-                  {noCarrinho > 0 ? (
-                    <div className="stepper">
-                      <button type="button" onClick={() => changeQty(p.code, -1)} aria-label={`Tirar um ${p.title}`}>
-                        −
-                      </button>
-                      <span>{noCarrinho}</span>
-                      <button type="button" onClick={() => changeQty(p.code, 1)} disabled={noCarrinho >= disp} aria-label={`Mais um ${p.title}`}>
-                        +
-                      </button>
-                    </div>
-                  ) : (
-                    <button type="button" className="btn-primary" disabled={disp === 0} onClick={() => changeQty(p.code, 1)}>
-                      Adicionar
+                  {longo && (
+                    <button type="button" className="link-button product-more" onClick={() => setProdutoAberto(p.code)}>
+                      Ver mais
                     </button>
                   )}
                 </div>
+                {compra(p)}
               </article>
             );
           })}
@@ -529,7 +546,7 @@ export default function ShopBoard({
       </>
       )}
 
-      {totalFigurinhas > 0 && !cartAberto && !preview && (
+      {totalFigurinhas > 0 && !cartAberto && !preview && !detalhe && (
         <button type="button" className="cart-float cart-float-desktop" onClick={() => setCartAberto(true)}>
           <span>
             {itens(totalFigurinhas)} · <strong>{formatBRL(totalCents)}</strong>
@@ -540,7 +557,7 @@ export default function ShopBoard({
       )}
 
       {/* Celular: carrinho fixo no rodapé, sempre visível, com o aviso do pedido mínimo. */}
-      {!cartAberto && !preview && !menuAberto && (
+      {!cartAberto && !preview && !menuAberto && !detalhe && (
         <div className="cart-bar">
           <div className="cart-bar-info">
             <strong>
@@ -588,6 +605,29 @@ export default function ShopBoard({
           }
           onClose={() => setPreview(null)}
         />
+      )}
+
+      {detalhe && (
+        <div className="modal-overlay" role="dialog" aria-modal="true" aria-label={detalhe.title} onClick={() => setProdutoAberto(null)}>
+          <div className="modal-card product-detail" onClick={(e) => e.stopPropagation()}>
+            <button type="button" className="modal-close product-detail-close" onClick={() => setProdutoAberto(null)} aria-label="Fechar">
+              ×
+            </button>
+            <div className="product-detail-img">
+              {detalhe.imageUrl ? (
+                <Image src={detalhe.imageUrl} alt={detalhe.title} width={800} height={1000} unoptimized />
+              ) : (
+                <span aria-hidden="true">📦</span>
+              )}
+              {(available[detalhe.code] ?? 0) === 0 && <em>Esgotado</em>}
+            </div>
+            <div className="product-detail-info">
+              <h2>{detalhe.title}</h2>
+              {detalhe.description && <p>{detalhe.description}</p>}
+              {compra(detalhe)}
+            </div>
+          </div>
+        </div>
       )}
 
       {toast && <div className="toast">{toast}</div>}

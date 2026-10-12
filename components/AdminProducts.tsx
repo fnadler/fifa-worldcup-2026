@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRef, useState, type ChangeEvent, type Dispatch, type FormEvent, type SetStateAction } from "react";
-import { squareImage } from "@/lib/imageResize";
+import { cropImage } from "@/lib/imageResize";
 import {
   MAX_PRODUCTS,
   PRODUCT_COLUMNS,
@@ -93,7 +93,7 @@ export default function AdminProducts({ userId, products, setProducts, stock, se
     if (!/^image\/(png|jpe?g|webp)$/.test(file.type)) return setError("Use uma imagem PNG, JPG ou WebP.");
     if (file.size > 10 * 1024 * 1024) return setError("Imagem grande demais (máx. 10 MB).");
     try {
-      const blob = await squareImage(file, 800);
+      const blob = await cropImage(file, 800, 1000); // 4:5, como aparece na loja
       if (draft.preview) URL.revokeObjectURL(draft.preview);
       setDraft({ ...draft, file: blob, preview: URL.createObjectURL(blob) });
       setError(null);
@@ -223,7 +223,7 @@ export default function AdminProducts({ userId, products, setProducts, stock, se
             return (
               <article key={p.id} className={`admin-product${p.active ? "" : " is-off"}`}>
                 <div className="admin-product-img">
-                  {p.imageUrl ? <Image src={p.imageUrl} alt="" width={160} height={160} unoptimized /> : <span aria-hidden="true">📦</span>}
+                  {p.imageUrl ? <Image src={p.imageUrl} alt="" width={160} height={200} unoptimized /> : <span aria-hidden="true">📦</span>}
                 </div>
                 <div className="admin-product-info">
                   <strong>{p.title}</strong>
@@ -261,13 +261,13 @@ export default function AdminProducts({ userId, products, setProducts, stock, se
             </div>
 
             <div className="product-form-image">
-              <div className="admin-product-img is-large">{img ? <Image src={img} alt="" width={240} height={240} unoptimized /> : <span aria-hidden="true">📦</span>}</div>
+              <div className="admin-product-img is-large">{img ? <Image src={img} alt="" width={240} height={300} unoptimized /> : <span aria-hidden="true">📦</span>}</div>
               <div>
                 <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={escolherImagem} />
                 <button type="button" className="btn-ghost" onClick={() => fileRef.current?.click()}>
                   {img ? "Trocar imagem" : "Escolher imagem"}
                 </button>
-                <span className="field-hint">Quadrada fica melhor. A imagem é recortada no centro.</span>
+                <span className="field-hint">Formato retrato (4:5) fica melhor. A imagem é recortada no centro.</span>
               </div>
             </div>
 

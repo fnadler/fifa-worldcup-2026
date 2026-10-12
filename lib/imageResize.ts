@@ -18,3 +18,22 @@ export async function squareImage(file: File, size = 640): Promise<Blob> {
     canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("falha ao gerar a imagem"))), "image/webp", 0.88)
   );
 }
+
+// Recorta a imagem no centro na proporção width:height e reduz para esse tamanho (foto de produto, 4:5).
+export async function cropImage(file: File, width: number, height: number): Promise<Blob> {
+  const bitmap = await createImageBitmap(file);
+  const ratio = width / height;
+  const sw = Math.min(bitmap.width, bitmap.height * ratio);
+  const sh = sw / ratio;
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("canvas indisponível");
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(bitmap, (bitmap.width - sw) / 2, (bitmap.height - sh) / 2, sw, sh, 0, 0, width, height);
+  bitmap.close();
+  return new Promise((resolve, reject) =>
+    canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("falha ao gerar a imagem"))), "image/webp", 0.88)
+  );
+}

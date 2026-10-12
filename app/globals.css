@@ -4263,35 +4263,43 @@ button {
   background: var(--card);
   border-top: 1px solid var(--border-1);
 }
-/* linha 1: preço e, à direita, o mesmo "+" / − n + das figurinhas; linha 2: "restam N" na largura
-   toda — assim a etiqueta nunca disputa espaço com o controle */
+/* preço (mesmo tamanho dos cards de figurinha) e, à direita, o mesmo "+" / − n +; a etiqueta
+   "restam N" vai sozinha na linha de baixo. Se preço e controle não couberem lado a lado (card
+   estreito, preço longo), o controle desce em vez de sobrepor. */
 .product-card-foot {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px 10px;
-  padding: 12px 14px 14px;
+  gap: 0 8px;
+  padding: 10px 12px 12px;
 }
 .product-card-foot > div:first-child {
   display: contents;
 }
 .product-card-foot strong {
-  grid-column: 1;
-  grid-row: 1;
-  font-family: var(--font-barlow-condensed);
-  font-size: 22px;
-  line-height: 1.1;
+  flex: 1 1 auto;
+  order: 1;
+  font-family: var(--font-barlow);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
   color: var(--gold);
 }
 .product-card-foot > .stepper,
 .product-card-foot > .shop-card-add {
-  grid-column: 2;
-  grid-row: 1;
+  flex: none;
+  order: 2;
+  margin-left: auto;
 }
 .product-card-foot .product-left {
-  grid-column: 1 / -1;
-  grid-row: 2;
-  justify-self: start;
+  order: 3;
+  margin: 8px auto 0 0;
+  max-width: 100%;
+}
+/* no detalhe do produto há espaço: preço maior */
+.product-detail-info .product-card-foot strong {
+  font-size: 20px;
+  font-weight: 700;
 }
 /* quantas unidades restam: sempre à vista, para dar urgência */
 .product-left {
@@ -4306,6 +4314,17 @@ button {
   font-size: 12.5px;
   font-weight: 600;
   white-space: nowrap;
+  flex-basis: auto;
+}
+.product-card-foot .product-left {
+  flex-shrink: 0;
+}
+.product-card-foot::after {
+  /* quebra de linha antes da etiqueta */
+  content: "";
+  order: 2;
+  flex-basis: 100%;
+  height: 0;
 }
 .product-left b {
   font-weight: 800;
@@ -4328,6 +4347,15 @@ button {
 @media (prefers-reduced-motion: reduce) {
   .product-left.is-last {
     animation: none;
+  }
+}
+@media (max-width: 700px) {
+  .product-left {
+    font-size: 11.5px;
+    padding: 3px 8px;
+  }
+  .product-left.is-last {
+    letter-spacing: 0;
   }
 }
 .cart-group-title {

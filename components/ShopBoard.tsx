@@ -209,21 +209,23 @@ export default function ShopBoard({
             )
           )}
         </div>
-        {noCarrinho > 0 ? (
-          <div className="stepper">
-            <button type="button" onClick={() => changeQty(p.code, -1)} aria-label={`Tirar um ${p.title}`}>
-              −
-            </button>
-            <span>{noCarrinho}</span>
-            <button type="button" onClick={() => changeQty(p.code, 1)} disabled={noCarrinho >= disp} aria-label={`Mais um ${p.title}`}>
+        {/* mesmo controle das figurinhas: "+" e, com o item no carrinho, − quantidade + */}
+        {disp > 0 &&
+          (noCarrinho > 0 ? (
+            <div className="stepper stepper-compact">
+              <button type="button" onClick={() => changeQty(p.code, -1)} aria-label={`Remover um ${p.title}`}>
+                −
+              </button>
+              <span>{noCarrinho}</span>
+              <button type="button" onClick={() => changeQty(p.code, 1)} disabled={noCarrinho >= disp} aria-label={`Adicionar um ${p.title}`}>
+                +
+              </button>
+            </div>
+          ) : (
+            <button type="button" className="shop-card-add" onClick={() => changeQty(p.code, 1)} aria-label={`Adicionar ${p.title} ao carrinho`}>
               +
             </button>
-          </div>
-        ) : (
-          <button type="button" className="btn-primary" disabled={disp === 0} onClick={() => changeQty(p.code, 1)}>
-            {disp === 0 ? "Esgotado" : "Adicionar ao carrinho"}
-          </button>
-        )}
+          ))}
       </div>
     );
   }
@@ -411,6 +413,7 @@ export default function ShopBoard({
                 <button type="button" className="product-card-img" onClick={() => setProdutoAberto(p.code)} aria-label={`Ver detalhes de ${p.title}`}>
                   {p.imageUrl ? <Image src={p.imageUrl} alt="" width={640} height={800} unoptimized /> : <span aria-hidden="true">📦</span>}
                   {disp === 0 && <em>Esgotado</em>}
+                  {(cart[p.code] ?? 0) > 0 && <span className="sticker-badge shop-card-badge">{cart[p.code]}</span>}
                 </button>
                 <div className="product-card-body">
                   <h3>{p.title}</h3>

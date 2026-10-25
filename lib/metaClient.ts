@@ -2,7 +2,7 @@
 // entrada — para condicionar a um consentimento no futuro, basta não montar aquele componente).
 // Antes de o Pixel ser ativado, os eventos ficam numa fila e saem quando ele ativa.
 
-import { ATTR_COOKIE, FBC_COOKIE, FBP_COOKIE, parseAttrCookie, type SignupAttribution } from "./attribution";
+import { ATTR_COOKIE, FBC_COOKIE, FBP_COOKIE, FIRST_TOUCH_COOKIE, parseAttrCookie, type SignupAttribution } from "./attribution";
 
 export const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "";
 
@@ -82,9 +82,11 @@ function readCookie(name: string): string | undefined {
   }
 }
 
-/** Atribuição deste navegador (gn_attr + _fbc/_fbp), para guardar no user_metadata do cadastro. */
+/** Atribuição deste navegador (gn_attr, gn_attr_ft + _fbc/_fbp), para guardar no user_metadata do cadastro. */
 export function readSignupAttribution(): SignupAttribution {
   const attr: SignupAttribution = parseAttrCookie(readCookie(ATTR_COOKIE));
+  const ft = parseAttrCookie(readCookie(FIRST_TOUCH_COOKIE));
+  if (Object.keys(ft).length) attr.ft = ft;
   const fbc = readCookie(FBC_COOKIE);
   const fbp = readCookie(FBP_COOKIE);
   if (fbc) attr.fbc = fbc;

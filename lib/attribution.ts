@@ -1,25 +1,39 @@
-// Atribuição de marketing (last-touch): de onde veio a visita que acabou em cadastro.
+// Atribuição de marketing: de onde veio a visita que acabou em cadastro.
 // Sem dependências — usado no proxy (grava os cookies), no cadastro (navegador) e no servidor.
 //
-// gn_attr: JSON com os utm_*, fbclid, landing_path e ts, gravado pelo proxy quando a URL traz UTM ou
-// fbclid. _fbc / _fbp: cookies da Meta (o _fbp é criado pelo Pixel; o _fbc, pelo proxy ou pelo Pixel).
+// gn_attr: JSON com os utm_*, os IDs da Meta (utm_campaign_id/utm_adset_id/utm_ad_id), fbclid,
+// landing_path e ts, gravado pelo proxy quando a URL traz UTM ou fbclid (last-touch).
+// gn_attr_ft: o mesmo JSON da PRIMEIRA visita com atribuição (first-touch, nunca sobrescrito).
+// _fbc / _fbp: cookies da Meta (o _fbp é criado pelo Pixel; o _fbc, pelo proxy ou pelo Pixel).
+// Os IDs são o que a atribuição usa: nomes de campanha e anúncio mudam e se repetem.
 
 export const ATTR_COOKIE = "gn_attr";
+export const FIRST_TOUCH_COOKIE = "gn_attr_ft";
 export const FBC_COOKIE = "_fbc";
 export const FBP_COOKIE = "_fbp";
 
-export const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const;
+export const UTM_KEYS = [
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_content",
+  "utm_term",
+  "utm_campaign_id",
+  "utm_adset_id",
+  "utm_ad_id",
+] as const;
 type UtmKey = (typeof UTM_KEYS)[number];
 
 export type Attribution = Partial<Record<UtmKey | "fbclid" | "landing_path", string>> & { ts?: number };
 
-/** O que vai em user_metadata.attr no cadastro (e depois para marketing_attribution). */
-export type SignupAttribution = Attribution & { fbc?: string; fbp?: string };
+/** O que vai em user_metadata.attr no cadastro (e depois para marketing_attribution). ft = primeiro toque. */
+export type SignupAttribution = Attribution & { fbc?: string; fbp?: string; ft?: Attribution };
 
 const MAX_LEN = 300;
 const ATTR_KEYS = [...UTM_KEYS, "fbclid", "landing_path"] as const;
 
 export const ATTR_MAX_AGE = 60 * 60 * 24 * 30;
+export const FIRST_TOUCH_MAX_AGE = 60 * 60 * 24 * 90;
 
 const clip = (v: unknown): string | undefined =>
   typeof v === "string" && v.trim() ? v.trim().slice(0, MAX_LEN) : undefined;
@@ -47,6 +61,16 @@ export function cleanAttribution(raw: unknown): SignupAttribution {
     if (v) out[k] = v;
   }
   if (typeof r.ts === "number" && Number.isFinite(r.ts)) out.ts = r.ts;
+  if (r.ft && typeof r.ft === "object") {
+    const ft: Attribution = {};
+    const f = r.ft as Record<string, unknown>;
+    for (const k of ATTR_KEYS) {
+      const v = clip(f[k]);
+      if (v) ft[k] = v;
+    }
+    if (typeof f.ts === "number" && Number.isFinite(f.ts)) ft.ts = f.ts;
+    if (Object.keys(ft).length) out.ft = ft;
+  }
   return out;
 }
 

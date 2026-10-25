@@ -7,6 +7,8 @@ import {
   FBC_COOKIE,
   fbcFromClick,
   fbcMatches,
+  FIRST_TOUCH_COOKIE,
+  FIRST_TOUCH_MAX_AGE,
 } from "@/lib/attribution";
 
 const ATTR_COOKIE_OPTIONS = {
@@ -16,8 +18,9 @@ const ATTR_COOKIE_OPTIONS = {
   maxAge: ATTR_MAX_AGE,
 };
 
-// Visita vinda de anúncio (UTM ou fbclid): grava a origem em gn_attr (last-touch, sobrescreve a anterior)
-// e o _fbc da Meta. Não é httpOnly: o cadastro, no navegador, lê os dois para guardar no user_metadata.
+// Visita vinda de anúncio (UTM ou fbclid): grava a origem em gn_attr (last-touch, sobrescreve a anterior),
+// em gn_attr_ft só se ainda não existir (first-touch) e o _fbc da Meta. Não são httpOnly: o cadastro, no
+// navegador, lê os três para guardar no user_metadata.
 function saveAttribution(request: NextRequest, response: NextResponse) {
   const { pathname, searchParams } = request.nextUrl;
   if (/^\/(api|_next)\//.test(pathname) || /\.[a-z0-9]+$/i.test(pathname)) return;
@@ -25,6 +28,9 @@ function saveAttribution(request: NextRequest, response: NextResponse) {
   const attr = attributionFromUrl(searchParams, pathname, now);
   if (!attr) return;
   response.cookies.set(ATTR_COOKIE, JSON.stringify(attr), ATTR_COOKIE_OPTIONS);
+  if (!request.cookies.has(FIRST_TOUCH_COOKIE)) {
+    response.cookies.set(FIRST_TOUCH_COOKIE, JSON.stringify(attr), { ...ATTR_COOKIE_OPTIONS, maxAge: FIRST_TOUCH_MAX_AGE });
+  }
   if (attr.fbclid && !fbcMatches(request.cookies.get(FBC_COOKIE)?.value, attr.fbclid)) {
     // 90 dias, como o Pixel faz com o _fbc
     response.cookies.set(FBC_COOKIE, fbcFromClick(attr.fbclid, now), { ...ATTR_COOKIE_OPTIONS, maxAge: 60 * 60 * 24 * 90 });

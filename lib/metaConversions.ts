@@ -1,6 +1,7 @@
 import "server-only";
 import type { User } from "@supabase/supabase-js";
 import type Stripe from "stripe";
+import { enviarLeadAdsPlatform } from "./adsPlatform";
 import { cleanAttribution } from "./attribution";
 import { sendCapiEvent, SITE_URL } from "./metaCapi";
 import { clientIp } from "./rateLimit";
@@ -12,8 +13,9 @@ import { createAdminClient } from "./supabase/admin";
 // chama — o cadastro e o webhook seguem mesmo que a Meta ou a migração falhem.
 
 /**
- * Cadastro confirmado: grava a atribuição guardada no user_metadata.attr pelo LoginForm, com o IP e o
- * user agent desta requisição. Só a primeira vez (não sobrescreve). Contas sem `attr` (criadas antes
+ * Cadastro confirmado: grava a atribuição guardada no user_metadata.attr pelo LoginForm (último e
+ * primeiro toque, com os IDs da Meta), com o IP e o user agent desta requisição, e envia o lead ao
+ * ads-platform. Só a primeira vez (não sobrescreve). Contas sem `attr` (criadas antes
  * do rastreamento, ou um link de recuperação de senha) ficam de fora.
  */
 export async function saveSignupAttribution(user: User, request: Request): Promise<void> {
@@ -22,26 +24,54 @@ export async function saveSignupAttribution(user: User, request: Request): Promi
     if (!meta || !("attr" in meta)) return;
     const a = cleanAttribution(meta.attr);
     const ip = clientIp(request);
-    const { error } = await createAdminClient()
-      .from("marketing_attribution")
-      .upsert(
-        {
-          user_id: user.id,
-          utm_source: a.utm_source ?? null,
-          utm_medium: a.utm_medium ?? null,
-          utm_campaign: a.utm_campaign ?? null,
-          utm_content: a.utm_content ?? null,
-          utm_term: a.utm_term ?? null,
-          fbclid: a.fbclid ?? null,
-          fbc: a.fbc ?? null,
-          fbp: a.fbp ?? null,
-          landing_path: a.landing_path ?? null,
-          client_ip: ip === "desconhecido" ? null : ip,
-          user_agent: request.headers.get("user-agent")?.slice(0, 500) ?? null,
-        },
-        { onConflict: "user_id", ignoreDuplicates: true }
-      );
+    const base = {
+      user_id: user.id,
+      utm_source: a.utm_source ?? null,
+      utm_medium: a.utm_medium ?? null,
+      utm_campaign: a.utm_campaign ?? null,
+      utm_content: a.utm_content ?? null,
+      utm_term: a.utm_term ?? null,
+      fbclid: a.fbclid ?? null,
+      fbc: a.fbc ?? null,
+      fbp: a.fbp ?? null,
+      landing_path: a.landing_path ?? null,
+      client_ip: ip === "desconhecido" ? null : ip,
+      user_agent: request.headers.get("user-agent")?.slice(0, 500) ?? null,
+    };
+    // Colunas de supabase_migration_marketing_attribution_ids.sql.
+    const ids = {
+      utm_campaign_id: a.utm_campaign_id ?? null,
+      utm_adset_id: a.utm_adset_id ?? null,
+      utm_ad_id: a.utm_ad_id ?? null,
+      ftp_utm_source: a.ft?.utm_source ?? null,
+      ftp_utm_medium: a.ft?.utm_medium ?? null,
+      ftp_utm_campaign: a.ft?.utm_campaign ?? null,
+      ftp_utm_content: a.ft?.utm_content ?? null,
+      ftp_utm_campaign_id: a.ft?.utm_campaign_id ?? null,
+      ftp_utm_adset_id: a.ft?.utm_adset_id ?? null,
+      ftp_utm_ad_id: a.ft?.utm_ad_id ?? null,
+      ftp_landing_path: a.ft?.landing_path ?? null,
+      ftp_at: a.ft?.ts ? new Date(a.ft.ts).toISOString() : null,
+    };
+    const tabela = createAdminClient().from("marketing_attribution");
+    let { error } = await tabela.upsert({ ...base, ...ids }, { onConflict: "user_id", ignoreDuplicates: true });
+    // Migração dos IDs ainda não aplicada: grava ao menos o que já gravava (os IDs seguem no user_metadata).
+    if (error && /column|schema cache/i.test(error.message)) {
+      console.error("[atribuição] rode supabase_migration_marketing_attribution_ids.sql:", error.message);
+      ({ error } = await tabela.upsert(base, { onConflict: "user_id", ignoreDuplicates: true }));
+    }
     if (error) console.error("[atribuição]", user.id, error.message);
+    const atribuicao = { ...a };
+    delete atribuicao.fbc;
+    delete atribuicao.fbp;
+    delete atribuicao.ft;
+    await enviarLeadAdsPlatform({
+      idExterno: user.id,
+      ocorridoEm: user.created_at,
+      email: user.email,
+      atribuicao,
+      primeiroToque: a.ft,
+    });
   } catch (err) {
     console.error("[atribuição]", user.id, err);
   }

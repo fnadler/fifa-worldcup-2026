@@ -224,13 +224,13 @@ export function politicaDePrivacidade(): LegalDoc {
           "Sessão: mantém você conectado (essencial).",
           "Carrinho: identifica o seu carrinho para reservar as figurinhas escolhidas (essencial).",
           "Preferências: guardam escolhas como a visualização em fotos ou grade e os dados do comprador para o próximo pedido, apenas no seu navegador.",
-          "Medição de anúncios: _fbp, _fbc (da Meta) e gn_attr (nosso) — veja a seção 9.",
+          "Medição de anúncios: _fbp, _fbc (da Meta), gn_attr e gn_attr_ft (nossos) — veja a seção 9.",
         ],
       },
       {
         h: "9. Medição de anúncios (Pixel da Meta)",
         p: [
-          "Usamos o Pixel e a API de Conversões da Meta (Facebook e Instagram) para saber quais anúncios trazem visitas, cadastros e assinaturas. Para isso, o site usa os cookies _fbp e _fbc, da Meta, e gn_attr, nosso, que guarda por 30 dias de qual anúncio ou link você veio (parâmetros como utm_campaign e o identificador de clique fbclid). Essa origem fica registrada na sua conta quando você se cadastra.",
+          "Usamos o Pixel e a API de Conversões da Meta (Facebook e Instagram) para saber quais anúncios trazem visitas, cadastros e assinaturas. Para isso, o site usa os cookies _fbp e _fbc, da Meta, e dois nossos: gn_attr, que guarda por 30 dias de qual anúncio ou link você veio por último (parâmetros como utm_campaign, os identificadores da campanha e do anúncio e o identificador de clique fbclid), e gn_attr_ft, que guarda por 90 dias o primeiro anúncio ou link pelo qual você chegou. Essa origem fica registrada na sua conta quando você se cadastra e é usada, junto com a situação da assinatura, na nossa ferramenta interna de análise de anúncios.",
           "Quando você cria uma conta ou assina a Loja, informamos o evento à Meta junto com o seu e-mail e o identificador da sua conta apenas em forma criptografada (hash SHA-256), além do endereço IP e do navegador. Não enviamos nome, WhatsApp, coleção nem dados de pagamento. A base legal é o legítimo interesse (art. 7º, IX) em medir e melhorar nossa divulgação.",
           "Para limitar o uso desses dados em anúncios, acesse as configurações de anúncios da Meta em https://accountscenter.facebook.com/ads ou bloqueie cookies de terceiros no seu navegador.",
         ],

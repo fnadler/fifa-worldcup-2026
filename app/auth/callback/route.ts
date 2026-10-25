@@ -1,5 +1,6 @@
 import { after, NextResponse } from "next/server";
 import { sendCommunityInviteOnce } from "@/lib/communityInvite";
+import { saveSignupAttribution } from "@/lib/metaConversions";
 import { safeNext } from "@/lib/routes";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -15,9 +16,11 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      // Conta confirmada: manda o convite da comunidade (uma vez por conta), sem atrasar o redirecionamento.
+      // Conta confirmada: manda o convite da comunidade (uma vez por conta) e grava a atribuição do
+      // cadastro (UTM/fbclid), sem atrasar o redirecionamento.
       const user = data.user;
       if (user) after(() => sendCommunityInviteOnce(createAdminClient(), user).then(() => undefined));
+      if (user) after(() => saveSignupAttribution(user, request));
       return NextResponse.redirect(`${origin}${next}`);
     }
   }

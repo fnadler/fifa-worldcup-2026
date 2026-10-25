@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { parseAccountInput } from "@/lib/profile";
+import { readSignupAttribution, trackWithServer } from "@/lib/metaClient";
 import { maskPhoneBR } from "@/lib/phone";
 import { createClient } from "@/lib/supabase/client";
 import AuthShell from "./marketing/AuthShell";
@@ -175,8 +176,9 @@ export default function LoginForm({ initialMode = "signin", next, initialError =
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
-        // user_metadata; as coleções são escolhidas depois de confirmar o e-mail (lib/onboarding.ts)
-        data: { ...profile.data, onboarding: "pending" },
+        // user_metadata; as coleções são escolhidas depois de confirmar o e-mail (lib/onboarding.ts).
+        // attr: origem do cadastro (UTM/fbclid, _fbc/_fbp), gravada em marketing_attribution na confirmação.
+        data: { ...profile.data, onboarding: "pending", attr: readSignupAttribution() },
       },
     });
     setLoading(false);
@@ -196,9 +198,11 @@ export default function LoginForm({ initialMode = "signin", next, initialError =
         setError("Já existe uma conta com esse e-mail. Entre com a sua senha ou use “Esqueci minha senha”.");
         return;
       }
+      trackWithServer("CompleteRegistration", undefined, email);
       // só segue para a coleção depois de abrir o link de confirmação
       return awaitConfirmation(true);
     }
+    trackWithServer("CompleteRegistration", undefined, email);
     window.location.href = next;
   }
 

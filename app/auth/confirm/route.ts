@@ -1,6 +1,7 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { after, NextResponse } from "next/server";
 import { sendCommunityInviteOnce } from "@/lib/communityInvite";
+import { saveSignupAttribution } from "@/lib/metaConversions";
 import { COLLECTION_PATH, SIGNUP_CONFIRMED_PATH, safeNext } from "@/lib/routes";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -32,10 +33,11 @@ export async function GET(request: Request) {
     if (!error) {
       if (type !== "signup") return NextResponse.redirect(`${origin}${safeNext(searchParams.get("next"))}`);
 
-      // Cadastro confirmado: convite da comunidade (uma vez por conta) e tela de confirmação, que leva
+      // Cadastro confirmado: convite da comunidade (uma vez por conta), atribuição do cadastro e tela de confirmação, que leva
       // adiante para o destino pedido no cadastro.
       const user = data.user;
       if (user) after(() => sendCommunityInviteOnce(createAdminClient(), user).then(() => undefined));
+      if (user) after(() => saveSignupAttribution(user, request));
       const next = nextDoDestino(searchParams.get("destino"));
       const query = next === COLLECTION_PATH ? "" : `?next=${encodeURIComponent(next)}`;
       return NextResponse.redirect(`${origin}${SIGNUP_CONFIRMED_PATH}${query}`);

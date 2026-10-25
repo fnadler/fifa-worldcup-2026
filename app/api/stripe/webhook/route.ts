@@ -1,12 +1,15 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { syncSubscription } from "@/lib/billing";
+import { trackFirstPayment, trackStartTrial } from "@/lib/metaConversions";
 import { getStripe } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // Webhook do Stripe. Cada evento relevante relê a assinatura no Stripe e a sincroniza
 // (sync é idempotente e baseado em estado, então eventos repetidos ou fora de ordem não
 // causam problema). Erro → 500, e o Stripe tenta de novo.
+// Conversões para a Meta (StartTrial, Subscribe) saem depois da resposta (after) e nunca derrubam o
+// webhook; o event_id é fixo por assinatura/fatura, então reenvios do Stripe não contam duas vezes.
 export async function POST(request: Request) {
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
   const signature = request.headers.get("stripe-signature");
@@ -30,7 +33,17 @@ export async function POST(request: Request) {
         }
         break;
       }
-      case "customer.subscription.created":
+      case "customer.subscription.created": {
+        const sub = await stripe.subscriptions.retrieve(event.data.object.id);
+        await syncSubscription(sub);
+        after(() => trackStartTrial(sub, event.created));
+        break;
+      }
+      case "invoice.paid": {
+        const invoice = event.data.object;
+        after(() => trackFirstPayment(invoice, event.created));
+        break;
+      }
       case "customer.subscription.updated":
       case "customer.subscription.deleted":
       case "customer.subscription.paused":

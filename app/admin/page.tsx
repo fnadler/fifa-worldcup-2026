@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import AccountHeader from "@/components/AccountHeader";
 import GrowthChart from "@/components/admin/GrowthChart";
 import UsersTable from "@/components/admin/UsersTable";
-import { isAdmin, loadAdminStats } from "@/lib/adminStats";
+import { isAdmin, loadAdminStats, loadMarketingFunnel } from "@/lib/adminStats";
 import { PLATFORM_NAME } from "@/lib/brand";
 import { formatBRL } from "@/lib/shop";
 import { ownShop } from "@/lib/shopLink";
@@ -14,6 +14,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: `Painel — ${PLATFORM_NAME}`, robots: { index: false, follow: false } };
 
 const n = (v: number) => v.toLocaleString("pt-BR");
+const pct = (part: number, total: number) => (total ? `${Math.round((part / total) * 100)}%` : "—");
 
 function Kpi({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
@@ -35,7 +36,7 @@ export default async function AdminPage() {
   if (!user) redirect("/login?next=/admin");
   if (!isAdmin(user)) notFound();
 
-  const [stats, shop] = await Promise.all([loadAdminStats(), ownShop(supabase, user.id)]);
+  const [stats, shop, funnel] = await Promise.all([loadAdminStats(), ownShop(supabase, user.id), loadMarketingFunnel()]);
   const t = stats.totals;
   const lojas = stats.users.filter((u) => u.shop).sort((a, b) => (b.shop?.items ?? 0) - (a.shop?.items ?? 0));
   const atualizado = new Date(stats.generatedAt).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short", timeStyle: "short" });
@@ -166,6 +167,49 @@ export default async function AdminPage() {
                   <tr>
                     <td colSpan={7} className="adm-empty">
                       Nenhuma loja criada.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="admin-section">
+          <h2 className="admin-section-title">Anúncios</h2>
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead>
+                <tr>
+                  <th>Campanha</th>
+                  <th>Criativo</th>
+                  <th>Cadastros</th>
+                  <th>Testes grátis</th>
+                  <th>Pagantes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(funnel ?? []).map((f) => (
+                  <tr key={`${f.utm_campaign}|${f.utm_content}`}>
+                    <td>
+                      <strong>{f.utm_campaign}</strong>
+                    </td>
+                    <td>{f.utm_content}</td>
+                    <td>{n(f.cadastros)}</td>
+                    <td>
+                      {n(f.testes)}
+                      <small>{pct(f.testes, f.cadastros)} dos cadastros</small>
+                    </td>
+                    <td>
+                      {n(f.pagantes)}
+                      <small>{pct(f.pagantes, f.testes)} dos testes</small>
+                    </td>
+                  </tr>
+                ))}
+                {(!funnel || funnel.length === 0) && (
+                  <tr>
+                    <td colSpan={5} className="adm-empty">
+                      {funnel ? "Nenhum cadastro com atribuição ainda." : "Rode supabase_migration_marketing_attribution.sql para ver o funil."}
                     </td>
                   </tr>
                 )}

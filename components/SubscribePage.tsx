@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PLATFORM_NAME } from "@/lib/brand";
+import { trackWithServer } from "@/lib/metaClient";
 import { COLLECTION_PATH } from "@/lib/routes";
 import BrandLogo from "./BrandLogo";
 import { HeaderActions, IconLink } from "./HeaderIcons";
@@ -24,7 +25,15 @@ export default function SubscribePage({ email, plan }: SubscribePageProps) {
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
+  const viewed = useRef(false); // StrictMode roda o efeito duas vezes em dev
+  useEffect(() => {
+    if (viewed.current) return;
+    viewed.current = true;
+    trackWithServer("ViewContent", { content_name: "Assinatura da Loja" });
+  }, []);
+
   async function assinar() {
+    trackWithServer("InitiateCheckout", { content_name: "Assinatura da Loja", currency: "BRL" });
     setLoading(true);
     setErro(null);
     try {

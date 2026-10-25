@@ -306,3 +306,21 @@ export async function loadAdminStats(): Promise<AdminStats> {
     series,
   };
 }
+
+export interface FunnelRow {
+  utm_campaign: string;
+  utm_content: string;
+  cadastros: number;
+  testes: number;
+  pagantes: number;
+}
+
+/** Funil dos anúncios (view marketing_funnel). null = migração ainda não aplicada. */
+export async function loadMarketingFunnel(): Promise<FunnelRow[] | null> {
+  const { data, error } = await createAdminClient()
+    .from("marketing_funnel")
+    .select("utm_campaign, utm_content, cadastros, testes, pagantes")
+    .order("cadastros", { ascending: false });
+  if (error) return null;
+  return (data ?? []) as FunnelRow[];
+}

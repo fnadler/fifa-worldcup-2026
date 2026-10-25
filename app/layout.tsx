@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { Bebas_Neue, Barlow, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import { PLATFORM_NAME } from "@/lib/brand";
+import MetaPixel from "@/components/MetaPixel";
 
 const bebasNeue = Bebas_Neue({
   weight: "400",
@@ -46,7 +48,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="pt-BR"
       className={`${bebasNeue.variable} ${barlow.variable} ${barlowCondensed.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        {process.env.NEXT_PUBLIC_META_PIXEL_ID && (
+          <Suspense fallback={null}>
+            <MetaPixel />
+          </Suspense>
+        )}
+      </body>
     </html>
   );
 }

@@ -14,7 +14,7 @@ export const COMPANY = {
   foro: "Canoas/RS",
 };
 
-export const LEGAL_UPDATED = "25 de setembro de 2026";
+export const LEGAL_UPDATED = "25 de outubro de 2026";
 
 export interface LegalSection {
   h: string;
@@ -184,6 +184,7 @@ export function politicaDePrivacidade(): LegalDoc {
         ul: [
           "Com o Lojista: os dados do pedido são enviados ao Lojista escolhido pelo Comprador. O Lojista passa a ser responsável pelo uso desses dados e deve utilizá-los apenas para atender ao pedido.",
           "Com fornecedores que operam a plataforma em nosso nome: Supabase (banco de dados, autenticação e armazenamento de imagens), Vercel (hospedagem) e Stripe (pagamentos da assinatura).",
+          "Com a Meta (Facebook e Instagram), para medir anúncios: eventos de visita, cadastro e assinatura, com e-mail e identificador da conta apenas em hash — veja a seção 9.",
           "Com o WhatsApp (Meta), quando você mesmo envia o pedido ou fala com o Lojista pelo aplicativo — nesse caso valem também as políticas do WhatsApp.",
           "Com autoridades, quando exigido por lei ou ordem judicial.",
           "Não vendemos nem alugamos dados pessoais.",
@@ -223,21 +224,29 @@ export function politicaDePrivacidade(): LegalDoc {
           "Sessão: mantém você conectado (essencial).",
           "Carrinho: identifica o seu carrinho para reservar as figurinhas escolhidas (essencial).",
           "Preferências: guardam escolhas como a visualização em fotos ou grade e os dados do comprador para o próximo pedido, apenas no seu navegador.",
-          "Não usamos cookies de publicidade.",
+          "Medição de anúncios: _fbp, _fbc (da Meta) e gn_attr (nosso) — veja a seção 9.",
         ],
       },
       {
-        h: "9. Segurança",
+        h: "9. Medição de anúncios (Pixel da Meta)",
+        p: [
+          "Usamos o Pixel e a API de Conversões da Meta (Facebook e Instagram) para saber quais anúncios trazem visitas, cadastros e assinaturas. Para isso, o site usa os cookies _fbp e _fbc, da Meta, e gn_attr, nosso, que guarda por 30 dias de qual anúncio ou link você veio (parâmetros como utm_campaign e o identificador de clique fbclid). Essa origem fica registrada na sua conta quando você se cadastra.",
+          "Quando você cria uma conta ou assina a Loja, informamos o evento à Meta junto com o seu e-mail e o identificador da sua conta apenas em forma criptografada (hash SHA-256), além do endereço IP e do navegador. Não enviamos nome, WhatsApp, coleção nem dados de pagamento. A base legal é o legítimo interesse (art. 7º, IX) em medir e melhorar nossa divulgação.",
+          "Para limitar o uso desses dados em anúncios, acesse as configurações de anúncios da Meta em https://accountscenter.facebook.com/ads ou bloqueie cookies de terceiros no seu navegador.",
+        ],
+      },
+      {
+        h: "10. Segurança",
         p: [
           "Usamos conexão criptografada (HTTPS), controle de acesso por conta, regras de segurança no banco de dados e fornecedores com certificações reconhecidas. Nenhum sistema é totalmente imune a incidentes; se ocorrer um incidente relevante, comunicaremos os titulares afetados e a ANPD, conforme a lei.",
         ],
       },
       {
-        h: "10. Encarregado (DPO) e contato",
+        h: "11. Encarregado (DPO) e contato",
         p: [`Encarregado pelo tratamento de dados pessoais: ${C.razaoSocial} — ${C.email}.`],
       },
       {
-        h: "11. Alterações desta Política",
+        h: "12. Alterações desta Política",
         p: ["Esta Política pode ser atualizada. A versão vigente estará sempre nesta página, com a data da última atualização."],
       },
     ],

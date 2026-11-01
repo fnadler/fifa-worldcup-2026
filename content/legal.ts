@@ -14,7 +14,7 @@ export const COMPANY = {
   foro: "Canoas/RS",
 };
 
-export const LEGAL_UPDATED = "25 de outubro de 2026";
+export const LEGAL_UPDATED = "1º de novembro de 2026";
 
 export interface LegalSection {
   h: string;
@@ -184,7 +184,7 @@ export function politicaDePrivacidade(): LegalDoc {
         ul: [
           "Com o Lojista: os dados do pedido são enviados ao Lojista escolhido pelo Comprador. O Lojista passa a ser responsável pelo uso desses dados e deve utilizá-los apenas para atender ao pedido.",
           "Com fornecedores que operam a plataforma em nosso nome: Supabase (banco de dados, autenticação e armazenamento de imagens), Vercel (hospedagem) e Stripe (pagamentos da assinatura).",
-          "Com a Meta (Facebook e Instagram), para medir anúncios: eventos de visita, cadastro e assinatura, com e-mail e identificador da conta apenas em hash — veja a seção 9.",
+          "Com a Meta (Facebook e Instagram), para medir e direcionar anúncios: eventos de visita, cadastro e assinatura e, para montar públicos de anúncios, o e-mail da conta — sempre apenas em hash — veja a seção 9.",
           "Com o WhatsApp (Meta), quando você mesmo envia o pedido ou fala com o Lojista pelo aplicativo — nesse caso valem também as políticas do WhatsApp.",
           "Com autoridades, quando exigido por lei ou ordem judicial.",
           "Não vendemos nem alugamos dados pessoais.",
@@ -228,10 +228,11 @@ export function politicaDePrivacidade(): LegalDoc {
         ],
       },
       {
-        h: "9. Medição de anúncios (Pixel da Meta)",
+        h: "9. Medição e públicos de anúncios (Meta)",
         p: [
           "Usamos o Pixel e a API de Conversões da Meta (Facebook e Instagram) para saber quais anúncios trazem visitas, cadastros e assinaturas. Para isso, o site usa os cookies _fbp e _fbc, da Meta, e dois nossos: gn_attr, que guarda por 30 dias de qual anúncio ou link você veio por último (parâmetros como utm_campaign, os identificadores da campanha e do anúncio e o identificador de clique fbclid), e gn_attr_ft, que guarda por 90 dias o primeiro anúncio ou link pelo qual você chegou. Essa origem fica registrada na sua conta quando você se cadastra e é usada, junto com a situação da assinatura, na nossa ferramenta interna de análise de anúncios.",
           "Quando você cria uma conta ou assina a Loja, informamos o evento à Meta junto com o seu e-mail e o identificador da sua conta apenas em forma criptografada (hash SHA-256), além do endereço IP e do navegador. Não enviamos nome, WhatsApp, coleção nem dados de pagamento. A base legal é o legítimo interesse (art. 7º, IX) em medir e melhorar nossa divulgação.",
+          "Também usamos o e-mail da conta, apenas em forma criptografada (hash SHA-256), para montar públicos de anúncios na Meta: por exemplo, para não exibir anúncios de assinatura a quem já assina, para lembrar quem começou o cadastro e não concluiu, ou para alcançar pessoas com perfil parecido com o de quem já usa a GN Coleciona. A Meta compara o hash com as contas dela e não recebe o seu e-mail em texto; as listas são atualizadas diariamente. A base legal é o legítimo interesse (art. 7º, IX). Você pode se opor a esse uso a qualquer momento pelo e-mail de contato desta Política: retiramos o seu e-mail das listas, e a retirada vale a partir da atualização diária seguinte.",
           "Para limitar o uso desses dados em anúncios, acesse as configurações de anúncios da Meta em https://accountscenter.facebook.com/ads ou bloqueie cookies de terceiros no seu navegador.",
         ],
       },

@@ -11,6 +11,8 @@ const FLAGS: Record<string, string> = {
   SEN: "🇸🇳", SUI: "🇨🇭", SWE: "🇸🇪", TUN: "🇹🇳", TUR: "🇹🇷", URU: "🇺🇾", USA: "🇺🇸", UZB: "🇺🇿",
   // seleções que só aparecem na Adrenalyn XL
   DEN: "🇩🇰", ITA: "🇮🇹", JAM: "🇯🇲", POL: "🇵🇱", UKR: "🇺🇦", WAL: "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
+  // seleções que só aparecem no Álbum Copa do Catar 2022
+  CMR: "🇨🇲", CRC: "🇨🇷", SRB: "🇷🇸",
 };
 
 const LEGENDS: Record<string, string> = { LIL: "💜", BRO: "🥉", PRA: "🥈", OUR: "🥇" };

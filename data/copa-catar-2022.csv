@@ -1,0 +1,759 @@
+codigo,bloco,nome_bloco,tipo,grupo,nome,selecao
+00,fwc,FIFA World Cup,FWC,FWC,Panini,
+FWC1,fwc,FIFA World Cup,FWC,FWC,FIFA,
+FWC2,fwc,FIFA World Cup,FWC,FWC,Taça (1/2),
+FWC3,fwc,FIFA World Cup,FWC,FWC,Taça (2/2),
+FWC4,fwc,FIFA World Cup,FWC,FWC,Mascote La'eeb (1/2),
+FWC5,fwc,FIFA World Cup,FWC,FWC,Mascote La'eeb (2/2),
+FWC6,fwc,FIFA World Cup,FWC,FWC,Emblema (1/2),
+FWC7,fwc,FIFA World Cup,FWC,FWC,Emblema (2/2),
+FWC8,fwc,FIFA World Cup,FWC,FWC,Ahmad Bin Ali Stadium,
+FWC9,fwc,FIFA World Cup,FWC,FWC,Al Janoub Stadium,
+FWC10,fwc,FIFA World Cup,FWC,FWC,Al Thumama Stadium,
+FWC11,fwc,FIFA World Cup,FWC,FWC,Education City Stadium,
+FWC12,fwc,FIFA World Cup,FWC,FWC,Khalifa International Stadium,
+FWC13,fwc,FIFA World Cup,FWC,FWC,Stadium 974,
+FWC14,fwc,FIFA World Cup,FWC,FWC,Al Bayt Stadium (externo),
+FWC15,fwc,FIFA World Cup,FWC,FWC,Al Bayt Stadium (interno),
+FWC16,fwc,FIFA World Cup,FWC,FWC,Lusail Stadium (externo),
+FWC17,fwc,FIFA World Cup,FWC,FWC,Lusail Stadium (interno),
+FWC18,fwc,FIFA World Cup,FWC,FWC,Bola oficial Al Rihla,
+QAT1,QAT,Catar,TEAM,A,Foto do time,QAT
+QAT2,QAT,Catar,TEAM,A,Escudo,QAT
+QAT3,QAT,Catar,TEAM,A,Saad Al Sheeb,QAT
+QAT4,QAT,Catar,TEAM,A,Meshaal Barsham,QAT
+QAT5,QAT,Catar,TEAM,A,Homam Ahmed,QAT
+QAT6,QAT,Catar,TEAM,A,Bassam Alrawi,QAT
+QAT7,QAT,Catar,TEAM,A,Abdulkarim Hassan,QAT
+QAT8,QAT,Catar,TEAM,A,Musaab Khidir,QAT
+QAT9,QAT,Catar,TEAM,A,Boualem Khoukhi,QAT
+QAT10,QAT,Catar,TEAM,A,Pedro Miguel,QAT
+QAT11,QAT,Catar,TEAM,A,Tarek Salman,QAT
+QAT12,QAT,Catar,TEAM,A,Karim Boudiaf,QAT
+QAT13,QAT,Catar,TEAM,A,Abdulaziz Hatem,QAT
+QAT14,QAT,Catar,TEAM,A,Assim Omer Madibo,QAT
+QAT15,QAT,Catar,TEAM,A,Yousuf Abdurisag,QAT
+QAT16,QAT,Catar,TEAM,A,Akram Hassan Afif,QAT
+QAT17,QAT,Catar,TEAM,A,Ahmad Alaaeldin,QAT
+QAT18,QAT,Catar,TEAM,A,Hasan Al-Haydos,QAT
+QAT19,QAT,Catar,TEAM,A,Almoez Ali,QAT
+QAT20,QAT,Catar,TEAM,A,Mohammed Muntari,QAT
+ECU1,ECU,Equador,TEAM,A,Foto do time,ECU
+ECU2,ECU,Equador,TEAM,A,Escudo,ECU
+ECU3,ECU,Equador,TEAM,A,Hernán Galíndez,ECU
+ECU4,ECU,Equador,TEAM,A,Alexander Domínguez,ECU
+ECU5,ECU,Equador,TEAM,A,Robert Arboleda,ECU
+ECU6,ECU,Equador,TEAM,A,Byron Castillo,ECU
+ECU7,ECU,Equador,TEAM,A,Pervis Estupiñán,ECU
+ECU8,ECU,Equador,TEAM,A,Piero Hincapié,ECU
+ECU9,ECU,Equador,TEAM,A,Ángelo Preciado,ECU
+ECU10,ECU,Equador,TEAM,A,Félix Torres,ECU
+ECU11,ECU,Equador,TEAM,A,Moisés Caicedo,ECU
+ECU12,ECU,Equador,TEAM,A,Alan Franco,ECU
+ECU13,ECU,Equador,TEAM,A,Carlos Gruezo,ECU
+ECU14,ECU,Equador,TEAM,A,Jhegson Méndez,ECU
+ECU15,ECU,Equador,TEAM,A,Jeremy Sarmiento,ECU
+ECU16,ECU,Equador,TEAM,A,Michael Estrada,ECU
+ECU17,ECU,Equador,TEAM,A,Ángel Mena,ECU
+ECU18,ECU,Equador,TEAM,A,Gonzalo Plata,ECU
+ECU19,ECU,Equador,TEAM,A,Ayrton Preciado,ECU
+ECU20,ECU,Equador,TEAM,A,Enner Valencia,ECU
+SEN1,SEN,Senegal,TEAM,A,Foto do time,SEN
+SEN2,SEN,Senegal,TEAM,A,Escudo,SEN
+SEN3,SEN,Senegal,TEAM,A,Édouard Mendy,SEN
+SEN4,SEN,Senegal,TEAM,A,Alfred Gomis,SEN
+SEN5,SEN,Senegal,TEAM,A,Saliou Ciss,SEN
+SEN6,SEN,Senegal,TEAM,A,Pape Abou Cissé,SEN
+SEN7,SEN,Senegal,TEAM,A,Abdou Diallo,SEN
+SEN8,SEN,Senegal,TEAM,A,Kalidou Koulibaly,SEN
+SEN9,SEN,Senegal,TEAM,A,Ibrahima Mbaye,SEN
+SEN10,SEN,Senegal,TEAM,A,Bouna Sarr,SEN
+SEN11,SEN,Senegal,TEAM,A,Krépin Diatta,SEN
+SEN12,SEN,Senegal,TEAM,A,Idrissa Gueye,SEN
+SEN13,SEN,Senegal,TEAM,A,Pape Gueye,SEN
+SEN14,SEN,Senegal,TEAM,A,Cheikhou Kouyaté,SEN
+SEN15,SEN,Senegal,TEAM,A,Nampalys Mendy,SEN
+SEN16,SEN,Senegal,TEAM,A,Boulaye Dia,SEN
+SEN17,SEN,Senegal,TEAM,A,Famara Diédhiou,SEN
+SEN18,SEN,Senegal,TEAM,A,Bamba Dieng,SEN
+SEN19,SEN,Senegal,TEAM,A,Sadio Mané,SEN
+SEN20,SEN,Senegal,TEAM,A,Ismaïla Sarr,SEN
+NED1,NED,Holanda,TEAM,A,Foto do time,NED
+NED2,NED,Holanda,TEAM,A,Escudo,NED
+NED3,NED,Holanda,TEAM,A,Justin Bijlow,NED
+NED4,NED,Holanda,TEAM,A,Jasper Cillessen,NED
+NED5,NED,Holanda,TEAM,A,Daley Blind,NED
+NED6,NED,Holanda,TEAM,A,Matthijs de Ligt,NED
+NED7,NED,Holanda,TEAM,A,Stefan de Vrij,NED
+NED8,NED,Holanda,TEAM,A,Denzel Dumfries,NED
+NED9,NED,Holanda,TEAM,A,Virgil van Dijk,NED
+NED10,NED,Holanda,TEAM,A,Steven Berghuis,NED
+NED11,NED,Holanda,TEAM,A,Frenkie de Jong,NED
+NED12,NED,Holanda,TEAM,A,Ryan Gravenberch,NED
+NED13,NED,Holanda,TEAM,A,Davy Klaassen,NED
+NED14,NED,Holanda,TEAM,A,Teun Koopmeiners,NED
+NED15,NED,Holanda,TEAM,A,Georginio Wijnaldum,NED
+NED16,NED,Holanda,TEAM,A,Steven Bergwijn,NED
+NED17,NED,Holanda,TEAM,A,Arnaut Danjuma,NED
+NED18,NED,Holanda,TEAM,A,Memphis Depay,NED
+NED19,NED,Holanda,TEAM,A,Cody Gakpo,NED
+NED20,NED,Holanda,TEAM,A,Donyell Malen,NED
+ENG1,ENG,Inglaterra,TEAM,B,Foto do time,ENG
+ENG2,ENG,Inglaterra,TEAM,B,Escudo,ENG
+ENG3,ENG,Inglaterra,TEAM,B,Jordan Pickford,ENG
+ENG4,ENG,Inglaterra,TEAM,B,Aaron Ramsdale,ENG
+ENG5,ENG,Inglaterra,TEAM,B,Trent Alexander-Arnold,ENG
+ENG6,ENG,Inglaterra,TEAM,B,Conor Coady,ENG
+ENG7,ENG,Inglaterra,TEAM,B,Harry Maguire,ENG
+ENG8,ENG,Inglaterra,TEAM,B,Luke Shaw,ENG
+ENG9,ENG,Inglaterra,TEAM,B,John Stones,ENG
+ENG10,ENG,Inglaterra,TEAM,B,Kyle Walker,ENG
+ENG11,ENG,Inglaterra,TEAM,B,Jude Bellingham,ENG
+ENG12,ENG,Inglaterra,TEAM,B,Jack Grealish,ENG
+ENG13,ENG,Inglaterra,TEAM,B,Jordan Henderson,ENG
+ENG14,ENG,Inglaterra,TEAM,B,Mason Mount,ENG
+ENG15,ENG,Inglaterra,TEAM,B,Kalvin Phillips,ENG
+ENG16,ENG,Inglaterra,TEAM,B,Declan Rice,ENG
+ENG17,ENG,Inglaterra,TEAM,B,Phil Foden,ENG
+ENG18,ENG,Inglaterra,TEAM,B,Harry Kane,ENG
+ENG19,ENG,Inglaterra,TEAM,B,Bukayo Saka,ENG
+ENG20,ENG,Inglaterra,TEAM,B,Raheem Sterling,ENG
+IRN1,IRN,Irã,TEAM,B,Foto do time,IRN
+IRN2,IRN,Irã,TEAM,B,Escudo,IRN
+IRN3,IRN,Irã,TEAM,B,Amir Abedzadeh,IRN
+IRN4,IRN,Irã,TEAM,B,Alireza Beiranvand,IRN
+IRN5,IRN,Irã,TEAM,B,Ehsan Hajsafi,IRN
+IRN6,IRN,Irã,TEAM,B,Majid Hosseini,IRN
+IRN7,IRN,Irã,TEAM,B,Hossein Kanaani,IRN
+IRN8,IRN,Irã,TEAM,B,Shoja Khalilzadeh,IRN
+IRN9,IRN,Irã,TEAM,B,Milad Mohammadi,IRN
+IRN10,IRN,Irã,TEAM,B,Sadegh Moharrami,IRN
+IRN11,IRN,Irã,TEAM,B,Omid Noorafkan,IRN
+IRN12,IRN,Irã,TEAM,B,Vahid Amiri,IRN
+IRN13,IRN,Irã,TEAM,B,Saeid Ezatolahi,IRN
+IRN14,IRN,Irã,TEAM,B,Ali Gholizadeh,IRN
+IRN15,IRN,Irã,TEAM,B,Alireza Jahanbakhsh,IRN
+IRN16,IRN,Irã,TEAM,B,Ahmad Nourollahi,IRN
+IRN17,IRN,Irã,TEAM,B,Karim Ansarifard,IRN
+IRN18,IRN,Irã,TEAM,B,Sardar Azmoun,IRN
+IRN19,IRN,Irã,TEAM,B,Saman Ghoddos,IRN
+IRN20,IRN,Irã,TEAM,B,Mehdi Taremi,IRN
+USA1,USA,Estados Unidos,TEAM,B,Foto do time,USA
+USA2,USA,Estados Unidos,TEAM,B,Escudo,USA
+USA3,USA,Estados Unidos,TEAM,B,Matt Turner,USA
+USA4,USA,Estados Unidos,TEAM,B,Zack Steffen,USA
+USA5,USA,Estados Unidos,TEAM,B,Sergiño Dest,USA
+USA6,USA,Estados Unidos,TEAM,B,Aaron Long,USA
+USA7,USA,Estados Unidos,TEAM,B,Chris Richards,USA
+USA8,USA,Estados Unidos,TEAM,B,Antonee Robinson,USA
+USA9,USA,Estados Unidos,TEAM,B,DeAndre Yedlin,USA
+USA10,USA,Estados Unidos,TEAM,B,Walker Zimmerman,USA
+USA11,USA,Estados Unidos,TEAM,B,Brenden Aaronson,USA
+USA12,USA,Estados Unidos,TEAM,B,Kellyn Acosta,USA
+USA13,USA,Estados Unidos,TEAM,B,Tyler Adams,USA
+USA14,USA,Estados Unidos,TEAM,B,Weston McKennie,USA
+USA15,USA,Estados Unidos,TEAM,B,Yunus Musah,USA
+USA16,USA,Estados Unidos,TEAM,B,Jesús Ferreira,USA
+USA17,USA,Estados Unidos,TEAM,B,Ricardo Pepi,USA
+USA18,USA,Estados Unidos,TEAM,B,Christian Pulisic,USA
+USA19,USA,Estados Unidos,TEAM,B,Giovanni Reyna,USA
+USA20,USA,Estados Unidos,TEAM,B,Timothy Weah,USA
+WAL1,WAL,País de Gales,TEAM,B,Foto do time,WAL
+WAL2,WAL,País de Gales,TEAM,B,Escudo,WAL
+WAL3,WAL,País de Gales,TEAM,B,Danny Ward,WAL
+WAL4,WAL,País de Gales,TEAM,B,Wayne Hennessey,WAL
+WAL5,WAL,País de Gales,TEAM,B,Ethan Ampadu,WAL
+WAL6,WAL,País de Gales,TEAM,B,Ben Davies,WAL
+WAL7,WAL,País de Gales,TEAM,B,Chris Gunter,WAL
+WAL8,WAL,País de Gales,TEAM,B,Chris Mepham,WAL
+WAL9,WAL,País de Gales,TEAM,B,Connor Roberts,WAL
+WAL10,WAL,País de Gales,TEAM,B,Joe Rodon,WAL
+WAL11,WAL,País de Gales,TEAM,B,Neco Williams,WAL
+WAL12,WAL,País de Gales,TEAM,B,Joe Allen,WAL
+WAL13,WAL,País de Gales,TEAM,B,Joe Morrell,WAL
+WAL14,WAL,País de Gales,TEAM,B,Aaron Ramsey,WAL
+WAL15,WAL,País de Gales,TEAM,B,Jonathan Williams,WAL
+WAL16,WAL,País de Gales,TEAM,B,Harry Wilson,WAL
+WAL17,WAL,País de Gales,TEAM,B,Gareth Bale,WAL
+WAL18,WAL,País de Gales,TEAM,B,Daniel James,WAL
+WAL19,WAL,País de Gales,TEAM,B,Brennan Johnson,WAL
+WAL20,WAL,País de Gales,TEAM,B,Kieffer Moore,WAL
+ARG1,ARG,Argentina,TEAM,C,Foto do time,ARG
+ARG2,ARG,Argentina,TEAM,C,Escudo,ARG
+ARG3,ARG,Argentina,TEAM,C,Emiliano Martínez,ARG
+ARG4,ARG,Argentina,TEAM,C,Franco Armani,ARG
+ARG5,ARG,Argentina,TEAM,C,Marcos Acuña,ARG
+ARG6,ARG,Argentina,TEAM,C,Nahuel Molina,ARG
+ARG7,ARG,Argentina,TEAM,C,Nicolás Otamendi,ARG
+ARG8,ARG,Argentina,TEAM,C,Germán Pezzella,ARG
+ARG9,ARG,Argentina,TEAM,C,Cristian Romero,ARG
+ARG10,ARG,Argentina,TEAM,C,Rodrigo De Paul,ARG
+ARG11,ARG,Argentina,TEAM,C,Ángel Di María,ARG
+ARG12,ARG,Argentina,TEAM,C,Giovani Lo Celso,ARG
+ARG13,ARG,Argentina,TEAM,C,Leandro Paredes,ARG
+ARG14,ARG,Argentina,TEAM,C,Guido Rodríguez,ARG
+ARG15,ARG,Argentina,TEAM,C,Julián Álvarez,ARG
+ARG16,ARG,Argentina,TEAM,C,Joaquín Correa,ARG
+ARG17,ARG,Argentina,TEAM,C,Alejandro Gómez,ARG
+ARG18,ARG,Argentina,TEAM,C,Nicolás González,ARG
+ARG19,ARG,Argentina,TEAM,C,Lautaro Martínez,ARG
+ARG20,ARG,Argentina,TEAM,C,Lionel Messi,ARG
+KSA1,KSA,Arábia Saudita,TEAM,C,Foto do time,KSA
+KSA2,KSA,Arábia Saudita,TEAM,C,Escudo,KSA
+KSA3,KSA,Arábia Saudita,TEAM,C,Mohammed Al-Owais,KSA
+KSA4,KSA,Arábia Saudita,TEAM,C,Mohammed Al-Rubaie,KSA
+KSA5,KSA,Arábia Saudita,TEAM,C,Abdulelah Al-Amri,KSA
+KSA6,KSA,Arábia Saudita,TEAM,C,Ali Al-Boleahi,KSA
+KSA7,KSA,Arábia Saudita,TEAM,C,Mohammed Al-Burayk,KSA
+KSA8,KSA,Arábia Saudita,TEAM,C,Sultan Al-Ghannam,KSA
+KSA9,KSA,Arábia Saudita,TEAM,C,Yasser Al-Shahrani,KSA
+KSA10,KSA,Arábia Saudita,TEAM,C,Hassan Al-Tambakti,KSA
+KSA11,KSA,Arábia Saudita,TEAM,C,Abdullah Madu,KSA
+KSA12,KSA,Arábia Saudita,TEAM,C,Salman Al-Faraj,KSA
+KSA13,KSA,Arábia Saudita,TEAM,C,Abdulelah Al-Malki,KSA
+KSA14,KSA,Arábia Saudita,TEAM,C,Sami Al-Najei,KSA
+KSA15,KSA,Arábia Saudita,TEAM,C,Hattan Bahebri,KSA
+KSA16,KSA,Arábia Saudita,TEAM,C,Mohamed Kanno,KSA
+KSA17,KSA,Arábia Saudita,TEAM,C,Abdullah Otayf,KSA
+KSA18,KSA,Arábia Saudita,TEAM,C,Firas Al-Buraikan,KSA
+KSA19,KSA,Arábia Saudita,TEAM,C,Salem Al-Dawsari,KSA
+KSA20,KSA,Arábia Saudita,TEAM,C,Khalid Al-Ghannam,KSA
+MEX1,MEX,México,TEAM,C,Foto do time,MEX
+MEX2,MEX,México,TEAM,C,Escudo,MEX
+MEX3,MEX,México,TEAM,C,Guillermo Ochoa,MEX
+MEX4,MEX,México,TEAM,C,Alfredo Talavera,MEX
+MEX5,MEX,México,TEAM,C,Néstor Araújo,MEX
+MEX6,MEX,México,TEAM,C,Jesús Gallardo,MEX
+MEX7,MEX,México,TEAM,C,César Montes,MEX
+MEX8,MEX,México,TEAM,C,Héctor Moreno,MEX
+MEX9,MEX,México,TEAM,C,Luis Romo,MEX
+MEX10,MEX,México,TEAM,C,Jorge Sánchez,MEX
+MEX11,MEX,México,TEAM,C,Edson Álvarez,MEX
+MEX12,MEX,México,TEAM,C,Jesús Manuel Corona,MEX
+MEX13,MEX,México,TEAM,C,Andrés Guardado,MEX
+MEX14,MEX,México,TEAM,C,Érick Gutiérrez,MEX
+MEX15,MEX,México,TEAM,C,Héctor Herrera,MEX
+MEX16,MEX,México,TEAM,C,Diego Lainez,MEX
+MEX17,MEX,México,TEAM,C,Carlos Rodríguez,MEX
+MEX18,MEX,México,TEAM,C,Rogelio Funes Mori,MEX
+MEX19,MEX,México,TEAM,C,Raúl Jiménez,MEX
+MEX20,MEX,México,TEAM,C,Hirving Lozano,MEX
+POL1,POL,Polônia,TEAM,C,Foto do time,POL
+POL2,POL,Polônia,TEAM,C,Escudo,POL
+POL3,POL,Polônia,TEAM,C,Wojciech Szczęsny,POL
+POL4,POL,Polônia,TEAM,C,Łukasz Skorupski,POL
+POL5,POL,Polônia,TEAM,C,Jan Bednarek,POL
+POL6,POL,Polônia,TEAM,C,Bartosz Bereszyński,POL
+POL7,POL,Polônia,TEAM,C,Matty Cash,POL
+POL8,POL,Polônia,TEAM,C,Kamil Glik,POL
+POL9,POL,Polônia,TEAM,C,Tymoteusz Puchacz,POL
+POL10,POL,Polônia,TEAM,C,Maciej Rybus,POL
+POL11,POL,Polônia,TEAM,C,Kamil Jóźwiak,POL
+POL12,POL,Polônia,TEAM,C,Mateusz Klich,POL
+POL13,POL,Polônia,TEAM,C,Grzegorz Krychowiak,POL
+POL14,POL,Polônia,TEAM,C,Jakub Moder,POL
+POL15,POL,Polônia,TEAM,C,Sebastian Szymański,POL
+POL16,POL,Polônia,TEAM,C,Piotr Zieliński,POL
+POL17,POL,Polônia,TEAM,C,Robert Lewandowski,POL
+POL18,POL,Polônia,TEAM,C,Arkadiusz Milik,POL
+POL19,POL,Polônia,TEAM,C,Krzysztof Piątek,POL
+POL20,POL,Polônia,TEAM,C,Karol Świderski,POL
+FRA1,FRA,França,TEAM,D,Foto do time,FRA
+FRA2,FRA,França,TEAM,D,Escudo,FRA
+FRA3,FRA,França,TEAM,D,Hugo Lloris,FRA
+FRA4,FRA,França,TEAM,D,Mike Maignan,FRA
+FRA5,FRA,França,TEAM,D,Lucas Hernández,FRA
+FRA6,FRA,França,TEAM,D,Theo Hernández,FRA
+FRA7,FRA,França,TEAM,D,Presnel Kimpembe,FRA
+FRA8,FRA,França,TEAM,D,Jules Koundé,FRA
+FRA9,FRA,França,TEAM,D,Benjamin Pavard,FRA
+FRA10,FRA,França,TEAM,D,Raphaël Varane,FRA
+FRA11,FRA,França,TEAM,D,N’Golo Kanté,FRA
+FRA12,FRA,França,TEAM,D,Paul Pogba,FRA
+FRA13,FRA,França,TEAM,D,Adrien Rabiot,FRA
+FRA14,FRA,França,TEAM,D,Aurélien Tchouaméni,FRA
+FRA15,FRA,França,TEAM,D,Wissam Ben Yedder,FRA
+FRA16,FRA,França,TEAM,D,Karim Benzema,FRA
+FRA17,FRA,França,TEAM,D,Kingsley Coman,FRA
+FRA18,FRA,França,TEAM,D,Antoine Griezmann,FRA
+FRA19,FRA,França,TEAM,D,Kylian Mbappé,FRA
+FRA20,FRA,França,TEAM,D,Christopher Nkunku,FRA
+AUS1,AUS,Austrália,TEAM,D,Foto do time,AUS
+AUS2,AUS,Austrália,TEAM,D,Escudo,AUS
+AUS3,AUS,Austrália,TEAM,D,Mathew Ryan,AUS
+AUS4,AUS,Austrália,TEAM,D,Andrew Redmayne,AUS
+AUS5,AUS,Austrália,TEAM,D,Aziz Behich,AUS
+AUS6,AUS,Austrália,TEAM,D,Miloš Degenek,AUS
+AUS7,AUS,Austrália,TEAM,D,Rhyan Grant,AUS
+AUS8,AUS,Austrália,TEAM,D,Joel King,AUS
+AUS9,AUS,Austrália,TEAM,D,Trent Sainsbury,AUS
+AUS10,AUS,Austrália,TEAM,D,Harry Souttar,AUS
+AUS11,AUS,Austrália,TEAM,D,Ajdin Hrustić,AUS
+AUS12,AUS,Austrália,TEAM,D,Jackson Irvine,AUS
+AUS13,AUS,Austrália,TEAM,D,James Jeggo,AUS
+AUS14,AUS,Austrália,TEAM,D,Awer Mabil,AUS
+AUS15,AUS,Austrália,TEAM,D,Aaron Mooy,AUS
+AUS16,AUS,Austrália,TEAM,D,Martin Boyle,AUS
+AUS17,AUS,Austrália,TEAM,D,Mitchell Duke,AUS
+AUS18,AUS,Austrália,TEAM,D,Craig Goodwin,AUS
+AUS19,AUS,Austrália,TEAM,D,Mathew Leckie,AUS
+AUS20,AUS,Austrália,TEAM,D,Adam Taggart,AUS
+DEN1,DEN,Dinamarca,TEAM,D,Foto do time,DEN
+DEN2,DEN,Dinamarca,TEAM,D,Escudo,DEN
+DEN3,DEN,Dinamarca,TEAM,D,Kasper Schmeichel,DEN
+DEN4,DEN,Dinamarca,TEAM,D,Frederik Rønnow,DEN
+DEN5,DEN,Dinamarca,TEAM,D,Andreas Christensen,DEN
+DEN6,DEN,Dinamarca,TEAM,D,Simon Kjær,DEN
+DEN7,DEN,Dinamarca,TEAM,D,Joakim Mæhle,DEN
+DEN8,DEN,Dinamarca,TEAM,D,Jens Stryger Larsen,DEN
+DEN9,DEN,Dinamarca,TEAM,D,Jannik Vestergaard,DEN
+DEN10,DEN,Dinamarca,TEAM,D,Mikkel Damsgaard,DEN
+DEN11,DEN,Dinamarca,TEAM,D,Thomas Delaney,DEN
+DEN12,DEN,Dinamarca,TEAM,D,Christian Eriksen,DEN
+DEN13,DEN,Dinamarca,TEAM,D,Pierre Emile Højbjerg,DEN
+DEN14,DEN,Dinamarca,TEAM,D,Christian Nørgaard,DEN
+DEN15,DEN,Dinamarca,TEAM,D,Daniel Wass,DEN
+DEN16,DEN,Dinamarca,TEAM,D,Martin Braithwaite,DEN
+DEN17,DEN,Dinamarca,TEAM,D,Kasper Dolberg,DEN
+DEN18,DEN,Dinamarca,TEAM,D,Yussuf Poulsen,DEN
+DEN19,DEN,Dinamarca,TEAM,D,Andreas Skov Olsen,DEN
+DEN20,DEN,Dinamarca,TEAM,D,Jonas Wind,DEN
+TUN1,TUN,Tunísia,TEAM,D,Foto do time,TUN
+TUN2,TUN,Tunísia,TEAM,D,Escudo,TUN
+TUN3,TUN,Tunísia,TEAM,D,Bechir Ben Saïd,TUN
+TUN4,TUN,Tunísia,TEAM,D,Farouk Ben Mustapha,TUN
+TUN5,TUN,Tunísia,TEAM,D,Dylan Bronn,TUN
+TUN6,TUN,Tunísia,TEAM,D,Mohamed Dräger,TUN
+TUN7,TUN,Tunísia,TEAM,D,Bilel Ifa,TUN
+TUN8,TUN,Tunísia,TEAM,D,Ali Maâloul,TUN
+TUN9,TUN,Tunísia,TEAM,D,Hamza Mathlouthi,TUN
+TUN10,TUN,Tunísia,TEAM,D,Yassine Meriah,TUN
+TUN11,TUN,Tunísia,TEAM,D,Montassar Talbi,TUN
+TUN12,TUN,Tunísia,TEAM,D,Mohamed Ali Ben Romdhane,TUN
+TUN13,TUN,Tunísia,TEAM,D,Wahbi Khazri,TUN
+TUN14,TUN,Tunísia,TEAM,D,Aïssa Laïdouni,TUN
+TUN15,TUN,Tunísia,TEAM,D,Ferjani Sassi,TUN
+TUN16,TUN,Tunísia,TEAM,D,Ellyes Skhiri,TUN
+TUN17,TUN,Tunísia,TEAM,D,Anis Slimane,TUN
+TUN18,TUN,Tunísia,TEAM,D,Seifeddine Jaziri,TUN
+TUN19,TUN,Tunísia,TEAM,D,Youssef Msakni,TUN
+TUN20,TUN,Tunísia,TEAM,D,Naïm Sliti,TUN
+ESP1,ESP,Espanha,TEAM,E,Foto do time,ESP
+ESP2,ESP,Espanha,TEAM,E,Escudo,ESP
+ESP3,ESP,Espanha,TEAM,E,Unai Simón,ESP
+ESP4,ESP,Espanha,TEAM,E,Robert Sánchez,ESP
+ESP5,ESP,Espanha,TEAM,E,César Azpilicueta,ESP
+ESP6,ESP,Espanha,TEAM,E,Eric García,ESP
+ESP7,ESP,Espanha,TEAM,E,Jordi Alba,ESP
+ESP8,ESP,Espanha,TEAM,E,Aymeric Laporte,ESP
+ESP9,ESP,Espanha,TEAM,E,Pau Torres,ESP
+ESP10,ESP,Espanha,TEAM,E,Gavi,ESP
+ESP11,ESP,Espanha,TEAM,E,Koke,ESP
+ESP12,ESP,Espanha,TEAM,E,Marcos Llorente,ESP
+ESP13,ESP,Espanha,TEAM,E,Pedri,ESP
+ESP14,ESP,Espanha,TEAM,E,Rodri,ESP
+ESP15,ESP,Espanha,TEAM,E,Sergio Busquets,ESP
+ESP16,ESP,Espanha,TEAM,E,Dani Olmo,ESP
+ESP17,ESP,Espanha,TEAM,E,Ansu Fati,ESP
+ESP18,ESP,Espanha,TEAM,E,Ferran Torres,ESP
+ESP19,ESP,Espanha,TEAM,E,Álvaro Morata,ESP
+ESP20,ESP,Espanha,TEAM,E,Pablo Sarabia,ESP
+CRC1,CRC,Costa Rica,TEAM,E,Foto do time,CRC
+CRC2,CRC,Costa Rica,TEAM,E,Escudo,CRC
+CRC3,CRC,Costa Rica,TEAM,E,Keylor Navas,CRC
+CRC4,CRC,Costa Rica,TEAM,E,Leonel Moreira,CRC
+CRC5,CRC,Costa Rica,TEAM,E,Ricardo Blanco,CRC
+CRC6,CRC,Costa Rica,TEAM,E,Francisco Calvo,CRC
+CRC7,CRC,Costa Rica,TEAM,E,Óscar Duarte,CRC
+CRC8,CRC,Costa Rica,TEAM,E,Keysher Fuller,CRC
+CRC9,CRC,Costa Rica,TEAM,E,Bryan Oviedo,CRC
+CRC10,CRC,Costa Rica,TEAM,E,Juan Pablo Vargas,CRC
+CRC11,CRC,Costa Rica,TEAM,E,Kendall Waston,CRC
+CRC12,CRC,Costa Rica,TEAM,E,Celso Borges,CRC
+CRC13,CRC,Costa Rica,TEAM,E,Orlando Galo,CRC
+CRC14,CRC,Costa Rica,TEAM,E,Bryan Ruiz,CRC
+CRC15,CRC,Costa Rica,TEAM,E,Yeltsin Tejeda,CRC
+CRC16,CRC,Costa Rica,TEAM,E,Jewison Bennette,CRC
+CRC17,CRC,Costa Rica,TEAM,E,Joel Campbell,CRC
+CRC18,CRC,Costa Rica,TEAM,E,Anthony Contreras,CRC
+CRC19,CRC,Costa Rica,TEAM,E,Gerson Torres,CRC
+CRC20,CRC,Costa Rica,TEAM,E,Johan Venegas,CRC
+GER1,GER,Alemanha,TEAM,E,Foto do time,GER
+GER2,GER,Alemanha,TEAM,E,Escudo,GER
+GER3,GER,Alemanha,TEAM,E,Manuel Neuer,GER
+GER4,GER,Alemanha,TEAM,E,Marc-André ter Stegen,GER
+GER5,GER,Alemanha,TEAM,E,Matthias Ginter,GER
+GER6,GER,Alemanha,TEAM,E,Robin Gosens,GER
+GER7,GER,Alemanha,TEAM,E,Thilo Kehrer,GER
+GER8,GER,Alemanha,TEAM,E,David Raum,GER
+GER9,GER,Alemanha,TEAM,E,Antonio Rüdiger,GER
+GER10,GER,Alemanha,TEAM,E,Niklas Süle,GER
+GER11,GER,Alemanha,TEAM,E,Leon Goretzka,GER
+GER12,GER,Alemanha,TEAM,E,İlkay Gündoğan,GER
+GER13,GER,Alemanha,TEAM,E,Kai Havertz,GER
+GER14,GER,Alemanha,TEAM,E,Jonas Hofmann,GER
+GER15,GER,Alemanha,TEAM,E,Joshua Kimmich,GER
+GER16,GER,Alemanha,TEAM,E,Serge Gnabry,GER
+GER17,GER,Alemanha,TEAM,E,Thomas Müller,GER
+GER18,GER,Alemanha,TEAM,E,Marco Reus,GER
+GER19,GER,Alemanha,TEAM,E,Leroy Sané,GER
+GER20,GER,Alemanha,TEAM,E,Timo Werner,GER
+JPN1,JPN,Japão,TEAM,E,Foto do time,JPN
+JPN2,JPN,Japão,TEAM,E,Escudo,JPN
+JPN3,JPN,Japão,TEAM,E,Shuichi Gonda,JPN
+JPN4,JPN,Japão,TEAM,E,Eiji Kawashima,JPN
+JPN5,JPN,Japão,TEAM,E,Yuto Nagatomo,JPN
+JPN6,JPN,Japão,TEAM,E,Yuta Nakayama,JPN
+JPN7,JPN,Japão,TEAM,E,Takehiro Tomiyasu,JPN
+JPN8,JPN,Japão,TEAM,E,Miki Yamane,JPN
+JPN9,JPN,Japão,TEAM,E,Maya Yoshida,JPN
+JPN10,JPN,Japão,TEAM,E,Wataru Endo,JPN
+JPN11,JPN,Japão,TEAM,E,Genki Haraguchi,JPN
+JPN12,JPN,Japão,TEAM,E,Hidemasa Morita,JPN
+JPN13,JPN,Japão,TEAM,E,Gaku Shibasaki,JPN
+JPN14,JPN,Japão,TEAM,E,Ao Tanaka,JPN
+JPN15,JPN,Japão,TEAM,E,Takuma Asano,JPN
+JPN16,JPN,Japão,TEAM,E,Kyogo Furuhashi,JPN
+JPN17,JPN,Japão,TEAM,E,Junya Ito,JPN
+JPN18,JPN,Japão,TEAM,E,Takumi Minamino,JPN
+JPN19,JPN,Japão,TEAM,E,Kaoru Mitoma,JPN
+JPN20,JPN,Japão,TEAM,E,Yuya Osako,JPN
+BEL1,BEL,Bélgica,TEAM,F,Foto do time,BEL
+BEL2,BEL,Bélgica,TEAM,F,Escudo,BEL
+BEL3,BEL,Bélgica,TEAM,F,Thibaut Courtois,BEL
+BEL4,BEL,Bélgica,TEAM,F,Simon Mignolet,BEL
+BEL5,BEL,Bélgica,TEAM,F,Toby Alderweireld,BEL
+BEL6,BEL,Bélgica,TEAM,F,Timothy Castagne,BEL
+BEL7,BEL,Bélgica,TEAM,F,Jason Denayer,BEL
+BEL8,BEL,Bélgica,TEAM,F,Thomas Meunier,BEL
+BEL9,BEL,Bélgica,TEAM,F,Jan Vertonghen,BEL
+BEL10,BEL,Bélgica,TEAM,F,Yannick Carrasco,BEL
+BEL11,BEL,Bélgica,TEAM,F,Kevin De Bruyne,BEL
+BEL12,BEL,Bélgica,TEAM,F,Charles De Ketelaere,BEL
+BEL13,BEL,Bélgica,TEAM,F,Thorgan Hazard,BEL
+BEL14,BEL,Bélgica,TEAM,F,Youri Tielemans,BEL
+BEL15,BEL,Bélgica,TEAM,F,Hans Vanaken,BEL
+BEL16,BEL,Bélgica,TEAM,F,Axel Witsel,BEL
+BEL17,BEL,Bélgica,TEAM,F,Jérémy Doku,BEL
+BEL18,BEL,Bélgica,TEAM,F,Eden Hazard,BEL
+BEL19,BEL,Bélgica,TEAM,F,Romelu Lukaku,BEL
+BEL20,BEL,Bélgica,TEAM,F,Dries Mertens,BEL
+CAN1,CAN,Canadá,TEAM,F,Foto do time,CAN
+CAN2,CAN,Canadá,TEAM,F,Escudo,CAN
+CAN3,CAN,Canadá,TEAM,F,Milan Borjan,CAN
+CAN4,CAN,Canadá,TEAM,F,Maxime Crépeau,CAN
+CAN5,CAN,Canadá,TEAM,F,Samuel Adekugbe,CAN
+CAN6,CAN,Canadá,TEAM,F,Doneil Henry,CAN
+CAN7,CAN,Canadá,TEAM,F,Alistair Johnston,CAN
+CAN8,CAN,Canadá,TEAM,F,Richie Laryea,CAN
+CAN9,CAN,Canadá,TEAM,F,Kamal Miller,CAN
+CAN10,CAN,Canadá,TEAM,F,Steven Vitória,CAN
+CAN11,CAN,Canadá,TEAM,F,Tajon Buchanan,CAN
+CAN12,CAN,Canadá,TEAM,F,Alphonso Davies,CAN
+CAN13,CAN,Canadá,TEAM,F,Stephen Eustáquio,CAN
+CAN14,CAN,Canadá,TEAM,F,Atiba Hutchinson,CAN
+CAN15,CAN,Canadá,TEAM,F,Mark-Anthony Kaye,CAN
+CAN16,CAN,Canadá,TEAM,F,Jonathan Osorio,CAN
+CAN17,CAN,Canadá,TEAM,F,Samuel Piette,CAN
+CAN18,CAN,Canadá,TEAM,F,Jonathan David,CAN
+CAN19,CAN,Canadá,TEAM,F,David Junior Hoilett,CAN
+CAN20,CAN,Canadá,TEAM,F,Cyle Larin,CAN
+MAR1,MAR,Marrocos,TEAM,F,Foto do time,MAR
+MAR2,MAR,Marrocos,TEAM,F,Escudo,MAR
+MAR3,MAR,Marrocos,TEAM,F,Yassine Bounou,MAR
+MAR4,MAR,Marrocos,TEAM,F,Munir Mohamedi,MAR
+MAR5,MAR,Marrocos,TEAM,F,Nayef Aguerd,MAR
+MAR6,MAR,Marrocos,TEAM,F,Achraf Hakimi,MAR
+MAR7,MAR,Marrocos,TEAM,F,Adam Masina,MAR
+MAR8,MAR,Marrocos,TEAM,F,Samy Mmaee,MAR
+MAR9,MAR,Marrocos,TEAM,F,Romain Saïss,MAR
+MAR10,MAR,Marrocos,TEAM,F,Selim Amallah,MAR
+MAR11,MAR,Marrocos,TEAM,F,Sofyan Amrabat,MAR
+MAR12,MAR,Marrocos,TEAM,F,Aymen Barkok,MAR
+MAR13,MAR,Marrocos,TEAM,F,Ilias Chair,MAR
+MAR14,MAR,Marrocos,TEAM,F,Imrân Louza,MAR
+MAR15,MAR,Marrocos,TEAM,F,Sofiane Boufal,MAR
+MAR16,MAR,Marrocos,TEAM,F,Ayoub El Kaabi,MAR
+MAR17,MAR,Marrocos,TEAM,F,Youssef En-Nesyri,MAR
+MAR18,MAR,Marrocos,TEAM,F,Ryan Mmaee,MAR
+MAR19,MAR,Marrocos,TEAM,F,Munir,MAR
+MAR20,MAR,Marrocos,TEAM,F,Tarik Tissoudali,MAR
+CRO1,CRO,Croácia,TEAM,F,Foto do time,CRO
+CRO2,CRO,Croácia,TEAM,F,Escudo,CRO
+CRO3,CRO,Croácia,TEAM,F,Dominik Livaković,CRO
+CRO4,CRO,Croácia,TEAM,F,Ivica Ivušić,CRO
+CRO5,CRO,Croácia,TEAM,F,Duje Ćaleta-Car,CRO
+CRO6,CRO,Croácia,TEAM,F,Joško Gvardiol,CRO
+CRO7,CRO,Croácia,TEAM,F,Josip Juranović,CRO
+CRO8,CRO,Croácia,TEAM,F,Dejan Lovren,CRO
+CRO9,CRO,Croácia,TEAM,F,Borna Sosa,CRO
+CRO10,CRO,Croácia,TEAM,F,Domagoj Vida,CRO
+CRO11,CRO,Croácia,TEAM,F,Marcelo Brozović,CRO
+CRO12,CRO,Croácia,TEAM,F,Mateo Kovačić,CRO
+CRO13,CRO,Croácia,TEAM,F,Luka Modrić,CRO
+CRO14,CRO,Croácia,TEAM,F,Mario Pašalić,CRO
+CRO15,CRO,Croácia,TEAM,F,Ivan Perišić,CRO
+CRO16,CRO,Croácia,TEAM,F,Nikola Vlašić,CRO
+CRO17,CRO,Croácia,TEAM,F,Josip Brekalo,CRO
+CRO18,CRO,Croácia,TEAM,F,Andrej Kramarić,CRO
+CRO19,CRO,Croácia,TEAM,F,Marko Livaja,CRO
+CRO20,CRO,Croácia,TEAM,F,Mislav Oršić,CRO
+BRA1,BRA,Brasil,TEAM,G,Foto do time,BRA
+BRA2,BRA,Brasil,TEAM,G,Escudo,BRA
+BRA3,BRA,Brasil,TEAM,G,Alisson,BRA
+BRA4,BRA,Brasil,TEAM,G,Ederson,BRA
+BRA5,BRA,Brasil,TEAM,G,Alex Sandro,BRA
+BRA6,BRA,Brasil,TEAM,G,Danilo,BRA
+BRA7,BRA,Brasil,TEAM,G,Éder Militão,BRA
+BRA8,BRA,Brasil,TEAM,G,Marquinhos,BRA
+BRA9,BRA,Brasil,TEAM,G,Thiago Silva,BRA
+BRA10,BRA,Brasil,TEAM,G,Casemiro,BRA
+BRA11,BRA,Brasil,TEAM,G,Philippe Coutinho,BRA
+BRA12,BRA,Brasil,TEAM,G,Fabinho,BRA
+BRA13,BRA,Brasil,TEAM,G,Fred,BRA
+BRA14,BRA,Brasil,TEAM,G,Lucas Paquetá,BRA
+BRA15,BRA,Brasil,TEAM,G,Antony,BRA
+BRA16,BRA,Brasil,TEAM,G,Gabriel Jesus,BRA
+BRA17,BRA,Brasil,TEAM,G,Neymar Jr,BRA
+BRA18,BRA,Brasil,TEAM,G,Raphinha,BRA
+BRA19,BRA,Brasil,TEAM,G,Richarlison,BRA
+BRA20,BRA,Brasil,TEAM,G,Vinícius Jr,BRA
+SRB1,SRB,Sérvia,TEAM,G,Foto do time,SRB
+SRB2,SRB,Sérvia,TEAM,G,Escudo,SRB
+SRB3,SRB,Sérvia,TEAM,G,Predrag Rajković,SRB
+SRB4,SRB,Sérvia,TEAM,G,Vanja Milinković-Savić,SRB
+SRB5,SRB,Sérvia,TEAM,G,Nikola Milenković,SRB
+SRB6,SRB,Sérvia,TEAM,G,Strahinja Pavlović,SRB
+SRB7,SRB,Sérvia,TEAM,G,Miloš Veljković,SRB
+SRB8,SRB,Sérvia,TEAM,G,Filip Đuričić,SRB
+SRB9,SRB,Sérvia,TEAM,G,Nemanja Gudelj,SRB
+SRB10,SRB,Sérvia,TEAM,G,Filip Kostić,SRB
+SRB11,SRB,Sérvia,TEAM,G,Darko Lazović,SRB
+SRB12,SRB,Sérvia,TEAM,G,Saša Lukić,SRB
+SRB13,SRB,Sérvia,TEAM,G,Nemanja Maksimović,SRB
+SRB14,SRB,Sérvia,TEAM,G,Sergej Milinković-Savić,SRB
+SRB15,SRB,Sérvia,TEAM,G,Nemanja Radonjić,SRB
+SRB16,SRB,Sérvia,TEAM,G,Andrija Živković,SRB
+SRB17,SRB,Sérvia,TEAM,G,Luka Jović,SRB
+SRB18,SRB,Sérvia,TEAM,G,Aleksandar Mitrović,SRB
+SRB19,SRB,Sérvia,TEAM,G,Dušan Tadić,SRB
+SRB20,SRB,Sérvia,TEAM,G,Dušan Vlahović,SRB
+SUI1,SUI,Suíça,TEAM,G,Foto do time,SUI
+SUI2,SUI,Suíça,TEAM,G,Escudo,SUI
+SUI3,SUI,Suíça,TEAM,G,Yann Sommer,SUI
+SUI4,SUI,Suíça,TEAM,G,Gregor Kobel,SUI
+SUI5,SUI,Suíça,TEAM,G,Manuel Akanji,SUI
+SUI6,SUI,Suíça,TEAM,G,Nico Elvedi,SUI
+SUI7,SUI,Suíça,TEAM,G,Kevin Mbabu,SUI
+SUI8,SUI,Suíça,TEAM,G,Ricardo Rodríguez,SUI
+SUI9,SUI,Suíça,TEAM,G,Fabian Schär,SUI
+SUI10,SUI,Suíça,TEAM,G,Silvan Widmer,SUI
+SUI11,SUI,Suíça,TEAM,G,Remo Freuler,SUI
+SUI12,SUI,Suíça,TEAM,G,Xherdan Shaqiri,SUI
+SUI13,SUI,Suíça,TEAM,G,Djibril Sow,SUI
+SUI14,SUI,Suíça,TEAM,G,Granit Xhaka,SUI
+SUI15,SUI,Suíça,TEAM,G,Denis Zakaria,SUI
+SUI16,SUI,Suíça,TEAM,G,Steven Zuber,SUI
+SUI17,SUI,Suíça,TEAM,G,Breel Embolo,SUI
+SUI18,SUI,Suíça,TEAM,G,Noah Okafor,SUI
+SUI19,SUI,Suíça,TEAM,G,Haris Seferović,SUI
+SUI20,SUI,Suíça,TEAM,G,Ruben Vargas,SUI
+CMR1,CMR,Camarões,TEAM,G,Foto do time,CMR
+CMR2,CMR,Camarões,TEAM,G,Escudo,CMR
+CMR3,CMR,Camarões,TEAM,G,André Onana,CMR
+CMR4,CMR,Camarões,TEAM,G,Devis Epassy,CMR
+CMR5,CMR,Camarões,TEAM,G,Jean-Charles Castelletto,CMR
+CMR6,CMR,Camarões,TEAM,G,Collins Fai,CMR
+CMR7,CMR,Camarões,TEAM,G,Olivier Mbaizo,CMR
+CMR8,CMR,Camarões,TEAM,G,Harold Moukoudi,CMR
+CMR9,CMR,Camarões,TEAM,G,Michael Ngadeu,CMR
+CMR10,CMR,Camarões,TEAM,G,Nouhou,CMR
+CMR11,CMR,Camarões,TEAM,G,Martin Hongla,CMR
+CMR12,CMR,Camarões,TEAM,G,Pierre Kunde,CMR
+CMR13,CMR,Camarões,TEAM,G,James Léa Siliki,CMR
+CMR14,CMR,Camarões,TEAM,G,Samuel Oum Gouet,CMR
+CMR15,CMR,Camarões,TEAM,G,André-Frank Zambo Anguissa,CMR
+CMR16,CMR,Camarões,TEAM,G,Vincent Aboubakar,CMR
+CMR17,CMR,Camarões,TEAM,G,Stéphane Bahoken,CMR
+CMR18,CMR,Camarões,TEAM,G,Eric Maxim Choupo-Moting,CMR
+CMR19,CMR,Camarões,TEAM,G,Nicolas Moumi Ngamaleu,CMR
+CMR20,CMR,Camarões,TEAM,G,Karl Toko Ekambi,CMR
+POR1,POR,Portugal,TEAM,H,Foto do time,POR
+POR2,POR,Portugal,TEAM,H,Escudo,POR
+POR3,POR,Portugal,TEAM,H,Diogo Costa,POR
+POR4,POR,Portugal,TEAM,H,Rui Patrício,POR
+POR5,POR,Portugal,TEAM,H,João Cancelo,POR
+POR6,POR,Portugal,TEAM,H,José Fonte,POR
+POR7,POR,Portugal,TEAM,H,Nuno Mendes,POR
+POR8,POR,Portugal,TEAM,H,Pepe,POR
+POR9,POR,Portugal,TEAM,H,Raphaël Guerreiro,POR
+POR10,POR,Portugal,TEAM,H,Rúben Dias,POR
+POR11,POR,Portugal,TEAM,H,Bernardo Silva,POR
+POR12,POR,Portugal,TEAM,H,Bruno Fernandes,POR
+POR13,POR,Portugal,TEAM,H,Danilo Pereira,POR
+POR14,POR,Portugal,TEAM,H,João Moutinho,POR
+POR15,POR,Portugal,TEAM,H,Renato Sanches,POR
+POR16,POR,Portugal,TEAM,H,Rúben Neves,POR
+POR17,POR,Portugal,TEAM,H,André Silva,POR
+POR18,POR,Portugal,TEAM,H,Cristiano Ronaldo,POR
+POR19,POR,Portugal,TEAM,H,Diogo Jota,POR
+POR20,POR,Portugal,TEAM,H,Gonçalo Guedes,POR
+GHA1,GHA,Gana,TEAM,H,Foto do time,GHA
+GHA2,GHA,Gana,TEAM,H,Escudo,GHA
+GHA3,GHA,Gana,TEAM,H,Joe Wollacott,GHA
+GHA4,GHA,Gana,TEAM,H,Richard Ofori,GHA
+GHA5,GHA,Gana,TEAM,H,Daniel Amartey,GHA
+GHA6,GHA,Gana,TEAM,H,Abdul-Rahman Baba,GHA
+GHA7,GHA,Gana,TEAM,H,Alexander Djiku,GHA
+GHA8,GHA,Gana,TEAM,H,Gideon Mensah,GHA
+GHA9,GHA,Gana,TEAM,H,Jonathan Mensah,GHA
+GHA10,GHA,Gana,TEAM,H,Andy Yiadom,GHA
+GHA11,GHA,Gana,TEAM,H,Iddrisu Baba,GHA
+GHA12,GHA,Gana,TEAM,H,Mohammed Kudus,GHA
+GHA13,GHA,Gana,TEAM,H,Daniel-Kofi Kyereh,GHA
+GHA14,GHA,Gana,TEAM,H,Thomas Partey,GHA
+GHA15,GHA,Gana,TEAM,H,Mubarak Wakaso,GHA
+GHA16,GHA,Gana,TEAM,H,Felix Afena-Gyan,GHA
+GHA17,GHA,Gana,TEAM,H,André Ayew,GHA
+GHA18,GHA,Gana,TEAM,H,Jordan Ayew,GHA
+GHA19,GHA,Gana,TEAM,H,Issahaku Abdul Fatawu,GHA
+GHA20,GHA,Gana,TEAM,H,Kamaldeen Sulemana,GHA
+URU1,URU,Uruguai,TEAM,H,Foto do time,URU
+URU2,URU,Uruguai,TEAM,H,Escudo,URU
+URU3,URU,Uruguai,TEAM,H,Fernando Muslera,URU
+URU4,URU,Uruguai,TEAM,H,Sergio Rochet,URU
+URU5,URU,Uruguai,TEAM,H,Ronald Araújo,URU
+URU6,URU,Uruguai,TEAM,H,Martín Cáceres,URU
+URU7,URU,Uruguai,TEAM,H,José María Giménez,URU
+URU8,URU,Uruguai,TEAM,H,Diego Godín,URU
+URU9,URU,Uruguai,TEAM,H,Mathías Olivera,URU
+URU10,URU,Uruguai,TEAM,H,Matías Viña,URU
+URU11,URU,Uruguai,TEAM,H,Rodrigo Bentancur,URU
+URU12,URU,Uruguai,TEAM,H,Giorgian De Arrascaeta,URU
+URU13,URU,Uruguai,TEAM,H,Nicolás De La Cruz,URU
+URU14,URU,Uruguai,TEAM,H,Lucas Torreira,URU
+URU15,URU,Uruguai,TEAM,H,Federico Valverde,URU
+URU16,URU,Uruguai,TEAM,H,Matías Vecino,URU
+URU17,URU,Uruguai,TEAM,H,Edinson Cavani,URU
+URU18,URU,Uruguai,TEAM,H,Darwin Núñez,URU
+URU19,URU,Uruguai,TEAM,H,Facundo Pellistri,URU
+URU20,URU,Uruguai,TEAM,H,Luis Suárez,URU
+KOR1,KOR,Coreia do Sul,TEAM,H,Foto do time,KOR
+KOR2,KOR,Coreia do Sul,TEAM,H,Escudo,KOR
+KOR3,KOR,Coreia do Sul,TEAM,H,Seung-gyu Kim,KOR
+KOR4,KOR,Coreia do Sul,TEAM,H,Hyeon-woo Jo,KOR
+KOR5,KOR,Coreia do Sul,TEAM,H,Chul Hong,KOR
+KOR6,KOR,Coreia do Sul,TEAM,H,Tae-hwan Kim,KOR
+KOR7,KOR,Coreia do Sul,TEAM,H,Min-jae Kim,KOR
+KOR8,KOR,Coreia do Sul,TEAM,H,Young-gwon Kim,KOR
+KOR9,KOR,Coreia do Sul,TEAM,H,Jin-su Kim,KOR
+KOR10,KOR,Coreia do Sul,TEAM,H,Yong Lee,KOR
+KOR11,KOR,Coreia do Sul,TEAM,H,In-beom Hwang,KOR
+KOR12,KOR,Coreia do Sul,TEAM,H,Woo-young Jung,KOR
+KOR13,KOR,Coreia do Sul,TEAM,H,Jae-sung Lee,KOR
+KOR14,KOR,Coreia do Sul,TEAM,H,Seung-ho Paik,KOR
+KOR15,KOR,Coreia do Sul,TEAM,H,Gue-sung Cho,KOR
+KOR16,KOR,Coreia do Sul,TEAM,H,Hee-chan Hwang,KOR
+KOR17,KOR,Coreia do Sul,TEAM,H,Ui-jo Hwang,KOR
+KOR18,KOR,Coreia do Sul,TEAM,H,Chang-hoon Kwon,KOR
+KOR19,KOR,Coreia do Sul,TEAM,H,Heung-min Son,KOR
+KOR20,KOR,Coreia do Sul,TEAM,H,Min-kyu Song,KOR
+FWC19,museum,FIFA Museum,FWC,MUSEUM,Uruguai 1930,
+FWC20,museum,FIFA Museum,FWC,MUSEUM,Itália 1938,
+FWC21,museum,FIFA Museum,FWC,MUSEUM,Brasil 1958,
+FWC22,museum,FIFA Museum,FWC,MUSEUM,Inglaterra 1966,
+FWC23,museum,FIFA Museum,FWC,MUSEUM,Brasil 1970,
+FWC24,museum,FIFA Museum,FWC,MUSEUM,Argentina 1978,
+FWC25,museum,FIFA Museum,FWC,MUSEUM,Itália 1982,
+FWC26,museum,FIFA Museum,FWC,MUSEUM,Alemanha 1990,
+FWC27,museum,FIFA Museum,FWC,MUSEUM,França 1998,
+FWC28,museum,FIFA Museum,FWC,MUSEUM,Espanha 2010,
+FWC29,museum,FIFA Museum,FWC,MUSEUM,França 2018,
+C1,cc,Coca-Cola,CC,CC,Serge Gnabry,
+C2,cc,Coca-Cola,CC,CC,Emiliano Martínez,
+C3,cc,Coca-Cola,CC,CC,Kevin De Bruyne,
+C4,cc,Coca-Cola,CC,CC,Luka Modrić,
+C5,cc,Coca-Cola,CC,CC,Declan Rice,
+C6,cc,Coca-Cola,CC,CC,Gavi,
+C7,cc,Coca-Cola,CC,CC,Hirving Lozano,
+C8,cc,Coca-Cola,CC,CC,Heung-min Son,
+EXBOR1,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Almoez Ali,
+EXBOR2,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Alphonso Davies,
+EXBOR3,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Christian Eriksen,
+EXBOR4,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Cristiano Ronaldo,
+EXBOR5,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Dušan Vlahović,
+EXBOR6,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Gavi,
+EXBOR7,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Giovanni Reyna,
+EXBOR8,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Guillermo Ochoa,
+EXBOR9,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Heung-min Son,
+EXBOR10,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Jude Bellingham,
+EXBOR11,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Kevin De Bruyne,
+EXBOR12,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Kylian Mbappé,
+EXBOR13,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Lionel Messi,
+EXBOR14,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Luis Suárez,
+EXBOR15,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Luka Modrić,
+EXBOR16,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Neymar Jr,
+EXBOR17,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Raphaël Varane,
+EXBOR18,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Robert Lewandowski,
+EXBOR19,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Ryan Gravenberch,
+EXBOR20,ex-BOR,Extra Stickers Bordô,LEG,EXTRA,Sadio Mané,
+EXBRO1,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Almoez Ali,
+EXBRO2,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Alphonso Davies,
+EXBRO3,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Christian Eriksen,
+EXBRO4,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Cristiano Ronaldo,
+EXBRO5,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Dušan Vlahović,
+EXBRO6,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Gavi,
+EXBRO7,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Giovanni Reyna,
+EXBRO8,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Guillermo Ochoa,
+EXBRO9,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Heung-min Son,
+EXBRO10,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Jude Bellingham,
+EXBRO11,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Kevin De Bruyne,
+EXBRO12,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Kylian Mbappé,
+EXBRO13,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Lionel Messi,
+EXBRO14,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Luis Suárez,
+EXBRO15,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Luka Modrić,
+EXBRO16,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Neymar Jr,
+EXBRO17,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Raphaël Varane,
+EXBRO18,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Robert Lewandowski,
+EXBRO19,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Ryan Gravenberch,
+EXBRO20,ex-BRO,Extra Stickers Bronze,LEG,EXTRA,Sadio Mané,
+EXPRA1,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Almoez Ali,
+EXPRA2,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Alphonso Davies,
+EXPRA3,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Christian Eriksen,
+EXPRA4,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Cristiano Ronaldo,
+EXPRA5,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Dušan Vlahović,
+EXPRA6,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Gavi,
+EXPRA7,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Giovanni Reyna,
+EXPRA8,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Guillermo Ochoa,
+EXPRA9,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Heung-min Son,
+EXPRA10,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Jude Bellingham,
+EXPRA11,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Kevin De Bruyne,
+EXPRA12,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Kylian Mbappé,
+EXPRA13,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Lionel Messi,
+EXPRA14,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Luis Suárez,
+EXPRA15,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Luka Modrić,
+EXPRA16,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Neymar Jr,
+EXPRA17,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Raphaël Varane,
+EXPRA18,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Robert Lewandowski,
+EXPRA19,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Ryan Gravenberch,
+EXPRA20,ex-PRA,Extra Stickers Prata,LEG,EXTRA,Sadio Mané,
+EXOUR1,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Almoez Ali,
+EXOUR2,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Alphonso Davies,
+EXOUR3,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Christian Eriksen,
+EXOUR4,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Cristiano Ronaldo,
+EXOUR5,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Dušan Vlahović,
+EXOUR6,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Gavi,
+EXOUR7,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Giovanni Reyna,
+EXOUR8,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Guillermo Ochoa,
+EXOUR9,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Heung-min Son,
+EXOUR10,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Jude Bellingham,
+EXOUR11,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Kevin De Bruyne,
+EXOUR12,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Kylian Mbappé,
+EXOUR13,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Lionel Messi,
+EXOUR14,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Luis Suárez,
+EXOUR15,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Luka Modrić,
+EXOUR16,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Neymar Jr,
+EXOUR17,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Raphaël Varane,
+EXOUR18,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Robert Lewandowski,
+EXOUR19,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Ryan Gravenberch,
+EXOUR20,ex-OUR,Extra Stickers Ouro,LEG,EXTRA,Sadio Mané,

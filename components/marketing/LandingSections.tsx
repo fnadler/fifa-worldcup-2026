@@ -85,14 +85,16 @@ export function CollectionsAvailable() {
             <p>{i.desc}</p>
           </div>
         ))}
-        <div className="mk-colecao-card soon">
-          <div className="mk-colecao-img">
-            <span className="mk-colecao-soon">2022</span>
-            <span className="mk-tag mk-tag-green">{c.soon.tag}</span>
+        {c.soon.map((i) => (
+          <div key={i.nome} className="mk-colecao-card soon">
+            <div className="mk-colecao-img">
+              <span className="mk-colecao-soon">{i.ano}</span>
+              <span className="mk-tag mk-tag-green">{i.tag}</span>
+            </div>
+            <strong>{i.nome}</strong>
+            <p>{i.desc}</p>
           </div>
-          <strong>{c.soon.nome}</strong>
-          <p>{c.soon.desc}</p>
-        </div>
+        ))}
       </div>
       <SmartLink className="mk-btn mk-btn-green" {...CTA_COLECAO} />
     </section>

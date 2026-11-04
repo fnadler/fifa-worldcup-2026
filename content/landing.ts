@@ -20,7 +20,7 @@ export const landing = {
   lojas: { href: "/lojas", label: "Lojas", badge: "novo" },
 
   hero: {
-    pill: "Novo: Gold Crumple Edition 2026",
+    pill: "Novo: Álbum Copa do Catar 2022",
     title: "Organize sua coleção. Venda suas repetidas.",
     subtitle:
       "Registre grátis cada figurinha e card das suas coleções e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam direto no seu WhatsApp.",
@@ -42,7 +42,7 @@ export const landing = {
       pill: "Conta grátis para sempre",
       title: "Tudo o que a sua coleção precisa, num lugar só.",
       benefits: [
-        { t: "Todas as suas coleções", d: "Álbum da Copa 2026, Legends, Gold Crumple Edition e Adrenalyn XL na mesma conta." },
+        { t: "Todas as suas coleções", d: "Álbum da Copa 2026, Legends, Gold Crumple Edition, Adrenalyn XL, Copa do Catar 2022 e Extra Stickers na mesma conta." },
         { t: "Foto de cada figurinha", d: "Marque com um toque o que você tem e veja os totais de coladas, repetidas e faltantes." },
         { t: "Listas prontas para o WhatsApp", d: "Compartilhe suas repetidas e faltantes, ou o link da sua coleção." },
         { t: "Ache quem tem o que falta", d: "Veja as lojas que têm as figurinhas que faltam para você completar." },
@@ -67,10 +67,16 @@ export const landing = {
     items: [
       { nome: "Álbum Copa 2026", desc: "As 994 figurinhas do álbum oficial Panini: seleções, FWC History e Coca-Cola.", img: "ARG17", tag: "" },
       { nome: "Legends 2026", desc: "As 80 figurinhas raras das Legends, nas versões lilás, bronze, prata e ouro.", img: "OUR13", tag: "" },
-      { nome: "Gold Crumple Edition 2026", desc: "O álbum completo da Copa com o layout dourado — 980 figurinhas.", img: "GCARG17", tag: "Novo" },
+      { nome: "Gold Crumple Edition 2026", desc: "O álbum completo da Copa com o layout dourado — 980 figurinhas.", img: "GCARG17", tag: "" },
       { nome: "Adrenalyn XL 2026", desc: "Os 630 cards da Copa e as Limited Editions, com foto de cada card.", img: "AXL1", tag: "" },
+      { nome: "Álbum Copa do Catar 2022", desc: "As 678 figurinhas do álbum da Copa de 2022: seleções, FIFA Museum e Coca-Cola.", img: "CQARG20", tag: "Novo" },
+      { nome: "Extra Stickers 2022", desc: "As 80 figurinhas raras da Copa do Catar, nas versões bordô, bronze, prata e ouro.", img: "CQEXOUR13", tag: "Novo" },
     ],
-    soon: { nome: "Álbum Copa Catar 2022", desc: "O álbum da Copa do Catar chega em breve.", tag: "Em breve" },
+    // Próximas coleções previstas: `ano` aparece no lugar da figurinha.
+    soon: [
+      { nome: "Álbum Copa da Rússia 2018", desc: "O álbum da Copa da Rússia chega em breve.", tag: "Em breve", ano: "2018" },
+      { nome: "Álbum Copa do Brasil 2014", desc: "O álbum da Copa do Brasil chega em breve.", tag: "Em breve", ano: "2014" },
+    ],
   },
 
   colecao: {
@@ -184,7 +190,7 @@ export const landing = {
     },
     {
       p: "Quais coleções posso acompanhar?",
-      r: "Hoje, o Álbum da Copa do Mundo 2026 (Panini, com as Legends), a Gold Crumple Edition 2026 e os cards Adrenalyn XL da Copa. Você pode acompanhar todas na mesma conta, cada uma com seu progresso, sua lista de repetidas e seu link público — e o Álbum da Copa do Catar 2022 chega em breve.",
+      r: "Hoje, o Álbum da Copa do Mundo 2026 (Panini, com as Legends), a Gold Crumple Edition 2026, os cards Adrenalyn XL da Copa e o Álbum da Copa do Catar 2022. Você pode acompanhar todas na mesma conta, cada uma com seu progresso, sua lista de repetidas e seu link público.",
     },
     {
       p: "Preciso cadastrar os itens da loja um por um?",

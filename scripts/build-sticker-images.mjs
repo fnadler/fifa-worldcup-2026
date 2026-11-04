@@ -1,7 +1,8 @@
 // Gera as imagens otimizadas das figurinhas a partir das fotos originais em /images
 // (que ficam fora do git — ~420 MB) e dos cards da Adrenalyn XL em data/adrenalyn-xl/cards
 // (também fora do git; nome = número do card, ex: "024.jpeg" → AXL24). Gold Crumple Edition:
-// images/golden_crumple/<CÓDIGO>.png (ex: "GCBRA9.png").
+// images/golden_crumple/<CÓDIGO>.png (ex: "GCBRA9.png"). Álbum Copa do Catar 2022:
+// images/copa_catar_2022/<CÓDIGO>.png (ex: "CQBRA17.png").
 //
 //   npm run images            — gera só o que ainda não existe em public/stickers
 //   npm run images -- --force — refaz todas
@@ -31,11 +32,14 @@ const NO_TRIM = new Set(["EGY3"]);
 const album = JSON.parse(await readFile(path.join(ROOT, "album.json"), "utf8"));
 const adrenalyn = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "adrenalyn-xl.json"), "utf8"));
 const golden = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "golden-crumple.json"), "utf8"));
-const allBlocks = [...album.blocks, ...adrenalyn.blocks, ...golden.blocks];
+const catar = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "copa-catar-2022.json"), "utf8"));
+const allBlocks = [...album.blocks, ...adrenalyn.blocks, ...golden.blocks, ...catar.blocks];
 const validCodes = new Set(allBlocks.flatMap((b) => b.codes));
 const ADRENALYN_DIR = path.join(ROOT, "data", "adrenalyn-xl", "cards");
 // Gold Crumple Edition: arquivo com o próprio código ("GCBRA9.png"), recortado dos PDFs da edição.
 const GOLDEN_DIR = path.join(ROOT, "images", "golden_crumple");
+// Copa do Catar 2022: já recortadas figurinha a figurinha do scan do álbum (o trim comeria a margem).
+const CATAR_DIR = path.join(ROOT, "images", "copa_catar_2022");
 
 const LEGENDS_DIR = path.join(ROOT, "images", "legends");
 const LEGEND_TIERS = { REGULAR: "LIL", LILAS: "LIL", BRONZE: "BRO", PRATA: "PRA", OURO: "OUR" };
@@ -118,6 +122,11 @@ for (const file of await readdir(GOLDEN_DIR).catch(() => [])) {
   if (validCodes.has(code) && code.startsWith("GC")) sources.set(code, path.join(GOLDEN_DIR, file));
 }
 
+for (const file of await readdir(CATAR_DIR).catch(() => [])) {
+  const code = path.parse(file).name.toUpperCase();
+  if (validCodes.has(code) && code.startsWith("CQ")) sources.set(code, path.join(CATAR_DIR, file));
+}
+
 await Promise.all(Object.keys(SIZES).map((s) => mkdir(path.join(OUT, s), { recursive: true })));
 
 const exists = async (f) => (await stat(f).catch(() => null)) !== null;
@@ -135,7 +144,7 @@ async function worker() {
     const input = sources.get(code);
     for (const [size, width] of Object.entries(SIZES)) {
       const img = sharp(input);
-      if (!NO_TRIM.has(code)) img.trim({ threshold: 12 }); // algumas fotos (ex: Coca-Cola) vêm quadradas com margem branca
+      if (!NO_TRIM.has(code) && !code.startsWith("CQ")) img.trim({ threshold: 12 }); // algumas fotos (ex: Coca-Cola) vêm quadradas com margem branca
       await img
         .resize({ width, withoutEnlargement: true })
         .webp({ quality: size === "thumb" ? 72 : 80 })

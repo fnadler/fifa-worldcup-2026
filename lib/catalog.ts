@@ -1,5 +1,6 @@
 import paniniJson from "@/album.json";
 import adrenalynJson from "./catalogs/adrenalyn-xl.json";
+import catarJson from "./catalogs/copa-catar-2022.json";
 import goldenJson from "./catalogs/golden-crumple.json";
 import type { AlbumBlock, AlbumData, TipoFiltro } from "./types";
 
@@ -231,9 +232,74 @@ export const GOLDEN_CRUMPLE: Catalog = {
   menuCode: (b) => (b.tipo === "TEAM" ? b.id.replace(/^gc-/, "") : null),
 };
 
+// ---------- Álbum Copa do Catar 2022 (Panini) ----------
+// Códigos com prefixo CQ (CQBRA17), mostrados sem ele. Cada seleção tem 20: foto do time, escudo e 18 jogadores.
+
+const catar = catarJson as AlbumData;
+const catarCode = (code: string) => code.replace(/^CQ/, "");
+
+export const COPA_CATAR: Catalog = {
+  id: "wc2022-panini",
+  slug: "copa-catar-2022",
+  name: "Álbum Copa do Catar 2022",
+  shortName: "Copa Catar 2022",
+  itemSingular: "figurinha",
+  itemPlural: "figurinhas",
+  owned: { cell: "colada", total: "Coladas", block: "coladas" },
+  searchPlaceholder: "Buscar jogador, seleção ou código (ex: BRA17)",
+  displayCode: catarCode,
+  blocks: catar.blocks,
+  // 678: 00 + FWC1–29, 32 seleções e Coca-Cola C1–C8. As Extra Stickers têm seus próprios contadores
+  // por bloco, mas não entram em Coladas/Faltam.
+  total: catar.total,
+  filters: [
+    { value: "ALL", label: "Todas" },
+    { value: "TEAM", label: "Seleções" },
+    { value: "FWC", label: "FWC" },
+    { value: "CC", label: "Coca-Cola" },
+    { value: "LEG", label: "Extras" },
+  ],
+  priceGroups: [
+    { key: "FWC", label: "FWC" },
+    { key: "TEAM", label: "Seleções" },
+    { key: "CC", label: "Coca-Cola" },
+    { key: "LEG", label: "Extras" },
+  ],
+  countsToward: (b) => b.tipo !== "LEG",
+  blockTag(b) {
+    if (b.tipo === "TEAM") return `Grupo ${b.grupo}`;
+    if (b.tipo === "CC") return "Coca-Cola";
+    if (b.tipo === "LEG") return "Extras";
+    return b.grupo === "MUSEUM" ? "Museum" : "FWC";
+  },
+  isSpecial: (b) => b.tipo !== "TEAM",
+  blockRange(b) {
+    if (b.labels) return `${b.codes.length} atletas`;
+    if (b.id === "cq-fwc") return "00 · FWC1–18";
+    const first = catarCode(b.codes[0]);
+    const prefix = first.match(/^[A-Za-z]+/)?.[0] ?? "";
+    return `${prefix}${numberOf(first)}–${numberOf(b.codes[b.codes.length - 1])}`;
+  },
+  menuSections: sectionsBy(catar.blocks, (b) => ({
+    title:
+      b.tipo === "TEAM"
+        ? `Grupo ${b.grupo}`
+        : b.tipo === "CC"
+          ? "Coca-Cola"
+          : b.tipo === "LEG"
+            ? "Extras"
+            : b.grupo === "MUSEUM"
+              ? "FIFA Museum"
+              : "FWC",
+    variant: PANINI_VARIANT[b.tipo] ?? "team",
+  })),
+  menuLabel: (b) => (b.tipo === "LEG" ? b.nome.replace(/^Extra Stickers\s+/, "") : b.nome),
+  menuCode: (b) => (b.tipo === "TEAM" ? b.id.replace(/^cq-/, "") : null),
+};
+
 // ---------- registro e índice global por código ----------
 
-export const CATALOGS: Catalog[] = [PANINI, ADRENALYN, GOLDEN_CRUMPLE];
+export const CATALOGS: Catalog[] = [PANINI, ADRENALYN, GOLDEN_CRUMPLE, COPA_CATAR];
 export const DEFAULT_CATALOG = PANINI;
 
 const BY_ID = new Map(CATALOGS.map((c) => [c.id, c]));

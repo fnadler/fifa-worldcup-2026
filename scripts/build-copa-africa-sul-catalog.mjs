@@ -31,14 +31,22 @@ for (const l of lines) {
   b.names.push(c[5]);
 }
 
-const total = blocks.reduce((n, b) => n + b.codes.length, 0);
+// Atualizações: sem número no álbum, a célula mostra o nome do atleta. Ficam fora do total, como as Extras do Catar.
+for (const b of blocks) {
+  if (b.tipo === "SPECIAL") {
+    b.labels = b.names;
+    delete b.names;
+  }
+}
+
+const total = blocks.filter((b) => b.tipo !== "SPECIAL").reduce((n, b) => n + b.codes.length, 0);
 await writeFile(path.join(ROOT, "lib", "catalogs", "copa-africa-sul-2010.json"), JSON.stringify({ total, blocks }) + "\n");
 
 const q = (s) => (s === null ? "null" : `'${String(s).replace(/'/g, "''")}'`);
 const rows = blocks.flatMap((b) =>
   b.codes.map((code, i) => {
     const numero = Number(code.replace(/^ZA/, ""));
-    return `(${[q(code), q(ALBUM_ID), q(b.id), q(b.nome), q(b.tipo), q(b.grupo), i + 1, Number.isNaN(numero) ? "null" : numero, q(b.names[i]),
+    return `(${[q(code), q(ALBUM_ID), q(b.id), q(b.nome), q(b.tipo), q(b.grupo), i + 1, Number.isNaN(numero) ? "null" : numero, q((b.labels ?? b.names)[i]),
       q(b.tipo === "TEAM" ? b.id.replace(/^za-/, "") : null), "null", "null"].join(",")})`;
   })
 );
@@ -46,7 +54,7 @@ const rows = blocks.flatMap((b) =>
 const sql = `-- Migração: coleção Álbum Copa da África do Sul 2010. Idempotente — gerada por scripts/build-copa-africa-sul-catalog.mjs.
 -- Rode depois de supabase_migration_copa_brasil_2014.sql.
 --
--- ${total} figurinhas numeradas de 000, 00 e 1 a 638: página inicial, estádios, pôster, 32 seleções com 19 cada e a 638; sem as 4 VISA e as atualizações.
+-- ${total} figurinhas numeradas de 000, 00 e 1 a 638: página inicial, estádios, pôster, 32 seleções com 19 cada e a 638; sem as 4 VISA. Mais 77 atualizações (ZAU1–77), fora do total.
 -- Códigos com prefixo ZA. Fica fora da loja até o lojista ativar.
 
 insert into public.albums (id, name, slug, item_singular, item_plural, total_items, active, position)

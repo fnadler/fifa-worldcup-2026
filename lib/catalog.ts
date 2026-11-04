@@ -382,9 +382,9 @@ export const COPA_BRASIL: Catalog = {
 };
 
 // ---------- Álbuns das Copas de 2010 e 2006 (Panini) ----------
-// Numeração do álbum: 000, 00 e 1 a 638 em 2010; Selo e 1 a 596 em 2006. Em 2010 ficam de fora as 4 VISA e as
-// figurinhas de atualização, que não estão no gabarito. Em 2006, Angola, Gana e Arábia Saudita têm figurinhas
-// duplas (um número, dois jogadores).
+// Numeração do álbum: 000, 00 e 1 a 638 em 2010; Selo e 1 a 596 em 2006. Em 2010 ficam de fora as 4 VISA, e as 77
+// atualizações do fim do álbum (U1–77, tipo SPECIAL, sem número impresso) têm bloco próprio, fora do total. Em 2006,
+// Angola, Gana e Arábia Saudita têm figurinhas duplas (um número, dois jogadores).
 
 function numberedWorldCup(
   meta: { id: string; slug: string; name: string; shortName: string; example: string; prefix: string },
@@ -392,6 +392,7 @@ function numberedWorldCup(
 ): Catalog {
   const strip = (code: string) => code.replace(new RegExp(`^${meta.prefix}`), "");
   const label = (code: string) => (strip(code) === "SELO" ? "Selo" : strip(code));
+  const hasUpdates = data.blocks.some((b) => b.tipo === "SPECIAL");
   return {
     id: meta.id,
     slug: meta.slug,
@@ -408,22 +409,25 @@ function numberedWorldCup(
       { value: "ALL", label: "Todas" },
       { value: "TEAM", label: "Seleções" },
       { value: "FWC", label: "Especiais" },
+      ...(hasUpdates ? [{ value: "SPECIAL", label: "Atualizações" }] : []),
     ],
     priceGroups: [
       { key: "FWC", label: "Especiais" },
       { key: "TEAM", label: "Seleções" },
+      ...(hasUpdates ? [{ key: "SPECIAL", label: "Atualizações" }] : []),
     ],
-    countsToward: () => true,
+    countsToward: (b) => b.tipo !== "SPECIAL",
     blockTag: (b) => (b.tipo === "TEAM" ? `Grupo ${b.grupo}` : b.nome),
     isSpecial: (b) => b.tipo !== "TEAM",
     blockRange(b) {
+      if (b.labels) return `${b.codes.length} figurinhas`;
       const first = label(b.codes[0]);
       const last = label(b.codes[b.codes.length - 1]);
       return first === last ? first : `${first}–${last}`;
     },
     menuSections: sectionsBy(data.blocks, (b) => ({
-      title: b.tipo === "TEAM" ? `Grupo ${b.grupo}` : "Especiais",
-      variant: PANINI_VARIANT[b.tipo] ?? "team",
+      title: b.tipo === "TEAM" ? `Grupo ${b.grupo}` : b.tipo === "SPECIAL" ? "Atualizações" : "Especiais",
+      variant: b.tipo === "SPECIAL" ? "leg" : (PANINI_VARIANT[b.tipo] ?? "team"),
     })),
     menuLabel: (b) => b.nome,
     menuCode: (b) => (b.tipo === "TEAM" ? b.id.replace(/^[a-z]+-/, "") : null),

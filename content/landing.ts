@@ -73,7 +73,7 @@ export const landing = {
       { nome: "Extra Stickers 2022", desc: "As 80 figurinhas raras da Copa do Catar, nas versões bordô, bronze, prata e ouro.", img: "CQEXOUR16", tag: "Novo" },
       { nome: "Álbum Copa da Rússia 2018", desc: "As 682 figurinhas do álbum da Copa de 2018: seleções, estádios, cartazes e Legends.", img: "/brand/albums/copa-russia-2018.webp", tag: "Novo" },
       { nome: "Álbum Copa do Brasil 2014", desc: "As 640 figurinhas do álbum da Copa de 2014: seleções, estádios e especiais.", img: "/brand/albums/copa-brasil-2014.webp", tag: "Novo" },
-      { nome: "Álbum Copa da África do Sul 2010", desc: "As 640 figurinhas do álbum da Copa de 2010: seleções, estádios e especiais.", img: "/brand/albums/copa-africa-sul-2010.webp", tag: "Novo" },
+      { nome: "Álbum Copa da África do Sul 2010", desc: "As 640 figurinhas do álbum da Copa de 2010, mais as 77 atualizações à parte.", img: "/brand/albums/copa-africa-sul-2010.webp", tag: "Novo" },
       { nome: "Álbum Copa da Alemanha 2006", desc: "As 597 figurinhas do álbum da Copa de 2006: seleções, estádios e especiais.", img: "/brand/albums/copa-alemanha-2006.webp", tag: "Novo" },
     ],
     // Próximas coleções previstas: `ano` aparece no lugar da figurinha.

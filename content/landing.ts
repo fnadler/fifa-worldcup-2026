@@ -5,7 +5,7 @@ export const landing = {
   meta: {
     title: "GN Coleciona — sua coleção organizada, suas repetidas à venda",
     description:
-      "Registre grátis cada figurinha e card em 8 coleções — Copas de 2014, 2018, 2022 e 2026, Legends, Gold Crumple Edition, Adrenalyn XL e mais — e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam no seu WhatsApp.",
+      "Registre grátis cada figurinha e card em 10 coleções — Copas de 2006 a 2026, Legends, Gold Crumple Edition, Adrenalyn XL e mais — e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam no seu WhatsApp.",
   },
 
   nav: [
@@ -20,10 +20,10 @@ export const landing = {
   lojas: { href: "/lojas", label: "Lojas", badge: "novo" },
 
   hero: {
-    pill: "Novidades: Copas de 2022, 2018 e 2014",
+    pill: "Novidades: Copas de 2006 a 2022",
     title: "Organize sua coleção. Venda suas repetidas.",
     subtitle:
-      "Registre grátis cada figurinha e card em 8 coleções, das Copas de 2014 a 2026, e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam direto no seu WhatsApp.",
+      "Registre grátis cada figurinha e card em 10 coleções, das Copas de 2006 a 2026, e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam direto no seu WhatsApp.",
     note: "Cancele quando quiser durante o teste, sem cobrança.",
     badgeTitle: "repetidas já na sua loja",
     badgeSub: "atualizado automaticamente",
@@ -42,7 +42,7 @@ export const landing = {
       pill: "Conta grátis para sempre",
       title: "Tudo o que a sua coleção precisa, num lugar só.",
       benefits: [
-        { t: "8 coleções na mesma conta", d: "Álbuns das Copas de 2014, 2018, 2022 e 2026, Legends, Extra Stickers, Gold Crumple Edition e Adrenalyn XL." },
+        { t: "10 coleções na mesma conta", d: "Álbuns das Copas de 2006, 2010, 2014, 2018, 2022 e 2026, Legends, Extra Stickers, Gold Crumple Edition e Adrenalyn XL." },
         { t: "Foto de cada figurinha", d: "Marque com um toque o que você tem e veja os totais de coladas, repetidas e faltantes." },
         { t: "Listas prontas para o WhatsApp", d: "Compartilhe suas repetidas e faltantes, ou o link da sua coleção." },
         { t: "Ache quem tem o que falta", d: "Veja as lojas que têm as figurinhas que faltam para você completar." },
@@ -63,22 +63,21 @@ export const landing = {
   colecoes: {
     kicker: "Coleções disponíveis",
     title: "Todas as suas coleções num lugar só.",
-    subtitle: "São 8 coleções para acompanhar com fotos, progresso e repetidas — na mesma conta, grátis.",
+    subtitle: "São 10 coleções para acompanhar com fotos, progresso e repetidas — na mesma conta, grátis.",
     items: [
       { nome: "Álbum Copa 2026", desc: "As 994 figurinhas do álbum oficial Panini: seleções, FWC History e Coca-Cola.", img: "/brand/albums/copa-2026.webp", tag: "" },
-      { nome: "Legends 2026", desc: "As 80 figurinhas raras das Legends, nas versões lilás, bronze, prata e ouro.", img: "OUR13", tag: "" },
+      { nome: "Legends 2026", desc: "As 80 figurinhas raras das Legends, nas versões lilás, bronze, prata e ouro.", img: "OUR5", tag: "" },
       { nome: "Gold Crumple Edition 2026", desc: "O álbum completo da Copa com o layout dourado — 980 figurinhas.", img: "GCARG17", tag: "" },
       { nome: "Adrenalyn XL 2026", desc: "Os 630 cards da Copa e as Limited Editions, com foto de cada card.", img: "/brand/albums/adrenalyn-xl.webp", tag: "" },
       { nome: "Álbum Copa do Catar 2022", desc: "As 678 figurinhas do álbum da Copa de 2022: seleções, FIFA Museum e Coca-Cola.", img: "/brand/albums/copa-catar-2022.webp", tag: "Novo" },
-      { nome: "Extra Stickers 2022", desc: "As 80 figurinhas raras da Copa do Catar, nas versões bordô, bronze, prata e ouro.", img: "CQEXOUR13", tag: "Novo" },
+      { nome: "Extra Stickers 2022", desc: "As 80 figurinhas raras da Copa do Catar, nas versões bordô, bronze, prata e ouro.", img: "CQEXOUR16", tag: "Novo" },
       { nome: "Álbum Copa da Rússia 2018", desc: "As 682 figurinhas do álbum da Copa de 2018: seleções, estádios, cartazes e Legends.", img: "/brand/albums/copa-russia-2018.webp", tag: "Novo" },
       { nome: "Álbum Copa do Brasil 2014", desc: "As 640 figurinhas do álbum da Copa de 2014: seleções, estádios e especiais.", img: "/brand/albums/copa-brasil-2014.webp", tag: "Novo" },
+      { nome: "Álbum Copa da África do Sul 2010", desc: "As 640 figurinhas do álbum da Copa de 2010: seleções, estádios e especiais.", img: "/brand/albums/copa-africa-sul-2010.webp", tag: "Novo" },
+      { nome: "Álbum Copa da Alemanha 2006", desc: "As 597 figurinhas do álbum da Copa de 2006: seleções, estádios e especiais.", img: "/brand/albums/copa-alemanha-2006.webp", tag: "Novo" },
     ],
     // Próximas coleções previstas: `ano` aparece no lugar da figurinha.
-    soon: [
-      { nome: "Álbum Copa da África do Sul 2010", desc: "O álbum da Copa da África do Sul chega em breve.", tag: "Em breve", ano: "2010" },
-      { nome: "Álbum Copa da Alemanha 2006", desc: "O álbum da Copa da Alemanha chega em breve.", tag: "Em breve", ano: "2006" },
-    ],
+    soon: [] as { nome: string; desc: string; tag: string; ano: string }[],
   },
 
   colecao: {
@@ -93,7 +92,7 @@ export const landing = {
     features: [
       {
         t: "Várias coleções na mesma conta",
-        d: "Os álbuns das Copas de 2014, 2018, 2022 e 2026, as raras Legends e Extra Stickers, a Gold Crumple Edition e os cards Adrenalyn XL, cada um com seu progresso. Troque de coleção com um toque.",
+        d: "Os álbuns das Copas de 2006 a 2026, as raras Legends e Extra Stickers, a Gold Crumple Edition e os cards Adrenalyn XL, cada um com seu progresso. Troque de coleção com um toque.",
       },
       { t: "Veja a foto de cada item", d: "Alterne entre fotos e grade compacta. Um toque soma; a segunda unidade em diante já conta como repetida." },
       { t: "Totais sempre à vista", d: "Coladas, repetidas e faltantes no geral e em cada seleção." },
@@ -150,7 +149,7 @@ export const landing = {
     free: {
       nome: "Coleção",
       items: [
-        "8 coleções com fotos, das Copas de 2014 a 2026",
+        "10 coleções com fotos, das Copas de 2006 a 2026",
         "Várias coleções na mesma conta",
         "Quantidade de repetidas por item",
         "Totais por seleção e geral",
@@ -192,7 +191,7 @@ export const landing = {
     },
     {
       p: "Quais coleções posso acompanhar?",
-      r: "Hoje são 8: os álbuns das Copas de 2026, 2022, 2018 e 2014, as Legends 2026, as Extra Stickers 2022, a Gold Crumple Edition 2026 e os cards Adrenalyn XL. Os álbuns das Copas de 2010 e 2006 chegam em breve. Você pode acompanhar todas na mesma conta, cada uma com seu progresso, sua lista de repetidas e seu link público.",
+      r: "Hoje são 10: os álbuns das Copas de 2026, 2022, 2018, 2014, 2010 e 2006, as Legends 2026, as Extra Stickers 2022, a Gold Crumple Edition 2026 e os cards Adrenalyn XL. Você pode acompanhar todas na mesma conta, cada uma com seu progresso, sua lista de repetidas e seu link público.",
     },
     {
       p: "Preciso cadastrar os itens da loja um por um?",

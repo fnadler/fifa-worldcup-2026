@@ -9,7 +9,7 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Lojas — GN Coleciona",
-  description: "Lojas de figurinhas e cards avulsos da GN Coleciona: álbuns das Copas de 2014 a 2026, Gold Crumple Edition, Adrenalyn XL e mais.",
+  description: "Lojas de figurinhas e cards avulsos da GN Coleciona: álbuns das Copas de 2006 a 2026, Gold Crumple Edition, Adrenalyn XL e mais.",
 };
 
 export default async function LojasPage() {

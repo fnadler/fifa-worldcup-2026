@@ -1,0 +1,598 @@
+numero,bloco,nome_bloco,tipo,grupo,nome,selecao
+SELO,fwc,Página inicial,FWC,FWC,Selo Panini,
+1,fwc,Página inicial,FWC,FWC,Taça,
+2,fwc,Página inicial,FWC,FWC,Mascote Goleo,
+3,fwc,Página inicial,FWC,FWC,Emblema,
+4,fwc,Página inicial,FWC,FWC,Pôster,
+5,estadios,Estádios,FWC,ESTADIOS,Olympiastadion - Berlim,
+6,estadios,Estádios,FWC,ESTADIOS,FIFA WM-Stadion - Dortmund,
+7,estadios,Estádios,FWC,ESTADIOS,FIFA WM-Stadion - Frankfurt,
+8,estadios,Estádios,FWC,ESTADIOS,FIFA WM-Stadion - Gelsenkirchen,
+9,estadios,Estádios,FWC,ESTADIOS,FIFA WM-Stadion - Hamburgo,
+10,estadios,Estádios,FWC,ESTADIOS,FIFA WM-Stadion - Hannover,
+11,estadios,Estádios,FWC,ESTADIOS,Fritz-Walter-Stadion - Kaiserslautern,
+12,estadios,Estádios,FWC,ESTADIOS,FIFA WM-Stadion - Colônia,
+13,estadios,Estádios,FWC,ESTADIOS,Zentralstadion - Leipzig,
+14,estadios,Estádios,FWC,ESTADIOS,FIFA WM-Stadion - Munique,
+15,estadios,Estádios,FWC,ESTADIOS,Franken-Stadion - Nuremberg,
+16,estadios,Estádios,FWC,ESTADIOS,Gottlieb-Daimler-Stadion - Stuttgart,
+17,GER,Alemanha,TEAM,A,Foto do time,GER
+18,GER,Alemanha,TEAM,A,Escudo,GER
+19,GER,Alemanha,TEAM,A,Oliver Kahn,GER
+20,GER,Alemanha,TEAM,A,Arne Friedrich,GER
+21,GER,Alemanha,TEAM,A,Robert Huth,GER
+22,GER,Alemanha,TEAM,A,Philipp Lahm,GER
+23,GER,Alemanha,TEAM,A,Per Mertesacker,GER
+24,GER,Alemanha,TEAM,A,Patrick Owomoyela,GER
+25,GER,Alemanha,TEAM,A,Michael Ballack,GER
+26,GER,Alemanha,TEAM,A,Tim Borowski,GER
+27,GER,Alemanha,TEAM,A,Sebastian Deisler,GER
+28,GER,Alemanha,TEAM,A,Fabian Ernst,GER
+29,GER,Alemanha,TEAM,A,Torsten Frings,GER
+30,GER,Alemanha,TEAM,A,Bernd Schneider,GER
+31,GER,Alemanha,TEAM,A,Bastian Schweinsteiger,GER
+32,GER,Alemanha,TEAM,A,Gerald Asamoah,GER
+33,GER,Alemanha,TEAM,A,Miroslav Klose,GER
+34,GER,Alemanha,TEAM,A,Kevin Kuranyi,GER
+35,GER,Alemanha,TEAM,A,Lukas Podolski,GER
+36,CRC,Costa Rica,TEAM,A,Foto do time,CRC
+37,CRC,Costa Rica,TEAM,A,Escudo,CRC
+38,CRC,Costa Rica,TEAM,A,Jose Francisco Porras,CRC
+39,CRC,Costa Rica,TEAM,A,Jervis Drummond,CRC
+40,CRC,Costa Rica,TEAM,A,Leonardo Gonzalez,CRC
+41,CRC,Costa Rica,TEAM,A,Luis Marin,CRC
+42,CRC,Costa Rica,TEAM,A,Gilberto Martinez,CRC
+43,CRC,Costa Rica,TEAM,A,Douglas Sequeira,CRC
+44,CRC,Costa Rica,TEAM,A,Harold Wallace,CRC
+45,CRC,Costa Rica,TEAM,A,Christian Bolaños,CRC
+46,CRC,Costa Rica,TEAM,A,Steven Bryce,CRC
+47,CRC,Costa Rica,TEAM,A,Walter Centeno,CRC
+48,CRC,Costa Rica,TEAM,A,Carlos Hernandez,CRC
+49,CRC,Costa Rica,TEAM,A,Alonso Solis,CRC
+50,CRC,Costa Rica,TEAM,A,Jafet Soto,CRC
+51,CRC,Costa Rica,TEAM,A,Ronald Gomez,CRC
+52,CRC,Costa Rica,TEAM,A,Alvaro Saborio,CRC
+53,CRC,Costa Rica,TEAM,A,Paulo Cesar Wanchope,CRC
+54,CRC,Costa Rica,TEAM,A,Alvaro Mesen,CRC
+55,POL,Polônia,TEAM,A,Foto do time,POL
+56,POL,Polônia,TEAM,A,Escudo,POL
+57,POL,Polônia,TEAM,A,Artur Boruc,POL
+58,POL,Polônia,TEAM,A,Jacek Bak,POL
+59,POL,Polônia,TEAM,A,Marcin Baszczynski,POL
+60,POL,Polônia,TEAM,A,Tomasz Klos,POL
+61,POL,Polônia,TEAM,A,Tomasz Rzasa,POL
+62,POL,Polônia,TEAM,A,Michal Zewlakow,POL
+63,POL,Polônia,TEAM,A,Kamil Kosowski,POL
+64,POL,Polônia,TEAM,A,Jacek Krzynowek,POL
+65,POL,Polônia,TEAM,A,Sebastian Mila,POL
+66,POL,Polônia,TEAM,A,Arek Radomski,POL
+67,POL,Polônia,TEAM,A,Euzebiusz Smolarek,POL
+68,POL,Polônia,TEAM,A,Radoslaw Sobolewski,POL
+69,POL,Polônia,TEAM,A,Miroslaw Szymkowiak,POL
+70,POL,Polônia,TEAM,A,Tomasz Frankowski,POL
+71,POL,Polônia,TEAM,A,Grzegorz Rasiak,POL
+72,POL,Polônia,TEAM,A,Maciej Zurawski,POL
+73,POL,Polônia,TEAM,A,Jerzy Dudek,POL
+74,ECU,Equador,TEAM,A,Foto do time,ECU
+75,ECU,Equador,TEAM,A,Escudo,ECU
+76,ECU,Equador,TEAM,A,Christian Mora,ECU
+77,ECU,Equador,TEAM,A,Paul Ambrosi,ECU
+78,ECU,Equador,TEAM,A,Marlon Ayovi,ECU
+79,ECU,Equador,TEAM,A,Ulises De La Cruz,ECU
+80,ECU,Equador,TEAM,A,Giovanny Espinoza,ECU
+81,ECU,Equador,TEAM,A,Ivan Hurtado,ECU
+82,ECU,Equador,TEAM,A,Walter Ayovi,ECU
+83,ECU,Equador,TEAM,A,Christian Lara,ECU
+84,ECU,Equador,TEAM,A,Edison Mendez,ECU
+85,ECU,Equador,TEAM,A,Mario David Quiroz,ECU
+86,ECU,Equador,TEAM,A,Neicer Reasco,ECU
+87,ECU,Equador,TEAM,A,Edwin Tenorio,ECU
+88,ECU,Equador,TEAM,A,Luis Antonio Valencia,ECU
+89,ECU,Equador,TEAM,A,Agustin Delgado,ECU
+90,ECU,Equador,TEAM,A,Franklin Salas,ECU
+91,ECU,Equador,TEAM,A,Carlos Tenorio,ECU
+92,ECU,Equador,TEAM,A,Edwin Villafuerte,ECU
+93,ENG,Inglaterra,TEAM,B,Foto do time,ENG
+94,ENG,Inglaterra,TEAM,B,Escudo,ENG
+95,ENG,Inglaterra,TEAM,B,Paul Robinson,ENG
+96,ENG,Inglaterra,TEAM,B,Sol Campbell,ENG
+97,ENG,Inglaterra,TEAM,B,Jamie Carragher,ENG
+98,ENG,Inglaterra,TEAM,B,Ashley Cole,ENG
+99,ENG,Inglaterra,TEAM,B,Rio Ferdinand,ENG
+100,ENG,Inglaterra,TEAM,B,Ledley King,ENG
+101,ENG,Inglaterra,TEAM,B,Gary Neville,ENG
+102,ENG,Inglaterra,TEAM,B,John Terry,ENG
+103,ENG,Inglaterra,TEAM,B,David Beckham,ENG
+104,ENG,Inglaterra,TEAM,B,Joe Cole,ENG
+105,ENG,Inglaterra,TEAM,B,Steven Gerrard,ENG
+106,ENG,Inglaterra,TEAM,B,Frank Lampard,ENG
+107,ENG,Inglaterra,TEAM,B,Shaun Wright-Phillips,ENG
+108,ENG,Inglaterra,TEAM,B,Peter Crouch,ENG
+109,ENG,Inglaterra,TEAM,B,Jermain Defoe,ENG
+110,ENG,Inglaterra,TEAM,B,Michael Owen,ENG
+111,ENG,Inglaterra,TEAM,B,Wayne Rooney,ENG
+112,PAR,Paraguai,TEAM,B,Foto do time,PAR
+113,PAR,Paraguai,TEAM,B,Escudo,PAR
+114,PAR,Paraguai,TEAM,B,Justo Villar,PAR
+115,PAR,Paraguai,TEAM,B,Julio Cesar Caceres,PAR
+116,PAR,Paraguai,TEAM,B,Denis Caniza,PAR
+117,PAR,Paraguai,TEAM,B,Paulo da Silva,PAR
+118,PAR,Paraguai,TEAM,B,Carlos Gamarra,PAR
+119,PAR,Paraguai,TEAM,B,Jorge Nuñez,PAR
+120,PAR,Paraguai,TEAM,B,Roberto Acuña,PAR
+121,PAR,Paraguai,TEAM,B,Edgar Barreto,PAR
+122,PAR,Paraguai,TEAM,B,Julio dos Santos,PAR
+123,PAR,Paraguai,TEAM,B,Julio Cesar Enciso,PAR
+124,PAR,Paraguai,TEAM,B,Diego Gavilan,PAR
+125,PAR,Paraguai,TEAM,B,Carlos Humberto Paredes,PAR
+126,PAR,Paraguai,TEAM,B,Jose Cardozo,PAR
+127,PAR,Paraguai,TEAM,B,Salvador Cabanas,PAR
+128,PAR,Paraguai,TEAM,B,Nelson Cuevas,PAR
+129,PAR,Paraguai,TEAM,B,Roque Santa Cruz,PAR
+130,PAR,Paraguai,TEAM,B,Nelson Valdez,PAR
+131,TRI,Trinidad e Tobago,TEAM,B,Foto do time,TRI
+132,TRI,Trinidad e Tobago,TEAM,B,Escudo,TRI
+133,TRI,Trinidad e Tobago,TEAM,B,Kelvin Jack,TRI
+134,TRI,Trinidad e Tobago,TEAM,B,Marvin Andrews,TRI
+135,TRI,Trinidad e Tobago,TEAM,B,Avery John,TRI
+136,TRI,Trinidad e Tobago,TEAM,B,Ian Cox,TRI
+137,TRI,Trinidad e Tobago,TEAM,B,Dennis Lawrence,TRI
+138,TRI,Trinidad e Tobago,TEAM,B,Brent Sancho,TRI
+139,TRI,Trinidad e Tobago,TEAM,B,Christopher Birchall,TRI
+140,TRI,Trinidad e Tobago,TEAM,B,Carlos Edwards,TRI
+141,TRI,Trinidad e Tobago,TEAM,B,Kenwyne Jones,TRI
+142,TRI,Trinidad e Tobago,TEAM,B,Russell Latapy,TRI
+143,TRI,Trinidad e Tobago,TEAM,B,Silvio Spann,TRI
+144,TRI,Trinidad e Tobago,TEAM,B,Densill Theobald,TRI
+145,TRI,Trinidad e Tobago,TEAM,B,Cornell Glenn,TRI
+146,TRI,Trinidad e Tobago,TEAM,B,Jason Scotland,TRI
+147,TRI,Trinidad e Tobago,TEAM,B,Stern John,TRI
+148,TRI,Trinidad e Tobago,TEAM,B,Dwight Yorke,TRI
+149,TRI,Trinidad e Tobago,TEAM,B,Shaka Hislop,TRI
+150,SWE,Suécia,TEAM,B,Foto do time,SWE
+151,SWE,Suécia,TEAM,B,Escudo,SWE
+152,SWE,Suécia,TEAM,B,Andreas Isaksson,SWE
+153,SWE,Suécia,TEAM,B,Christoffer Andersson,SWE
+154,SWE,Suécia,TEAM,B,Erik Edman,SWE
+155,SWE,Suécia,TEAM,B,Teddy Lucic,SWE
+156,SWE,Suécia,TEAM,B,Olof Mellberg,SWE
+157,SWE,Suécia,TEAM,B,Alexander Östlund,SWE
+158,SWE,Suécia,TEAM,B,Niclas Alexandersson,SWE
+159,SWE,Suécia,TEAM,B,Kim Källström,SWE
+160,SWE,Suécia,TEAM,B,Tobias Linderoth,SWE
+161,SWE,Suécia,TEAM,B,Fredrik Ljungberg,SWE
+162,SWE,Suécia,TEAM,B,Anders Svensson,SWE
+163,SWE,Suécia,TEAM,B,Christian Wilhelmsson,SWE
+164,SWE,Suécia,TEAM,B,Johan Elmander,SWE
+165,SWE,Suécia,TEAM,B,Marcus Allbäck,SWE
+166,SWE,Suécia,TEAM,B,Zlatan Ibrahimovic,SWE
+167,SWE,Suécia,TEAM,B,Mattias Jonson,SWE
+168,SWE,Suécia,TEAM,B,Henrik Larsson,SWE
+169,ARG,Argentina,TEAM,C,Foto do time,ARG
+170,ARG,Argentina,TEAM,C,Escudo,ARG
+171,ARG,Argentina,TEAM,C,Roberto Carlos Abbondanzieri,ARG
+172,ARG,Argentina,TEAM,C,Roberto Fabian Ayala,ARG
+173,ARG,Argentina,TEAM,C,Fabricio Coloccini,ARG
+174,ARG,Argentina,TEAM,C,Ivan Gabriel Heinze,ARG
+175,ARG,Argentina,TEAM,C,Walter Adrian Samuel,ARG
+176,ARG,Argentina,TEAM,C,Javier Adelmar Zanetti,ARG
+177,ARG,Argentina,TEAM,C,Pablo Cesar Aimar,ARG
+178,ARG,Argentina,TEAM,C,Esteban Matias Cambiasso,ARG
+179,ARG,Argentina,TEAM,C,Andres Nicolas D'Alessandro,ARG
+180,ARG,Argentina,TEAM,C,Javier Alejandro Mascherano,ARG
+181,ARG,Argentina,TEAM,C,Juan Roman Riquelme,ARG
+182,ARG,Argentina,TEAM,C,Juan Pablo Sorin,ARG
+183,ARG,Argentina,TEAM,C,Juan Sebastian Veron,ARG
+184,ARG,Argentina,TEAM,C,Hernan Jorge Crespo,ARG
+185,ARG,Argentina,TEAM,C,Lionel Andres Messi,ARG
+186,ARG,Argentina,TEAM,C,Javier Pedro Saviola,ARG
+187,ARG,Argentina,TEAM,C,Carlos Alberto Tevez,ARG
+188,CIV,Costa do Marfim,TEAM,C,Foto do time,CIV
+189,CIV,Costa do Marfim,TEAM,C,Escudo,CIV
+190,CIV,Costa do Marfim,TEAM,C,Jean-Jacques Tizie,CIV
+191,CIV,Costa do Marfim,TEAM,C,Arthur Boka,CIV
+192,CIV,Costa do Marfim,TEAM,C,Cyril Domoraud,CIV
+193,CIV,Costa do Marfim,TEAM,C,Emmanuel Eboue,CIV
+194,CIV,Costa do Marfim,TEAM,C,Blaise Kouassi,CIV
+195,CIV,Costa do Marfim,TEAM,C,Kolo Toure,CIV
+196,CIV,Costa do Marfim,TEAM,C,Marco Andre Zoro,CIV
+197,CIV,Costa do Marfim,TEAM,C,Abdoulaye Djire,CIV
+198,CIV,Costa do Marfim,TEAM,C,Bonaventure Kalou,CIV
+199,CIV,Costa do Marfim,TEAM,C,Abdoulaye Meite,CIV
+200,CIV,Costa do Marfim,TEAM,C,Siaka Tiene,CIV
+201,CIV,Costa do Marfim,TEAM,C,Gilles Yapi Yapo,CIV
+202,CIV,Costa do Marfim,TEAM,C,Didier Zokora,CIV
+203,CIV,Costa do Marfim,TEAM,C,Kanga Akale,CIV
+204,CIV,Costa do Marfim,TEAM,C,Aruna Dindane,CIV
+205,CIV,Costa do Marfim,TEAM,C,Didier Drogba,CIV
+206,CIV,Costa do Marfim,TEAM,C,Arouna Kone,CIV
+207,SCG,Sérvia e Montenegro,TEAM,C,Foto do time,SCG
+208,SCG,Sérvia e Montenegro,TEAM,C,Escudo,SCG
+209,SCG,Sérvia e Montenegro,TEAM,C,Dragoslav Jevric,SCG
+210,SCG,Sérvia e Montenegro,TEAM,C,Ivica Dragutinovic,SCG
+211,SCG,Sérvia e Montenegro,TEAM,C,Goran Gavrancic,SCG
+212,SCG,Sérvia e Montenegro,TEAM,C,Mladen Krstajic,SCG
+213,SCG,Sérvia e Montenegro,TEAM,C,Nemanja Vidic,SCG
+214,SCG,Sérvia e Montenegro,TEAM,C,Ognjen Koroman,SCG
+215,SCG,Sérvia e Montenegro,TEAM,C,Predrag Djordjevic,SCG
+216,SCG,Sérvia e Montenegro,TEAM,C,Igor Duljaj,SCG
+217,SCG,Sérvia e Montenegro,TEAM,C,Sasa Ilic,SCG
+218,SCG,Sérvia e Montenegro,TEAM,C,Dragan Mladenovic,SCG
+219,SCG,Sérvia e Montenegro,TEAM,C,Albert Nadj,SCG
+220,SCG,Sérvia e Montenegro,TEAM,C,Dejan Stankovic,SCG
+221,SCG,Sérvia e Montenegro,TEAM,C,Zvonimir Vukic,SCG
+222,SCG,Sérvia e Montenegro,TEAM,C,Mateja Kezman,SCG
+223,SCG,Sérvia e Montenegro,TEAM,C,Danijel Ljuboja,SCG
+224,SCG,Sérvia e Montenegro,TEAM,C,Savo Milosevic,SCG
+225,SCG,Sérvia e Montenegro,TEAM,C,Nikola Zigic,SCG
+226,NED,Holanda,TEAM,C,Foto do time,NED
+227,NED,Holanda,TEAM,C,Escudo,NED
+228,NED,Holanda,TEAM,C,Edwin van der Sar,NED
+229,NED,Holanda,TEAM,C,Khalid Boulahrouz,NED
+230,NED,Holanda,TEAM,C,Jan Kromkamp,NED
+231,NED,Holanda,TEAM,C,Joris Mathijsen,NED
+232,NED,Holanda,TEAM,C,Andre Ooijer,NED
+233,NED,Holanda,TEAM,C,Barry Opdam,NED
+234,NED,Holanda,TEAM,C,Giovanni van Bronckhorst,NED
+235,NED,Holanda,TEAM,C,Phillip Cocu,NED
+236,NED,Holanda,TEAM,C,Denny Landzaat,NED
+237,NED,Holanda,TEAM,C,Mark van Bommel,NED
+238,NED,Holanda,TEAM,C,Rafael van der Vaart,NED
+239,NED,Holanda,TEAM,C,Dirk Kuyt,NED
+240,NED,Holanda,TEAM,C,Arjen Robben,NED
+241,NED,Holanda,TEAM,C,Ruud van Nistelrooy,NED
+242,NED,Holanda,TEAM,C,Robin van Persie,NED
+243,NED,Holanda,TEAM,C,Jan Vennegoor of Hesselink,NED
+244,MEX,México,TEAM,D,Foto do time,MEX
+245,MEX,México,TEAM,D,Escudo,MEX
+246,MEX,México,TEAM,D,Oswaldo Sanchez,MEX
+247,MEX,México,TEAM,D,Rafael Marquez,MEX
+248,MEX,México,TEAM,D,Mario Mendez,MEX
+249,MEX,México,TEAM,D,Pavel Pardo,MEX
+250,MEX,México,TEAM,D,Francisco Rodriguez,MEX
+251,MEX,México,TEAM,D,Carlos Salcido,MEX
+252,MEX,México,TEAM,D,Guillermo Franco,MEX
+253,MEX,México,TEAM,D,Jaime Lozano,MEX
+254,MEX,México,TEAM,D,Ramon Morales,MEX
+255,MEX,México,TEAM,D,Ricardo Osorio,MEX
+256,MEX,México,TEAM,D,Luis Perez,MEX
+257,MEX,México,TEAM,D,Gerardo Torrado,MEX
+258,MEX,México,TEAM,D,Zinha,MEX
+259,MEX,México,TEAM,D,Cuauhtemoc Blanco,MEX
+260,MEX,México,TEAM,D,Jared Borgetti,MEX
+261,MEX,México,TEAM,D,Omar Bravo,MEX
+262,MEX,México,TEAM,D,Francisco Fonseca,MEX
+263,IRN,Irã,TEAM,D,Foto do time,IRN
+264,IRN,Irã,TEAM,D,Escudo,IRN
+265,IRN,Irã,TEAM,D,Ebrahim Mirzapour,IRN
+266,IRN,Irã,TEAM,D,Sayed Alavi,IRN
+267,IRN,Irã,TEAM,D,Yaha Golmohammadi,IRN
+268,IRN,Irã,TEAM,D,Hossein Kaebi,IRN
+269,IRN,Irã,TEAM,D,Javad Nekounam,IRN
+270,IRN,Irã,TEAM,D,Rahman Rezaei,IRN
+271,IRN,Irã,TEAM,D,Ali Karimi,IRN
+272,IRN,Irã,TEAM,D,Javad Kazemeyan,IRN
+273,IRN,Irã,TEAM,D,Mehdi Mahdavikia,IRN
+274,IRN,Irã,TEAM,D,Eman Mobali,IRN
+275,IRN,Irã,TEAM,D,Moharram Navidkia,IRN
+276,IRN,Irã,TEAM,D,Mohammad Nosrati,IRN
+277,IRN,Irã,TEAM,D,Ferydoon Zandi,IRN
+278,IRN,Irã,TEAM,D,Ali Daei,IRN
+279,IRN,Irã,TEAM,D,Vahid Hashemian,IRN
+280,IRN,Irã,TEAM,D,Alireza Vahedi,IRN
+281,IRN,Irã,TEAM,D,Mehdi Rahmati,IRN
+282,POR,Portugal,TEAM,D,Foto do time,POR
+283,POR,Portugal,TEAM,D,Escudo,POR
+284,POR,Portugal,TEAM,D,Ricardo,POR
+285,POR,Portugal,TEAM,D,Jorge Andrade,POR
+286,POR,Portugal,TEAM,D,Marco Caneira,POR
+287,POR,Portugal,TEAM,D,Miguel,POR
+288,POR,Portugal,TEAM,D,Nuno Valente,POR
+289,POR,Portugal,TEAM,D,Paulo Ferreira,POR
+290,POR,Portugal,TEAM,D,Ricardo Carvalho,POR
+291,POR,Portugal,TEAM,D,Costinha,POR
+292,POR,Portugal,TEAM,D,Deco,POR
+293,POR,Portugal,TEAM,D,Figo,POR
+294,POR,Portugal,TEAM,D,Maniche,POR
+295,POR,Portugal,TEAM,D,Petit,POR
+296,POR,Portugal,TEAM,D,Simão,POR
+297,POR,Portugal,TEAM,D,Tiago,POR
+298,POR,Portugal,TEAM,D,Cristiano Ronaldo,POR
+299,POR,Portugal,TEAM,D,Nuno Gomes,POR
+300,POR,Portugal,TEAM,D,Pauleta,POR
+301,ANG,Angola,TEAM,D,Escudo,ANG
+302,ANG,Angola,TEAM,D,Foto do time,ANG
+303,ANG,Angola,TEAM,D,João Ricardo / Jacinto,ANG
+304,ANG,Angola,TEAM,D,Jamba / Lebo Lebo,ANG
+305,ANG,Angola,TEAM,D,Loco / Delgado,ANG
+306,ANG,Angola,TEAM,D,André Macanga / Edson,ANG
+307,ANG,Angola,TEAM,D,Figuereido / Mendonça,ANG
+308,ANG,Angola,TEAM,D,Zé Kalanga / Akwa,ANG
+309,ANG,Angola,TEAM,D,Flavio / Love,ANG
+310,ANG,Angola,TEAM,D,Mantorras / Maurito,ANG
+311,GHA,Gana,TEAM,E,Escudo,GHA
+312,GHA,Gana,TEAM,E,Foto do time,GHA
+313,GHA,Gana,TEAM,E,Sammy Adjei / Daniel Edusei,GHA
+314,GHA,Gana,TEAM,E,Samuel Osei Kuffour / John Mensah,GHA
+315,GHA,Gana,TEAM,E,John Pantsil / Emmanuel Pappoe,GHA
+316,GHA,Gana,TEAM,E,Stephen Appiah / Godwin Attram,GHA
+317,GHA,Gana,TEAM,E,Michael Essien / Laryea Kingston,GHA
+318,GHA,Gana,TEAM,E,Sulley Ali Muntari / Abubakari Yakubu,GHA
+319,GHA,Gana,TEAM,E,Matthew Amoah / Asamoah Gyan,GHA
+320,GHA,Gana,TEAM,E,Asamoah Frimpong / George Owu,GHA
+321,ITA,Itália,TEAM,E,Foto do time,ITA
+322,ITA,Itália,TEAM,E,Escudo,ITA
+323,ITA,Itália,TEAM,E,Gianluigi Buffon,ITA
+324,ITA,Itália,TEAM,E,Fabio Cannavaro,ITA
+325,ITA,Itália,TEAM,E,Marco Materazzi,ITA
+326,ITA,Itália,TEAM,E,Alessandro Nesta,ITA
+327,ITA,Itália,TEAM,E,Gianluca Zambrotta,ITA
+328,ITA,Itália,TEAM,E,Fabio Grosso,ITA
+329,ITA,Itália,TEAM,E,Cristian Zaccardo,ITA
+330,ITA,Itália,TEAM,E,Mauro German Camoranesi,ITA
+331,ITA,Itália,TEAM,E,Daniele De Rossi,ITA
+332,ITA,Itália,TEAM,E,Gennaro Ivan Gattuso,ITA
+333,ITA,Itália,TEAM,E,Andrea Pirlo,ITA
+334,ITA,Itália,TEAM,E,Simone Perrotta,ITA
+335,ITA,Itália,TEAM,E,Alessandro Del Piero,ITA
+336,ITA,Itália,TEAM,E,Alberto Gilardino,ITA
+337,ITA,Itália,TEAM,E,Luca Toni,ITA
+338,ITA,Itália,TEAM,E,Francesco Totti,ITA
+339,ITA,Itália,TEAM,E,Christian Vieri,ITA
+340,USA,Estados Unidos,TEAM,E,Foto do time,USA
+341,USA,Estados Unidos,TEAM,E,Escudo,USA
+342,USA,Estados Unidos,TEAM,E,Kasey Keller,USA
+343,USA,Estados Unidos,TEAM,E,Gregg Berhalter,USA
+344,USA,Estados Unidos,TEAM,E,Carlos Bocanegra,USA
+345,USA,Estados Unidos,TEAM,E,Steve Cherundolo,USA
+346,USA,Estados Unidos,TEAM,E,Frankie Hejduk,USA
+347,USA,Estados Unidos,TEAM,E,Oguchi Onyewu,USA
+348,USA,Estados Unidos,TEAM,E,Eddie Pope,USA
+349,USA,Estados Unidos,TEAM,E,Damarcus Beasley,USA
+350,USA,Estados Unidos,TEAM,E,Clint Dempsey,USA
+351,USA,Estados Unidos,TEAM,E,Eddie Lewis,USA
+352,USA,Estados Unidos,TEAM,E,Pablo Mastroeni,USA
+353,USA,Estados Unidos,TEAM,E,Steve Ralston,USA
+354,USA,Estados Unidos,TEAM,E,Claudio Reyna,USA
+355,USA,Estados Unidos,TEAM,E,Landon Donovan,USA
+356,USA,Estados Unidos,TEAM,E,Eddie Johnson,USA
+357,USA,Estados Unidos,TEAM,E,Brian McBride,USA
+358,USA,Estados Unidos,TEAM,E,Taylor Twellman,USA
+359,CZE,República Tcheca,TEAM,E,Foto do time,CZE
+360,CZE,República Tcheca,TEAM,E,Escudo,CZE
+361,CZE,República Tcheca,TEAM,E,Petr Cech,CZE
+362,CZE,República Tcheca,TEAM,E,Zdenek Grygera,CZE
+363,CZE,República Tcheca,TEAM,E,Marek Jankulovski,CZE
+364,CZE,República Tcheca,TEAM,E,Martin Jiranek,CZE
+365,CZE,República Tcheca,TEAM,E,David Rozehnal,CZE
+366,CZE,República Tcheca,TEAM,E,Tomas Ujfalusi,CZE
+367,CZE,República Tcheca,TEAM,E,Tomas Galasek,CZE
+368,CZE,República Tcheca,TEAM,E,Pavel Nedved,CZE
+369,CZE,República Tcheca,TEAM,E,Jaroslav Plasil,CZE
+370,CZE,República Tcheca,TEAM,E,Karel Poborsky,CZE
+371,CZE,República Tcheca,TEAM,E,Jan Polak,CZE
+372,CZE,República Tcheca,TEAM,E,Tomas Rosicky,CZE
+373,CZE,República Tcheca,TEAM,E,Vladimir Smicer,CZE
+374,CZE,República Tcheca,TEAM,E,Milan Baros,CZE
+375,CZE,República Tcheca,TEAM,E,Marek Heinz,CZE
+376,CZE,República Tcheca,TEAM,E,Jan Koller,CZE
+377,CZE,República Tcheca,TEAM,E,Vratislav Lokvenc,CZE
+378,BRA,Brasil,TEAM,F,Foto do time,BRA
+379,BRA,Brasil,TEAM,F,Escudo,BRA
+380,BRA,Brasil,TEAM,F,Dida,BRA
+381,BRA,Brasil,TEAM,F,Cafu,BRA
+382,BRA,Brasil,TEAM,F,Cicinho,BRA
+383,BRA,Brasil,TEAM,F,Juan,BRA
+384,BRA,Brasil,TEAM,F,Lúcio,BRA
+385,BRA,Brasil,TEAM,F,Roberto Carlos,BRA
+386,BRA,Brasil,TEAM,F,Roque Júnior,BRA
+387,BRA,Brasil,TEAM,F,Emerson,BRA
+388,BRA,Brasil,TEAM,F,Júlio Baptista,BRA
+389,BRA,Brasil,TEAM,F,Juninho Pernambucano,BRA
+390,BRA,Brasil,TEAM,F,Renato,BRA
+391,BRA,Brasil,TEAM,F,Zé Roberto,BRA
+392,BRA,Brasil,TEAM,F,Kaká,BRA
+393,BRA,Brasil,TEAM,F,Ronaldinho,BRA
+394,BRA,Brasil,TEAM,F,Adriano,BRA
+395,BRA,Brasil,TEAM,F,Robinho,BRA
+396,BRA,Brasil,TEAM,F,Ronaldo,BRA
+397,CRO,Croácia,TEAM,F,Foto do time,CRO
+398,CRO,Croácia,TEAM,F,Escudo,CRO
+399,CRO,Croácia,TEAM,F,Tomislav Butina,CRO
+400,CRO,Croácia,TEAM,F,Robert Kovac,CRO
+401,CRO,Croácia,TEAM,F,Dario Simic,CRO
+402,CRO,Croácia,TEAM,F,Josip Simunic,CRO
+403,CRO,Croácia,TEAM,F,Stjepan Tomas,CRO
+404,CRO,Croácia,TEAM,F,Igor Tudor,CRO
+405,CRO,Croácia,TEAM,F,Marko Babic,CRO
+406,CRO,Croácia,TEAM,F,Niko Kovac,CRO
+407,CRO,Croácia,TEAM,F,Niko Kranjcar,CRO
+408,CRO,Croácia,TEAM,F,Jerko Leko,CRO
+409,CRO,Croácia,TEAM,F,Darijo Srna,CRO
+410,CRO,Croácia,TEAM,F,Jurica Vranjes,CRO
+411,CRO,Croácia,TEAM,F,Bosko Balaban,CRO
+412,CRO,Croácia,TEAM,F,Ivan Klasnic,CRO
+413,CRO,Croácia,TEAM,F,Ivica Olic,CRO
+414,CRO,Croácia,TEAM,F,Dado Prso,CRO
+415,CRO,Croácia,TEAM,F,Stipe Pletikosa,CRO
+416,AUS,Austrália,TEAM,F,Foto do time,AUS
+417,AUS,Austrália,TEAM,F,Escudo,AUS
+418,AUS,Austrália,TEAM,F,Mark Schwarzer,AUS
+419,AUS,Austrália,TEAM,F,Scott Chipperfield,AUS
+420,AUS,Austrália,TEAM,F,Craig Moore,AUS
+421,AUS,Austrália,TEAM,F,Lucas Neill,AUS
+422,AUS,Austrália,TEAM,F,Tony Popovic,AUS
+423,AUS,Austrália,TEAM,F,Tony Vidmar,AUS
+424,AUS,Austrália,TEAM,F,Mark Bresciano,AUS
+425,AUS,Austrália,TEAM,F,Brett Emerton,AUS
+426,AUS,Austrália,TEAM,F,Vincenzo Grella,AUS
+427,AUS,Austrália,TEAM,F,Josip Skoko,AUS
+428,AUS,Austrália,TEAM,F,Tim Cahill,AUS
+429,AUS,Austrália,TEAM,F,Archie Thompson,AUS
+430,AUS,Austrália,TEAM,F,John Aloisi,AUS
+431,AUS,Austrália,TEAM,F,Jason Culina,AUS
+432,AUS,Austrália,TEAM,F,Harry Kewell,AUS
+433,AUS,Austrália,TEAM,F,Mark Viduka,AUS
+434,AUS,Austrália,TEAM,F,Zeljko Kalac,AUS
+435,JPN,Japão,TEAM,F,Foto do time,JPN
+436,JPN,Japão,TEAM,F,Escudo,JPN
+437,JPN,Japão,TEAM,F,Yoshikatsu Kawaguchi,JPN
+438,JPN,Japão,TEAM,F,Akira Kaji,JPN
+439,JPN,Japão,TEAM,F,Tsuneyasu Miyamoto,JPN
+440,JPN,Japão,TEAM,F,Yuji Nakazawa,JPN
+441,JPN,Japão,TEAM,F,Alessandro Santos,JPN
+442,JPN,Japão,TEAM,F,Makoto Tanaka,JPN
+443,JPN,Japão,TEAM,F,Yasuhito Endo,JPN
+444,JPN,Japão,TEAM,F,Takashi Fukunishi,JPN
+445,JPN,Japão,TEAM,F,Junichi Inamoto,JPN
+446,JPN,Japão,TEAM,F,Shunsuke Nakamura,JPN
+447,JPN,Japão,TEAM,F,Hidetoshi Nakata,JPN
+448,JPN,Japão,TEAM,F,Mitsuo Ogasawara,JPN
+449,JPN,Japão,TEAM,F,Masashi Oguro,JPN
+450,JPN,Japão,TEAM,F,Takayuki Suzuki,JPN
+451,JPN,Japão,TEAM,F,Naohiro Takahara,JPN
+452,JPN,Japão,TEAM,F,Keiji Tamada,JPN
+453,JPN,Japão,TEAM,F,Atsushi Yanagisawa,JPN
+454,FRA,França,TEAM,G,Foto do time,FRA
+455,FRA,França,TEAM,G,Escudo,FRA
+456,FRA,França,TEAM,G,Fabien Barthez,FRA
+457,FRA,França,TEAM,G,Jean-Alain Boumsong,FRA
+458,FRA,França,TEAM,G,William Gallas,FRA
+459,FRA,França,TEAM,G,Gaël Givet,FRA
+460,FRA,França,TEAM,G,Willy Sagnol,FRA
+461,FRA,França,TEAM,G,Lilian Thuram,FRA
+462,FRA,França,TEAM,G,Vikash Dhorasoo,FRA
+463,FRA,França,TEAM,G,Alou Diarra,FRA
+464,FRA,França,TEAM,G,Claude Makelele,FRA
+465,FRA,França,TEAM,G,Florent Malouda,FRA
+466,FRA,França,TEAM,G,Patrick Vieira,FRA
+467,FRA,França,TEAM,G,Zinedine Zidane,FRA
+468,FRA,França,TEAM,G,Djibril Cisse,FRA
+469,FRA,França,TEAM,G,Thierry Henry,FRA
+470,FRA,França,TEAM,G,David Trezeguet,FRA
+471,FRA,França,TEAM,G,Sylvain Wiltord,FRA
+472,FRA,França,TEAM,G,Gregory Coupet,FRA
+473,SUI,Suíça,TEAM,G,Foto do time,SUI
+474,SUI,Suíça,TEAM,G,Escudo,SUI
+475,SUI,Suíça,TEAM,G,Pascal Zuberbühler,SUI
+476,SUI,Suíça,TEAM,G,Philipp Degen,SUI
+477,SUI,Suíça,TEAM,G,Ludovic Magnin,SUI
+478,SUI,Suíça,TEAM,G,Patrick Müller,SUI
+479,SUI,Suíça,TEAM,G,Philippe Senderos,SUI
+480,SUI,Suíça,TEAM,G,Christoph Spycher,SUI
+481,SUI,Suíça,TEAM,G,Tranquillo Barnetta,SUI
+482,SUI,Suíça,TEAM,G,Ricardo Cabanas,SUI
+483,SUI,Suíça,TEAM,G,Daniel Gygax,SUI
+484,SUI,Suíça,TEAM,G,Johann Lonfat,SUI
+485,SUI,Suíça,TEAM,G,Johann Vogel,SUI
+486,SUI,Suíça,TEAM,G,Raphaël Wicky,SUI
+487,SUI,Suíça,TEAM,G,Hakan Yakin,SUI
+488,SUI,Suíça,TEAM,G,Valon Behrami,SUI
+489,SUI,Suíça,TEAM,G,Alexander Frei,SUI
+490,SUI,Suíça,TEAM,G,Marco Streller,SUI
+491,SUI,Suíça,TEAM,G,Johan Vonlanthen,SUI
+492,KOR,Coreia do Sul,TEAM,G,Foto do time,KOR
+493,KOR,Coreia do Sul,TEAM,G,Escudo,KOR
+494,KOR,Coreia do Sul,TEAM,G,Lee Woon-jae,KOR
+495,KOR,Coreia do Sul,TEAM,G,Park Dong-hyuk,KOR
+496,KOR,Coreia do Sul,TEAM,G,Park Jae-hong,KOR
+497,KOR,Coreia do Sul,TEAM,G,Choi Jin-cheul,KOR
+498,KOR,Coreia do Sul,TEAM,G,Kim Jin-kyu,KOR
+499,KOR,Coreia do Sul,TEAM,G,You Kyoung-youl,KOR
+500,KOR,Coreia do Sul,TEAM,G,Lee Chun-soo,KOR
+501,KOR,Coreia do Sul,TEAM,G,Kim Do-heon,KOR
+502,KOR,Coreia do Sul,TEAM,G,Kim Dong-jin,KOR
+503,KOR,Coreia do Sul,TEAM,G,Park Ji-sung,KOR
+504,KOR,Coreia do Sul,TEAM,G,Kim Jung-woo,KOR
+505,KOR,Coreia do Sul,TEAM,G,Kim Nam-il,KOR
+506,KOR,Coreia do Sul,TEAM,G,Lee Young-pyo,KOR
+507,KOR,Coreia do Sul,TEAM,G,Lee Dong-gook,KOR
+508,KOR,Coreia do Sul,TEAM,G,Cha Du-ri,KOR
+509,KOR,Coreia do Sul,TEAM,G,Ahn Jung-hwan,KOR
+510,KOR,Coreia do Sul,TEAM,G,Chung Kyung-ho,KOR
+511,TOG,Togo,TEAM,G,Foto do time,TOG
+512,TOG,Togo,TEAM,G,Escudo,TOG
+513,TOG,Togo,TEAM,G,Kossi Agassa,TOG
+514,TOG,Togo,TEAM,G,Jean-Paul Abalo,TOG
+515,TOG,Togo,TEAM,G,Eric Akoto,TOG
+516,TOG,Togo,TEAM,G,Mohama Atte-Oudeyi,TOG
+517,TOG,Togo,TEAM,G,Emmanuel Mathias,TOG
+518,TOG,Togo,TEAM,G,Dare Nibombe,TOG
+519,TOG,Togo,TEAM,G,Junior Senaya,TOG
+520,TOG,Togo,TEAM,G,Massamasso Tchangai,TOG
+521,TOG,Togo,TEAM,G,Yao Aziawonou,TOG
+522,TOG,Togo,TEAM,G,Mamam Cherif-Toure,TOG
+523,TOG,Togo,TEAM,G,Abdel Coubadja,TOG
+524,TOG,Togo,TEAM,G,Jacques Romao,TOG
+525,TOG,Togo,TEAM,G,Moustapha Salifou,TOG
+526,TOG,Togo,TEAM,G,Robert Souliemane,TOG
+527,TOG,Togo,TEAM,G,Emmanuel Sheyi Adebayor,TOG
+528,TOG,Togo,TEAM,G,Mickael Dogbe,TOG
+529,TOG,Togo,TEAM,G,Adekanmi Olufade,TOG
+530,ESP,Espanha,TEAM,H,Foto do time,ESP
+531,ESP,Espanha,TEAM,H,Escudo,ESP
+532,ESP,Espanha,TEAM,H,Iker Casillas,ESP
+533,ESP,Espanha,TEAM,H,Asier Del Horno,ESP
+534,ESP,Espanha,TEAM,H,Carlos Marchena,ESP
+535,ESP,Espanha,TEAM,H,Pablo Ibañez,ESP
+536,ESP,Espanha,TEAM,H,Carles Puyol,ESP
+537,ESP,Espanha,TEAM,H,Michel Salgado,ESP
+538,ESP,Espanha,TEAM,H,Sergio Ramos,ESP
+539,ESP,Espanha,TEAM,H,David Albelda,ESP
+540,ESP,Espanha,TEAM,H,Ruben Baraja,ESP
+541,ESP,Espanha,TEAM,H,Vicente Rodriguez,ESP
+542,ESP,Espanha,TEAM,H,Xavi Hernandez,ESP
+543,ESP,Espanha,TEAM,H,Joaquin Sanchez,ESP
+544,ESP,Espanha,TEAM,H,Luis Garcia,ESP
+545,ESP,Espanha,TEAM,H,Raul Gonzalez,ESP
+546,ESP,Espanha,TEAM,H,Jose Antonio Reyes,ESP
+547,ESP,Espanha,TEAM,H,Fernando Morientes,ESP
+548,ESP,Espanha,TEAM,H,Fernando Torres,ESP
+549,UKR,Ucrânia,TEAM,H,Foto do time,UKR
+550,UKR,Ucrânia,TEAM,H,Escudo,UKR
+551,UKR,Ucrânia,TEAM,H,Oleksandr Shovkovskiy,UKR
+552,UKR,Ucrânia,TEAM,H,Serhiy Fedorov,UKR
+553,UKR,Ucrânia,TEAM,H,Andriy Nesmachniy,UKR
+554,UKR,Ucrânia,TEAM,H,Oleksandr Radchenko,UKR
+555,UKR,Ucrânia,TEAM,H,Andriy Rusol,UKR
+556,UKR,Ucrânia,TEAM,H,Vyacheslav Sviderskyi,UKR
+557,UKR,Ucrânia,TEAM,H,Volodymyr Yezerskyi,UKR
+558,UKR,Ucrânia,TEAM,H,Andriy Husin,UKR
+559,UKR,Ucrânia,TEAM,H,Oleh Husyev,UKR
+560,UKR,Ucrânia,TEAM,H,Ruslan Rotan,UKR
+561,UKR,Ucrânia,TEAM,H,Oleh Shelayev,UKR
+562,UKR,Ucrânia,TEAM,H,Anatoliy Tymoschuk,UKR
+563,UKR,Ucrânia,TEAM,H,Serhiy Rebrov,UKR
+564,UKR,Ucrânia,TEAM,H,Oleksiy Byelik,UKR
+565,UKR,Ucrânia,TEAM,H,Andriy Shevchenko,UKR
+566,UKR,Ucrânia,TEAM,H,Andriy Vorobei,UKR
+567,UKR,Ucrânia,TEAM,H,Andriy Voronin,UKR
+568,TUN,Tunísia,TEAM,H,Foto do time,TUN
+569,TUN,Tunísia,TEAM,H,Escudo,TUN
+570,TUN,Tunísia,TEAM,H,Ali Boumnijel,TUN
+571,TUN,Tunísia,TEAM,H,Clayton,TUN
+572,TUN,Tunísia,TEAM,H,Karim Hagui,TUN
+573,TUN,Tunísia,TEAM,H,Radhi Jaidi,TUN
+574,TUN,Tunísia,TEAM,H,Karim Saidi,TUN
+575,TUN,Tunísia,TEAM,H,Hatem Trabelsi,TUN
+576,TUN,Tunísia,TEAM,H,Alaeddine Yahia,TUN
+577,TUN,Tunísia,TEAM,H,Slim Ben Achour,TUN
+578,TUN,Tunísia,TEAM,H,Chaouki Ben Saada,TUN
+579,TUN,Tunísia,TEAM,H,Adel Chadli,TUN
+580,TUN,Tunísia,TEAM,H,Kaies Ghodbane,TUN
+581,TUN,Tunísia,TEAM,H,Jaouhar Mnari,TUN
+582,TUN,Tunísia,TEAM,H,Mehdi Nafti,TUN
+583,TUN,Tunísia,TEAM,H,Haykel Guemamdia,TUN
+584,TUN,Tunísia,TEAM,H,Ziad Jaziri,TUN
+585,TUN,Tunísia,TEAM,H,Imed Mhadhebi,TUN
+586,TUN,Tunísia,TEAM,H,Santos,TUN
+587,KSA,Arábia Saudita,TEAM,H,Escudo,KSA
+588,KSA,Arábia Saudita,TEAM,H,Foto do time,KSA
+589,KSA,Arábia Saudita,TEAM,H,Mabrouk Zaid / Saheb Al Abdullha,KSA
+590,KSA,Arábia Saudita,TEAM,H,Ahmed Al Bahri / Hamad Al Montashari,KSA
+591,KSA,Arábia Saudita,TEAM,H,Naif Al Qadi / Saud Khariri,KSA
+592,KSA,Arábia Saudita,TEAM,H,Khamis Al Dossari / Ibrahim Al Shahrani,KSA
+593,KSA,Arábia Saudita,TEAM,H,Mohammad Al Shlhoub / Khaled Al Thaker,KSA
+594,KSA,Arábia Saudita,TEAM,H,Mohammed Haidar / Abdulaziz Khathran,KSA
+595,KSA,Arábia Saudita,TEAM,H,Manaf Abushgeer / Sami Al Jaber,KSA
+596,KSA,Arábia Saudita,TEAM,H,Talal Al Meshal / Yasser Al Qahtani,KSA

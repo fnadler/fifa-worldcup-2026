@@ -1,5 +1,7 @@
 import paniniJson from "@/album.json";
 import adrenalynJson from "./catalogs/adrenalyn-xl.json";
+import africaSulJson from "./catalogs/copa-africa-sul-2010.json";
+import alemanhaJson from "./catalogs/copa-alemanha-2006.json";
 import brasilJson from "./catalogs/copa-brasil-2014.json";
 import catarJson from "./catalogs/copa-catar-2022.json";
 import goldenJson from "./catalogs/golden-crumple.json";
@@ -379,9 +381,68 @@ export const COPA_BRASIL: Catalog = {
   menuCode: (b) => (b.tipo === "TEAM" ? b.id.replace(/^bz-/, "") : null),
 };
 
+// ---------- Álbuns das Copas de 2010 e 2006 (Panini) ----------
+// Numeração do álbum: 000, 00 e 1 a 638 em 2010; Selo e 1 a 596 em 2006. Em 2010 ficam de fora as 4 VISA e as
+// figurinhas de atualização, que não estão no gabarito. Em 2006, Angola, Gana e Arábia Saudita têm figurinhas
+// duplas (um número, dois jogadores).
+
+function numberedWorldCup(
+  meta: { id: string; slug: string; name: string; shortName: string; example: string; prefix: string },
+  data: AlbumData
+): Catalog {
+  const strip = (code: string) => code.replace(new RegExp(`^${meta.prefix}`), "");
+  const label = (code: string) => (strip(code) === "SELO" ? "Selo" : strip(code));
+  return {
+    id: meta.id,
+    slug: meta.slug,
+    name: meta.name,
+    shortName: meta.shortName,
+    itemSingular: "figurinha",
+    itemPlural: "figurinhas",
+    owned: { cell: "colada", total: "Coladas", block: "coladas" },
+    searchPlaceholder: `Buscar jogador, seleção ou número (ex: ${meta.example})`,
+    displayCode: label,
+    blocks: data.blocks,
+    total: data.total,
+    filters: [
+      { value: "ALL", label: "Todas" },
+      { value: "TEAM", label: "Seleções" },
+      { value: "FWC", label: "Especiais" },
+    ],
+    priceGroups: [
+      { key: "FWC", label: "Especiais" },
+      { key: "TEAM", label: "Seleções" },
+    ],
+    countsToward: () => true,
+    blockTag: (b) => (b.tipo === "TEAM" ? `Grupo ${b.grupo}` : b.nome),
+    isSpecial: (b) => b.tipo !== "TEAM",
+    blockRange(b) {
+      const first = label(b.codes[0]);
+      const last = label(b.codes[b.codes.length - 1]);
+      return first === last ? first : `${first}–${last}`;
+    },
+    menuSections: sectionsBy(data.blocks, (b) => ({
+      title: b.tipo === "TEAM" ? `Grupo ${b.grupo}` : "Especiais",
+      variant: PANINI_VARIANT[b.tipo] ?? "team",
+    })),
+    menuLabel: (b) => b.nome,
+    menuCode: (b) => (b.tipo === "TEAM" ? b.id.replace(/^[a-z]+-/, "") : null),
+  };
+}
+
+export const COPA_AFRICA_SUL = numberedWorldCup(
+  { id: "wc2010-panini", slug: "copa-africa-sul-2010", name: "Álbum Copa da África do Sul 2010", shortName: "Copa África do Sul 2010", example: "122", prefix: "ZA" },
+  africaSulJson as AlbumData
+);
+
+export const COPA_ALEMANHA = numberedWorldCup(
+  { id: "wc2006-panini", slug: "copa-alemanha-2006", name: "Álbum Copa da Alemanha 2006", shortName: "Copa Alemanha 2006", example: "393", prefix: "DE" },
+  alemanhaJson as AlbumData
+);
+
 // ---------- registro e índice global por código ----------
 
-export const CATALOGS: Catalog[] = [PANINI, ADRENALYN, GOLDEN_CRUMPLE, COPA_CATAR, COPA_RUSSIA, COPA_BRASIL];
+export const CATALOGS: Catalog[] = [PANINI, ADRENALYN, GOLDEN_CRUMPLE, COPA_CATAR, COPA_RUSSIA, COPA_BRASIL, COPA_AFRICA_SUL, COPA_ALEMANHA];
 export const DEFAULT_CATALOG = PANINI;
 
 const BY_ID = new Map(CATALOGS.map((c) => [c.id, c]));

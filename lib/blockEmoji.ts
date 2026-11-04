@@ -17,6 +17,8 @@ const FLAGS: Record<string, string> = {
   ISL: "🇮🇸", NGA: "🇳🇬", PER: "🇵🇪", RUS: "🇷🇺",
   // seleções que só aparecem no Álbum Copa do Brasil 2014
   CHI: "🇨🇱", GRE: "🇬🇷", HON: "🇭🇳",
+  // seleções que só aparecem nos álbuns de 2010 e 2006 (Sérvia e Montenegro não tem bandeira em emoji)
+  ANG: "🇦🇴", PRK: "🇰🇵", SVK: "🇸🇰", SVN: "🇸🇮", TOG: "🇹🇬", TRI: "🇹🇹",
 };
 
 const LEGENDS: Record<string, string> = { LIL: "💜", BRO: "🥉", PRA: "🥈", OUR: "🥇" };

@@ -70,5 +70,5 @@ export function itemKind(code: string): string | null {
 
 export function stickerLabel(code: string): string {
   const num = code.replace(/^[A-Z]+/, "");
-  return num || code;
+  return num || displayCode(code);
 }

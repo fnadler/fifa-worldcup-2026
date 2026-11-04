@@ -5,7 +5,8 @@
 // images/copa_catar_2022/<CÓDIGO>.png (ex: "CQBRA17.png"). Álbum Copa da Rússia 2018:
 // images/copa_russia_2018/<CÓDIGO>.png (ex: "RU371.png"). Álbum Copa do Brasil 2014:
 // images/copa_brasil_2014/<CÓDIGO>.png (ex: "BZ48.png"). Copas de 2010 e 2006: images/copa_africa_sul_2010/ e
-// images/copa_alemanha_2006/, também pelo código ("ZA122.png", "DE393.png").
+// images/copa_alemanha_2006/, também pelo código ("ZA122.png", "DE393.png"). Copas de 2002 e 1998:
+// images/copa_coreia_japao_2002/ e images/copa_franca_1998/ ("KJ184.png", "FR28.png").
 //
 //   npm run images            — gera só o que ainda não existe em public/stickers
 //   npm run images -- --force — refaz todas
@@ -40,7 +41,9 @@ const russia = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "cop
 const brasil = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "copa-brasil-2014.json"), "utf8"));
 const africaSul = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "copa-africa-sul-2010.json"), "utf8"));
 const alemanha = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "copa-alemanha-2006.json"), "utf8"));
-const allBlocks = [...album.blocks, ...adrenalyn.blocks, ...golden.blocks, ...catar.blocks, ...russia.blocks, ...brasil.blocks, ...africaSul.blocks, ...alemanha.blocks];
+const coreiaJapao = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "copa-coreia-japao-2002.json"), "utf8"));
+const franca = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "copa-franca-1998.json"), "utf8"));
+const allBlocks = [...album.blocks, ...adrenalyn.blocks, ...golden.blocks, ...catar.blocks, ...russia.blocks, ...brasil.blocks, ...africaSul.blocks, ...alemanha.blocks, ...coreiaJapao.blocks, ...franca.blocks];
 const validCodes = new Set(allBlocks.flatMap((b) => b.codes));
 const ADRENALYN_DIR = path.join(ROOT, "data", "adrenalyn-xl", "cards");
 // Gold Crumple Edition: arquivo com o próprio código ("GCBRA9.png"), recortado dos PDFs da edição.
@@ -148,7 +151,7 @@ for (const file of await readdir(BRASIL_DIR).catch(() => [])) {
   if (validCodes.has(code) && code.startsWith("BZ")) sources.set(code, path.join(BRASIL_DIR, file));
 }
 
-for (const [dir, prefix] of [["copa_africa_sul_2010", "ZA"], ["copa_alemanha_2006", "DE"]]) {
+for (const [dir, prefix] of [["copa_africa_sul_2010", "ZA"], ["copa_alemanha_2006", "DE"], ["copa_coreia_japao_2002", "KJ"], ["copa_franca_1998", "FR"]]) {
   const full = path.join(ROOT, "images", dir);
   for (const file of await readdir(full).catch(() => [])) {
     const code = path.parse(file).name.toUpperCase();
@@ -173,7 +176,7 @@ async function worker() {
     const input = sources.get(code);
     for (const [size, width] of Object.entries(SIZES)) {
       const img = sharp(input);
-      if (!NO_TRIM.has(code) && !code.startsWith("CQ") && !code.startsWith("RU") && !/^(CQ|RU|BZ|ZA|DE)/.test(code)) img.trim({ threshold: 12 }); // algumas fotos (ex: Coca-Cola) vêm quadradas com margem branca
+      if (!NO_TRIM.has(code) && !code.startsWith("CQ") && !code.startsWith("RU") && !/^(CQ|RU|BZ|ZA|DE)/.test(code) && !/^(KJ|FR)\d/.test(code)) img.trim({ threshold: 12 }); // algumas fotos (ex: Coca-Cola) vêm quadradas com margem branca
       await img
         .resize({ width, withoutEnlargement: true })
         .webp({ quality: size === "thumb" ? 72 : 80 })

@@ -5,7 +5,7 @@ export const landing = {
   meta: {
     title: "GN Coleciona — sua coleção organizada, suas repetidas à venda",
     description:
-      "Registre grátis cada figurinha e card em 10 coleções — Copas de 2006 a 2026, Legends, Gold Crumple Edition, Adrenalyn XL e mais — e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam no seu WhatsApp.",
+      "Registre grátis cada figurinha e card em 12 coleções — Copas de 1998 a 2026, Legends, Gold Crumple Edition, Adrenalyn XL e mais — e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam no seu WhatsApp.",
   },
 
   nav: [
@@ -20,10 +20,10 @@ export const landing = {
   lojas: { href: "/lojas", label: "Lojas", badge: "novo" },
 
   hero: {
-    pill: "Novidades: Copas de 2006 a 2022",
+    pill: "Novidades: Copas de 1998 a 2022",
     title: "Organize sua coleção. Venda suas repetidas.",
     subtitle:
-      "Registre grátis cada figurinha e card em 10 coleções, das Copas de 2006 a 2026, e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam direto no seu WhatsApp.",
+      "Registre grátis cada figurinha e card em 12 coleções, das Copas de 1998 a 2026, e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam direto no seu WhatsApp.",
     note: "Cancele quando quiser durante o teste, sem cobrança.",
     badgeTitle: "repetidas já na sua loja",
     badgeSub: "atualizado automaticamente",
@@ -42,7 +42,7 @@ export const landing = {
       pill: "Conta grátis para sempre",
       title: "Tudo o que a sua coleção precisa, num lugar só.",
       benefits: [
-        { t: "10 coleções na mesma conta", d: "Álbuns das Copas de 2006, 2010, 2014, 2018, 2022 e 2026, Legends, Extra Stickers, Gold Crumple Edition e Adrenalyn XL." },
+        { t: "12 coleções na mesma conta", d: "Álbuns das Copas de 1998 a 2026, Legends, Extra Stickers, Gold Crumple Edition e Adrenalyn XL." },
         { t: "Foto de cada figurinha", d: "Marque com um toque o que você tem e veja os totais de coladas, repetidas e faltantes." },
         { t: "Listas prontas para o WhatsApp", d: "Compartilhe suas repetidas e faltantes, ou o link da sua coleção." },
         { t: "Ache quem tem o que falta", d: "Veja as lojas que têm as figurinhas que faltam para você completar." },
@@ -63,7 +63,7 @@ export const landing = {
   colecoes: {
     kicker: "Coleções disponíveis",
     title: "Todas as suas coleções num lugar só.",
-    subtitle: "São 10 coleções para acompanhar com fotos, progresso e repetidas — na mesma conta, grátis.",
+    subtitle: "São 12 coleções para acompanhar com fotos, progresso e repetidas — na mesma conta, grátis.",
     items: [
       { nome: "Álbum Copa 2026", desc: "As 994 figurinhas do álbum oficial Panini: seleções, FWC History e Coca-Cola.", img: "/brand/albums/copa-2026.webp", tag: "" },
       { nome: "Legends 2026", desc: "As 80 figurinhas raras das Legends, nas versões lilás, bronze, prata e ouro.", img: "OUR5", tag: "" },
@@ -75,6 +75,8 @@ export const landing = {
       { nome: "Álbum Copa do Brasil 2014", desc: "As 640 figurinhas do álbum da Copa de 2014: seleções, estádios e especiais.", img: "/brand/albums/copa-brasil-2014.webp", tag: "Novo" },
       { nome: "Álbum Copa da África do Sul 2010", desc: "As 640 figurinhas do álbum da Copa de 2010, mais as 77 atualizações à parte.", img: "/brand/albums/copa-africa-sul-2010.webp", tag: "Novo" },
       { nome: "Álbum Copa da Alemanha 2006", desc: "As 597 figurinhas do álbum da Copa de 2006: seleções, estádios e especiais.", img: "/brand/albums/copa-alemanha-2006.webp", tag: "Novo" },
+      { nome: "Álbum Copa da Coreia e Japão 2002", desc: "As 576 figurinhas do álbum da Copa de 2002: seleções, estádios e especiais.", img: "/brand/albums/copa-coreia-japao-2002.webp", tag: "Novo" },
+      { nome: "Álbum Copa da França 1998", desc: "As 561 figurinhas do álbum da Copa de 1998: seleções, estádios e especiais.", img: "/brand/albums/copa-franca-1998.webp", tag: "Novo" },
     ],
     // Próximas coleções previstas: `ano` aparece no lugar da figurinha.
     soon: [] as { nome: string; desc: string; tag: string; ano: string }[],
@@ -92,7 +94,7 @@ export const landing = {
     features: [
       {
         t: "Várias coleções na mesma conta",
-        d: "Os álbuns das Copas de 2006 a 2026, as raras Legends e Extra Stickers, a Gold Crumple Edition e os cards Adrenalyn XL, cada um com seu progresso. Troque de coleção com um toque.",
+        d: "Os álbuns das Copas de 1998 a 2026, as raras Legends e Extra Stickers, a Gold Crumple Edition e os cards Adrenalyn XL, cada um com seu progresso. Troque de coleção com um toque.",
       },
       { t: "Veja a foto de cada item", d: "Alterne entre fotos e grade compacta. Um toque soma; a segunda unidade em diante já conta como repetida." },
       { t: "Totais sempre à vista", d: "Coladas, repetidas e faltantes no geral e em cada seleção." },
@@ -149,7 +151,7 @@ export const landing = {
     free: {
       nome: "Coleção",
       items: [
-        "10 coleções com fotos, das Copas de 2006 a 2026",
+        "12 coleções com fotos, das Copas de 1998 a 2026",
         "Várias coleções na mesma conta",
         "Quantidade de repetidas por item",
         "Totais por seleção e geral",
@@ -191,7 +193,7 @@ export const landing = {
     },
     {
       p: "Quais coleções posso acompanhar?",
-      r: "Hoje são 10: os álbuns das Copas de 2026, 2022, 2018, 2014, 2010 e 2006, as Legends 2026, as Extra Stickers 2022, a Gold Crumple Edition 2026 e os cards Adrenalyn XL. Você pode acompanhar todas na mesma conta, cada uma com seu progresso, sua lista de repetidas e seu link público.",
+      r: "Hoje são 12: os álbuns das Copas de 2026, 2022, 2018, 2014, 2010, 2006, 2002 e 1998, as Legends 2026, as Extra Stickers 2022, a Gold Crumple Edition 2026 e os cards Adrenalyn XL. Você pode acompanhar todas na mesma conta, cada uma com seu progresso, sua lista de repetidas e seu link público.",
     },
     {
       p: "Preciso cadastrar os itens da loja um por um?",

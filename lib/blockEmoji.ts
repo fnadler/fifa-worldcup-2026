@@ -19,6 +19,8 @@ const FLAGS: Record<string, string> = {
   CHI: "🇨🇱", GRE: "🇬🇷", HON: "🇭🇳",
   // seleções que só aparecem nos álbuns de 2010 e 2006 (Sérvia e Montenegro não tem bandeira em emoji)
   ANG: "🇦🇴", PRK: "🇰🇵", SVK: "🇸🇰", SVN: "🇸🇮", TOG: "🇹🇬", TRI: "🇹🇹",
+  // seleções que só aparecem nos álbuns de 2002 e 1998 (Iugoslávia não tem bandeira em emoji)
+  BUL: "🇧🇬", CHN: "🇨🇳", IRL: "🇮🇪", ROU: "🇷🇴",
 };
 
 const LEGENDS: Record<string, string> = { LIL: "💜", BRO: "🥉", PRA: "🥈", OUR: "🥇" };

@@ -2,6 +2,8 @@ import paniniJson from "@/album.json";
 import adrenalynJson from "./catalogs/adrenalyn-xl.json";
 import africaSulJson from "./catalogs/copa-africa-sul-2010.json";
 import alemanhaJson from "./catalogs/copa-alemanha-2006.json";
+import coreiaJapaoJson from "./catalogs/copa-coreia-japao-2002.json";
+import francaJson from "./catalogs/copa-franca-1998.json";
 import brasilJson from "./catalogs/copa-brasil-2014.json";
 import catarJson from "./catalogs/copa-catar-2022.json";
 import goldenJson from "./catalogs/golden-crumple.json";
@@ -444,9 +446,32 @@ export const COPA_ALEMANHA = numberedWorldCup(
   alemanhaJson as AlbumData
 );
 
+// 1 a 576 em 2002 e 1 a 561 em 1998. Equador, Rússia e Tunísia (2002) e EUA, Irã e Jamaica (1998) têm figurinhas duplas.
+// Em 1998, Marrocos, Chile, Nigéria e Inglaterra não têm foto do time, e 13 figurinhas só saíam no kit de atualização.
+export const COPA_COREIA_JAPAO = numberedWorldCup(
+  { id: "wc2002-panini", slug: "copa-coreia-japao-2002", name: "Álbum Copa da Coreia e Japão 2002", shortName: "Copa Coreia e Japão 2002", example: "184", prefix: "KJ" },
+  coreiaJapaoJson as AlbumData
+);
+
+export const COPA_FRANCA = numberedWorldCup(
+  { id: "wc1998-panini", slug: "copa-franca-1998", name: "Álbum Copa da França 1998", shortName: "Copa França 1998", example: "28", prefix: "FR" },
+  francaJson as AlbumData
+);
+
 // ---------- registro e índice global por código ----------
 
-export const CATALOGS: Catalog[] = [PANINI, ADRENALYN, GOLDEN_CRUMPLE, COPA_CATAR, COPA_RUSSIA, COPA_BRASIL, COPA_AFRICA_SUL, COPA_ALEMANHA];
+export const CATALOGS: Catalog[] = [
+  PANINI,
+  ADRENALYN,
+  GOLDEN_CRUMPLE,
+  COPA_CATAR,
+  COPA_RUSSIA,
+  COPA_BRASIL,
+  COPA_AFRICA_SUL,
+  COPA_ALEMANHA,
+  COPA_COREIA_JAPAO,
+  COPA_FRANCA,
+];
 export const DEFAULT_CATALOG = PANINI;
 
 const BY_ID = new Map(CATALOGS.map((c) => [c.id, c]));

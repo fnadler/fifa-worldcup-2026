@@ -78,7 +78,7 @@ export function CollectionsAvailable() {
         {c.items.map((i) => (
           <div key={i.nome} className="mk-colecao-card">
             <div className="mk-colecao-img">
-              <Image src={`/stickers/thumb/${i.img}.webp`} alt="" width={240} height={336} unoptimized loading="lazy" />
+              <Image src={i.img.startsWith("/") ? i.img : `/stickers/thumb/${i.img}.webp`} alt="" width={240} height={336} unoptimized loading="lazy" />
               {i.tag && <span className="mk-tag mk-tag-yellow">{i.tag}</span>}
             </div>
             <strong>{i.nome}</strong>

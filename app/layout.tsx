@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.gncoleciona.com.br"),
   title: `${PLATFORM_NAME} — suas coleções organizadas`,
   description:
-    "Controle figurinhas e cards — Álbum da Copa 2026, Adrenalyn XL e mais —, veja o que falta e venda as repetidas na sua loja.",
+    "Controle figurinhas e cards — álbuns das Copas de 2014 a 2026, Adrenalyn XL e mais —, veja o que falta e venda as repetidas na sua loja.",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,

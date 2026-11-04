@@ -13,6 +13,10 @@ const FLAGS: Record<string, string> = {
   DEN: "🇩🇰", ITA: "🇮🇹", JAM: "🇯🇲", POL: "🇵🇱", UKR: "🇺🇦", WAL: "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
   // seleções que só aparecem no Álbum Copa do Catar 2022
   CMR: "🇨🇲", CRC: "🇨🇷", SRB: "🇷🇸",
+  // seleções que só aparecem no Álbum Copa da Rússia 2018
+  ISL: "🇮🇸", NGA: "🇳🇬", PER: "🇵🇪", RUS: "🇷🇺",
+  // seleções que só aparecem no Álbum Copa do Brasil 2014
+  CHI: "🇨🇱", GRE: "🇬🇷", HON: "🇭🇳",
 };
 
 const LEGENDS: Record<string, string> = { LIL: "💜", BRO: "🥉", PRA: "🥈", OUR: "🥇" };

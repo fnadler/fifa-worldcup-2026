@@ -1,7 +1,9 @@
 import paniniJson from "@/album.json";
 import adrenalynJson from "./catalogs/adrenalyn-xl.json";
+import brasilJson from "./catalogs/copa-brasil-2014.json";
 import catarJson from "./catalogs/copa-catar-2022.json";
 import goldenJson from "./catalogs/golden-crumple.json";
+import russiaJson from "./catalogs/copa-russia-2018.json";
 import type { AlbumBlock, AlbumData, TipoFiltro } from "./types";
 
 // Cada coleção (álbum) da plataforma: blocos, filtros, grupos de preço e textos. O código de cada
@@ -297,9 +299,89 @@ export const COPA_CATAR: Catalog = {
   menuCode: (b) => (b.tipo === "TEAM" ? b.id.replace(/^cq-/, "") : null),
 };
 
+// ---------- Álbum Copa da Rússia 2018 (Panini) ----------
+// Numeração corrida de 00 a 681, como no álbum. Códigos com prefixo RU (RU371), mostrados só com o número.
+
+const russia = russiaJson as AlbumData;
+
+export const COPA_RUSSIA: Catalog = {
+  id: "wc2018-panini",
+  slug: "copa-russia-2018",
+  name: "Álbum Copa da Rússia 2018",
+  shortName: "Copa Rússia 2018",
+  itemSingular: "figurinha",
+  itemPlural: "figurinhas",
+  owned: { cell: "colada", total: "Coladas", block: "coladas" },
+  searchPlaceholder: "Buscar jogador, seleção ou número (ex: 371)",
+  displayCode: (code) => code.replace(/^RU/, ""),
+  blocks: russia.blocks,
+  // 682: as Legends fazem parte do álbum e contam em Coladas/Faltam.
+  total: russia.total,
+  filters: [
+    { value: "ALL", label: "Todas" },
+    { value: "TEAM", label: "Seleções" },
+    { value: "FWC", label: "Especiais" },
+    { value: "LEG", label: "Legends" },
+  ],
+  priceGroups: [
+    { key: "FWC", label: "Especiais" },
+    { key: "TEAM", label: "Seleções" },
+    { key: "LEG", label: "Legends" },
+  ],
+  countsToward: () => true,
+  blockTag: (b) => (b.tipo === "TEAM" ? `Grupo ${b.grupo}` : b.nome),
+  isSpecial: (b) => b.tipo !== "TEAM",
+  blockRange: (b) => `${numberOf(b.codes[0])}–${numberOf(b.codes[b.codes.length - 1])}`,
+  menuSections: sectionsBy(russia.blocks, (b) => ({
+    title: b.tipo === "TEAM" ? `Grupo ${b.grupo}` : b.tipo === "LEG" ? "Legends" : "Especiais",
+    variant: PANINI_VARIANT[b.tipo] ?? "team",
+  })),
+  menuLabel: (b) => b.nome,
+  menuCode: (b) => (b.tipo === "TEAM" ? b.id.replace(/^ru-/, "") : null),
+};
+
+// ---------- Álbum Copa do Brasil 2014 (Panini) ----------
+// Numeração corrida de 00 a 639, como no álbum. Códigos com prefixo BZ (BZ48), mostrados só com o número.
+// As 9 figurinhas de patrocinadores do álbum brasileiro (L1–4, W1, J1–4) ficam de fora.
+
+const brasil = brasilJson as AlbumData;
+
+export const COPA_BRASIL: Catalog = {
+  id: "wc2014-panini",
+  slug: "copa-brasil-2014",
+  name: "Álbum Copa do Brasil 2014",
+  shortName: "Copa Brasil 2014",
+  itemSingular: "figurinha",
+  itemPlural: "figurinhas",
+  owned: { cell: "colada", total: "Coladas", block: "coladas" },
+  searchPlaceholder: "Buscar jogador, seleção ou número (ex: 48)",
+  displayCode: (code) => code.replace(/^BZ/, ""),
+  blocks: brasil.blocks,
+  total: brasil.total,
+  filters: [
+    { value: "ALL", label: "Todas" },
+    { value: "TEAM", label: "Seleções" },
+    { value: "FWC", label: "Especiais" },
+  ],
+  priceGroups: [
+    { key: "FWC", label: "Especiais" },
+    { key: "TEAM", label: "Seleções" },
+  ],
+  countsToward: () => true,
+  blockTag: (b) => (b.tipo === "TEAM" ? `Grupo ${b.grupo}` : b.nome),
+  isSpecial: (b) => b.tipo !== "TEAM",
+  blockRange: (b) => `${numberOf(b.codes[0])}–${numberOf(b.codes[b.codes.length - 1])}`,
+  menuSections: sectionsBy(brasil.blocks, (b) => ({
+    title: b.tipo === "TEAM" ? `Grupo ${b.grupo}` : "Especiais",
+    variant: PANINI_VARIANT[b.tipo] ?? "team",
+  })),
+  menuLabel: (b) => b.nome,
+  menuCode: (b) => (b.tipo === "TEAM" ? b.id.replace(/^bz-/, "") : null),
+};
+
 // ---------- registro e índice global por código ----------
 
-export const CATALOGS: Catalog[] = [PANINI, ADRENALYN, GOLDEN_CRUMPLE, COPA_CATAR];
+export const CATALOGS: Catalog[] = [PANINI, ADRENALYN, GOLDEN_CRUMPLE, COPA_CATAR, COPA_RUSSIA, COPA_BRASIL];
 export const DEFAULT_CATALOG = PANINI;
 
 const BY_ID = new Map(CATALOGS.map((c) => [c.id, c]));

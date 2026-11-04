@@ -50,6 +50,12 @@ export function slugInput(value: string): string {
     .slice(0, 30);
 }
 
+/** Variação de um endereço já ocupado: ("loja", 2) → "loja-2", sem passar do limite de 30 caracteres. */
+export function slugVariation(base: string, n: number): string {
+  const sufixo = `-${n}`;
+  return base.slice(0, 30 - sufixo.length).replace(/-+$/g, "") + sufixo;
+}
+
 /** Mensagem de erro para o endereço, ou null se estiver ok. */
 export function slugProblem(slug: string): string | null {
   if (slug.length < 3) return "O endereço precisa ter pelo menos 3 letras ou números.";

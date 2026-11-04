@@ -2358,7 +2358,18 @@ button {
 .slug-url strong {
   color: var(--text-1);
 }
+.slug-use {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
 .slug-free .slug-status,
+.slug-suggested .slug-status,
 .slug-current .slug-status {
   color: var(--positive);
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
-import { NAME_MAX, cleanName, slugInput, slugProblem, slugify } from "@/lib/brand";
+import { NAME_MAX, RESERVED_SLUGS, cleanName, slugInput, slugProblem, slugVariation, slugify } from "@/lib/brand";
 import { squareImage } from "@/lib/imageResize";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -18,7 +18,8 @@ import { getCatalog } from "@/lib/catalog";
 import BrandLogo from "./BrandLogo";
 
 const LOGO_BUCKET = "shop-logos";
-type SlugStatus = "idle" | "checking" | "free" | "taken" | "current";
+// suggested: o endereço do nome está ocupado e o campo já mostra uma variação livre.
+type SlugStatus = "idle" | "checking" | "free" | "taken" | "suggested" | "current";
 
 // Caminho do arquivo dentro do bucket, a partir da URL pública (para apagar a imagem anterior).
 function logoPathFromUrl(url: string | null): string | null {
@@ -62,8 +63,10 @@ export default function AdminSettings({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [slugStatus, setSlugStatus] = useState<SlugStatus>("idle");
-  // Endereço em edição; null = sem edição, vale o salvo (ou, numa loja sem endereço, a sugestão pelo nome).
+  // Endereço escrito à mão; null = segue o nome da loja.
   const [slugDraft, setSlugDraft] = useState<string | null>(null);
+  // Primeira variação livre do endereço `base`, quando ele está ocupado.
+  const [variacao, setVariacao] = useState<{ base: string; slug: string } | null>(null);
   const [savingSlug, setSavingSlug] = useState(false);
   const [slugFalha, setSlugFalha] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -76,27 +79,55 @@ export default function AdminSettings({
   const shopUrl = `${origin}${shopPath(settings)}`;
   const host = origin.replace(/^https?:\/\//, "");
 
-  // Endereço editável, independente do nome depois de salvo, com checagem de disponibilidade enquanto digita.
-  const slugValue = slugDraft ?? (settings.slug || slugify(sellerName));
-  const slug = slugify(slugValue);
-  const slugErro = slugValue || slugDraft !== null ? slugProblem(slug) : null;
+  // Por padrão o endereço é o nome da loja. Uma loja com endereço só muda quando o nome é editado, ou à mão.
+  const manual = slugDraft !== null;
+  const nomeEditado = cleanName(sellerName) !== cleanName(settings.sellerName);
+  const slugBase = manual ? slugify(slugDraft) : !settings.slug || nomeEditado ? slugify(sellerName) : settings.slug;
+  const slugLivre = variacao?.base === slugBase ? variacao.slug : null;
+  const slug = !manual && slugLivre ? slugLivre : slugBase;
+  const slugValue = manual ? slugDraft : slug;
+  const baseReservada = RESERVED_SLUGS.has(slugBase);
+  const slugErro =
+    !manual && baseReservada && !slugLivre ? null : slugValue || manual ? slugProblem(slug) : null;
   const slugAlterado = !!slugValue && slug !== settings.slug;
+  // Procura enquanto digita; se o endereço estiver ocupado (ou for reservado), acha a primeira variação livre.
   useEffect(() => {
-    if (!slug || slugErro) {
+    if (!slugBase || (slugProblem(slugBase) && !baseReservada)) {
       queueMicrotask(() => setSlugStatus("idle"));
       return;
     }
-    if (slug === settings.slug) {
+    if (slugBase === settings.slug) {
       queueMicrotask(() => setSlugStatus("current"));
       return;
     }
+    let ativo = true;
     queueMicrotask(() => setSlugStatus("checking"));
     const t = window.setTimeout(async () => {
-      const { data } = await createClient().rpc("shop_slug_available", { p_slug: slug });
-      setSlugStatus(data === false ? "taken" : "free");
+      const supabase = createClient();
+      const livre = async (candidato: string) => {
+        const { data } = await supabase.rpc("shop_slug_available", { p_slug: candidato });
+        return data !== false;
+      };
+      if (!baseReservada && (await livre(slugBase))) {
+        if (ativo) setSlugStatus("free");
+        return;
+      }
+      for (let n = 2; n <= 50 && ativo; n++) {
+        const candidato = slugVariation(slugBase, n);
+        if (candidato !== settings.slug && !(await livre(candidato))) continue;
+        if (ativo) {
+          setVariacao({ base: slugBase, slug: candidato });
+          setSlugStatus(manual ? "taken" : "suggested");
+        }
+        return;
+      }
+      if (ativo) setSlugStatus("taken");
     }, 400);
-    return () => window.clearTimeout(t);
-  }, [slug, slugErro, settings.slug]);
+    return () => {
+      ativo = false;
+      window.clearTimeout(t);
+    };
+  }, [slugBase, baseReservada, manual, settings.slug]);
 
   async function salvar(e: FormEvent) {
     e.preventDefault();
@@ -119,10 +150,17 @@ export default function AdminSettings({
 
     const nome = cleanName(sellerName);
     if (!nome) return setError("Dê um nome para a sua loja.");
-    // O nome só sugere o endereço da loja que ainda não tem um; depois, o endereço muda em "Link da loja".
-    const primeiroEndereco = !settings.slug;
-    if (primeiroEndereco && slugErro) return setError(slugErro);
-    if (primeiroEndereco && slugStatus === "taken") return setError("Esse endereço já está em uso. Escolha outro.");
+    if (slugAlterado) {
+      if (slugErro) return setError(slugErro);
+      if (slugStatus === "taken") return setError("Esse endereço já está em uso. Escolha outro.");
+      if (slugStatus === "checking") return setError("Aguarde a verificação do endereço e tente de novo.");
+      if (settings.slug) {
+        const ok = window.confirm(
+          `O endereço da loja vai mudar para ${host}/${slug}. Links já divulgados com o endereço antigo deixam de funcionar. Continuar?`
+        );
+        if (!ok) return;
+      }
+    }
 
     setSaving(true);
     const supabase = createClient();
@@ -130,7 +168,7 @@ export default function AdminSettings({
       .from("shops")
       .update({
         seller_name: nome,
-        ...(primeiroEndereco ? { slug } : {}),
+        ...(slugAlterado ? { slug } : {}),
         only_available: onlyAvailable,
         whatsapp: whats || null,
         order_min_cents: minimo,
@@ -167,11 +205,11 @@ export default function AdminSettings({
     }
     setSellerName(nome);
     setWhatsapp(maskPhoneBR(whats));
-    if (primeiroEndereco) setSlugDraft(null);
+    setSlugDraft(null);
     onSaved({
       ...settings,
       sellerName: nome,
-      slug: primeiroEndereco ? slug : settings.slug,
+      slug: slugAlterado ? slug : settings.slug,
       onlyAvailable,
       whatsapp: whats,
       minOrderCents: minimo,
@@ -278,7 +316,8 @@ export default function AdminSettings({
       );
       return;
     }
-    setSlugDraft(null);
+    // Com o nome ainda não salvo, fixa o endereço para o campo não voltar a seguir o nome.
+    setSlugDraft(nomeEditado ? slug : null);
     onSaved({ ...settings, slug });
     onToast("Endereço da loja atualizado!");
   }
@@ -382,8 +421,9 @@ export default function AdminSettings({
                   type="button"
                   className="btn-ghost"
                   onClick={() => {
+                    // Fixa o endereço salvo, mesmo com o nome editado.
                     setSlugFalha(null);
-                    setSlugDraft(null);
+                    setSlugDraft(settings.slug);
                   }}
                 >
                   Cancelar
@@ -410,10 +450,17 @@ export default function AdminSettings({
                   ? "verificando…"
                   : slugStatus === "free"
                     ? "✓ disponível"
-                    : slugStatus === "taken"
-                      ? "✗ já está em uso"
-                      : "")}
+                    : slugStatus === "suggested"
+                      ? `“${slugBase}” ${baseReservada ? "é reservado" : "já está em uso"}. Sugerimos esta variação, que está livre.`
+                      : slugStatus === "taken"
+                        ? "✗ já está em uso"
+                        : "")}
             </span>
+            {slugStatus === "taken" && slugLivre && !slugFalha && (
+              <button type="button" className="slug-use" onClick={() => setSlugDraft(slugLivre)}>
+                Usar {slugLivre}
+              </button>
+            )}
           </div>
         )}
       </section>
@@ -453,7 +500,7 @@ export default function AdminSettings({
         <label className="form-label">
           Nome da loja{" "}
           <span className="field-hint">
-            aparece no topo da loja · {sellerName.length}/{NAME_MAX}
+            aparece no topo da loja e define o endereço · {sellerName.length}/{NAME_MAX}
           </span>
           <input
             className="login-input"

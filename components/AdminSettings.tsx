@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
-import { NAME_MAX, cleanName, slugProblem, slugify } from "@/lib/brand";
+import { NAME_MAX, cleanName, slugInput, slugProblem, slugify } from "@/lib/brand";
 import { squareImage } from "@/lib/imageResize";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -62,6 +62,10 @@ export default function AdminSettings({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [slugStatus, setSlugStatus] = useState<SlugStatus>("idle");
+  // Endereço em edição; null = sem edição, vale o salvo (ou, numa loja sem endereço, a sugestão pelo nome).
+  const [slugDraft, setSlugDraft] = useState<string | null>(null);
+  const [savingSlug, setSavingSlug] = useState(false);
+  const [slugFalha, setSlugFalha] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -72,9 +76,11 @@ export default function AdminSettings({
   const shopUrl = `${origin}${shopPath(settings)}`;
   const host = origin.replace(/^https?:\/\//, "");
 
-  // Endereço gerado a partir do nome, com checagem de disponibilidade enquanto digita.
-  const slug = slugify(sellerName);
-  const slugErro = sellerName.trim() ? slugProblem(slug) : null;
+  // Endereço editável, independente do nome depois de salvo, com checagem de disponibilidade enquanto digita.
+  const slugValue = slugDraft ?? (settings.slug || slugify(sellerName));
+  const slug = slugify(slugValue);
+  const slugErro = slugValue || slugDraft !== null ? slugProblem(slug) : null;
+  const slugAlterado = !!slugValue && slug !== settings.slug;
   useEffect(() => {
     if (!slug || slugErro) {
       queueMicrotask(() => setSlugStatus("idle"));
@@ -112,15 +118,11 @@ export default function AdminSettings({
     }
 
     const nome = cleanName(sellerName);
-    if (!nome) return setError("Dê um nome para a sua loja — ele também define o endereço dela.");
-    if (slugErro) return setError(slugErro);
-    if (slugStatus === "taken") return setError("Esse nome de loja já está em uso. Escolha outro.");
-    if (settings.slug && slug !== settings.slug) {
-      const ok = window.confirm(
-        `O endereço da loja vai mudar para ${host}/${slug}. Links já divulgados com o endereço antigo deixam de funcionar. Continuar?`
-      );
-      if (!ok) return;
-    }
+    if (!nome) return setError("Dê um nome para a sua loja.");
+    // O nome só sugere o endereço da loja que ainda não tem um; depois, o endereço muda em "Link da loja".
+    const primeiroEndereco = !settings.slug;
+    if (primeiroEndereco && slugErro) return setError(slugErro);
+    if (primeiroEndereco && slugStatus === "taken") return setError("Esse endereço já está em uso. Escolha outro.");
 
     setSaving(true);
     const supabase = createClient();
@@ -128,7 +130,7 @@ export default function AdminSettings({
       .from("shops")
       .update({
         seller_name: nome,
-        slug,
+        ...(primeiroEndereco ? { slug } : {}),
         only_available: onlyAvailable,
         whatsapp: whats || null,
         order_min_cents: minimo,
@@ -155,9 +157,9 @@ export default function AdminSettings({
       // 23505 = endereço já usado por outra loja (índice único); 23514 = endereço reservado/inválido
       setError(
         dbError.code === "23505"
-          ? "Esse nome de loja já está em uso. Escolha outro."
+          ? "Esse endereço já está em uso. Escolha outro."
           : dbError.code === "23514"
-            ? "Esse nome não pode ser usado como endereço da loja. Escolha outro."
+            ? "Esse endereço não pode ser usado. Escolha outro."
             : "Não foi possível salvar — tente de novo."
       );
       if (dbError.code === "23505") setSlugStatus("taken");
@@ -165,7 +167,15 @@ export default function AdminSettings({
     }
     setSellerName(nome);
     setWhatsapp(maskPhoneBR(whats));
-    onSaved({ ...settings, sellerName: nome, slug, onlyAvailable, whatsapp: whats, minOrderCents: minimo });
+    if (primeiroEndereco) setSlugDraft(null);
+    onSaved({
+      ...settings,
+      sellerName: nome,
+      slug: primeiroEndereco ? slug : settings.slug,
+      onlyAvailable,
+      whatsapp: whats,
+      minOrderCents: minimo,
+    });
     onAlbumsSaved(
       albums.map((a) => {
         const c = colecoes.find((x) => x.albumId === a.albumId)!;
@@ -240,6 +250,39 @@ export default function AdminSettings({
     onToast("Imagem removida — a loja volta a usar o logo padrão.");
   }
 
+  async function salvarEndereco(e: FormEvent) {
+    e.preventDefault();
+    setSlugFalha(null);
+    if (!slugAlterado || slugErro || slugStatus === "taken" || slugStatus === "checking" || savingSlug) return;
+    if (settings.slug) {
+      const ok = window.confirm(
+        `O endereço da loja vai mudar para ${host}/${slug}. Links já divulgados com o endereço antigo deixam de funcionar. Continuar?`
+      );
+      if (!ok) return;
+    }
+    setSavingSlug(true);
+    const { error: dbError } = await createClient()
+      .from("shops")
+      .update({ slug, updated_at: new Date().toISOString() })
+      .eq("user_id", userId);
+    setSavingSlug(false);
+    if (dbError) {
+      // 23505 = endereço já usado por outra loja (índice único); 23514 = endereço reservado/inválido
+      if (dbError.code === "23505") setSlugStatus("taken");
+      setSlugFalha(
+        dbError.code === "23505"
+          ? "Esse endereço já está em uso. Escolha outro."
+          : dbError.code === "23514"
+            ? "Esse endereço não pode ser usado. Escolha outro."
+            : "Não foi possível salvar — tente de novo."
+      );
+      return;
+    }
+    setSlugDraft(null);
+    onSaved({ ...settings, slug });
+    onToast("Endereço da loja atualizado!");
+  }
+
   async function copiarLink() {
     try {
       await navigator.clipboard.writeText(shopUrl);
@@ -301,17 +344,77 @@ export default function AdminSettings({
           Este link é diferente do link público de visualização: ele mostra o catálogo com preços e permite fazer
           pedidos. Só aparecem à venda as suas <strong>repetidas</strong> que tenham preço definido.
         </p>
-        <div className="shop-link-row">
-          <input className="login-input shop-link-input" readOnly value={shopUrl} onFocus={(e) => e.target.select()} />
-          <button type="button" className="btn-primary" onClick={copiarLink}>
-            Copiar link
-          </button>
-          <a className="btn-ghost" href={shopPath(settings)} target="_blank" rel="noopener noreferrer">
-            Abrir
-          </a>
-        </div>
-        {!settings.slug && (
-          <span className="cart-note">Defina o nome da loja abaixo para ganhar um endereço amigável.</span>
+        <form className="shop-link-row" onSubmit={salvarEndereco}>
+          {/* O domínio é fixo; o label inteiro leva o toque para o campo, que só tem o que vem depois da barra. */}
+          <label className="shop-link-field">
+            <span className="shop-link-host">{host}/</span>
+            <input
+              className="shop-link-slug"
+              aria-label="Endereço da loja"
+              value={slugValue}
+              placeholder="minha-loja"
+              inputMode="url"
+              autoCapitalize="none"
+              autoCorrect="off"
+              autoComplete="off"
+              spellCheck={false}
+              enterKeyHint="done"
+              onChange={(e) => {
+                setSlugFalha(null);
+                setSlugDraft(slugInput(e.target.value));
+              }}
+              onBlur={() => {
+                if (slugDraft !== null) setSlugDraft(slugify(slugDraft));
+              }}
+            />
+          </label>
+          {slugAlterado || (slugDraft !== null && !slugValue) ? (
+            <>
+              <button
+                type="submit"
+                className="btn-primary"
+                disabled={!!slugErro || slugStatus === "taken" || slugStatus === "checking" || savingSlug}
+              >
+                {savingSlug ? "Salvando…" : "Salvar endereço"}
+              </button>
+              {settings.slug && (
+                <button
+                  type="button"
+                  className="btn-ghost"
+                  onClick={() => {
+                    setSlugFalha(null);
+                    setSlugDraft(null);
+                  }}
+                >
+                  Cancelar
+                </button>
+              )}
+            </>
+          ) : (
+            <>
+              <button type="button" className="btn-primary" onClick={copiarLink}>
+                Copiar link
+              </button>
+              <a className="btn-ghost" href={shopPath(settings)} target="_blank" rel="noopener noreferrer">
+                Abrir
+              </a>
+            </>
+          )}
+        </form>
+        {(slugAlterado || slugErro || slugFalha) && (
+          <div className={`slug-preview slug-${slugErro || slugFalha ? "taken" : slugStatus}`}>
+            <span className="slug-status">
+              {slugFalha ??
+                slugErro ??
+                (slugStatus === "checking"
+                  ? "verificando…"
+                  : slugStatus === "free"
+                    ? "✓ disponível"
+                    : slugStatus === "taken"
+                      ? "✗ já está em uso"
+                      : "")}
+            </span>
+          </div>
         )}
       </section>
 
@@ -350,7 +453,7 @@ export default function AdminSettings({
         <label className="form-label">
           Nome da loja{" "}
           <span className="field-hint">
-            aparece no topo da loja e define o endereço · {sellerName.length}/{NAME_MAX}
+            aparece no topo da loja · {sellerName.length}/{NAME_MAX}
           </span>
           <input
             className="login-input"
@@ -360,25 +463,6 @@ export default function AdminSettings({
             onChange={(e) => setSellerName(e.target.value)}
           />
         </label>
-        {sellerName.trim() && (
-          <div className={`slug-preview slug-${slugErro ? "taken" : slugStatus}`}>
-            <span className="slug-url">
-              {host}/<strong>{slug || "…"}</strong>
-            </span>
-            <span className="slug-status">
-              {slugErro ??
-                (slugStatus === "checking"
-                  ? "verificando…"
-                  : slugStatus === "free"
-                    ? "✓ disponível"
-                    : slugStatus === "taken"
-                      ? "✗ já está em uso"
-                      : slugStatus === "current"
-                        ? "endereço atual"
-                        : "")}
-            </span>
-          </div>
-        )}
 
         <div className="form-row">
           <label className="form-label">

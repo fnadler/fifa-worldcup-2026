@@ -35,10 +35,25 @@ export function slugify(name: string): string {
     .replace(/-+$/g, "");
 }
 
-/** Mensagem de erro para o endereço gerado, ou null se estiver ok. */
+/**
+ * Normaliza o endereço enquanto a pessoa digita: como slugify, mas mantém o hífen no fim
+ * (senão "minha-" voltaria para "minha" e não daria para digitar "minha-loja").
+ */
+export function slugInput(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/-{2,}/g, "-")
+    .replace(/^-+/, "")
+    .slice(0, 30);
+}
+
+/** Mensagem de erro para o endereço, ou null se estiver ok. */
 export function slugProblem(slug: string): string | null {
-  if (slug.length < 3) return "O nome da loja precisa ter pelo menos 3 letras ou números.";
-  if (!/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/.test(slug)) return "Nome de loja inválido.";
-  if (RESERVED_SLUGS.has(slug)) return "Esse nome é reservado pela plataforma — escolha outro.";
+  if (slug.length < 3) return "O endereço precisa ter pelo menos 3 letras ou números.";
+  if (!/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/.test(slug)) return "Endereço inválido.";
+  if (RESERVED_SLUGS.has(slug)) return "Esse endereço é reservado pela plataforma — escolha outro.";
   return null;
 }

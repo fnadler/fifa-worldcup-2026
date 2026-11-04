@@ -3,7 +3,9 @@ import adrenalynJson from "./catalogs/adrenalyn-xl.json";
 import africaSulJson from "./catalogs/copa-africa-sul-2010.json";
 import alemanhaJson from "./catalogs/copa-alemanha-2006.json";
 import coreiaJapaoJson from "./catalogs/copa-coreia-japao-2002.json";
+import euaJson from "./catalogs/copa-eua-1994.json";
 import francaJson from "./catalogs/copa-franca-1998.json";
+import italiaJson from "./catalogs/copa-italia-1990.json";
 import brasilJson from "./catalogs/copa-brasil-2014.json";
 import catarJson from "./catalogs/copa-catar-2022.json";
 import goldenJson from "./catalogs/golden-crumple.json";
@@ -458,6 +460,18 @@ export const COPA_FRANCA = numberedWorldCup(
   francaJson as AlbumData
 );
 
+// Edições brasileiras (Abril/Panini): 1 a 460 em 1994 (com o mosaico do escudo do Brasil, 445–460) e 1 a 448 em 1990.
+// Seleções com 10 figurinhas têm figurinhas duplas (um número, dois jogadores).
+export const COPA_EUA = numberedWorldCup(
+  { id: "wc1994-panini", slug: "copa-eua-1994", name: "Álbum Copa dos EUA 1994", shortName: "Copa EUA 1994", example: "96", prefix: "US" },
+  euaJson as AlbumData
+);
+
+export const COPA_ITALIA = numberedWorldCup(
+  { id: "wc1990-panini", slug: "copa-italia-1990", name: "Álbum Copa da Itália 1990", shortName: "Copa Itália 1990", example: "191", prefix: "IT" },
+  italiaJson as AlbumData
+);
+
 // ---------- registro e índice global por código ----------
 
 export const CATALOGS: Catalog[] = [
@@ -471,6 +485,8 @@ export const CATALOGS: Catalog[] = [
   COPA_ALEMANHA,
   COPA_COREIA_JAPAO,
   COPA_FRANCA,
+  COPA_EUA,
+  COPA_ITALIA,
 ];
 export const DEFAULT_CATALOG = PANINI;
 

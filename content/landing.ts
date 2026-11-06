@@ -67,7 +67,7 @@ export const landing = {
     subtitle: "O álbum, as Legends e a Gold Crumple Edition, com foto de cada figurinha, progresso e repetidas — na mesma conta, grátis.",
     items: [
       { nome: "Álbum Copa 2026", desc: "As 994 figurinhas do álbum oficial Panini: seleções, FWC History e Coca-Cola.", img: "/brand/albums/copa-2026.webp", tag: "", destaque: true },
-      { nome: "Legends 2026", desc: "As 80 figurinhas raras das Legends, nas versões lilás, bronze, prata e ouro.", img: "OUR5", tag: "", destaque: true },
+      { nome: "Legends 2026", desc: "As 80 figurinhas raras das Legends, nas versões lilás, bronze, prata e ouro.", img: "/brand/albums/legends-2026.webp", tag: "", destaque: true },
       { nome: "Gold Crumple Edition 2026", desc: "O álbum completo da Copa com o layout dourado — 980 figurinhas.", img: "GCARG17", tag: "", destaque: true },
       { nome: "Adrenalyn XL 2026", desc: "Os 630 cards da Copa e as Limited Editions, com foto de cada card.", img: "/brand/albums/adrenalyn-xl.webp", tag: "" },
       { nome: "Álbum Copa do Catar 2022", desc: "As 678 figurinhas do álbum da Copa de 2022: seleções, FIFA Museum e Coca-Cola.", img: "/brand/albums/copa-catar-2022.webp", tag: "Novo" },

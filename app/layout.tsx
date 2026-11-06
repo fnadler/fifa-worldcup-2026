@@ -4,6 +4,7 @@ import { Bebas_Neue, Barlow, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import { PLATFORM_NAME } from "@/lib/brand";
 import MetaPixel from "@/components/MetaPixel";
+import Clarity from "@/components/Clarity";
 
 const bebasNeue = Bebas_Neue({
   weight: "400",
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <MetaPixel />
           </Suspense>
         )}
+        {process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID && <Clarity />}
       </body>
     </html>
   );

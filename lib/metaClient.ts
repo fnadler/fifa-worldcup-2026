@@ -2,12 +2,20 @@
 // entrada — para condicionar a um consentimento no futuro, basta não montar aquele componente).
 // Antes de o Pixel ser ativado, os eventos ficam numa fila e saem quando ele ativa.
 
+import { clarityEvent } from "./clarityClient";
 import { ATTR_COOKIE, FBC_COOKIE, FBP_COOKIE, FIRST_TOUCH_COOKIE, parseAttrCookie, type SignupAttribution } from "./attribution";
 
 export const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "";
 
 /** Eventos que o navegador também manda para a API de Conversões (via /api/meta/event). */
 export type BrowserServerEvent = "CompleteRegistration" | "InitiateCheckout" | "ViewContent";
+
+/** Os mesmos eventos no Clarity, para filtrar as gravações por etapa do funil. */
+const CLARITY_EVENTS: Record<BrowserServerEvent, string> = {
+  CompleteRegistration: "cadastro_concluido",
+  ViewContent: "assinatura_vista",
+  InitiateCheckout: "checkout_iniciado",
+};
 
 type Fbq = ((...args: unknown[]) => void) & { callMethod?: (...args: unknown[]) => void; queue: unknown[][]; loaded?: boolean; version?: string; push?: unknown };
 
@@ -61,6 +69,7 @@ export function track(eventName: string, params?: Record<string, unknown>, event
  * `email` só para o cadastro: vai ao nosso servidor, que manda à Meta apenas o hash.
  */
 export function trackWithServer(eventName: BrowserServerEvent, params?: Record<string, unknown>, email?: string): void {
+  clarityEvent(CLARITY_EVENTS[eventName]);
   if (!PIXEL_ID) return;
   const eventId = newEventId();
   track(eventName, params, eventId);

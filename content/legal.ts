@@ -14,7 +14,7 @@ export const COMPANY = {
   foro: "Canoas/RS",
 };
 
-export const LEGAL_UPDATED = "1º de novembro de 2026";
+export const LEGAL_UPDATED = "6 de novembro de 2026";
 
 export interface LegalSection {
   h: string;
@@ -167,6 +167,7 @@ export function politicaDePrivacidade(): LegalDoc {
           "Pedidos (Compradores): nome, e-mail, WhatsApp, endereço de entrega, figurinhas escolhidas e a data em que o Comprador confirmou ter lido as orientações de segurança.",
           "Assinatura: status, datas e identificadores da assinatura. Os dados do cartão são coletados e processados diretamente pela Stripe; não armazenamos número, validade ou código de segurança do cartão.",
           "Dados técnicos: cookies de sessão, identificador do carrinho, preferências de exibição salvas no seu navegador e registros de acesso (IP, data e hora).",
+          "Uso do site: como você navega pelas páginas (cliques, rolagem, toques e tempo em cada página), registrado pelo Microsoft Clarity — veja a seção 10.",
         ],
       },
       {
@@ -183,7 +184,7 @@ export function politicaDePrivacidade(): LegalDoc {
         h: "3. Com quem compartilhamos",
         ul: [
           "Com o Lojista: os dados do pedido são enviados ao Lojista escolhido pelo Comprador. O Lojista passa a ser responsável pelo uso desses dados e deve utilizá-los apenas para atender ao pedido.",
-          "Com fornecedores que operam a plataforma em nosso nome: Supabase (banco de dados, autenticação e armazenamento de imagens), Vercel (hospedagem) e Stripe (pagamentos da assinatura).",
+          "Com fornecedores que operam a plataforma em nosso nome: Supabase (banco de dados, autenticação e armazenamento de imagens), Vercel (hospedagem), Stripe (pagamentos da assinatura) e Microsoft (Clarity, análise de uso do site — veja a seção 10).",
           "Com a Meta (Facebook e Instagram), para medir e direcionar anúncios: eventos de visita, cadastro e assinatura e, para montar públicos de anúncios, o e-mail da conta — sempre apenas em hash — veja a seção 9.",
           "Com o WhatsApp (Meta), quando você mesmo envia o pedido ou fala com o Lojista pelo aplicativo — nesse caso valem também as políticas do WhatsApp.",
           "Com autoridades, quando exigido por lei ou ordem judicial.",
@@ -225,6 +226,7 @@ export function politicaDePrivacidade(): LegalDoc {
           "Carrinho: identifica o seu carrinho para reservar as figurinhas escolhidas (essencial).",
           "Preferências: guardam escolhas como a visualização em fotos ou grade e os dados do comprador para o próximo pedido, apenas no seu navegador.",
           "Medição de anúncios: _fbp, _fbc (da Meta), gn_attr e gn_attr_ft (nossos) — veja a seção 9.",
+          "Análise de uso do site: _clck e _clsk (do Microsoft Clarity) — veja a seção 10.",
         ],
       },
       {
@@ -237,17 +239,25 @@ export function politicaDePrivacidade(): LegalDoc {
         ],
       },
       {
-        h: "10. Segurança",
+        h: "10. Análise de uso do site (Microsoft Clarity)",
+        p: [
+          "Usamos o Microsoft Clarity para entender como as pessoas usam o site e corrigir o que atrapalha: ele registra cliques, toques, rolagem e movimentos nas páginas, o que nos permite rever a navegação em forma de reprodução e de mapas de calor, além de identificar erros e botões que não respondem. Os campos de formulário (como e-mail, WhatsApp e senha) são mascarados e o que você digita neles não é registrado.",
+          "Para ligar essas informações à origem da visita, informamos ao Clarity de qual campanha ou anúncio você veio (os mesmos dados do cookie gn_attr) e, quando você está conectado, o identificador da sua conta, que o Clarity guarda apenas em forma criptografada (hash). Não enviamos nome, e-mail nem WhatsApp. O Clarity usa os cookies _clck (por até 1 ano) e _clsk (por 1 dia). A base legal é o legítimo interesse (art. 7º, IX) em melhorar a plataforma. A Microsoft trata esses dados conforme a declaração de privacidade dela, em https://privacy.microsoft.com/privacystatement.",
+          "Você pode se opor a esse uso pelo e-mail de contato desta Política ou bloquear os cookies do Clarity no seu navegador.",
+        ],
+      },
+      {
+        h: "11. Segurança",
         p: [
           "Usamos conexão criptografada (HTTPS), controle de acesso por conta, regras de segurança no banco de dados e fornecedores com certificações reconhecidas. Nenhum sistema é totalmente imune a incidentes; se ocorrer um incidente relevante, comunicaremos os titulares afetados e a ANPD, conforme a lei.",
         ],
       },
       {
-        h: "11. Encarregado (DPO) e contato",
+        h: "12. Encarregado (DPO) e contato",
         p: [`Encarregado pelo tratamento de dados pessoais: ${C.razaoSocial} — ${C.email}.`],
       },
       {
-        h: "12. Alterações desta Política",
+        h: "13. Alterações desta Política",
         p: ["Esta Política pode ser atualizada. A versão vigente estará sempre nesta página, com a data da última atualização."],
       },
     ],

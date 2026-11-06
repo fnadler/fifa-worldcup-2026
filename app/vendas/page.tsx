@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 };
 
 const SHOP_COLUMNS =
-  "token, slug, logo_url, only_available, enabled, seller_name, whatsapp, order_min_cents";
+  "token, slug, logo_url, enabled, seller_name, whatsapp, order_min_cents";
 
 export default async function VendasPage({
   searchParams,

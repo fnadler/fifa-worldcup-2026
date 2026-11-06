@@ -45,8 +45,6 @@ interface ShopBoardProps {
   path: string;
   shopName: string;
   logoUrl: string | null;
-  /** Configuração da loja: mostrar só o que está à venda (sem o filtro de disponibilidade). */
-  onlyAvailable: boolean;
   /** Pedido mínimo da loja (soma do carrinho, que pode ter itens de várias coleções e produtos). */
   minOrderCents: number;
   /** Disponível por código, de todas as coleções à venda e produtos. */
@@ -58,13 +56,6 @@ interface ShopBoardProps {
   owner: { email: string | null; paused: boolean } | null;
 }
 
-type DispFiltro = "ALL" | "AVAIL";
-
-const DISPS: { value: DispFiltro; label: string }[] = [
-  { value: "ALL", label: "Catálogo completo" },
-  { value: "AVAIL", label: "Só disponíveis" },
-];
-
 export default function ShopBoard({
   tab,
   albumId,
@@ -74,7 +65,6 @@ export default function ShopBoard({
   path,
   shopName,
   logoUrl,
-  onlyAvailable,
   minOrderCents,
   available,
   pricing,
@@ -86,8 +76,6 @@ export default function ShopBoard({
   const itens = (n: number) => `${n} ${n === 1 ? "item" : "itens"}`;
   const naAbaProdutos = tab === "products";
   const [tipo, setTipo] = useState<TipoFiltro>("ALL");
-  const [dispEscolhido, setDisp] = useState<DispFiltro>("ALL");
-  const disp: DispFiltro = onlyAvailable ? "AVAIL" : dispEscolhido;
   const [busca, setBusca] = useState("");
   const [menuAberto, setMenuAberto] = useState(false);
   const [cartAberto, setCartAberto] = useState(false);
@@ -148,12 +136,12 @@ export default function ShopBoard({
     [catalog, vendavel]
   );
   const tiposVisiveis = useMemo(() => {
-    if (!onlyAvailable) return catalog.filters;
+    // a loja mostra só o que está à venda: os tipos sem item disponível somem do filtro
     const comVenda = new Set(catalog.blocks.filter((b) => blocosComVenda.has(b.id)).map((b) => b.tipo));
     const filtrados = catalog.filters.filter((t) => t.value === "ALL" || comVenda.has(t.value));
     // com um tipo só, "Todas" já mostra tudo — o filtro não acrescenta nada
     return filtrados.length <= 2 ? [] : filtrados;
-  }, [catalog, onlyAvailable, blocosComVenda]);
+  }, [catalog, blocosComVenda]);
 
   const visibleBlocks = useMemo(() => {
     const buscaLower = busca.trim().toLowerCase();
@@ -162,7 +150,7 @@ export default function ShopBoard({
       const matchBloco =
         !buscaLower || b.nome.toLowerCase().includes(buscaLower) || b.id.toLowerCase().includes(buscaLower);
       const codes = b.codes.filter((code) => {
-        if (disp === "AVAIL" && !vendavel(code)) return false;
+        if (!vendavel(code)) return false;
         if (buscaLower && !matchBloco && !matchesSticker(code, buscaLower)) return false;
         return true;
       });
@@ -170,7 +158,7 @@ export default function ShopBoard({
       const disponiveis = b.codes.filter(vendavel).length;
       return [{ block: b, codes, disponiveis }];
     });
-  }, [catalog, busca, tipo, disp, vendavel]);
+  }, [catalog, busca, tipo, vendavel]);
 
   // Ordem de navegação da ampliação = o que está visível com os filtros atuais.
   const visibleCodes = useMemo(() => visibleBlocks.flatMap((vb) => vb.codes), [visibleBlocks]);
@@ -362,28 +350,13 @@ export default function ShopBoard({
                   </button>
                 ))}
               </div>
-              {!onlyAvailable && (
-              <div className="segmented">
-                {DISPS.map((d) => (
-                  <button
-                    key={d.value}
-                    type="button"
-                    className={`chip ${disp === d.value ? "active" : ""}`}
-                    onClick={() => setDisp(d.value)}
-                  >
-                    {d.label}
-                  </button>
-                ))}
-              </div>
-              )}
-              <GroupMenu onSelect={scrollToBlock} onlyIds={onlyAvailable ? blocosComVenda : undefined} />
+              <GroupMenu onSelect={scrollToBlock} onlyIds={blocosComVenda} />
             </div>
 
             <FiltersFooter
               onClear={() => {
                 setBusca("");
                 setTipo("ALL");
-                setDisp("ALL");
               }}
               onApply={() => {
                 setMenuAberto(false);

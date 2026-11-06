@@ -2,12 +2,12 @@ import "server-only";
 import { DEFAULT_SHOP_NAME } from "./brand";
 import { CATALOGS, getCatalog, lookupCode } from "./catalog";
 import { fetchAll } from "./fetchAll";
-import { shopAlbumsFromRows, shopPath, type ShopAlbumRow } from "./shop";
+import { groupsOf, priceFor, shopAlbumsFromRows, shopPath, type ShopAlbumRow } from "./shop";
 import { createAdminClient } from "./supabase/admin";
 
 // Lista pública de lojas (/lojas): lojas ligadas, com acesso à vitrine em dia e ao menos uma coleção
-// à venda ou um produto ativo com estoque. Itens únicos = códigos com repetida (qty > 1) nas coleções
-// à venda, mais os produtos — sem somar o estoque.
+// à venda com item disponível ou um produto ativo com estoque. Itens únicos = códigos com repetida (qty > 1) e preço
+// nas coleções à venda, mais os produtos — sem somar o estoque.
 
 export const OFFICIAL_SHOP_SLUG = "loja-oficial";
 
@@ -47,14 +47,24 @@ export async function loadActiveShops(): Promise<ActiveShop[]> {
   if (!shops?.length) return [];
 
   const ids = shops.map((s) => s.user_id);
-  const [{ data: ents }, { data: albumRows }, { data: rows }, { data: productRows }] = await Promise.all([
+  const [{ data: ents }, { data: albumRows }, { data: rows }, { data: productRows }, { data: priceRows }] = await Promise.all([
     admin.from("shop_entitlements").select("user_id, expires_at").in("user_id", ids),
     admin.from("shop_albums").select("user_id, album_id, enabled, min_order_cents, group_prices").in("user_id", ids),
     fetchAll<{ user_id: string; code: string }>((from, to) =>
       admin.from("collection").select("user_id, code").in("user_id", ids).gt("qty", 1).order("user_id").order("code").range(from, to)
     ),
     admin.from("shop_products").select("user_id").in("user_id", ids).eq("active", true).gt("stock", 0),
+    fetchAll<{ user_id: string; code: string; price_cents: number }>((from, to) =>
+      admin.from("sticker_prices").select("user_id, code, price_cents").in("user_id", ids).order("user_id").order("code").range(from, to)
+    ),
   ]);
+  // preços individuais por loja (um item só está à venda se tiver preço — de grupo ou individual)
+  const individuais = new Map<string, Record<string, number>>();
+  for (const p of priceRows ?? []) {
+    const m = individuais.get(p.user_id) ?? {};
+    m[p.code] = p.price_cents;
+    individuais.set(p.user_id, m);
+  }
   const produtos = new Map<string, number>();
   for (const p of (productRows ?? []) as { user_id: string }[]) produtos.set(p.user_id, (produtos.get(p.user_id) ?? 0) + 1);
 
@@ -84,6 +94,8 @@ export async function loadActiveShops(): Promise<ActiveShop[]> {
     const aVenda = config.filter((a) => a.enabled);
     const products = produtos.get(s.user_id) ?? 0;
     if (!aVenda.length && !products) continue;
+    const pricing = { groups: groupsOf(aVenda), individual: individuais.get(s.user_id) ?? {} };
+    const comPreco = (list: string[]) => list.filter((code) => priceFor(code, pricing) !== null);
     out.push({
       products,
       userId: s.user_id,
@@ -92,19 +104,23 @@ export async function loadActiveShops(): Promise<ActiveShop[]> {
       name: s.seller_name || DEFAULT_SHOP_NAME,
       logoUrl: s.logo_url,
       official: s.slug === OFFICIAL_SHOP_SLUG,
-      codes: new Map(aVenda.map((a) => [a.albumId, byShop.get(s.user_id)?.get(a.albumId) ?? []])),
+      codes: new Map(aVenda.map((a) => [a.albumId, comPreco(byShop.get(s.user_id)?.get(a.albumId) ?? [])])),
     });
   }
   return out;
 }
 
 export async function listShops(): Promise<DirectoryShop[]> {
-  const out = (await loadActiveShops()).map((shop): DirectoryShop => {
-    const albums = [...shop.codes].map(([albumId, list]) => {
-      const c = getCatalog(albumId);
-      return { albumId: c.id, slug: c.slug, name: c.shortName, items: list.length };
-    });
-    return {
+  const out = (await loadActiveShops()).flatMap((shop): DirectoryShop[] => {
+    // só as coleções com ao menos um item à venda; loja sem nenhum item (nem produto) fica de fora
+    const albums = [...shop.codes]
+      .filter(([, list]) => list.length > 0)
+      .map(([albumId, list]) => {
+        const c = getCatalog(albumId);
+        return { albumId: c.id, slug: c.slug, name: c.shortName, items: list.length };
+      });
+    if (!albums.length && !shop.products) return [];
+    const entry: DirectoryShop = {
       path: shop.path,
       slug: shop.slug,
       name: shop.name,
@@ -114,6 +130,7 @@ export async function listShops(): Promise<DirectoryShop[]> {
       products: shop.products,
       items: albums.reduce((n, a) => n + a.items, 0) + shop.products,
     };
+    return [entry];
   });
   // loja oficial primeiro; depois as com mais itens
   return out.sort((a, b) => Number(b.official) - Number(a.official) || b.items - a.items || a.name.localeCompare(b.name));

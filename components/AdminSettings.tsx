@@ -59,7 +59,6 @@ export default function AdminSettings({
     albums.map((a) => ({ albumId: a.albumId, enabled: a.enabled }))
   );
   const [minOrder, setMinOrder] = useState(centsToInput(settings.minOrderCents || null));
-  const [onlyAvailable, setOnlyAvailable] = useState(settings.onlyAvailable);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [slugStatus, setSlugStatus] = useState<SlugStatus>("idle");
@@ -169,7 +168,6 @@ export default function AdminSettings({
       .update({
         seller_name: nome,
         ...(slugAlterado ? { slug } : {}),
-        only_available: onlyAvailable,
         whatsapp: whats || null,
         order_min_cents: minimo,
         updated_at: new Date().toISOString(),
@@ -210,7 +208,6 @@ export default function AdminSettings({
       ...settings,
       sellerName: nome,
       slug: slugAlterado ? slug : settings.slug,
-      onlyAvailable,
       whatsapp: whats,
       minOrderCents: minimo,
     });
@@ -562,17 +559,6 @@ export default function AdminSettings({
             <span className="field-hint">Vale para o total do carrinho, somando todas as coleções e produtos. Em branco = sem mínimo.</span>
           </label>
         </div>
-
-        <label className="check-row">
-          <input type="checkbox" checked={onlyAvailable} onChange={(e) => setOnlyAvailable(e.target.checked)} />
-          <span>
-            <strong>Mostrar só o que está à venda</strong>
-            <span className="field-hint">
-              A loja exibe apenas o que tem preço e estoque — ideal se você vende só um tipo (ex: só Legends). Sem
-              marcar, o comprador vê o catálogo completo e pode filtrar.
-            </span>
-          </span>
-        </label>
 
         {error && <div className="login-error">{error}</div>}
 

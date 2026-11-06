@@ -6,10 +6,10 @@ import { DEFAULT_SHOP_NAME, PLATFORM_NAME } from "@/lib/brand";
 import { CART_COOKIE, readCartId } from "@/lib/cartCookie";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-import { PRODUCTS_TAB, availableFromQty, groupsOf, productsPricing, shopPath, type ShopRow } from "@/lib/shop";
+import { PRODUCTS_TAB, availableFromQty, groupsOf, priceFor, productsPricing, shopPath, type ShopRow } from "@/lib/shop";
 import { loadShopAlbums } from "@/lib/shopAlbums";
 import { loadShopProducts } from "@/lib/shopProducts";
-import { DEFAULT_CATALOG, catalogBySlug, getCatalog } from "@/lib/catalog";
+import { DEFAULT_CATALOG, catalogBySlug, getCatalog, lookupCode } from "@/lib/catalog";
 import { hasShopAccess } from "@/lib/shopAccess";
 import NoticeCard from "@/components/NoticeCard";
 import ShopBoard from "@/components/ShopBoard";
@@ -22,7 +22,7 @@ import { fetchAll } from "@/lib/fetchAll";
 type ShopLookup = { slug: string } | { token: string };
 
 const SHOP_COLUMNS =
-  "user_id, token, slug, logo_url, only_available, enabled, seller_name, whatsapp, order_min_cents";
+  "user_id, token, slug, logo_url, enabled, seller_name, whatsapp, order_min_cents";
 
 async function findShop(where: ShopLookup) {
   const admin = createAdminClient();
@@ -69,8 +69,7 @@ export async function renderShop(where: ShopLookup, colecao?: string) {
     );
   }
 
-  // Coleções à venda (na ordem da plataforma) e produtos ativos. A aba é a da URL, se existir;
-  // senão a primeira coleção — ou os produtos, numa loja que só vende produtos.
+  // Coleções à venda (na ordem da plataforma) e produtos ativos.
   const [albums, products] = await Promise.all([loadShopAlbums(admin, shop.user_id), loadShopProducts(admin, shop.user_id, true)]);
   const aVenda = albums.filter((a) => a.enabled);
   if (!aVenda.length && !products.length) {
@@ -80,10 +79,6 @@ export async function renderShop(where: ShopLookup, colecao?: string) {
       </NoticeCard>
     );
   }
-  const pedida = colecao && colecao !== PRODUCTS_TAB ? catalogBySlug(colecao)?.id : undefined;
-  const atual = aVenda.find((a) => a.albumId === pedida) ?? aVenda[0];
-  const tab = products.length && (colecao === PRODUCTS_TAB || !atual) ? "products" : "album";
-
   await admin.rpc("expire_orders", { p_seller: shop.user_id });
 
   const cartId = readCartId((await cookies()).get(CART_COOKIE)?.value);
@@ -132,6 +127,28 @@ export async function renderShop(where: ShopLookup, colecao?: string) {
     individual[row.code as string] = row.price_cents as number;
   });
 
+  const pricing = { groups: groupsOf(aVenda), individual, products: productsPricing(products) };
+
+  // A loja mostra só o que dá para comprar: coleções sem nenhum item com preço e disponível ficam de fora.
+  const comItens = new Set<string>();
+  for (const code of Object.keys(available)) {
+    const albumId = lookupCode(code)?.catalog.id;
+    if (albumId && priceFor(code, pricing) !== null) comItens.add(albumId);
+  }
+  const abas = aVenda.filter((a) => comItens.has(a.albumId));
+  if (!abas.length && !products.length) {
+    return (
+      <NoticeCard kicker="Loja" title={shop.seller_name || DEFAULT_SHOP_NAME}>
+        Esta loja não tem itens à venda no momento. Volte mais tarde!
+      </NoticeCard>
+    );
+  }
+
+  // A aba é a da URL, se existir; senão a primeira coleção — ou os produtos, numa loja que só vende produtos.
+  const pedida = colecao && colecao !== PRODUCTS_TAB ? catalogBySlug(colecao)?.id : undefined;
+  const atual = abas.find((a) => a.albumId === pedida) ?? abas[0];
+  const tab = products.length && (colecao === PRODUCTS_TAB || !atual) ? "products" : "album";
+
   const ownHold = holds?.length
     ? {
         items: holds.flatMap((h) => h.items),
@@ -144,7 +161,7 @@ export async function renderShop(where: ShopLookup, colecao?: string) {
       key={tab === "products" ? PRODUCTS_TAB : atual.albumId}
       tab={tab}
       albumId={atual?.albumId ?? DEFAULT_CATALOG.id}
-      albums={aVenda.map((a) => {
+      albums={abas.map((a) => {
         const c = getCatalog(a.albumId);
         return { albumId: c.id, slug: c.slug, name: c.shortName }; // nome curto: cabe nas abas
       })}
@@ -153,10 +170,9 @@ export async function renderShop(where: ShopLookup, colecao?: string) {
       path={shopPath(shop)}
       shopName={shop.seller_name || DEFAULT_SHOP_NAME}
       logoUrl={shop.logo_url ?? null}
-      onlyAvailable={shop.only_available ?? false}
       minOrderCents={shop.order_min_cents ?? 0}
       available={available}
-      pricing={{ groups: groupsOf(aVenda), individual, products: productsPricing(products) }}
+      pricing={pricing}
       initialHold={ownHold}
       owner={isOwner ? { email: user?.email ?? null, paused: !shop.enabled } : null}
     />

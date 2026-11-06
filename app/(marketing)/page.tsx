@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { landing } from "@/content/landing";
 import { formatBRL } from "@/lib/shop";
 import { getStripe, stripeConfigured, TRIAL_DAYS } from "@/lib/stripe";
+import { type DirectoryShop, listShops } from "@/lib/shopDirectory";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 import MarketingNav from "@/components/marketing/MarketingNav";
 import {
@@ -11,6 +12,7 @@ import {
   FinalCta,
   Hero,
   Pricing,
+  ShopsSection,
   StoreSection,
   ValueSplit,
 } from "@/components/marketing/LandingSections";
@@ -44,8 +46,17 @@ async function precoMensal(): Promise<string> {
   }
 }
 
+// Sem lojas (ou se a consulta falhar) o bloco de lojistas some — a landing não pode quebrar por ele.
+async function lojas(): Promise<DirectoryShop[]> {
+  try {
+    return await listShops();
+  } catch {
+    return [];
+  }
+}
+
 export default async function LandingPage() {
-  const price = await precoMensal();
+  const [price, shops] = await Promise.all([precoMensal(), lojas()]);
   return (
     <>
       <section className="mk-hero">
@@ -58,6 +69,7 @@ export default async function LandingPage() {
       <StoreSection />
       <Pricing price={price} trialDays={TRIAL_DAYS} />
       <FaqSection />
+      <ShopsSection shops={shops} trialDays={TRIAL_DAYS} />
       <FinalCta />
       <MarketingFooter />
     </>

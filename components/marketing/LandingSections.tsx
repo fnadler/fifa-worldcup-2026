@@ -5,6 +5,8 @@ import { COLLECTION_PATH, SIGNUP_PATH, signupThen } from "@/lib/routes";
 import Faq from "./Faq";
 import HeroMock from "./HeroMock";
 import { SmartLink } from "./Session";
+import ShopHighlights from "./ShopHighlights";
+import type { DirectoryShop } from "@/lib/shopDirectory";
 
 // Seções da landing. Markup estático (mocks ilustrativos); só os CTAs reagem à sessão.
 
@@ -201,6 +203,42 @@ export function CollectionSection() {
           anon={{ href: SIGNUP_PATH, label: c.cta }}
           authed={{ href: COLLECTION_PATH, label: "Ir para minha coleção" }}
         />
+      </div>
+    </section>
+  );
+}
+
+const DESTAQUES = 3; // lojas sorteadas além da oficial
+
+// Lojistas: argumento de completar a coleção e, na faixa de baixo, prova social para abrir a loja.
+export function ShopsSection({ shops, trialDays }: { shops: DirectoryShop[]; trialDays: number }) {
+  if (!shops.length) return null;
+  const t = landing.lojistas;
+  const official = shops.find((s) => s.official) ?? null;
+  const others = shops.filter((s) => !s.official);
+  const itens = shops.reduce((n, s) => n + s.items, 0);
+  // o HTML estático traz as com mais itens; o cliente sorteia
+  const initial = others.slice(0, DESTAQUES);
+  return (
+    <section id="lojistas" className="mk-lojistas mk-container">
+      <div className="mk-section-head">
+        <span className="mk-kicker">{t.kicker}</span>
+        <h2 className="mk-h2">{t.title}</h2>
+        <p>{t.subtitle.replace("{itens}", itens.toLocaleString("pt-BR"))}</p>
+      </div>
+      <ShopHighlights official={official} others={others} initial={initial} />
+      <div className="mk-ctas">
+        <SmartLink className="mk-btn mk-btn-green" {...CTA_COLECAO} />
+        <Link href="/lojas" className="mk-btn mk-btn-ghost-green">
+          {t.verTodas} →
+        </Link>
+      </div>
+      <div className="mk-lojistas-convite">
+        <div>
+          <strong>{t.convite.title}</strong>
+          <p>{t.convite.text}</p>
+        </div>
+        <SmartLink className="mk-btn mk-btn-yellow" {...lojaCta(`Abrir minha loja — ${trialDays} dias grátis`)} />
       </div>
     </section>
   );

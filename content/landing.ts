@@ -101,6 +101,19 @@ export const landing = {
     },
   },
 
+  // Bloco de lojistas: loja oficial + 3 sorteadas. {itens} é trocado pelo número real.
+  lojistas: {
+    kicker: "Lojas da plataforma",
+    title: "Complete o álbum com as repetidas de outros colecionadores.",
+    subtitle:
+      "São {itens} figurinhas e cards à venda com os nossos lojistas. Marque a sua coleção e veja na hora quais lojas têm as que faltam para você.",
+    verTodas: "Ver todos os lojistas",
+    convite: {
+      title: "Suas repetidas também podem estar aqui.",
+      text: "Essas lojas são de colecionadores como você. Abra a sua e venda para quem está completando o álbum.",
+    },
+  },
+
   colecao: {
     kicker: "Coleção · grátis para sempre",
     title: "Chega de caderninho e lista no bloco de notas.",

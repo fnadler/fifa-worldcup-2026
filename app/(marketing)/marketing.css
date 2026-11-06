@@ -1537,6 +1537,47 @@ html:has(.mk) {
 }
 
 
+/* ---------- landing: lojistas ---------- */
+
+.mk-lojistas {
+  padding-block: 40px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.mk-lojistas .mk-section-head p {
+  font-size: 18px;
+  color: var(--gn-text-2);
+}
+@media (min-width: 900px) {
+  .mk-shop-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+/* Faixa-convite: as lojas acima viram prova social para abrir a própria loja. */
+.mk-lojistas-convite {
+  background: var(--gn-ink);
+  color: #fff;
+  border-radius: 24px;
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 32px;
+  flex-wrap: wrap;
+}
+.mk-lojistas-convite strong {
+  font-family: var(--font-nunito), sans-serif;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 1.2;
+}
+.mk-lojistas-convite p {
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 560px;
+}
+
 /* ---------- telas de acesso (entrar, criar conta, senha) ---------- */
 
 /* desktop: duas metades — painel da marca (esquerda) e formulário (direita) */

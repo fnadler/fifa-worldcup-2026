@@ -940,6 +940,10 @@ html:has(.mk) {
 .mk-plan-paid li::before {
   color: var(--gn-yellow);
 }
+/* Primeiro item do plano grátis em destaque (as coleções). */
+.mk-plan-free li:first-child {
+  font-weight: 800;
+}
 .mk-trial {
   max-width: 960px;
   width: 100%;
@@ -1256,6 +1260,74 @@ html:has(.mk) {
   font-weight: 900;
   font-size: 56px;
   color: #b9c8bd;
+}
+
+/* Quarto card: chamada para a lista completa de coleções. */
+.mk-colecao-mais {
+  background: var(--gn-ink);
+  border-color: var(--gn-ink);
+  color: #fff;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mk-colecao-mais:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(6, 48, 26, 0.25);
+}
+.mk-colecao-mais strong {
+  color: #fff;
+}
+.mk-colecao-mais p {
+  color: rgba(255, 255, 255, 0.78);
+}
+/* Landing: os 4 cards ocupam a linha inteira. */
+@media (min-width: 900px) {
+  .mk-colecoes-grid.four {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.mk-colecao-mais-link {
+  margin-top: auto;
+  padding-top: 4px;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--gn-yellow);
+}
+/* Três capas em leque. */
+.mk-colecao-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.mk-colecao-stack img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 62%;
+  height: auto;
+  border-radius: 6px;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
+}
+.mk-colecao-stack img:nth-child(1) {
+  transform: translate(-82%, -50%) rotate(-10deg);
+}
+.mk-colecao-stack img:nth-child(2) {
+  transform: translate(-18%, -50%) rotate(10deg);
+}
+.mk-colecao-stack img:nth-child(3) {
+  transform: translate(-50%, -54%);
+}
+
+/* Link de volta nas páginas fora do menu. */
+.mk-back {
+  align-self: flex-start;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--gn-green);
+  text-decoration: none;
+}
+.mk-back:hover {
+  text-decoration: underline;
 }
 
 /* ---------- menu: atalho para as lojas (só no celular) ---------- */

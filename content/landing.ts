@@ -3,9 +3,9 @@
 
 export const landing = {
   meta: {
-    title: "GN Coleciona — sua coleção organizada, suas repetidas à venda",
+    title: "GN Coleciona — complete o álbum da Copa 2026 e venda as repetidas",
     description:
-      "Registre grátis cada figurinha e card em 14 coleções — Copas de 1990 a 2026, Legends, Gold Crumple Edition, Adrenalyn XL e mais — e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam no seu WhatsApp.",
+      "Marque grátis as figurinhas do álbum da Copa 2026, das Legends e da Gold Crumple e saiba na hora o que falta e o que sobra. As repetidas viram uma loja própria — os pedidos chegam no seu WhatsApp.",
   },
 
   nav: [
@@ -20,10 +20,10 @@ export const landing = {
   lojas: { href: "/lojas", label: "Lojas", badge: "novo" },
 
   hero: {
-    pill: "Novidades: Copas de 1990 a 2022",
-    title: "Organize sua coleção. Venda suas repetidas.",
+    pill: "Álbum da Copa 2026",
+    title: "Complete o álbum da Copa. Venda as repetidas.",
     subtitle:
-      "Registre grátis cada figurinha e card em 14 coleções, das Copas de 1990 a 2026, e saiba na hora o que falta e o que sobra. Quando quiser, transforme as repetidas em uma loja própria — os pedidos chegam direto no seu WhatsApp.",
+      "Marque grátis as 994 figurinhas do álbum da Copa 2026 e saiba na hora quais faltam e quais sobram. As repetidas que se acumularam viram uma loja própria — os pedidos chegam direto no seu WhatsApp.",
     note: "Cancele quando quiser durante o teste, sem cobrança.",
     badgeTitle: "repetidas já na sua loja",
     badgeSub: "atualizado automaticamente",
@@ -60,14 +60,15 @@ export const landing = {
   },
 
   // Coleções disponíveis. `img`: capa do álbum (caminho em public/) ou código de uma figurinha (public/stickers/thumb/<img>.webp).
+  // Na landing aparecem só as `destaque: true` e o card `mais`, que leva para a lista completa em /colecoes-disponiveis.
   colecoes: {
     kicker: "Coleções disponíveis",
-    title: "Todas as suas coleções num lugar só.",
-    subtitle: "São 14 coleções para acompanhar com fotos, progresso e repetidas — na mesma conta, grátis.",
+    title: "Tudo da Copa 2026 num lugar só.",
+    subtitle: "O álbum, as Legends e a Gold Crumple Edition, com foto de cada figurinha, progresso e repetidas — na mesma conta, grátis.",
     items: [
-      { nome: "Álbum Copa 2026", desc: "As 994 figurinhas do álbum oficial Panini: seleções, FWC History e Coca-Cola.", img: "/brand/albums/copa-2026.webp", tag: "" },
-      { nome: "Legends 2026", desc: "As 80 figurinhas raras das Legends, nas versões lilás, bronze, prata e ouro.", img: "OUR5", tag: "" },
-      { nome: "Gold Crumple Edition 2026", desc: "O álbum completo da Copa com o layout dourado — 980 figurinhas.", img: "GCARG17", tag: "" },
+      { nome: "Álbum Copa 2026", desc: "As 994 figurinhas do álbum oficial Panini: seleções, FWC History e Coca-Cola.", img: "/brand/albums/copa-2026.webp", tag: "", destaque: true },
+      { nome: "Legends 2026", desc: "As 80 figurinhas raras das Legends, nas versões lilás, bronze, prata e ouro.", img: "OUR5", tag: "", destaque: true },
+      { nome: "Gold Crumple Edition 2026", desc: "O álbum completo da Copa com o layout dourado — 980 figurinhas.", img: "GCARG17", tag: "", destaque: true },
       { nome: "Adrenalyn XL 2026", desc: "Os 630 cards da Copa e as Limited Editions, com foto de cada card.", img: "/brand/albums/adrenalyn-xl.webp", tag: "" },
       { nome: "Álbum Copa do Catar 2022", desc: "As 678 figurinhas do álbum da Copa de 2022: seleções, FIFA Museum e Coca-Cola.", img: "/brand/albums/copa-catar-2022.webp", tag: "Novo" },
       { nome: "Extra Stickers 2022", desc: "As 80 figurinhas raras da Copa do Catar, nas versões bordô, bronze, prata e ouro.", img: "CQEXOUR16", tag: "Novo" },
@@ -82,6 +83,22 @@ export const landing = {
     ],
     // Próximas coleções previstas: `ano` aparece no lugar da figurinha.
     soon: [] as { nome: string; desc: string; tag: string; ano: string }[],
+    // Quarto card da landing: chamada para as demais coleções. `capas`: capas empilhadas no lugar da figurinha.
+    mais: {
+      href: "/colecoes-disponiveis",
+      titulo: "Mais coleções",
+      desc: "Álbuns das Copas de 2022 a 1990, Extra Stickers e Adrenalyn XL. Tem raridade guardada? Coloque à venda na sua loja.",
+      link: "Ver todas as coleções",
+      capas: ["/brand/albums/copa-italia-1990.webp", "/brand/albums/copa-brasil-2014.webp", "/brand/albums/copa-catar-2022.webp"],
+    },
+    // Página /colecoes-disponiveis
+    pagina: {
+      kicker: "Coleções disponíveis",
+      title: "Da Copa de 1990 à de 2026.",
+      subtitle:
+        "Acompanhe todas na mesma conta, grátis. Figurinhas antigas e raras valem mais: com a loja, as suas repetidas de qualquer coleção viram estoque à venda.",
+      voltar: "Voltar para o site",
+    },
   },
 
   colecao: {
@@ -153,7 +170,7 @@ export const landing = {
     free: {
       nome: "Coleção",
       items: [
-        "14 coleções com fotos, das Copas de 1990 a 2026",
+        "As coleções da Copa 2026 + coleções das Copas de 2022 até 1990",
         "Várias coleções na mesma conta",
         "Quantidade de repetidas por item",
         "Totais por seleção e geral",

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { landing, trialSteps } from "@/content/landing";
 import { COLLECTION_PATH, SIGNUP_PATH, signupThen } from "@/lib/routes";
 import Faq from "./Faq";
@@ -65,8 +66,35 @@ export function ValueSplit() {
   );
 }
 
+type Colecao = (typeof landing.colecoes.items)[number];
+
+function CollectionCard({ i }: { i: Colecao }) {
+  return (
+    <div className="mk-colecao-card">
+      <div className="mk-colecao-img">
+        <Image src={i.img.startsWith("/") ? i.img : `/stickers/thumb/${i.img}.webp`} alt="" width={240} height={336} unoptimized loading="lazy" />
+        {i.tag && <span className="mk-tag mk-tag-yellow">{i.tag}</span>}
+      </div>
+      <strong>{i.nome}</strong>
+      <p>{i.desc}</p>
+    </div>
+  );
+}
+
+// Grade com todas as coleções (página /colecoes-disponiveis).
+export function CollectionsGrid() {
+  return (
+    <div className="mk-colecoes-grid">
+      {landing.colecoes.items.map((i) => (
+        <CollectionCard key={i.nome} i={i} />
+      ))}
+    </div>
+  );
+}
+
 export function CollectionsAvailable() {
   const c = landing.colecoes;
+  const outras = c.items.length - c.items.filter((i) => i.destaque).length;
   return (
     <section id="colecoes" className="mk-colecoes mk-container">
       <div className="mk-section-head">
@@ -74,17 +102,25 @@ export function CollectionsAvailable() {
         <h2 className="mk-h2">{c.title}</h2>
         <p>{c.subtitle}</p>
       </div>
-      <div className="mk-colecoes-grid">
-        {c.items.map((i) => (
-          <div key={i.nome} className="mk-colecao-card">
-            <div className="mk-colecao-img">
-              <Image src={i.img.startsWith("/") ? i.img : `/stickers/thumb/${i.img}.webp`} alt="" width={240} height={336} unoptimized loading="lazy" />
-              {i.tag && <span className="mk-tag mk-tag-yellow">{i.tag}</span>}
+      <div className="mk-colecoes-grid four">
+        {c.items
+          .filter((i) => i.destaque)
+          .map((i) => (
+            <CollectionCard key={i.nome} i={i} />
+          ))}
+        <Link href={c.mais.href} className="mk-colecao-card mk-colecao-mais">
+          <div className="mk-colecao-img">
+            <div className="mk-colecao-stack">
+              {c.mais.capas.map((src) => (
+                <Image key={src} src={src} alt="" width={240} height={336} unoptimized loading="lazy" />
+              ))}
             </div>
-            <strong>{i.nome}</strong>
-            <p>{i.desc}</p>
+            <span className="mk-tag mk-tag-yellow">+{outras}</span>
           </div>
-        ))}
+          <strong>{c.mais.titulo}</strong>
+          <p>{c.mais.desc}</p>
+          <span className="mk-colecao-mais-link">{c.mais.link} →</span>
+        </Link>
         {c.soon.map((i) => (
           <div key={i.nome} className="mk-colecao-card soon">
             <div className="mk-colecao-img">

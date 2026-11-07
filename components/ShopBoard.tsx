@@ -56,6 +56,16 @@ interface ShopBoardProps {
   owner: { email: string | null; paused: boolean } | null;
 }
 
+function CartIcon() {
+  return (
+    <svg className="cart-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="9" cy="20" r="1.4" />
+      <circle cx="18" cy="20" r="1.4" />
+      <path d="M2.5 3.5h2.6l2.3 11.2a1.6 1.6 0 0 0 1.6 1.3h8.7a1.6 1.6 0 0 0 1.6-1.2l1.7-7.3H6" />
+    </svg>
+  );
+}
+
 export default function ShopBoard({
   tab,
   albumId,
@@ -278,6 +288,7 @@ export default function ShopBoard({
             )}
 
             <button type="button" className="btn-primary cart-button" onClick={() => setCartAberto(true)}>
+              <CartIcon />
               Carrinho
               {totalFigurinhas > 0 && <span className="cart-button-count">{totalFigurinhas}</span>}
             </button>
@@ -558,7 +569,8 @@ export default function ShopBoard({
             )}
             {totalFigurinhas > 0 && <HoldTimer expiresAt={expiresAt} variant="compact" />}
           </div>
-          <button type="button" className="btn-primary" onClick={() => setCartAberto(true)}>
+          <button type="button" className="btn-primary cart-bar-button" onClick={() => setCartAberto(true)}>
+            <CartIcon />
             Carrinho{totalFigurinhas > 0 ? ` (${totalFigurinhas})` : ""}
           </button>
         </div>

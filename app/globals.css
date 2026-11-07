@@ -857,6 +857,19 @@ button {
   gap: 8px;
 }
 
+.cart-icon {
+  flex-shrink: 0;
+}
+
+/* Loja (desktop): "À venda" e "Pedido mínimo" encostam no carrinho. Entre os cards 6px; até o
+   carrinho o gap da linha (12px) — o dobro. O espaço livre fica todo antes dos cards. */
+@media (min-width: 701px) {
+  .header-main-row > .shop-totals ~ .header-actions,
+  .header-main-row > .shop-totals ~ .cart-button {
+    margin-left: 0;
+  }
+}
+
 .cart-button-count {
   background: var(--bg);
   color: var(--gold);
@@ -2789,6 +2802,20 @@ button {
   }
   .cart-bar .btn-primary {
     flex-shrink: 0;
+  }
+  /* Ícone do carrinho na barra do rodapé só quando sobra largura (o texto do pedido mínimo é longo). */
+  .cart-bar-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .cart-bar-button .cart-icon {
+    display: none;
+  }
+}
+@media (min-width: 400px) and (max-width: 700px) {
+  .cart-bar-button .cart-icon {
+    display: block;
   }
   .app-shell.has-cart-bar {
     padding-bottom: 120px;

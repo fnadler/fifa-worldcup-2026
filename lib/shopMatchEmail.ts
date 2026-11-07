@@ -4,17 +4,24 @@ import { getCatalog } from "./catalog";
 import { emailConfigured, sendEmail } from "./email/resend";
 import { shopMatchHtml, shopMatchSubject, shopMatchText, type ShopMatchEmailInput } from "./email/shopMatch";
 import { matchShops } from "./shopMatch";
+import { fetchAll } from "./fetchAll";
 import { createAdminClient } from "./supabase/admin";
 import { userCollections } from "./userCollections";
 
-// "Lojas com o que falta na sua coleção" por e-mail. Por enquanto só o envio para UMA conta (teste do
-// modelo); o envio para a base vem depois de aprovado o modelo.
+// "Lojas com o que falta na sua coleção" por e-mail: o teste para UMA conta (não conta como envio) e o
+// envio em lote para quem marcou bastante coisa e não tem loja ligada. O lote é único por conta: a data
+// do envio fica em app_metadata (só o servidor escreve), e quem já recebeu fica de fora.
 
 const LOJAS_POR_COLECAO = 3;
 
 function firstName(user: User): string | null {
   const nome = typeof user.user_metadata?.full_name === "string" ? user.user_metadata.full_name.trim() : "";
-  return nome ? nome.split(/\s+/)[0] : null;
+  const primeiro = nome ? nome.split(/\s+/)[0] : "";
+  if (!primeiro) return null;
+  // "ILTON" ou "ilton" → "Ilton"
+  return primeiro === primeiro.toUpperCase() || primeiro === primeiro.toLowerCase()
+    ? primeiro.charAt(0).toLocaleUpperCase("pt-BR") + primeiro.slice(1).toLocaleLowerCase("pt-BR")
+    : primeiro;
 }
 
 async function findUser(email: string): Promise<User | null> {
@@ -70,4 +77,78 @@ export async function sendShopMatchEmailTo(email: string): Promise<{ status: str
   if (p.status !== "ok") return p;
   const id = await sendEmail({ to: p.to, subject: p.subject, html: p.html, text: p.text });
   return { status: "enviado", id };
+}
+
+/** Chave em app_metadata com a data do envio em lote. */
+const SENT_KEY = "email_lojas_com_o_que_falta_em";
+
+export interface ShopMatchSweepOptions {
+  /** Mínimo de itens marcados (somando as coleções) — padrão 100. */
+  minItems?: number;
+  /** Só conta e monta, sem enviar. */
+  dryRun?: boolean;
+}
+
+/** Envio em lote: e-mail confirmado, mais de minItems itens, sem loja ligada, que ainda não recebeu. */
+export async function sweepShopMatchEmails({ minItems = 100, dryRun }: ShopMatchSweepOptions) {
+  const admin = createAdminClient();
+
+  const users: User[] = [];
+  for (let page = 1; ; page++) {
+    const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 1000 });
+    if (error) throw error;
+    users.push(...data.users);
+    if (data.users.length < 1000) break;
+  }
+
+  const [{ data: rows, error }, { data: shops }] = await Promise.all([
+    fetchAll<{ user_id: string }>((from, to) =>
+      admin.from("collection").select("user_id").gt("qty", 0).order("user_id").order("code").range(from, to)
+    ),
+    admin.from("shops").select("user_id").eq("enabled", true),
+  ]);
+  if (error) throw error;
+  const itens = new Map<string, number>();
+  for (const r of rows ?? []) itens.set(r.user_id, (itens.get(r.user_id) ?? 0) + 1);
+  const comLoja = new Set((shops ?? []).map((s) => s.user_id as string));
+
+  const candidatos = users.filter((u) => u.email && u.email_confirmed_at && (itens.get(u.id) ?? 0) > minItems && !comLoja.has(u.id));
+  const out = {
+    candidatos: candidatos.length,
+    jaRecebidos: 0,
+    semLojas: 0,
+    enviados: 0,
+    erros: 0,
+    dryRun: Boolean(dryRun),
+    pronto: emailConfigured(),
+    destinatarios: [] as { email: string; assunto: string }[],
+  };
+
+  for (const user of candidatos) {
+    if (user.app_metadata?.[SENT_KEY]) {
+      out.jaRecebidos++;
+      continue;
+    }
+    const input = await shopMatchInputFor(user);
+    if (!input.collections.length) {
+      out.semLojas++;
+      continue;
+    }
+    const subject = shopMatchSubject(input);
+    out.destinatarios.push({ email: user.email!, assunto: subject });
+    if (dryRun || !out.pronto) continue;
+
+    try {
+      const id = await sendEmail({ to: user.email!, subject, html: shopMatchHtml(input), text: shopMatchText(input) });
+      await admin.auth.admin.updateUserById(user.id, {
+        app_metadata: { ...user.app_metadata, [SENT_KEY]: new Date().toISOString(), email_lojas_com_o_que_falta_id: id },
+      });
+      out.enviados++;
+    } catch (e) {
+      console.error("lojas com o que falta (lote):", user.id, e);
+      out.erros++;
+    }
+    await new Promise((ok) => setTimeout(ok, 600)); // limite do Resend: 2 envios por segundo
+  }
+  return out;
 }

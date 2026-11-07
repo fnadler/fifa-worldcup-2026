@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { COMPANY } from "@/content/legal";
-import { INSTAGRAM_URL } from "@/lib/community";
+import { COMMUNITY_URL, INSTAGRAM_URL } from "@/lib/community";
 
 export default function MarketingFooter() {
   return (
@@ -20,6 +20,15 @@ export default function MarketingFooter() {
             </svg>
             Instagram
           </a>
+          {COMMUNITY_URL && (
+            <a href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer" className="mk-footer-social">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M4 20l1.3-4A8 8 0 1 1 8.2 19L4 20Z" />
+                <path d="M9.3 9.2c0 3 2.5 5.5 5.5 5.5" />
+              </svg>
+              Comunidade no WhatsApp
+            </a>
+          )}
         </nav>
         <small>
           GN Coleciona é um serviço de {COMPANY.razaoSocial} · CNPJ {COMPANY.cnpj}. Não somos afiliados à Panini nem à

@@ -2058,3 +2058,65 @@ html:has(.mk) {
   text-align: center;
   text-decoration: none;
 }
+
+/* ---------- comunidade (grupo de WhatsApp): frase centralizada antes da faixa final ---------- */
+
+.mk-comunidade {
+  padding-block: 8px 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+/* logo abaixo das lojas: aproveita o respiro que o bloco de cima já deixa */
+.mk-lojistas + .mk-comunidade {
+  margin-top: -40px;
+}
+.mk-comunidade strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-nunito), sans-serif;
+  font-weight: 900;
+  font-size: 20px;
+  color: var(--gn-text);
+}
+.mk-comunidade-icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: var(--gn-green-50);
+  color: var(--gn-green);
+}
+.mk-comunidade p {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--gn-muted);
+}
+.mk-comunidade a {
+  margin-top: 2px;
+  font-family: var(--font-nunito), sans-serif;
+  font-weight: 900;
+  font-size: 16px;
+  color: var(--gn-green) !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 4px;
+}
+.mk-comunidade a:hover {
+  color: var(--gn-green-600) !important;
+}
+/* celular: ícone acima do título, tudo centralizado */
+@media (max-width: 700px) {
+  .mk-comunidade strong {
+    flex-direction: column;
+    gap: 10px;
+    font-size: 19px;
+    line-height: 1.25;
+  }
+}

@@ -8,6 +8,7 @@ import MarketingNav from "@/components/marketing/MarketingNav";
 import {
   CollectionSection,
   CollectionsAvailable,
+  CommunitySection,
   FaqSection,
   FinalCta,
   Hero,
@@ -70,6 +71,7 @@ export default async function LandingPage() {
       <Pricing price={price} trialDays={TRIAL_DAYS} />
       <FaqSection />
       <ShopsSection shops={shops} trialDays={TRIAL_DAYS} />
+      <CommunitySection />
       <FinalCta />
       <MarketingFooter />
     </>

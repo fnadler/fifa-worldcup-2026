@@ -241,6 +241,11 @@ export const landing = {
     },
   ],
 
+  comunidade: {
+    title: "Entre na comunidade GN Coleciona no WhatsApp",
+    text: "Trocas, achados e novidades no grupo da GN Coleciona. Grátis e aberto a todos.",
+    cta: "Entrar na comunidade",
+  },
   final: {
     title: "Aquela pilha de repetidas pode pagar os próximos pacotinhos.",
     ctaLoja: "Testar a loja grátis",

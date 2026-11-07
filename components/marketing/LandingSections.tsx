@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { landing, trialSteps } from "@/content/landing";
+import { COMMUNITY_URL } from "@/lib/community";
 import { COLLECTION_PATH, SIGNUP_PATH, signupThen } from "@/lib/routes";
 import Faq from "./Faq";
 import HeroMock from "./HeroMock";
@@ -400,6 +401,31 @@ export function FinalCta() {
           />
         </div>
       </div>
+    </section>
+  );
+}
+
+// Convite para o grupo de WhatsApp: uma frase centralizada com link, sem caixa nem fundo, logo antes da faixa
+// final — discreta para não concorrer com a abertura da loja (o objetivo da página). Sem o link
+// (NEXT_PUBLIC_WHATSAPP_GROUP_URL), some.
+export function CommunitySection() {
+  if (!COMMUNITY_URL) return null;
+  const c = landing.comunidade;
+  return (
+    <section id="comunidade" className="mk-comunidade mk-container">
+      <strong>
+        <span className="mk-comunidade-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 20l1.3-4A8 8 0 1 1 8.2 19L4 20Z" />
+            <path d="M9.3 9.2c0 3 2.5 5.5 5.5 5.5" />
+          </svg>
+        </span>
+        {c.title}
+      </strong>
+      <p>{c.text}</p>
+      <a href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">
+        {c.cta} →
+      </a>
     </section>
   );
 }

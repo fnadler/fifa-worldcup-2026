@@ -26,9 +26,11 @@ interface AlbumAppProps {
   albumId: string;
   /** Todas as coleções da pessoa — seletor acima do título. */
   collections: UserCollection[];
+  /** Abre "Lojas com o que falta" ao carregar (?lojas=1, link do e-mail). */
+  openShopsOnLoad?: boolean;
 }
 
-export default function AlbumApp({ initialUser, shopHref, shopActive, collectionName, albumId, collections }: AlbumAppProps) {
+export default function AlbumApp({ initialUser, shopHref, shopActive, collectionName, albumId, collections, openShopsOnLoad }: AlbumAppProps) {
   const catalog = getCatalog(albumId);
   const [qtd, setQtd] = useState<Qtd>({});
   const [syncStatus, setSyncStatus] = useState<SyncStatus>("idle");
@@ -40,12 +42,20 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
   const [view, setView] = useViewMode("copa2026-album-view");
   const [busca, setBusca] = useState("");
   const [trocasAberto, setTrocasAberto] = useState(false);
-  const [lojasAberto, setLojasAberto] = useState(false);
+  const [lojasAberto, setLojasAberto] = useState(Boolean(openShopsOnLoad));
   const [toast, setToast] = useState<string | null>(null);
 
   const headerRef = useRef<HTMLDivElement | null>(null);
   const syncRef = useRef<CollectionSync | null>(null);
   const lastConfirmedQtdRef = useRef<Qtd>({});
+
+  // tira o ?lojas=1 da barra de endereço: recarregar ou compartilhar a página não reabre o modal
+  useEffect(() => {
+    if (!openShopsOnLoad) return;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("lojas");
+    window.history.replaceState(window.history.state, "", url);
+  }, [openShopsOnLoad]);
 
   const showToast = useCallback((msg: string) => {
     setToast(msg);

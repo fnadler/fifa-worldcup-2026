@@ -7,8 +7,16 @@ import AlbumApp from "@/components/AlbumApp";
 
 export const dynamic = "force-dynamic";
 
-export default async function ColecaoPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+// ?lojas=1 abre a coleção já com "Lojas com o que falta" (Quero comprar) aberto — link do e-mail.
+export default async function ColecaoPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ lojas?: string }>;
+}) {
+  const [{ slug }, { lojas }] = await Promise.all([params, searchParams]);
+  const abrirLojas = lojas === "1";
   const catalog = catalogBySlug(slug);
   if (!catalog) notFound();
 
@@ -17,7 +25,7 @@ export default async function ColecaoPage({ params }: { params: Promise<{ slug: 
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect(`/login?next=${encodeURIComponent(`/colecao/${slug}`)}`);
+  if (!user) redirect(`/login?next=${encodeURIComponent(`/colecao/${slug}${abrirLojas ? "?lojas=1" : ""}`)}`);
 
   const [collections, shop] = await Promise.all([userCollections(supabase, user.id), ownShop(supabase, user.id)]);
   const current = collections.find((c) => c.albumId === catalog.id);
@@ -33,6 +41,7 @@ export default async function ColecaoPage({ params }: { params: Promise<{ slug: 
       collectionName={collectionTitleOf(current)}
       albumId={catalog.id}
       collections={collections}
+      openShopsOnLoad={abrirLojas}
     />
   );
 }

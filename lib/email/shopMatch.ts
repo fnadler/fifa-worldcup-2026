@@ -56,7 +56,8 @@ export const matchPct = (c: MatchCountInput) => (c.matched ? Math.max(1, Math.ro
 
 const link = (path: string, extra = "") => `${SITE}${path}${path.includes("?") ? "&" : "?"}${extra ? `${extra}&` : ""}${UTM}`;
 const shopUrl = (s: ShopMatchEmailShop, c: ShopMatchEmailCollection) => link(s.path, `colecao=${encodeURIComponent(c.slug)}`);
-const collectionUrl = (c: ShopMatchEmailCollection) => link(`/colecao/${encodeURIComponent(c.slug)}`);
+/** Com lojas = true, a coleção abre já com "Lojas com o que falta" (o modal do Quero comprar). */
+const collectionUrl = (c: ShopMatchEmailCollection, lojas = false) => link(`/colecao/${encodeURIComponent(c.slug)}`, lojas ? "lojas=1" : "");
 const absolute = (u: string) => (u.startsWith("/") ? `${SITE}${u}` : u);
 const isFull = (c: MatchCountInput) => c.missing > 0 && c.matched >= c.missing;
 /** "todas as 27 que faltam" / "a figurinha que falta". */
@@ -180,7 +181,7 @@ function collectionBlock(c: ShopMatchEmailCollection): string {
           </tr>${c.shops.map((s) => shopCard(s, c)).join("")}
           <tr>
             <td align="center" style="padding:2px 32px 8px;${FONT}font-size:14px;line-height:20px;">
-              <a href="${esc(collectionUrl(c))}" style="color:#027a2c;font-weight:bold;">${mais > 0 ? `Ver mais ${num(mais)} ${mais === 1 ? "loja" : "lojas"} na sua coleção →` : "Abrir minha coleção →"}</a>
+              <a href="${esc(collectionUrl(c, mais > 0))}" style="color:#027a2c;font-weight:bold;">${mais > 0 ? `Ver mais ${num(mais)} ${mais === 1 ? "loja" : "lojas"} na sua coleção →` : "Abrir minha coleção →"}</a>
             </td>
           </tr>`;
 }
@@ -258,7 +259,7 @@ export function shopMatchText(input: ShopMatchEmailInput): string {
       }
       linhas.push(`  ${shopUrl(s, c)}`);
     }
-    linhas.push(`Sua coleção: ${collectionUrl(c)}`, "");
+    linhas.push(`Todas as lojas com o que falta: ${collectionUrl(c, true)}`, "");
   }
   linhas.push(
     "Na loja, escolha as figurinhas e mande o pedido: ele chega no WhatsApp do lojista, que combina pagamento e envio com você.",

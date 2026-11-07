@@ -5,6 +5,7 @@ import { emailConfigured, sendEmail } from "./email/resend";
 import { shopMatchHtml, shopMatchSubject, shopMatchText, type ShopMatchEmailInput } from "./email/shopMatch";
 import { matchShops } from "./shopMatch";
 import { fetchAll } from "./fetchAll";
+import { firstNameOf as firstName, findUserByEmail as findUser, listAllUsers, pause } from "./emailRecipients";
 import { createAdminClient } from "./supabase/admin";
 import { userCollections } from "./userCollections";
 
@@ -13,28 +14,6 @@ import { userCollections } from "./userCollections";
 // do envio fica em app_metadata (só o servidor escreve), e quem já recebeu fica de fora.
 
 const LOJAS_POR_COLECAO = 3;
-
-function firstName(user: User): string | null {
-  const nome = typeof user.user_metadata?.full_name === "string" ? user.user_metadata.full_name.trim() : "";
-  const primeiro = nome ? nome.split(/\s+/)[0] : "";
-  if (!primeiro) return null;
-  // "ILTON" ou "ilton" → "Ilton"
-  return primeiro === primeiro.toUpperCase() || primeiro === primeiro.toLowerCase()
-    ? primeiro.charAt(0).toLocaleUpperCase("pt-BR") + primeiro.slice(1).toLocaleLowerCase("pt-BR")
-    : primeiro;
-}
-
-async function findUser(email: string): Promise<User | null> {
-  const admin = createAdminClient();
-  const alvo = email.trim().toLowerCase();
-  for (let page = 1; ; page++) {
-    const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 1000 });
-    if (error) throw error;
-    const user = data.users.find((u) => u.email?.toLowerCase() === alvo);
-    if (user) return user;
-    if (data.users.length < 1000) return null;
-  }
-}
 
 /** O conteúdo do e-mail de uma conta: as coleções dela em que alguma loja tem o que falta. */
 export async function shopMatchInputFor(user: User): Promise<ShopMatchEmailInput> {
@@ -93,13 +72,7 @@ export interface ShopMatchSweepOptions {
 export async function sweepShopMatchEmails({ minItems = 100, dryRun }: ShopMatchSweepOptions) {
   const admin = createAdminClient();
 
-  const users: User[] = [];
-  for (let page = 1; ; page++) {
-    const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 1000 });
-    if (error) throw error;
-    users.push(...data.users);
-    if (data.users.length < 1000) break;
-  }
+  const users = await listAllUsers();
 
   const [{ data: rows, error }, { data: shops }] = await Promise.all([
     fetchAll<{ user_id: string }>((from, to) =>
@@ -148,7 +121,7 @@ export async function sweepShopMatchEmails({ minItems = 100, dryRun }: ShopMatch
       console.error("lojas com o que falta (lote):", user.id, e);
       out.erros++;
     }
-    await new Promise((ok) => setTimeout(ok, 600)); // limite do Resend: 2 envios por segundo
+    await pause(600); // limite do Resend: 2 envios por segundo
   }
   return out;
 }

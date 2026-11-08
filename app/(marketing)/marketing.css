@@ -2120,3 +2120,122 @@ html:has(.mk) {
     line-height: 1.25;
   }
 }
+
+/* ---------- landing no celular: página mais curta ----------
+   A rolagem média no celular ficava em 20–30% de ~15.000 px, antes do bloco da loja. Aqui: galerias em
+   grade 2×2 (coleções) e carrossel (lojas), passos compactos e, no celular, sem as ilustrações que só
+   repetem o que outro bloco já mostra (mock do app, tabela de preços, linha do tempo do teste). */
+@media (max-width: 700px) {
+  /* hero: mock da grade menor */
+  .mk-hero-grid {
+    padding-block: 32px 48px;
+    gap: 24px;
+  }
+  .mk-hero-card {
+    max-width: 320px;
+  }
+
+  /* coleções disponíveis: grade 2×2, só capa e nome */
+  .mk-colecoes {
+    padding-block: 40px 24px;
+    gap: 24px;
+  }
+  .mk-colecoes-grid.four {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .mk-colecoes-grid.four .mk-colecao-card {
+    padding: 10px 10px 12px;
+    gap: 4px;
+    border-radius: 16px;
+  }
+  .mk-colecoes-grid.four .mk-colecao-card p {
+    display: none;
+  }
+  .mk-colecoes-grid.four .mk-colecao-card strong {
+    font-size: 15px;
+  }
+  .mk-colecoes-grid.four .mk-colecao-img {
+    margin-bottom: 4px;
+  }
+  .mk-colecoes-grid.four .mk-colecao-img .mk-tag {
+    top: 6px;
+    left: 6px;
+  }
+  .mk-colecoes-grid.four .mk-colecao-mais-link {
+    font-size: 13px;
+  }
+
+  /* "chega de caderninho": sem o mock do app (o hero já mostra a grade) */
+  .mk-colecao {
+    padding-block: 32px 56px;
+    gap: 0;
+  }
+  .mk-colecao > .mk-mock {
+    display: none;
+  }
+
+  /* loja: passos compactos (número ao lado do título) e sem a tabela de preços */
+  .mk-loja-inner {
+    padding-block: 56px;
+    gap: 32px;
+  }
+  .mk-steps {
+    gap: 10px;
+  }
+  .mk-step {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    column-gap: 12px;
+    row-gap: 4px;
+    padding: 16px 18px;
+    border-radius: 16px;
+  }
+  .mk-step > span {
+    grid-row: span 2;
+    font-size: 30px;
+  }
+  .mk-step strong {
+    font-size: 17px;
+  }
+  .mk-step p {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .mk-loja-cards > .mk-price-card {
+    display: none;
+  }
+
+  /* planos: a linha do tempo do teste repete a resposta de "Como funciona o teste grátis?" nas dúvidas */
+  .mk-planos {
+    padding-block: 56px 40px;
+    gap: 28px;
+  }
+  .mk-planos .mk-trial {
+    display: none;
+  }
+
+  /* lojas: carrossel com um cartão e meio por tela */
+  .mk-lojistas {
+    padding-block: 32px 80px;
+    gap: 24px;
+  }
+  .mk-shop-grid-4 {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    margin-inline: -24px;
+    padding: 4px 24px 8px;
+    scroll-padding-inline: 24px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mk-shop-grid-4::-webkit-scrollbar {
+    display: none;
+  }
+  .mk-shop-grid-4 > * {
+    flex: 0 0 calc((100vw - 24px) / 1.55);
+    scroll-snap-align: start;
+  }
+}

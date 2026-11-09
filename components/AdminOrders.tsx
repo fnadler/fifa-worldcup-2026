@@ -92,10 +92,10 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
   async function mudarStatus(order: Order, status: OrderStatus) {
     const aviso =
       status === "confirmado"
-        ? `Confirmar o pedido #${order.number}? Os itens serão baixados do seu estoque.`
+        ? `Confirmar o pedido #${order.code}? Os itens serão baixados do seu estoque.`
         : order.status === "confirmado"
-          ? `Cancelar o pedido #${order.number}? Os itens voltam para o seu estoque.`
-          : `Cancelar o pedido #${order.number}? A reserva dos itens é liberada.`;
+          ? `Cancelar o pedido #${order.code}? Os itens voltam para o seu estoque.`
+          : `Cancelar o pedido #${order.code}? A reserva dos itens é liberada.`;
     if (!window.confirm(aviso)) return;
 
     setBusy(order.id);
@@ -123,8 +123,8 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
     await recarregar(order.id);
     onToast(
       status === "confirmado"
-        ? `Pedido #${order.number} confirmado e estoque atualizado.`
-        : `Pedido #${order.number} cancelado.`
+        ? `Pedido #${order.code} confirmado e estoque atualizado.`
+        : `Pedido #${order.code} cancelado.`
     );
   }
 
@@ -138,7 +138,7 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
     }
     await recarregar(order.id);
     setEditando(null);
-    onToast(`Pedido #${order.number} atualizado. Envie o resumo ao comprador pelo WhatsApp.`);
+    onToast(`Pedido #${order.code} atualizado. Envie o resumo ao comprador pelo WhatsApp.`);
   }
 
   return (
@@ -174,13 +174,13 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
         const totalFigurinhas = o.items.reduce((s, it) => s + it.qty, 0);
         const resumo = whatsappLink(
           o.buyer.whatsapp,
-          orderMessage(o.number, o.items, o.totalCents, o.buyer, ativo ? o.reservedUntil : undefined)
+          orderMessage(o.code, o.items, o.totalCents, o.buyer, ativo ? o.reservedUntil : undefined)
         );
 
         return (
           <article key={o.id} className="order-card">
             <header className="order-header">
-              <span className="order-number">#{o.number}</span>
+              <span className="order-number">#{o.code}</span>
               <span className={`order-status order-status-${ef.css}`}>{ef.label}</span>
               <span className="order-album">{orderGroups(o.items).join(" + ")}</span>
               <span className="order-date">{formatDateTimeBR(o.createdAt)}</span>

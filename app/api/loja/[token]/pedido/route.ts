@@ -130,11 +130,18 @@ export async function POST(request: Request, { params }: { params: Promise<{ tok
   if (error || !placed) return bad("Não foi possível registrar o pedido — tente de novo.", 500);
 
   // Registro de que o comprador leu as orientações (e o aviso de responsabilidade) antes de pedir.
-  await admin.from("orders").update({ buyer_ack_at: new Date().toISOString() }).eq("id", placed.id);
+  // Devolve o código do pedido na loja (ex: LOF-001), preenchido pelo banco ao gravar.
+  const { data: ack } = await admin
+    .from("orders")
+    .update({ buyer_ack_at: new Date().toISOString() })
+    .eq("id", placed.id)
+    .select("code")
+    .single<{ code: string }>();
+  const code = ack?.code ?? String(placed.number);
 
-  const message = orderMessage(placed.number, items, totalCents, buyer, placed.reserved_until);
+  const message = orderMessage(code, items, totalCents, buyer, placed.reserved_until);
   return NextResponse.json({
-    number: placed.number,
+    code,
     reservedUntil: placed.reserved_until,
     whatsappUrl: whatsappLink(shop.whatsapp, message),
   });

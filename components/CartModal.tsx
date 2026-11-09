@@ -74,7 +74,7 @@ export default function CartModal({
   const [error, setError] = useState<string | null>(null);
   const [ajustes, setAjustes] = useState<CartAdjust[]>([]);
   const [revisando, setRevisando] = useState(false);
-  const [result, setResult] = useState<{ number: number; whatsappUrl: string; reservedUntil?: string } | null>(null);
+  const [result, setResult] = useState<{ code: string; whatsappUrl: string; reservedUntil?: string } | null>(null);
 
   useEffect(() => {
     try {
@@ -143,11 +143,11 @@ export default function CartModal({
       const data = (await res.json()) as {
         error?: string;
         unavailable?: string[];
-        number?: number;
+        code?: string;
         whatsappUrl?: string;
         reservedUntil?: string;
       };
-      if (!res.ok || !data.number || !data.whatsappUrl) {
+      if (!res.ok || !data.code || !data.whatsappUrl) {
         if (data.unavailable?.length) {
           await revisar(`Alguns itens deixaram de estar disponíveis enquanto você preenchia os dados. Confira abaixo.`);
           return;
@@ -155,7 +155,7 @@ export default function CartModal({
         setError(data.error ?? "Não foi possível registrar o pedido — tente de novo.");
         return;
       }
-      setResult({ number: data.number, whatsappUrl: data.whatsappUrl, reservedUntil: data.reservedUntil });
+      setResult({ code: data.code, whatsappUrl: data.whatsappUrl, reservedUntil: data.reservedUntil });
       setStep("done");
       onOrdered();
     } catch {
@@ -435,7 +435,7 @@ export default function CartModal({
 
         {step === "done" && result && (
           <div className="cart-body cart-done">
-            <span className="cart-done-number">#{result.number}</span>
+            <span className="cart-done-number">#{result.code}</span>
             <p className="modal-notice">
               Seu pedido foi registrado. <strong>Agora envie-o pelo WhatsApp</strong> para o vendedor — é por lá que vocês
               combinam pagamento e entrega.

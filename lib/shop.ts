@@ -156,6 +156,8 @@ export interface BuyerInfo {
 export interface Order {
   id: string;
   number: number;
+  /** Código do pedido na loja (ex: LOF-001) — é o que lojista e comprador veem. */
+  code: string;
   status: OrderStatus;
   buyer: BuyerInfo;
   items: OrderItem[];
@@ -183,6 +185,7 @@ export interface ShopRow {
 export interface OrderRow {
   id: string;
   number: number;
+  code: string;
   status: OrderStatus;
   buyer_name: string;
   buyer_email: string;
@@ -202,7 +205,7 @@ export interface OrderRow {
 }
 
 export const ORDER_COLUMNS =
-  "id, number, status, buyer_name, buyer_email, buyer_whatsapp, address_cep, address_street, address_number, address_complement, address_district, address_city, address_state, items, total_cents, created_at, reserved_until, cancel_reason";
+  "id, number, code, status, buyer_name, buyer_email, buyer_whatsapp, address_cep, address_street, address_number, address_complement, address_district, address_city, address_state, items, total_cents, created_at, reserved_until, cancel_reason";
 
 export function isKnownCode(code: string): boolean {
   return lookupCode(code) !== undefined;
@@ -282,6 +285,7 @@ export function orderFromRow(row: OrderRow): Order {
   return {
     id: row.id,
     number: row.number,
+    code: row.code,
     status: row.status,
     buyer: {
       name: row.buyer_name,
@@ -365,7 +369,7 @@ export function formatAddress(b: BuyerInfo): string {
 }
 
 export function orderMessage(
-  number: number,
+  code: string,
   items: OrderItem[],
   totalCents: number,
   buyer: BuyerInfo,
@@ -409,7 +413,7 @@ export function orderMessage(
   const reservados = catalog ? (catalog.itemSingular === "card" ? "Cards reservados" : "Figurinhas reservadas") : "Itens reservados";
 
   return [
-    `*Pedido #${number} — ${grupos.join(" + ")}*`,
+    `*Pedido #${code} — ${grupos.join(" + ")}*`,
     "",
     ...linhas,
     "",

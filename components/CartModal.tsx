@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useState, type FormEvent } from "react";
 import { formatBRL, formatDateTimeBR, isValidPhoneBR, itemLabel, maskPhoneBR, type BuyerInfo, type ItemLabel } from "@/lib/shop";
+import { isValidCPF, maskCPF } from "@/lib/cpf";
 import type { CartAdjust } from "@/lib/useCartHold";
 import HoldTimer from "./HoldTimer";
 import SafetyTips from "./SafetyTips";
@@ -37,6 +38,7 @@ const EMPTY_BUYER: BuyerInfo = {
   name: "",
   email: "",
   whatsapp: "",
+  cpf: "",
   cep: "",
   street: "",
   number: "",
@@ -70,6 +72,7 @@ export default function CartModal({
   const [buyer, setBuyer] = useState<BuyerInfo>(EMPTY_BUYER);
   const [honeypot, setHoneypot] = useState("");
   const [ciente, setCiente] = useState(false);
+  const [porQueCpf, setPorQueCpf] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [ajustes, setAjustes] = useState<CartAdjust[]>([]);
@@ -81,7 +84,7 @@ export default function CartModal({
       const raw = window.localStorage.getItem(BUYER_KEY);
       if (raw) {
         const saved = { ...EMPTY_BUYER, ...(JSON.parse(raw) as Partial<BuyerInfo>) };
-        queueMicrotask(() => setBuyer({ ...saved, whatsapp: maskPhoneBR(saved.whatsapp) }));
+        queueMicrotask(() => setBuyer({ ...saved, whatsapp: maskPhoneBR(saved.whatsapp), cpf: maskCPF(saved.cpf) }));
       }
     } catch {
       // sem dados salvos — o formulário começa vazio
@@ -120,6 +123,10 @@ export default function CartModal({
     if (sending) return;
     if (!isValidPhoneBR(buyer.whatsapp)) {
       setError("WhatsApp inválido. Informe o DDD e o número: (11) 99999-8888.");
+      return;
+    }
+    if (!isValidCPF(buyer.cpf)) {
+      setError("CPF inválido. Confira os números.");
       return;
     }
     setSending(true);
@@ -367,6 +374,27 @@ export default function CartModal({
                 />
               </label>
             </div>
+            <div className="form-label">
+              <label htmlFor="checkout-cpf">CPF</label>
+              <input
+                id="checkout-cpf"
+                className="login-input"
+                required
+                inputMode="numeric"
+                placeholder="000.000.000-00"
+                maxLength={14}
+                aria-invalid={buyer.cpf.length === 14 && !isValidCPF(buyer.cpf)}
+                value={buyer.cpf}
+                onChange={(e) => setBuyer((b) => ({ ...b, cpf: maskCPF(e.target.value) }))}
+              />
+              {buyer.cpf.length === 14 && !isValidCPF(buyer.cpf) ? (
+                <span className="field-error">CPF inválido. Confira os números.</span>
+              ) : (
+                <button type="button" className="field-help" onClick={() => setPorQueCpf(true)}>
+                  <span aria-hidden="true">ⓘ</span> Por que pedimos o seu CPF?
+                </button>
+              )}
+            </div>
             <div className="form-row">
               <label className="form-label form-narrow">
                 CEP
@@ -452,6 +480,33 @@ export default function CartModal({
           </div>
         )}
       </div>
+      {porQueCpf && (
+        <div
+          className="modal-overlay cpf-help-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Por que pedimos o seu CPF"
+          onClick={(e) => {
+            e.stopPropagation();
+            setPorQueCpf(false);
+          }}
+        >
+          <div className="modal-card cpf-help-card" onClick={(e) => e.stopPropagation()}>
+            <strong className="modal-title">Por que pedimos o seu CPF?</strong>
+            <p className="modal-notice">
+              As empresas de entrega — como <strong>Correios, Superfrete e Loggi</strong> — pedem o CPF do destinatário
+              para gerar a etiqueta de envio. Ele vai junto com o seu pedido só para o vendedor conseguir despachar a
+              sua compra.
+            </p>
+            <p className="modal-notice">Não usamos o seu CPF para mais nada e ele não aparece na loja.</p>
+            <div className="modal-actions">
+              <button type="button" className="btn-primary" onClick={() => setPorQueCpf(false)}>
+                Entendi
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { CART_COOKIE, readCartId } from "@/lib/cartCookie";
+import { isValidCPF } from "@/lib/cpf";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { TOO_MANY, withinRateLimit, type RateRule } from "@/lib/rateLimit";
 import { loadShopForOrder, validItemCode } from "@/lib/shopCart";
@@ -22,7 +23,7 @@ interface PedidoBody {
   ack?: unknown; // comprador marcou que leu as orientações de segurança
 }
 
-const REQUIRED: (keyof BuyerInfo)[] = ["name", "email", "whatsapp", "cep", "street", "number", "district", "city", "state"];
+const REQUIRED: (keyof BuyerInfo)[] = ["name", "email", "whatsapp", "cpf", "cep", "street", "number", "district", "city", "state"];
 
 // Por IP: pedidos enviados (cada um segura o estoque do lojista por 24h).
 const LIMITE: RateRule[] = [
@@ -63,6 +64,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ tok
     name: str(body.buyer?.name),
     email: str(body.buyer?.email),
     whatsapp: str(body.buyer?.whatsapp, 30),
+    cpf: onlyDigits(str(body.buyer?.cpf, 20)),
     cep: str(body.buyer?.cep, 12),
     street: str(body.buyer?.street),
     number: str(body.buyer?.number, 20),
@@ -75,6 +77,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ tok
   if (buyer.name.split(/\s+/).length < 2) return bad("Informe o nome completo.");
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyer.email)) return bad("E-mail inválido.");
   if (!isValidPhoneBR(buyer.whatsapp)) return bad("WhatsApp inválido. Informe o DDD e o número: (11) 99999-8888.");
+  if (!isValidCPF(buyer.cpf)) return bad("CPF inválido. Confira os números.");
   if (onlyDigits(buyer.cep).length !== 8) return bad("CEP inválido.");
   if (!/^[A-Z]{2}$/.test(buyer.state)) return bad("UF inválida.");
 
@@ -129,11 +132,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ tok
   }
   if (error || !placed) return bad("Não foi possível registrar o pedido — tente de novo.", 500);
 
-  // Registro de que o comprador leu as orientações (e o aviso de responsabilidade) antes de pedir.
+  // Registro de que o comprador leu as orientações (e o aviso de responsabilidade) antes de pedir, e o CPF
+  // (pedido pelas transportadoras).
   // Devolve o código do pedido na loja (ex: LOF-001), preenchido pelo banco ao gravar.
   const { data: ack } = await admin
     .from("orders")
-    .update({ buyer_ack_at: new Date().toISOString() })
+    .update({ buyer_ack_at: new Date().toISOString(), buyer_cpf: buyer.cpf })
     .eq("id", placed.id)
     .select("code")
     .single<{ code: string }>();

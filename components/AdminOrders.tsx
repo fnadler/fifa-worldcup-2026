@@ -1,5 +1,6 @@
 "use client";
 
+import { maskCPF } from "@/lib/cpf";
 import { useMemo, useState, type Dispatch, type SetStateAction } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -200,6 +201,7 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
                   WhatsApp: {o.buyer.whatsapp}
                 </a>
                 <a href={`mailto:${o.buyer.email}`}>{o.buyer.email}</a>
+                {o.buyer.cpf && <span>CPF: {maskCPF(o.buyer.cpf)}</span>}
                 <span>{formatAddress(o.buyer)}</span>
               </div>
 

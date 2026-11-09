@@ -1,5 +1,6 @@
 import { displayCode, stickerName } from "./album";
 import { CATALOGS, DEFAULT_CATALOG, catalogOfCodes, lookupCode } from "./catalog";
+import { maskCPF } from "./cpf";
 import { normalizeWhatsapp } from "./phone";
 
 export { isValidPhoneBR, maskPhoneBR, normalizeWhatsapp, onlyDigits } from "./phone";
@@ -144,6 +145,8 @@ export interface BuyerInfo {
   name: string;
   email: string;
   whatsapp: string;
+  /** Só dígitos no banco; com máscara no formulário. Vazio em pedidos antigos. */
+  cpf: string;
   cep: string;
   street: string;
   number: string;
@@ -190,6 +193,7 @@ export interface OrderRow {
   buyer_name: string;
   buyer_email: string;
   buyer_whatsapp: string;
+  buyer_cpf: string | null;
   address_cep: string;
   address_street: string;
   address_number: string;
@@ -205,7 +209,7 @@ export interface OrderRow {
 }
 
 export const ORDER_COLUMNS =
-  "id, number, code, status, buyer_name, buyer_email, buyer_whatsapp, address_cep, address_street, address_number, address_complement, address_district, address_city, address_state, items, total_cents, created_at, reserved_until, cancel_reason";
+  "id, number, code, status, buyer_name, buyer_email, buyer_whatsapp, buyer_cpf, address_cep, address_street, address_number, address_complement, address_district, address_city, address_state, items, total_cents, created_at, reserved_until, cancel_reason";
 
 export function isKnownCode(code: string): boolean {
   return lookupCode(code) !== undefined;
@@ -291,6 +295,7 @@ export function orderFromRow(row: OrderRow): Order {
       name: row.buyer_name,
       email: row.buyer_email,
       whatsapp: row.buyer_whatsapp,
+      cpf: row.buyer_cpf ?? "",
       cep: row.address_cep,
       street: row.address_street,
       number: row.address_number,
@@ -424,6 +429,7 @@ export function orderMessage(
     `Nome: ${buyer.name}`,
     `E-mail: ${buyer.email}`,
     `WhatsApp: ${buyer.whatsapp}`,
+    ...(buyer.cpf ? [`CPF: ${maskCPF(buyer.cpf)}`] : []),
     `Endereço: ${formatAddress(buyer)}`,
   ].join("\n");
 }

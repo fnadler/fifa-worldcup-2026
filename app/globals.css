@@ -4590,3 +4590,35 @@ button {
     justify-content: flex-end;
   }
 }
+
+/* ---------- checkout: CPF ---------- */
+
+.field-help {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.field-error {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--danger);
+}
+.cpf-help-overlay {
+  z-index: 70;
+}
+.modal-card.cpf-help-card {
+  max-width: 420px;
+  gap: 12px;
+  padding: 20px;
+}

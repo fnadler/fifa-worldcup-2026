@@ -2,19 +2,29 @@
 
 import Link from "next/link";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { createClient } from "@/lib/supabase/client";
 
 // A landing é estática (rápida e boa para SEO). A sessão é lida no navegador depois de
 // carregar: até lá, os botões mostram a versão de visitante e trocam em seguida.
+// O cliente do Supabase (~65 KB) é importado sob demanda, depois da hidratação: assim ele não
+// entra no JavaScript inicial da landing nem atrasa a primeira tela.
 const SessionContext = createContext(false);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [logado, setLogado] = useState(false);
   useEffect(() => {
-    const supabase = createClient();
-    void supabase.auth.getSession().then(({ data }) => setLogado(Boolean(data.session)));
-    const { data } = supabase.auth.onAuthStateChange((_e, session) => setLogado(Boolean(session)));
-    return () => data.subscription.unsubscribe();
+    let ativo = true;
+    let cancelar: (() => void) | undefined;
+    void import("@/lib/supabase/client").then(({ createClient }) => {
+      if (!ativo) return;
+      const supabase = createClient();
+      void supabase.auth.getSession().then(({ data }) => ativo && setLogado(Boolean(data.session)));
+      const { data } = supabase.auth.onAuthStateChange((_e, session) => setLogado(Boolean(session)));
+      cancelar = () => data.subscription.unsubscribe();
+    });
+    return () => {
+      ativo = false;
+      cancelar?.();
+    };
   }, []);
   return <SessionContext.Provider value={logado}>{children}</SessionContext.Provider>;
 }

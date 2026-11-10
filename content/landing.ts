@@ -83,13 +83,14 @@ export const landing = {
     ],
     // Próximas coleções previstas: `ano` aparece no lugar da figurinha.
     soon: [] as { nome: string; desc: string; tag: string; ano: string }[],
-    // Quarto card da landing: chamada para as demais coleções. `capas`: capas empilhadas no lugar da figurinha.
+    // Quarto card da landing: chamada para as demais coleções. `capas`: capas empilhadas no lugar da figurinha,
+    // na versão de 360 px (brand/albums/pilha), porque aparecem com até ~170 px de largura.
     mais: {
       href: "/colecoes-disponiveis",
       titulo: "Mais coleções",
       desc: "Álbuns das Copas de 2022 a 1990, Extra Stickers e Adrenalyn XL. Tem raridade guardada? Coloque à venda na sua loja.",
       link: "Ver todas as coleções",
-      capas: ["/brand/albums/copa-italia-1990.webp", "/brand/albums/copa-brasil-2014.webp", "/brand/albums/copa-catar-2022.webp"],
+      capas: ["/brand/albums/pilha/copa-italia-1990.webp", "/brand/albums/pilha/copa-brasil-2014.webp", "/brand/albums/pilha/copa-catar-2022.webp"],
     },
     // Página /colecoes-disponiveis
     pagina: {

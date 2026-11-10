@@ -6,22 +6,29 @@ import { PLATFORM_NAME } from "@/lib/brand";
 import MetaPixel from "@/components/MetaPixel";
 import Clarity from "@/components/Clarity";
 
+// Fontes do app logado, sem pré-carga: a landing e as páginas públicas usam outras fontes (Nunito e
+// Figtree, no layout de marketing), e pré-carregar lá os 8 arquivos destas disputava banda com o CSS
+// na primeira tela. No app elas baixam assim que o CSS as pede, com a fonte de reserva ajustada pelo
+// next/font enquanto isso.
 const bebasNeue = Bebas_Neue({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-bebas-neue",
+  preload: false,
 });
 
 const barlow = Barlow({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
   variable: "--font-barlow",
+  preload: false,
 });
 
 const barlowCondensed = Barlow_Condensed({
   weight: ["500", "600", "700"],
   subsets: ["latin"],
   variable: "--font-barlow-condensed",
+  preload: false,
 });
 
 export const metadata: Metadata = {

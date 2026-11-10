@@ -2,16 +2,18 @@
 
 import Link from "next/link";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { temCookieDeSessao } from "@/lib/supabase/sessao";
 
 // A landing é estática (rápida e boa para SEO). A sessão é lida no navegador depois de
 // carregar: até lá, os botões mostram a versão de visitante e trocam em seguida.
-// O cliente do Supabase (~65 KB) é importado sob demanda, depois da hidratação: assim ele não
-// entra no JavaScript inicial da landing nem atrasa a primeira tela.
+// O cliente do Supabase (~65 KB) só é baixado se houver cookie de sessão (e depois da hidratação):
+// quem chega de um anúncio não está logado e não paga esse peso.
 const SessionContext = createContext(false);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [logado, setLogado] = useState(false);
   useEffect(() => {
+    if (!temCookieDeSessao()) return;
     let ativo = true;
     let cancelar: (() => void) | undefined;
     void import("@/lib/supabase/client").then(({ createClient }) => {

@@ -64,6 +64,9 @@ body {
   margin: 0;
   padding: 0;
   background: var(--bg);
+  /* nada passa da largura da tela (clip, e não hidden, para não quebrar o cabeçalho fixo) */
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 body {
@@ -4621,4 +4624,40 @@ button {
   max-width: 420px;
   gap: 12px;
   padding: 20px;
+}
+
+/* ---------- celular: sem rolagem lateral ---------- */
+
+@media (max-width: 700px) {
+  /* 16px: abaixo disso o iPhone amplia a tela ao focar o campo */
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+  /* grupos de botões (filtros, coleções, abas) quebram linha em vez de passar da tela */
+  .segmented {
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+  .admin-album-picker .segmented {
+    width: 100%;
+    gap: 4px;
+  }
+  .admin-album-picker .chip {
+    flex: 1 1 calc(50% - 4px);
+    text-align: center;
+  }
+  /* painéis e modais nunca mais largos que a tela */
+  .modal-card,
+  .group-menu-panel,
+  .collection-switcher-menu,
+  .user-menu-panel {
+    max-width: calc(100vw - 24px);
+  }
+  .app-shell,
+  .header,
+  .header-inner {
+    max-width: 100vw;
+  }
 }

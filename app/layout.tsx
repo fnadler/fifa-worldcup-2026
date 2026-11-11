@@ -47,6 +47,9 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  // Trava a escala no celular: o iPhone não amplia a tela ao tocar num campo (e não fica com a
+  // largura "desconfigurada" depois de fechar o teclado). O zoom de pinça continua no iOS.
+  maximumScale: 1,
   themeColor: "#0a120e",
 };
 

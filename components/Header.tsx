@@ -28,6 +28,8 @@ interface HeaderProps {
   onView: (v: ViewMode) => void;
   /** Abre o modal de compartilhar (link público + listas de repetidas/faltantes). */
   onCompartilhar: () => void;
+  /** Abre a marcação em lote. */
+  onMarcarLote: () => void;
   /** Lojas com o que falta — só quando a pessoa já tem algum item (sem nada, tudo "falta"). */
   onAbrirLojas?: () => void;
   onAnchorClick: (id: string) => void;
@@ -61,6 +63,7 @@ export default function Header({
   view,
   onView,
   onCompartilhar,
+  onMarcarLote,
   onAbrirLojas,
   onAnchorClick,
   user,
@@ -129,6 +132,9 @@ export default function Header({
           <NavSwitch active="album" shopHref={shopHref} />
 
           <HeaderActions>
+            <button type="button" className="icon-button" data-tip="Marcar em lote" aria-label="Marcar em lote" onClick={onMarcarLote}>
+              <Icon name="layers" />
+            </button>
             <button type="button" className="icon-button" data-tip="Compartilhar" aria-label="Compartilhar coleção" onClick={onCompartilhar}>
               <Icon name="export" />
             </button>

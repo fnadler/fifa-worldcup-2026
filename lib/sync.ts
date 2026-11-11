@@ -75,6 +75,7 @@ export class CollectionSync {
   private userId: string;
   private callbacks: SyncCallbacks;
   private timers = new Map<string, ReturnType<typeof setTimeout>>();
+  private inFlight = new Set<Promise<void>>();
 
   constructor(supabase: SupabaseClient, userId: string, callbacks: SyncCallbacks) {
     this.supabase = supabase;
@@ -96,7 +97,8 @@ export class CollectionSync {
 
     const timer = setTimeout(() => {
       this.timers.delete(code);
-      void this.deliver(code, qty);
+      const p = this.deliver(code, qty).finally(() => this.inFlight.delete(p));
+      this.inFlight.add(p);
     }, DEBOUNCE_MS);
     this.timers.set(code, timer);
   }
@@ -115,6 +117,16 @@ export class CollectionSync {
       clearPendingCode(this.userId, code);
       this.callbacks.onError(code);
     }
+  }
+
+  /** Antes de uma marcação em lote: nada agendado pode chegar depois dela. Cancela as esperas, aguarda os
+   *  envios em andamento e manda já o que estiver pendente. true = tudo foi entregue. */
+  async settle(): Promise<boolean> {
+    this.timers.forEach((t) => clearTimeout(t));
+    this.timers.clear();
+    await Promise.allSettled([...this.inFlight]);
+    await this.flushPending();
+    return !this.hasPending();
   }
 
   async flushPending(): Promise<void> {
@@ -150,4 +162,48 @@ export async function fetchRemoteQtd(
     if (row.qty > 0) qtd[row.code as string] = row.qty as number;
   }
   return qtd;
+}
+
+// ---------- marcação em lote (supabase_migration_bulk_marking.sql) ----------
+
+export type BulkMode = "set" | "add";
+
+/** O que o lote mudou, figurinha a figurinha (só as que mudaram). */
+export interface BulkResult {
+  codes: string[];
+  old: number[];
+  new: number[];
+}
+
+function asBulkResult(data: unknown): BulkResult {
+  const r = data as Partial<BulkResult> | null;
+  if (!r || !Array.isArray(r.codes) || !Array.isArray(r.old) || !Array.isArray(r.new)) throw new Error("resposta inválida");
+  return { codes: r.codes, old: r.old, new: r.new };
+}
+
+/** "set": cada uma fica com qty (keepHigher não diminui quem tem mais); "add": soma qty. A conta é feita no banco. */
+export async function bulkApply(
+  supabase: SupabaseClient,
+  albumId: string,
+  codes: string[],
+  mode: BulkMode,
+  qty: number,
+  keepHigher: boolean
+): Promise<BulkResult> {
+  const { data, error } = await supabase.rpc("collection_bulk_apply", {
+    p_album_id: albumId,
+    p_codes: codes,
+    p_mode: mode,
+    p_qty: qty,
+    p_keep_higher: keepHigher,
+  });
+  if (error) throw error;
+  return asBulkResult(data);
+}
+
+/** Desfazer: grava de volta os valores exatos de antes. */
+export async function bulkRestore(supabase: SupabaseClient, albumId: string, codes: string[], qtys: number[]): Promise<BulkResult> {
+  const { data, error } = await supabase.rpc("collection_bulk_restore", { p_album_id: albumId, p_codes: codes, p_qtys: qtys });
+  if (error) throw error;
+  return asBulkResult(data);
 }

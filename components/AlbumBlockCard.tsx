@@ -12,9 +12,11 @@ interface AlbumBlockCardProps {
   onBump?: (code: string, delta: number) => void;
   readOnly?: boolean;
   view?: ViewMode;
+  /** Abre a marcação em lote já com este bloco escolhido. */
+  onBulk?: () => void;
 }
 
-export default function AlbumBlockCard({ vb, modo = "add", onBump, readOnly, view = "grid" }: AlbumBlockCardProps) {
+export default function AlbumBlockCard({ vb, modo = "add", onBump, readOnly, view = "grid", onBulk }: AlbumBlockCardProps) {
   const { block, tag, codigoBase, coladas, repetidas, pct, stickers } = vb;
   const catalog = useCatalog();
   const isSpecial = catalog.isSpecial(block);
@@ -36,6 +38,11 @@ export default function AlbumBlockCard({ vb, modo = "add", onBump, readOnly, vie
             style={{ width: `${pct}%` }}
           />
         </div>
+        {onBulk && !readOnly && (
+          <button type="button" className="block-bulk-button" onClick={onBulk} title="Marcar este bloco em lote">
+            Marcar bloco
+          </button>
+        )}
       </div>
       {view === "photos" ? (
         <div className="cell-grid shop-photo-grid">

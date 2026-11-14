@@ -42,14 +42,17 @@ export interface AuctionSummary extends Auction {
   sold: number;
   startTotalCents: number;
   soldTotalCents: number;
+  paidTotalCents: number;
 }
 
 export async function listAuctions(): Promise<AuctionSummary[]> {
   const admin = createAdminClient();
-  const [{ data: auctions, error }, { data: lots }] = await Promise.all([
+  const [{ data: auctions, error }, { data: lots }, { data: paid }] = await Promise.all([
     admin.from("auctions").select(AUCTION_COLUMNS).order("starts_at", { ascending: false }).returns<AuctionRow[]>(),
-    admin.from("auction_lots").select("auction_id, start_cents, status, sold_cents"),
+    admin.from("auction_lots").select("auction_id, start_cents, status, sold_cents, bidder_id"),
+    admin.from("auction_settlements").select("auction_id, bidder_id").not("paid_at", "is", null),
   ]);
+  const paidSet = new Set((paid ?? []).map((p) => `${p.auction_id}:${p.bidder_id}`));
   if (error) throw error;
   return (auctions ?? []).map((r) => {
     const own = (lots ?? []).filter((l) => l.auction_id === r.id);
@@ -60,6 +63,7 @@ export async function listAuctions(): Promise<AuctionSummary[]> {
       sold: sold.length,
       startTotalCents: own.reduce((s, l) => s + l.start_cents, 0),
       soldTotalCents: sold.reduce((s, l) => s + (l.sold_cents ?? 0), 0),
+      paidTotalCents: sold.filter((l) => paidSet.has(`${r.id}:${l.bidder_id}`)).reduce((s, l) => s + (l.sold_cents ?? 0), 0),
     };
   });
 }
@@ -110,4 +114,40 @@ export interface BidderRow {
 export async function listBidders(): Promise<BidderRow[]> {
   const { data } = await createAdminClient().from("auction_bidders").select("id, name, whatsapp").order("name").returns<BidderRow[]>();
   return data ?? [];
+}
+
+export interface Settlement {
+  bidderId: string;
+  paidAt: string | null;
+  shippedAt: string | null;
+  deliveredAt: string | null;
+  trackingCode: string;
+  trackingUrl: string;
+  notes: string;
+}
+
+/** Pagamento e envio de cada arrematante neste leilão, e os dados dos arrematantes. */
+export async function loadSettlements(auctionId: string): Promise<{ settlements: Settlement[]; bidders: BidderRow[] }> {
+  const admin = createAdminClient();
+  const { data } = await admin
+    .from("auction_settlements")
+    .select("bidder_id, paid_at, shipped_at, delivered_at, tracking_code, tracking_url, notes")
+    .eq("auction_id", auctionId);
+  const rows = data ?? [];
+  const ids = rows.map((r) => r.bidder_id);
+  const { data: bidders } = ids.length
+    ? await admin.from("auction_bidders").select("id, name, whatsapp").in("id", ids).returns<BidderRow[]>()
+    : { data: [] as BidderRow[] };
+  return {
+    settlements: rows.map((r) => ({
+      bidderId: r.bidder_id,
+      paidAt: r.paid_at,
+      shippedAt: r.shipped_at,
+      deliveredAt: r.delivered_at,
+      trackingCode: r.tracking_code,
+      trackingUrl: r.tracking_url,
+      notes: r.notes,
+    })),
+    bidders: bidders ?? [],
+  };
 }

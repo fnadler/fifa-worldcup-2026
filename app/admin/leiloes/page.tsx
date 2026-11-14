@@ -47,12 +47,13 @@ export default async function AuctionsPage() {
                   <th>Lotes</th>
                   <th>Lances iniciais</th>
                   <th>Arrematado</th>
+                  <th>Recebido</th>
                 </tr>
               </thead>
               <tbody>
                 {auctions.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="adm-empty">
+                    <td colSpan={6} className="adm-empty">
                       Nenhum leilão cadastrado ainda.
                     </td>
                   </tr>
@@ -80,6 +81,16 @@ export default async function AuctionsPage() {
                             {a.sold} de {a.lots} lotes
                           </small>
                         </>
+                      ) : (
+                        "—"
+                      )}
+                    </td>
+                    <td>
+                      {a.sold > 0 ? (
+                        <Link href={`/admin/leiloes/${a.id}/resultado`}>
+                          <b>{formatBRL(a.paidTotalCents)}</b>
+                          <small>falta {formatBRL(a.soldTotalCents - a.paidTotalCents)}</small>
+                        </Link>
                       ) : (
                         "—"
                       )}

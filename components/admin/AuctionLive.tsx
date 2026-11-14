@@ -404,6 +404,9 @@ export default function AuctionLive({ auction, lots, bidders }: { auction: Aucti
               <button type="button" className="btn-primary" onClick={() => say(finalText(auction, lots, byId))}>
                 Copiar mensagem de encerramento
               </button>
+              <Link href={`/admin/leiloes/${auction.id}/resultado`} className="btn-ghost">
+                Resultado e cobrança
+              </Link>
               {auction.status !== "encerrado" && (
                 <button type="button" className="btn-ghost" onClick={encerrarLeilao} disabled={pending}>
                   {armed === "fim" ? "Clique de novo para encerrar" : "Encerrar leilão"}

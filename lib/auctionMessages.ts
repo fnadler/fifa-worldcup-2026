@@ -275,3 +275,15 @@ export function chargeTexts(a: Auction, lots: AuctionLot[], bidders: Record<stri
     return { bidderId, name: b.name, whatsapp: b.whatsapp, count: items.length, totalCents: total, text };
   });
 }
+
+/** Aviso de envio no privado, com o código e o link de rastreio. */
+export function trackingText(name: string, trackingCode: string, trackingUrl: string): string {
+  return [
+    `Oi, ${name || "tudo bem"}! Seu pacote do leilão da ${PLATFORM_NAME} já foi enviado 📦`,
+    "",
+    ...(trackingCode ? [`Código de rastreio: *${trackingCode}*`] : []),
+    ...(trackingUrl ? [`Acompanhe aqui: ${trackingUrl}`] : []),
+    "",
+    "Qualquer dúvida, é só me chamar. Obrigado por participar! 🙌",
+  ].join("\n");
+}

@@ -60,6 +60,9 @@ export default async function AuctionPage({ params }: { params: Promise<{ id: st
               <Link href={`/admin/leiloes/${auction.id}/ao-vivo`} className="btn-primary">
                 {auction.status === "ao_vivo" ? "Voltar ao painel ao vivo" : "Abrir painel ao vivo"}
               </Link>
+              <Link href={`/admin/leiloes/${auction.id}/resultado`} className="btn-ghost">
+                Resultado e cobrança
+              </Link>
             </div>
           )}
           <AuctionForm key={auction.id} auction={auction} />

@@ -432,3 +432,62 @@ export async function finishAuction(auctionId: string): Promise<Result> {
   refreshLive(auctionId);
   return { ok: true };
 }
+
+// ---------- resultado: pagamento e envio ----------
+
+export interface SettlementInput {
+  paid: boolean;
+  shipped: boolean;
+  delivered: boolean;
+  trackingCode: string;
+  trackingUrl: string;
+  notes: string;
+}
+
+/** Grava pagamento, envio, entrega e rastreio de um arrematante neste leilão. Datas: marcou agora, mantém a anterior. */
+export async function saveSettlement(auctionId: string, bidderId: string, input: SettlementInput): Promise<Result> {
+  if (!(await adminUser())) return DENIED;
+  if (!UUID.test(auctionId) || !UUID.test(bidderId)) return { ok: false, error: "Arrematante não encontrado." };
+  const trackingCode = clean(input.trackingCode).toUpperCase();
+  if (trackingCode.length > 60) return { ok: false, error: "Código de rastreio muito longo." };
+  let trackingUrl = clean(input.trackingUrl);
+  if (trackingUrl && !/^https?:\/\//i.test(trackingUrl)) trackingUrl = `https://${trackingUrl}`;
+  if (trackingUrl) {
+    try {
+      new URL(trackingUrl);
+    } catch {
+      return { ok: false, error: "Link de rastreio inválido." };
+    }
+  }
+  if (trackingUrl.length > 500) return { ok: false, error: "Link de rastreio muito longo." };
+  const notes = multiline(input.notes);
+  if (notes.length > 500) return { ok: false, error: "Observação muito longa." };
+
+  const admin = createAdminClient();
+  const { data: cur } = await admin
+    .from("auction_settlements")
+    .select("paid_at, shipped_at, delivered_at")
+    .eq("auction_id", auctionId)
+    .eq("bidder_id", bidderId)
+    .maybeSingle();
+  if (!cur) return { ok: false, error: "Arrematante não encontrado neste leilão." };
+  const now = new Date().toISOString();
+  const stamp = (on: boolean, prev: string | null) => (on ? (prev ?? now) : null);
+  const { error } = await admin
+    .from("auction_settlements")
+    .update({
+      paid_at: stamp(!!input.paid, cur.paid_at),
+      shipped_at: stamp(!!input.shipped, cur.shipped_at),
+      delivered_at: stamp(!!input.delivered, cur.delivered_at),
+      tracking_code: trackingCode,
+      tracking_url: trackingUrl,
+      notes,
+      updated_at: now,
+    })
+    .eq("auction_id", auctionId)
+    .eq("bidder_id", bidderId);
+  if (error) return { ok: false, error: "Não foi possível salvar — tente de novo." };
+  refresh(auctionId);
+  revalidatePath(`/admin/leiloes/${auctionId}/resultado`);
+  return { ok: true };
+}

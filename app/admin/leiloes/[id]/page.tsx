@@ -4,6 +4,8 @@ import { notFound, redirect } from "next/navigation";
 import AccountHeader from "@/components/AccountHeader";
 import AuctionForm from "@/components/admin/AuctionForm";
 import AuctionLots from "@/components/admin/AuctionLots";
+import AuctionMessages from "@/components/admin/AuctionMessages";
+import { middayText, openingText, predictedEnd, reminderText, reminderTime, rulesText, hhmm } from "@/lib/auctionMessages";
 import { AUCTION_STATUS_LABEL, formatAuctionDate } from "@/lib/auctions";
 import { adminUser, loadAuction } from "@/lib/auctionsServer";
 import { PLATFORM_NAME } from "@/lib/brand";
@@ -27,6 +29,15 @@ export default async function AuctionPage({ params }: { params: Promise<{ id: st
   const [data, shop] = await Promise.all([loadAuction(id), ownShop(supabase, user.id)]);
   if (!data) notFound();
   const { auction, lots } = data;
+  const count = lots.length;
+  const start = hhmm(auction.startsAt);
+  const messages = [
+    { key: "regras", label: "Regras · fixar no grupo", text: rulesText(auction, count) },
+    ...(auction.announcement ? [{ key: "divulgacao", label: "Divulgação", text: auction.announcement }] : []),
+    { key: "dia", label: "Lembrete do dia · sugestão 13:30", text: middayText(auction) },
+    { key: "1h", label: `1 hora antes · ${reminderTime(auction)}`, text: reminderText(auction) },
+    { key: "abertura", label: `Abertura · ${start}`, text: openingText(auction, count) },
+  ];
 
   return (
     <div className="app-shell">
@@ -40,10 +51,25 @@ export default async function AuctionPage({ params }: { params: Promise<{ id: st
             <h2 className="admin-section-title">{auction.title}</h2>
             <span className="adm-tag">{AUCTION_STATUS_LABEL[auction.status]}</span>
           </div>
-          <p className="adm-updated">{formatAuctionDate(auction.startsAt)}</p>
+          <p className="adm-updated">
+            {formatAuctionDate(auction.startsAt)}
+            {count > 0 && ` · ${count} lotes · término previsto ${hhmm(predictedEnd(auction, count))}`}
+          </p>
+          {count > 0 && (
+            <div className="live-row">
+              <Link href={`/admin/leiloes/${auction.id}/ao-vivo`} className="btn-primary">
+                {auction.status === "ao_vivo" ? "Voltar ao painel ao vivo" : "Abrir painel ao vivo"}
+              </Link>
+            </div>
+          )}
           <AuctionForm key={auction.id} auction={auction} />
         </section>
         <AuctionLots auctionId={auction.id} lots={lots} />
+        <section className="admin-section">
+          <h2 className="admin-section-title">Mensagens antes do leilão</h2>
+          <p className="adm-updated">Geradas a partir dos dados acima. Salve as alterações para atualizar.</p>
+          <AuctionMessages items={messages} />
+        </section>
       </div>
     </div>
   );

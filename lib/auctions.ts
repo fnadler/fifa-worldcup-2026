@@ -55,6 +55,8 @@ export interface AuctionLot {
   /** Link assinado e temporário da foto (o bucket é privado). */
   imageUrl: string | null;
   status: LotStatus;
+  /** Fechamento do lote aberto (cronômetro do painel ao vivo). */
+  closesAt: string | null;
   soldCents: number | null;
   bidderId: string | null;
 }
@@ -62,7 +64,7 @@ export interface AuctionLot {
 export const AUCTION_COLUMNS =
   "id, title, starts_at, status, lot_minutes, extension_minutes, min_increment_cents, pix_key, pix_deadline_hours, shipping_note, announcement, current_lot_id";
 export const LOT_COLUMNS =
-  "id, auction_id, position, name, detail, estimate_min_cents, estimate_max_cents, start_cents, image_path, status, sold_cents, bidder_id";
+  "id, auction_id, position, name, detail, estimate_min_cents, estimate_max_cents, start_cents, image_path, status, closes_at, sold_cents, bidder_id";
 
 export interface AuctionRow {
   id: string;
@@ -90,6 +92,7 @@ export interface LotRow {
   start_cents: number;
   image_path: string | null;
   status: LotStatus;
+  closes_at: string | null;
   sold_cents: number | null;
   bidder_id: string | null;
 }
@@ -124,6 +127,7 @@ export function lotFromRow(r: LotRow, imageUrl: string | null = null): AuctionLo
     imagePath: r.image_path,
     imageUrl,
     status: r.status,
+    closesAt: r.closes_at,
     soldCents: r.sold_cents,
     bidderId: r.bidder_id,
   };

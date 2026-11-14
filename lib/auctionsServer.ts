@@ -99,3 +99,15 @@ export async function lastAuctionDefaults(): Promise<Partial<Auction>> {
     shippingNote: a.shippingNote,
   };
 }
+
+export interface BidderRow {
+  id: string;
+  name: string;
+  whatsapp: string;
+}
+
+/** Todos os arrematantes já cadastrados (para sugerir o nome pelo WhatsApp no painel ao vivo). */
+export async function listBidders(): Promise<BidderRow[]> {
+  const { data } = await createAdminClient().from("auction_bidders").select("id, name, whatsapp").order("name").returns<BidderRow[]>();
+  return data ?? [];
+}

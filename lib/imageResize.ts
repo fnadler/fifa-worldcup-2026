@@ -37,3 +37,23 @@ export async function cropImage(file: File, width: number, height: number): Prom
     canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("falha ao gerar a imagem"))), "image/webp", 0.88)
   );
 }
+
+// Reduz a imagem para caber em maxSide px, sem recortar (foto de lote de leilão, que vai inteira
+// para o WhatsApp). JPEG: leve e aceito em qualquer lugar ao copiar e colar.
+export async function fitImage(file: File, maxSide = 1600): Promise<Blob> {
+  const bitmap = await createImageBitmap(file);
+  const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(bitmap.width * scale);
+  canvas.height = Math.round(bitmap.height * scale);
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("canvas indisponível");
+  ctx.fillStyle = "#fff"; // PNG com transparência não fica preto no JPEG
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  return new Promise((resolve, reject) =>
+    canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("falha ao gerar a imagem"))), "image/jpeg", 0.88)
+  );
+}

@@ -24,6 +24,8 @@ const cspReportOnly = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Fotos dos lotes de leilão (/admin/leiloes) vão por Server Action: até 3 MB + folga do multipart.
+  experimental: { serverActions: { bodySizeLimit: "4mb" } },
   async headers() {
     return [
       {

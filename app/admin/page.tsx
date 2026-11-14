@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import AccountHeader from "@/components/AccountHeader";
 import GrowthChart from "@/components/admin/GrowthChart";
@@ -46,6 +47,9 @@ export default async function AdminPage() {
       <AccountHeader title="Painel administrativo" email={user.email ?? null} shop={shop} />
 
       <div className="admin-page">
+        <nav className="adm-crumbs">
+          <Link href="/admin/leiloes">Leilões →</Link>
+        </nav>
         <p className="adm-updated">Somente leitura · dados de {atualizado} (recarregue a página para atualizar)</p>
 
         <section className="admin-section">

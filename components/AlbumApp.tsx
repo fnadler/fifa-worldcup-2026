@@ -18,6 +18,8 @@ import ShopMatchModal from "./ShopMatchModal";
 import CommunityBanner from "./CommunityBanner";
 import BulkMarkModal from "./BulkMarkModal";
 import GuiaLojaModal from "./GuiaLojaModal";
+import LojaBanner from "./LojaBanner";
+import { LIMITE_REPETIDAS, valorRepetidas, type PrecosReferencia } from "@/lib/repetidasLoja";
 
 interface AlbumAppProps {
   initialUser: AppUser;
@@ -32,9 +34,14 @@ interface AlbumAppProps {
   openShopsOnLoad?: boolean;
   /** Guia da loja ao carregar (?guia=loja, quem veio vender as repetidas): dias do teste grátis, ou null. */
   guiaLoja?: { trialDays: number } | null;
+  /**
+   * Convite para abrir a loja (quem não tem loja): preço de referência da plataforma para estimar o valor das
+   * repetidas e os dias de teste (0 = já assinou antes). Aparece a partir de LIMITE_REPETIDAS repetidas.
+   */
+  ofertaLoja?: { precos: PrecosReferencia; trialDays: number } | null;
 }
 
-export default function AlbumApp({ initialUser, shopHref, shopActive, collectionName, albumId, collections, openShopsOnLoad, guiaLoja }: AlbumAppProps) {
+export default function AlbumApp({ initialUser, shopHref, shopActive, collectionName, albumId, collections, openShopsOnLoad, guiaLoja, ofertaLoja }: AlbumAppProps) {
   const catalog = getCatalog(albumId);
   const [qtd, setQtd] = useState<Qtd>({});
   const [syncStatus, setSyncStatus] = useState<SyncStatus>("idle");
@@ -321,7 +328,16 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
         }}
       />
 
-      <CommunityBanner />
+      {ofertaLoja && derived.totRepetidas >= LIMITE_REPETIDAS ? (
+        <LojaBanner
+          repetidas={derived.totRepetidas}
+          valorCents={valorRepetidas(qtd, ofertaLoja.precos)}
+          trialDays={ofertaLoja.trialDays}
+          onComoFunciona={() => setGuiaAberto(true)}
+        />
+      ) : (
+        <CommunityBanner />
+      )}
 
       <LegendBar
         modo={modo}
@@ -352,7 +368,9 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
 
       {lojasAberto && <ShopMatchModal onClose={() => setLojasAberto(false)} />}
 
-      {guiaAberto && guiaLoja && <GuiaLojaModal trialDays={guiaLoja.trialDays} onClose={() => setGuiaAberto(false)} />}
+      {guiaAberto && (guiaLoja || ofertaLoja) && (
+        <GuiaLojaModal trialDays={(guiaLoja ?? ofertaLoja)!.trialDays} onClose={() => setGuiaAberto(false)} />
+      )}
 
       {lote && <BulkMarkModal qtd={qtd} initialBlockIds={lote.blockIds} onApply={applyBulk} onClose={() => setLote(null)} />}
 

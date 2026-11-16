@@ -5451,3 +5451,16 @@ button {
   gap: 8px;
   margin-left: auto;
 }
+
+/* convite da loja (muitas repetidas, sem loja): mesma faixa da comunidade, nas cores da loja */
+.loja-banner {
+  border-color: rgba(253, 202, 4, 0.5);
+  background: rgba(253, 202, 4, 0.08);
+}
+.loja-banner-icon {
+  background: var(--gold);
+  color: var(--bg);
+}
+.loja-banner .link-button {
+  font-size: 13px;
+}

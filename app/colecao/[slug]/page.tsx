@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { catalogBySlug } from "@/lib/catalog";
 import { ownShop } from "@/lib/shopLink";
+import { precosReferencia } from "@/lib/precosReferencia";
 import { TRIAL_DAYS } from "@/lib/stripe";
 import { collectionTitleOf, userCollections } from "@/lib/userCollections";
 import AlbumApp from "@/components/AlbumApp";
@@ -30,6 +31,13 @@ export default async function ColecaoPage({
   if (!user) redirect(`/login?next=${encodeURIComponent(`/colecao/${slug}${abrirLojas ? "?lojas=1" : ""}`)}`);
 
   const [collections, shop] = await Promise.all([userCollections(supabase, user.id), ownShop(supabase, user.id)]);
+  // Sem loja: preço de referência (convite com o valor das repetidas) e se ainda tem direito ao teste grátis.
+  const [precos, { data: assinatura }] = shop.active
+    ? [null, { data: null }]
+    : await Promise.all([
+        precosReferencia(),
+        supabase.from("subscriptions").select("stripe_subscription_id").eq("user_id", user.id).maybeSingle<{ stripe_subscription_id: string | null }>(),
+      ]);
   const current = collections.find((c) => c.albumId === catalog.id);
   // Coleção que a pessoa ainda não tem: oferece adicionar.
   if (!current) redirect(`/colecoes?adicionar=${slug}`);
@@ -46,6 +54,7 @@ export default async function ColecaoPage({
       openShopsOnLoad={abrirLojas}
       // quem já tem a loja não precisa do guia
       guiaLoja={guia === "loja" && !shop.active ? { trialDays: TRIAL_DAYS } : null}
+      ofertaLoja={precos ? { precos: { [catalog.id]: precos[catalog.id] ?? {} }, trialDays: assinatura?.stripe_subscription_id ? 0 : TRIAL_DAYS } : null}
     />
   );
 }

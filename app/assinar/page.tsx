@@ -20,7 +20,7 @@ export default async function AssinarPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/login?next=/assinar");
   if (await hasShopAccess(supabase, user.id)) redirect("/vendas");
 
   const verificarEmail = precisaVerificar(user);

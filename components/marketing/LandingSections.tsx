@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { landing, trialSteps } from "@/content/landing";
 import { COMMUNITY_URL } from "@/lib/community";
-import { COLLECTION_PATH, SIGNUP_PATH, signupThen } from "@/lib/routes";
+import { COLLECTION_PATH, SIGNUP_COLECIONAR_PATH, signupThen } from "@/lib/routes";
 import Faq from "./Faq";
 import HeroMock from "./HeroMock";
 import { SmartLink } from "./Session";
@@ -12,7 +12,7 @@ import type { DirectoryShop } from "@/lib/shopDirectory";
 // Seções da landing. Markup estático (mocks ilustrativos); só os CTAs reagem à sessão.
 
 const CTA_COLECAO = {
-  anon: { href: SIGNUP_PATH, label: "Criar coleção grátis" },
+  anon: { href: SIGNUP_COLECIONAR_PATH, label: "Criar coleção grátis" },
   authed: { href: COLLECTION_PATH, label: "Ir para minha coleção" },
 };
 const lojaCta = (label: string) => ({
@@ -201,7 +201,7 @@ export function CollectionSection() {
         </div>
         <SmartLink
           className="mk-btn mk-btn-green"
-          anon={{ href: SIGNUP_PATH, label: c.cta }}
+          anon={{ href: SIGNUP_COLECIONAR_PATH, label: c.cta }}
           authed={{ href: COLLECTION_PATH, label: "Ir para minha coleção" }}
         />
       </div>
@@ -337,7 +337,7 @@ export function Pricing({ price, trialDays }: { price: string; trialDays: number
           </ul>
           <SmartLink
             className="mk-btn mk-btn-ghost-green"
-            anon={{ href: SIGNUP_PATH, label: p.free.cta }}
+            anon={{ href: SIGNUP_COLECIONAR_PATH, label: p.free.cta }}
             authed={{ href: COLLECTION_PATH, label: "Ir para minha coleção" }}
           />
         </div>
@@ -396,7 +396,7 @@ export function FinalCta() {
           <SmartLink className="mk-btn mk-btn-yellow" {...lojaCta(f.ctaLoja)} />
           <SmartLink
             className="mk-btn mk-btn-ghost-light"
-            anon={{ href: SIGNUP_PATH, label: f.ctaColecao }}
+            anon={{ href: SIGNUP_COLECIONAR_PATH, label: f.ctaColecao }}
             authed={{ href: COLLECTION_PATH, label: "Ir para minha coleção" }}
           />
         </div>

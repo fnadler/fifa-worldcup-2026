@@ -2,7 +2,9 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { parseAccountInput } from "@/lib/profile";
+import type { Intencao } from "@/lib/intencao";
 import { readSignupAttribution, trackWithServer } from "@/lib/metaClient";
+import { ONBOARDING_PATH } from "@/lib/onboarding";
 import { maskPhoneBR } from "@/lib/phone";
 import { createClient } from "@/lib/supabase/client";
 import AuthShell from "./marketing/AuthShell";
@@ -49,9 +51,14 @@ interface LoginFormProps {
   next: string;
   /** Aviso inicial (ex: link de e-mail inválido ou vencido). */
   initialError?: string | null;
+  /** Para que a pessoa veio (ver lib/intencao.ts): define a tela depois do cadastro. */
+  intencao?: Intencao;
 }
 
-export default function LoginForm({ initialMode = "signin", next, initialError = null }: LoginFormProps) {
+export default function LoginForm({ initialMode = "signin", next, initialError = null, intencao = "colecionar" }: LoginFormProps) {
+  // Quem veio para vender começa pela escolha das coleções que quer vender (e o guia da loja); o teste grátis
+  // vem depois, quando a pessoa já marcou o estoque.
+  const depoisDoCadastro = intencao === "vender" ? `${ONBOARDING_PATH}?para=vender` : next;
   const [mode, setMode] = useState<Mode>(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -171,39 +178,37 @@ export default function LoginForm({ initialMode = "signin", next, initialError =
       return;
     }
 
-    const { data, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
-        // user_metadata; as coleções são escolhidas depois de confirmar o e-mail (lib/onboarding.ts).
-        // attr: origem do cadastro (UTM/fbclid, _fbc/_fbp), gravada em marketing_attribution na confirmação.
-        data: { ...profile.data, onboarding: "pending", attr: readSignupAttribution() },
-      },
-    });
-    setLoading(false);
-    if (signUpError) {
-      setError(
-        signUpError.status === 429
-          ? "Muitos cadastros em pouco tempo. Espere alguns minutos e tente de novo."
-          : signUpError.code === "weak_password"
-            ? "Senha fraca — use pelo menos 6 caracteres."
-            : "Não foi possível criar a conta — confira os dados e tente de novo."
-      );
+    // Conta criada no servidor já confirmada (o e-mail só é conferido ao ativar o teste da loja, por código):
+    // ninguém fica parado esperando um link de confirmação. Em seguida entra com e-mail e senha.
+    // user_metadata: perfil, onboarding pendente, intenção (vender/colecionar) e a origem do cadastro (attr).
+    let resposta: { ok?: boolean; erro?: string };
+    try {
+      const res = await fetch("/api/cadastro/criar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, senha: password, nome: fullName, whatsapp, intencao, attr: readSignupAttribution() }),
+      });
+      resposta = (await res.json().catch(() => ({}))) as typeof resposta;
+    } catch {
+      resposta = { erro: "Sem conexão — tente de novo." };
+    }
+    if (!resposta.ok) {
+      setLoading(false);
+      setError(resposta.erro ?? "Não foi possível criar a conta — confira os dados e tente de novo.");
       return;
     }
-    if (!data.session) {
-      // e-mail que já tem conta confirmada: o Supabase responde sem sessão e sem identidades (e não envia nada)
-      if (data.user && data.user.identities?.length === 0) {
-        setError("Já existe uma conta com esse e-mail. Entre com a sua senha ou use “Esqueci minha senha”.");
-        return;
-      }
-      trackWithServer("CompleteRegistration", undefined, email);
-      // só segue para a coleção depois de abrir o link de confirmação
-      return awaitConfirmation(true);
+    const { error: entrarError } = await supabase.auth.signInWithPassword({ email, password });
+    if (entrarError) {
+      setLoading(false);
+      switchMode("signin");
+      setError("Sua conta foi criada, mas não conseguimos entrar agora. Entre com o seu e-mail e senha.");
+      return;
     }
+    // Atribuição + lead ao ads-platform no servidor, e o evento de cadastro na Meta. O evento só sai aqui, com a
+    // conta de fato criada (antes, saía no envio do formulário, mesmo sem a pessoa confirmar o e-mail).
+    await fetch("/api/cadastro", { method: "POST" }).catch(() => undefined);
     trackWithServer("CompleteRegistration", undefined, email);
-    window.location.href = next;
+    window.location.href = depoisDoCadastro;
   }
 
   if (mode === "confirm") {

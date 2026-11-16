@@ -2,20 +2,22 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { catalogBySlug } from "@/lib/catalog";
 import { ownShop } from "@/lib/shopLink";
+import { TRIAL_DAYS } from "@/lib/stripe";
 import { collectionTitleOf, userCollections } from "@/lib/userCollections";
 import AlbumApp from "@/components/AlbumApp";
 
 export const dynamic = "force-dynamic";
 
 // ?lojas=1 abre a coleção já com "Lojas com o que falta" (Quero comprar) aberto — link do e-mail.
+// ?guia=loja abre o guia da loja (quem veio vender: depois da escolha das coleções).
 export default async function ColecaoPage({
   params,
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ lojas?: string }>;
+  searchParams: Promise<{ lojas?: string; guia?: string }>;
 }) {
-  const [{ slug }, { lojas }] = await Promise.all([params, searchParams]);
+  const [{ slug }, { lojas, guia }] = await Promise.all([params, searchParams]);
   const abrirLojas = lojas === "1";
   const catalog = catalogBySlug(slug);
   if (!catalog) notFound();
@@ -42,6 +44,8 @@ export default async function ColecaoPage({
       albumId={catalog.id}
       collections={collections}
       openShopsOnLoad={abrirLojas}
+      // quem já tem a loja não precisa do guia
+      guiaLoja={guia === "loja" && !shop.active ? { trialDays: TRIAL_DAYS } : null}
     />
   );
 }

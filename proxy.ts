@@ -10,6 +10,7 @@ import {
   FIRST_TOUCH_COOKIE,
   FIRST_TOUCH_MAX_AGE,
 } from "@/lib/attribution";
+import { INTENT_COOKIE, INTENT_MAX_AGE, lerIntencao } from "@/lib/intencao";
 
 const ATTR_COOKIE_OPTIONS = {
   path: "/",
@@ -24,6 +25,9 @@ const ATTR_COOKIE_OPTIONS = {
 function saveAttribution(request: NextRequest, response: NextResponse) {
   const { pathname, searchParams } = request.nextUrl;
   if (/^\/(api|_next)\//.test(pathname) || /\.[a-z0-9]+$/i.test(pathname)) return;
+  // Anúncio ou link que já diz a intenção (?para=vender): o cadastro, mais adiante, segue o fluxo da loja.
+  const para = lerIntencao(searchParams.get("para"));
+  if (para) response.cookies.set(INTENT_COOKIE, para, { ...ATTR_COOKIE_OPTIONS, maxAge: INTENT_MAX_AGE });
   const now = Date.now();
   const attr = attributionFromUrl(searchParams, pathname, now);
   if (!attr) return;

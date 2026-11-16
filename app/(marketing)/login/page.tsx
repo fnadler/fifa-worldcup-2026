@@ -1,4 +1,6 @@
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { INTENT_COOKIE, intencaoDoCadastro } from "@/lib/intencao";
 import { safeNext } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import LoginForm from "@/components/LoginForm";
@@ -8,9 +10,9 @@ export const dynamic = "force-dynamic";
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ modo?: string; next?: string; authError?: string }>;
+  searchParams: Promise<{ modo?: string; next?: string; authError?: string; para?: string }>;
 }) {
-  const { modo, next, authError } = await searchParams;
+  const { modo, next, authError, para } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -22,6 +24,7 @@ export default async function LoginPage({
     <LoginForm
       initialMode={modo === "cadastro" ? "signup" : "signin"}
       next={safeNext(next)}
+      intencao={intencaoDoCadastro(para, safeNext(next), (await cookies()).get(INTENT_COOKIE)?.value)}
       initialError={
         authError
           ? "Não foi possível abrir esse link aqui: ele já foi usado, venceu ou foi aberto em outro navegador. Se você acabou de confirmar o cadastro, é só entrar com seu e-mail e senha. Para trocar a senha, peça um novo link em “Esqueci minha senha”."

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { landing } from "@/content/landing";
-import { COLLECTION_PATH, SIGNUP_PATH, signupThen } from "@/lib/routes";
+import { COLLECTION_PATH, SIGNUP_COLECIONAR_PATH, signupThen } from "@/lib/routes";
 import { TRIAL_DAYS } from "@/lib/stripe";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 import MarketingNav from "@/components/marketing/MarketingNav";
@@ -35,7 +35,7 @@ export default function ColecoesDisponiveisPage() {
         <div className="mk-ctas">
           <SmartLink
             className="mk-btn mk-btn-green"
-            anon={{ href: SIGNUP_PATH, label: "Criar coleção grátis" }}
+            anon={{ href: SIGNUP_COLECIONAR_PATH, label: "Criar coleção grátis" }}
             authed={{ href: COLLECTION_PATH, label: "Ir para minha coleção" }}
           />
           <SmartLink

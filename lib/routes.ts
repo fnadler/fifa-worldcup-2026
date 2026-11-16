@@ -1,6 +1,8 @@
 // Rotas principais. A "/" é a landing pública; a área do colecionador fica em /colecao.
 export const COLLECTION_PATH = "/colecao";
 export const SIGNUP_PATH = "/login?modo=cadastro";
+/** Cadastro pelo botão "Criar coleção grátis": a escolha explícita vale mais que a intenção do anúncio. */
+export const SIGNUP_COLECIONAR_PATH = `${SIGNUP_PATH}&para=colecionar`;
 /** Tela "e-mail confirmado", aberta pelo link de confirmação do cadastro. */
 export const SIGNUP_CONFIRMED_PATH = "/login/confirmado";
 

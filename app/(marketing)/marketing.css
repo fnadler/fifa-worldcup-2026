@@ -1962,6 +1962,24 @@ html:has(.mk) {
   color: var(--gn-muted);
   font-weight: 600;
 }
+/* "Ver mais coleções": as coleções de fora da Copa 2026 ficam fechadas até a pessoa pedir */
+.mk-onb-mais {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.mk-onb-mais-btn {
+  align-self: center;
+}
+.mk-onb-mais-head h2 {
+  margin: 0;
+  font-size: 22px;
+  color: var(--gn-text);
+}
+.mk-onb-mais-head p {
+  margin: 4px 0 0;
+  color: var(--gn-text-2);
+}
 .mk-onb-foot {
   display: flex;
   align-items: flex-end;

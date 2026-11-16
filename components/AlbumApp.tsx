@@ -17,6 +17,7 @@ import ShareModal from "./ShareModal";
 import ShopMatchModal from "./ShopMatchModal";
 import CommunityBanner from "./CommunityBanner";
 import BulkMarkModal from "./BulkMarkModal";
+import GuiaLojaModal from "./GuiaLojaModal";
 
 interface AlbumAppProps {
   initialUser: AppUser;
@@ -29,9 +30,11 @@ interface AlbumAppProps {
   collections: UserCollection[];
   /** Abre "Lojas com o que falta" ao carregar (?lojas=1, link do e-mail). */
   openShopsOnLoad?: boolean;
+  /** Guia da loja ao carregar (?guia=loja, quem veio vender as repetidas): dias do teste grátis, ou null. */
+  guiaLoja?: { trialDays: number } | null;
 }
 
-export default function AlbumApp({ initialUser, shopHref, shopActive, collectionName, albumId, collections, openShopsOnLoad }: AlbumAppProps) {
+export default function AlbumApp({ initialUser, shopHref, shopActive, collectionName, albumId, collections, openShopsOnLoad, guiaLoja }: AlbumAppProps) {
   const catalog = getCatalog(albumId);
   const [qtd, setQtd] = useState<Qtd>({});
   const [syncStatus, setSyncStatus] = useState<SyncStatus>("idle");
@@ -44,6 +47,7 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
   const [busca, setBusca] = useState("");
   const [trocasAberto, setTrocasAberto] = useState(false);
   const [lojasAberto, setLojasAberto] = useState(Boolean(openShopsOnLoad));
+  const [guiaAberto, setGuiaAberto] = useState(Boolean(guiaLoja));
   const [toast, setToast] = useState<string | null>(null);
   // Marcação em lote: null = fechado; blockIds = blocos já marcados ao abrir.
   const [lote, setLote] = useState<{ blockIds: string[] } | null>(null);
@@ -62,6 +66,14 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
     url.searchParams.delete("lojas");
     window.history.replaceState(window.history.state, "", url);
   }, [openShopsOnLoad]);
+
+  // o mesmo para o ?guia=loja: o guia abre uma vez, recarregar não o traz de volta
+  useEffect(() => {
+    if (!guiaLoja) return;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("guia");
+    window.history.replaceState(window.history.state, "", url);
+  }, [guiaLoja]);
 
   const showToast = useCallback((msg: string) => {
     setToast(msg);
@@ -339,6 +351,8 @@ export default function AlbumApp({ initialUser, shopHref, shopActive, collection
       )}
 
       {lojasAberto && <ShopMatchModal onClose={() => setLojasAberto(false)} />}
+
+      {guiaAberto && guiaLoja && <GuiaLojaModal trialDays={guiaLoja.trialDays} onClose={() => setGuiaAberto(false)} />}
 
       {lote && <BulkMarkModal qtd={qtd} initialBlockIds={lote.blockIds} onApply={applyBulk} onClose={() => setLote(null)} />}
 

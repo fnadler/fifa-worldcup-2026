@@ -4,6 +4,7 @@ import { profileFromMetadata } from "@/lib/profile";
 import { getStripe, stripeConfigured, TRIAL_DAYS } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { precisaVerificar } from "@/lib/verificacaoEmail";
 
 const ATIVAS = new Set(["active", "trialing", "past_due"]);
 
@@ -17,6 +18,9 @@ export async function POST(request: Request) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Faça login para assinar." }, { status: 401 });
+  if (precisaVerificar(user)) {
+    return NextResponse.json({ error: "Confirme o seu e-mail com o código antes de ativar o teste." }, { status: 403 });
+  }
 
   try {
     const admin = createAdminClient();

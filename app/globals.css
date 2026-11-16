@@ -2486,6 +2486,19 @@ button {
   font-size: 16px;
 }
 
+/* confirmação do e-mail antes do teste grátis (código de 6 dígitos) */
+.verify-email,
+.verify-email-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.verify-email-code {
+  font-size: 22px;
+  letter-spacing: 6px;
+  text-align: center;
+}
+
 .welcome-banner {
   display: flex;
   align-items: center;
@@ -5346,4 +5359,95 @@ button {
 }
 .adm-table td a small {
   color: var(--text-5);
+}
+
+/* ---------- guia da loja (sobre o quadro, para quem veio vender) ---------- */
+
+.guia-card {
+  max-height: 88vh;
+  gap: 16px;
+  padding: 18px;
+}
+.guia-passo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 210px;
+}
+.guia-contador {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-4);
+}
+.guia-passo h3 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  line-height: 1.2;
+}
+.guia-passo p,
+.guia-lista p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.guia-num {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(0, 196, 106, 0.14);
+  color: var(--positive);
+  font-weight: 700;
+  font-size: 14px;
+}
+.guia-pontos {
+  display: flex;
+  gap: 6px;
+  margin-top: auto;
+}
+.guia-pontos span {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--border-3);
+}
+.guia-pontos span.on {
+  background: var(--gold);
+  width: 22px;
+}
+.guia-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+}
+.guia-lista li {
+  display: flex;
+  gap: 12px;
+}
+.guia-lista strong {
+  display: block;
+  margin: 3px 0 4px;
+}
+.guia-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.guia-acoes-dir {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
 }

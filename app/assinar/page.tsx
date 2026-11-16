@@ -7,6 +7,7 @@ import { getStripe, stripeConfigured, TRIAL_DAYS } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import SubscribePage from "@/components/SubscribePage";
+import { precisaVerificar } from "@/lib/verificacaoEmail";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,8 @@ export default async function AssinarPage() {
   if (!user) redirect("/login");
   if (await hasShopAccess(supabase, user.id)) redirect("/vendas");
 
-  if (!stripeConfigured()) return <SubscribePage email={user.email ?? null} plan={null} />;
+  const verificarEmail = precisaVerificar(user);
+  if (!stripeConfigured()) return <SubscribePage email={user.email ?? null} plan={null} verificarEmail={false} />;
 
   const [price, { data: sub }] = await Promise.all([
     getStripe().prices.retrieve(process.env.STRIPE_PRICE_ID!),
@@ -36,6 +38,7 @@ export default async function AssinarPage() {
   return (
     <SubscribePage
       email={user.email ?? null}
+      verificarEmail={verificarEmail}
       plan={{
         price: price.unit_amount != null ? formatBRL(price.unit_amount) : "",
         trialDays: sub?.stripe_subscription_id ? 0 : TRIAL_DAYS,

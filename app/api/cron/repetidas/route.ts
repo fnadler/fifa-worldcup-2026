@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 import { previewRepetidas, sendRepetidasTo, sweepRepetidas } from "@/lib/repetidasEmail";
 
 // "Suas repetidas podem valer até R$ X": quem passou de LIMITE_REPETIDAS repetidas e não tem loja. Protegido por CRON_SECRET
-// (Authorization: Bearer <CRON_SECRET>). Envio único por conta, então pode rodar todo dia (vercel.json).
+// (Authorization: Bearer <CRON_SECRET>; a Vercel manda sozinha no agendamento). Roda todo dia às 11h (vercel.json):
+// registra quem passou do limite e envia a partir do dia seguinte — ver lib/repetidasEmail.ts.
 //
 //   GET …?email=fulano@exemplo.com&ver=1     mostra o e-mail (HTML) sem enviar
 //   GET …?email=fulano@exemplo.com           envia só para essa conta (teste; não conta como envio do lote)

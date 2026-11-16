@@ -10,10 +10,20 @@ import { LIMITE_REPETIDAS, valorAproximado, valorRepetidas, type PrecosReferenci
 import { TRIAL_DAYS } from "./stripe";
 import { createAdminClient } from "./supabase/admin";
 
-// E-mail "suas repetidas podem valer até R$ X": para quem passou de LIMITE_REPETIDAS repetidas e não tem loja. Envio
-// único por conta (data em app_metadata). Fica de fora quem tem acesso à loja (assinatura ou cortesia).
+// E-mail "suas repetidas podem valer até R$ X": para quem passou de LIMITE_REPETIDAS repetidas e não tem loja.
+// Rotina diária (vercel.json, 11h):
+//   1. na primeira vez que vê a conta acima do limite, só registra a data (LIMITE_KEY) — sem enviar;
+//   2. envia a partir de 1 dia depois desse registro, se a conta continua acima do limite e sem loja
+//      (a faixa no quadro já aparece na hora; o e-mail é a segunda chance para quem saiu sem abrir a loja);
+//   3. não soma com outro e-mail nosso: se a conta recebeu outro nas últimas 48 h, fica para o dia seguinte.
+// Envio único por conta (SENT_KEY em app_metadata). Fica de fora quem tem acesso à loja (assinatura ou cortesia).
 
 const SENT_KEY = "email_repetidas_em";
+const LIMITE_KEY = "repetidas_limite_em";
+const ESPERA_MS = 86_400_000;
+const INTERVALO_EMAILS_MS = 48 * 3_600_000;
+/** Outros e-mails da base, com a data do envio em app_metadata. */
+const OUTROS_EMAILS = ["email_ativacao_em", "email_convite_cadastro_em", "email_lojas_com_o_que_falta_em"];
 
 interface Estoque {
   qtd: Record<string, number>;
@@ -60,16 +70,18 @@ function inputFor(user: User, e: Estoque, precos: PrecosReferencia, jaAssinou: b
 
 async function contexto() {
   const admin = createAdminClient();
-  const [lista, precos, { data: ents }, { data: subs }] = await Promise.all([
+  const [lista, precos, { data: ents }, { data: subs }, { data: convites }] = await Promise.all([
     estoques(),
     precosReferencia(),
     admin.from("shop_entitlements").select("user_id, expires_at"),
     admin.from("subscriptions").select("user_id, stripe_subscription_id"),
+    admin.from("community_invites").select("user_id, sent_at"),
   ]);
   const agora = Date.now();
   const comLoja = new Set((ents ?? []).filter((e) => !e.expires_at || Date.parse(e.expires_at) > agora).map((e) => e.user_id as string));
   const jaAssinou = new Set((subs ?? []).filter((s) => s.stripe_subscription_id).map((s) => s.user_id as string));
-  return { lista, precos, comLoja, jaAssinou };
+  const conviteComunidade = new Map((convites ?? []).map((c) => [c.user_id as string, Date.parse(c.sent_at as string)]));
+  return { lista, precos, comLoja, jaAssinou, conviteComunidade };
 }
 
 export async function previewRepetidas(email: string) {
@@ -101,13 +113,22 @@ export interface RepetidasSweepOptions {
 }
 
 export async function sweepRepetidas({ dryRun, exclude = [], limit = 100 }: RepetidasSweepOptions) {
-  const [users, { lista, precos, comLoja, jaAssinou }] = await Promise.all([listAllUsers(), contexto()]);
+  const [users, { lista, precos, comLoja, jaAssinou, conviteComunidade }] = await Promise.all([listAllUsers(), contexto()]);
+  const agora = Date.now();
+  const ultimoOutroEmail = (user: User) =>
+    Math.max(conviteComunidade.get(user.id) ?? 0, ...OUTROS_EMAILS.map((k) => Date.parse(String(user.app_metadata?.[k] ?? "")) || 0));
   const fora = exclude.map((x) => x.trim().toLowerCase()).filter(Boolean);
   const out = {
     acimaDoLimite: 0,
     comLoja: 0,
     excluidos: 0,
     jaRecebidos: 0,
+    /** Passaram do limite agora: data registrada, o e-mail sai a partir de amanhã. */
+    registrados: 0,
+    /** Passaram do limite há menos de 1 dia. */
+    aguardando: 0,
+    /** Receberam outro e-mail nosso nas últimas 48 h. */
+    outroEmailRecente: 0,
     enviados: 0,
     erros: 0,
     dryRun: Boolean(dryRun),
@@ -122,6 +143,18 @@ export async function sweepRepetidas({ dryRun, exclude = [], limit = 100 }: Repe
     if (comLoja.has(user.id)) { out.comLoja++; continue; }
     if (fora.some((x) => user.email!.toLowerCase().includes(x))) { out.excluidos++; continue; }
     if (user.app_metadata?.[SENT_KEY]) { out.jaRecebidos++; continue; }
+    const passouEm = Date.parse(String(user.app_metadata?.[LIMITE_KEY] ?? ""));
+    if (!passouEm) {
+      out.registrados++;
+      if (!dryRun) {
+        await createAdminClient().auth.admin.updateUserById(user.id, {
+          app_metadata: { ...user.app_metadata, [LIMITE_KEY]: new Date(agora).toISOString() },
+        });
+      }
+      continue;
+    }
+    if (agora - passouEm < ESPERA_MS) { out.aguardando++; continue; }
+    if (agora - ultimoOutroEmail(user) < INTERVALO_EMAILS_MS) { out.outroEmailRecente++; continue; }
 
     const input = inputFor(user, e, precos, jaAssinou.has(user.id));
     out.destinatarios.push({ email: user.email, repetidas: e.repetidas, valor: input.valor, teste: input.trialDays > 0 });

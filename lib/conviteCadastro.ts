@@ -4,7 +4,6 @@ import { conviteHtml, conviteSubject, conviteText, type ConviteInput } from "./e
 import { emailConfigured, sendEmail } from "./email/resend";
 import { findUserByEmail, firstNameOf, listAllUsers, markSent, pause } from "./emailRecipients";
 import { criarTokenEntrada, DESTINO_COLECIONAR, DESTINO_VENDER } from "./linkEntrada";
-import { listShops } from "./shopDirectory";
 import { TRIAL_DAYS } from "./stripe";
 
 // Convite para quem começou o cadastro e não confirmou o e-mail (o cadastro antigo pedia a confirmação por
@@ -17,23 +16,20 @@ const UTM = "utm_source=email&utm_medium=email&utm_campaign=convite_cadastro";
 
 const link = (user: User, destino: typeof DESTINO_COLECIONAR) => `${SITE}/auth/entrar?t=${criarTokenEntrada(user.id, destino)}&${UTM}`;
 
-function inputFor(user: User, shopCount: number): ConviteInput {
+function inputFor(user: User): ConviteInput {
   return {
     firstName: firstNameOf(user),
     linkColecao: link(user, DESTINO_COLECIONAR),
     linkLoja: link(user, DESTINO_VENDER),
-    shopCount,
     trialDays: TRIAL_DAYS,
   };
 }
-
-const lojasAbertas = async () => (await listShops()).length;
 
 /** Pré-visualização para uma conta (os links do HTML são de verdade: não encaminhe o e-mail de outra pessoa). */
 export async function previewConvite(email: string) {
   const user = await findUserByEmail(email);
   if (!user?.email) return { status: "nao-encontrado" as const };
-  const input = inputFor(user, await lojasAbertas());
+  const input = inputFor(user);
   return { status: "ok" as const, to: user.email, subject: conviteSubject(input), html: conviteHtml(input), text: conviteText(input) };
 }
 
@@ -55,7 +51,7 @@ export interface ConviteSweepOptions {
 }
 
 export async function sweepConvites({ dryRun, exclude = [], limit = 200, desde = null }: ConviteSweepOptions) {
-  const [users, shopCount] = await Promise.all([listAllUsers(), lojasAbertas()]);
+  const users = await listAllUsers();
   const ontem = Date.now() - 86_400_000;
   const inicio = desde ? Date.parse(`${desde}T00:00:00-03:00`) : 0;
   const fora = ["+rastreio", ...exclude].map((x) => x.trim().toLowerCase()).filter(Boolean);
@@ -85,7 +81,7 @@ export async function sweepConvites({ dryRun, exclude = [], limit = 200, desde =
     if (dryRun || !out.pronto || out.enviados + out.erros >= limit) continue;
 
     try {
-      const input = inputFor(user, shopCount);
+      const input = inputFor(user);
       const id = await sendEmail({ to: user.email, subject: conviteSubject(input), html: conviteHtml(input), text: conviteText(input) });
       await markSent(user, SENT_KEY, id);
       out.enviados++;

@@ -19,8 +19,6 @@ export interface ConviteInput {
   linkColecao: string;
   /** Link que entra na conta e abre a escolha das coleções para vender (loja). */
   linkLoja: string;
-  /** Lojas abertas hoje (prova social do "quem vende o que falta"). */
-  shopCount: number;
   trialDays: number;
 }
 
@@ -34,14 +32,11 @@ function intro(): string {
   return `Você começou o cadastro na ${PLATFORM_NAME}, mas ele não chegou ao fim. Guardamos tudo: é só tocar no botão abaixo que a sua conta abre na hora, sem senha e sem precisar confirmar mais nada.`;
 }
 
-function vantagens({ shopCount }: ConviteInput): [string, string][] {
+function vantagens(): [string, string][] {
   return [
     ["Grátis, para sempre", "Criar e organizar a coleção não custa nada. Álbum da Copa 2026, Adrenalyn XL, Gold Crumple e os álbuns das Copas de 1990 a 2022."],
     ["Saiba na hora o que falta", "Um toque em cada figurinha que você tem. A lista do que falta e a das repetidas saem sozinhas, prontas para trocar."],
-    [
-      "Complete mais rápido",
-      `O botão Quero completar mostra quais das ${shopCount} lojas da plataforma vendem o que falta para você.`,
-    ],
+    ["Complete mais rápido", "O botão “Quero completar” mostra quais das lojas da plataforma vendem o que falta para você."],
   ];
 }
 
@@ -49,7 +44,7 @@ export function conviteHtml(input: ConviteInput): string {
   const ola = input.firstName ? `Olá, ${esc(input.firstName)}!` : "Olá!";
   const colecao = esc(input.linkColecao);
   const loja = esc(input.linkLoja);
-  const itens = vantagens(input)
+  const itens = vantagens()
     .map(
       ([t, x]) => `
           <tr>
@@ -147,7 +142,7 @@ export function conviteText(input: ConviteInput): string {
     "",
     intro(),
     "",
-    ...vantagens(input).map(([t, x]) => `- ${t}: ${x}`),
+    ...vantagens().map(([t, x]) => `- ${t}: ${x}`),
     "",
     `Criar minha coleção grátis: ${input.linkColecao}`,
     "",

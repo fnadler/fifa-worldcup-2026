@@ -28,7 +28,13 @@ export default async function ColecaoPage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect(`/login?next=${encodeURIComponent(`/colecao/${slug}${abrirLojas ? "?lojas=1" : ""}`)}`);
+  if (!user) {
+    // volta para a coleção com o que o link pedia (lojas e guia da loja), depois de entrar
+    const q = new URLSearchParams();
+    if (abrirLojas) q.set("lojas", "1");
+    if (guia === "loja") q.set("guia", "loja");
+    redirect(`/login?next=${encodeURIComponent(`/colecao/${slug}${q.size ? `?${q}` : ""}`)}`);
+  }
 
   const [collections, shop] = await Promise.all([userCollections(supabase, user.id), ownShop(supabase, user.id)]);
   // Sem loja: preço de referência (convite com o valor das repetidas) e se ainda tem direito ao teste grátis.

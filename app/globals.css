@@ -5464,3 +5464,205 @@ button {
 .loja-banner .link-button {
   font-size: 13px;
 }
+
+/* ---------- pacotes: painel do lote (/vendas/pacotes) ---------- */
+.pack-hint {
+  font-size: 13px;
+  color: var(--text-5);
+  margin: 0;
+  line-height: 1.45;
+}
+.pack-hint b {
+  color: var(--text-2);
+  font-weight: 600;
+  word-break: break-all;
+}
+.pack-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-3);
+  cursor: pointer;
+}
+.pack-check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+.pack-status {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pack-image-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.pack-image-preview {
+  width: 120px;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--border-3);
+  background: var(--field);
+}
+.pack-image-preview.is-empty {
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  color: var(--text-6);
+}
+.pack-image-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  min-width: 0;
+  flex: 1;
+}
+.pack-file {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.pack-file input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.pack-pot-total {
+  font-family: var(--font-bebas-neue);
+  font-size: 22px;
+  color: var(--gold);
+  letter-spacing: 0.02em;
+}
+.pack-tier {
+  --tier: var(--leg-text);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-1);
+}
+.pack-tier.is-lil { --tier: #b88cff; }
+.pack-tier.is-bro { --tier: #d08a4f; }
+.pack-tier.is-pra { --tier: #d4dbe2; }
+.pack-tier.is-our { --tier: #ffcf4d; }
+.pack-tier-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.pack-tier-head h3 {
+  margin: 0;
+  font-family: var(--font-bebas-neue);
+  font-weight: 400;
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  color: var(--tier);
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.pack-tier-head h3 span {
+  font-family: var(--font-barlow);
+  font-size: 13px;
+  color: var(--text-5);
+  letter-spacing: 0;
+}
+.pack-tier-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.pack-legends {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 12px;
+}
+.pack-legends li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.pack-legend-photo {
+  position: relative;
+  aspect-ratio: 545 / 727;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--field);
+  border: 1px solid var(--border-2);
+}
+.pack-legend-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0.55;
+}
+.pack-legends li.is-in .pack-legend-photo {
+  border-color: var(--tier);
+  box-shadow: 0 0 0 1px var(--tier);
+}
+.pack-legends li.is-in .pack-legend-photo img {
+  opacity: 1;
+}
+.pack-legend-qty {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: var(--gold);
+  color: var(--on-gold);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 1px 7px;
+  border-radius: 10px;
+}
+.pack-legend-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pack-legend-free {
+  font-size: 12px;
+  color: var(--text-6);
+}
+.pack-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  margin-top: 2px;
+}
+.pack-stepper button {
+  width: 34px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border-3);
+  background: var(--field);
+  color: var(--text-1);
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.pack-stepper button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.pack-stepper output {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}

@@ -17,6 +17,7 @@ import { PLATFORM_NAME } from "@/lib/brand";
 import { fetchAll } from "@/lib/fetchAll";
 import { loadShopAlbums } from "@/lib/shopAlbums";
 import { loadShopProducts } from "@/lib/shopProducts";
+import { hasPackAccess } from "@/lib/packsServer";
 
 export const dynamic = "force-dynamic";
 
@@ -81,7 +82,7 @@ export default async function VendasPage({
   // Pedidos novos com a reserva vencida viram "cancelado (expirado)" antes de listar.
   await supabase.rpc("expire_orders", { p_seller: user.id });
 
-  const [{ data: priceRows }, { data: orderRows }, { data: collectionRows }, albums, products] = await Promise.all([
+  const [{ data: priceRows }, { data: orderRows }, { data: collectionRows }, albums, products, packsEnabled] = await Promise.all([
     fetchAll<{ code: string; price_cents: number }>((from, to) =>
       supabase.from("sticker_prices").select("code, price_cents").eq("user_id", user.id).order("code").range(from, to)
     ),
@@ -96,6 +97,7 @@ export default async function VendasPage({
     ),
     loadShopAlbums(supabase, user.id),
     loadShopProducts(supabase, user.id),
+    hasPackAccess(supabase, user.id),
   ]);
 
   const individual: Record<string, number> = {};
@@ -125,6 +127,7 @@ export default async function VendasPage({
       initialOrders={((orderRows ?? []) as OrderRow[]).map(orderFromRow)}
       initialAvailable={available}
       initialProducts={products}
+      packsEnabled={packsEnabled}
     />
   );
 }

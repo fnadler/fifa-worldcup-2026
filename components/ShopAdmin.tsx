@@ -2,6 +2,7 @@
 
 import { HeaderActions, NavSwitch } from "./HeaderIcons";
 import UserMenu from "./UserMenu";
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
@@ -45,6 +46,8 @@ interface ShopAdminProps {
   /** Estoque por código: repetidas (qty - 1) e produtos. */
   initialAvailable: Qtd;
   initialProducts: ShopProduct[];
+  /** Loja liberada para vender pacotes (atalho para /vendas/pacotes). */
+  packsEnabled?: boolean;
 }
 
 type Aba = "pedidos" | "precos" | "produtos" | "config";
@@ -63,6 +66,7 @@ export default function ShopAdmin({
   initialOrders,
   initialAvailable,
   initialProducts,
+  packsEnabled = false,
 }: ShopAdminProps) {
   const [aba, setAba] = useState<Aba>(
     isAba(initialTab) ? initialTab : welcome || !initialSettings.whatsapp ? "config" : "pedidos"
@@ -145,6 +149,11 @@ export default function ShopAdmin({
                   {a.label}
                 </button>
               ))}
+              {packsEnabled && (
+                <Link href="/vendas/pacotes" className="chip">
+                  Pacotes
+                </Link>
+              )}
             </div>
             <span className={`shop-status-pill ${settings.enabled ? "is-on" : ""}`}>
               {settings.enabled ? "Loja aberta" : "Loja pausada"}

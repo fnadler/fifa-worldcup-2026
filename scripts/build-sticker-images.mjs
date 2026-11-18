@@ -34,10 +34,11 @@ const FORCE = process.argv.includes("--force");
 // Fotos já recortadas na proporção das outras, com fundo da mesma cor da margem: o trim comeria a margem
 // e deixaria a figurinha mais estreita (e mais alta na grade).
 // Portugal (exceto o escudo, POR1): recortadas do PDF da Panini com a margem inteira (o trim cortava as bordas).
+// Argentina, Brasil, Colômbia, Equador e Uruguai: idem (o Paraguai segue com as fotos antigas).
 // Legends e Coca-Cola: idem, recortadas dos PDFs da edição.
 const NO_TRIM = new Set([
   "EGY3",
-  ...Array.from({ length: 19 }, (_, i) => `POR${i + 2}`),
+  ...["POR", "ARG", "BRA", "COL", "ECU", "URU"].flatMap((t) => Array.from({ length: 19 }, (_, i) => `${t}${i + 2}`)),
   ...["LIL", "BRO", "PRA", "OUR"].flatMap((t) => Array.from({ length: 20 }, (_, i) => `${t}${i + 1}`)),
   ...Array.from({ length: 14 }, (_, i) => `CC${i + 1}`),
 ]);

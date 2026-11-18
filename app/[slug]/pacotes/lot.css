@@ -1359,11 +1359,13 @@ html:has(.lotp) {
   color: #fff;
 }
 .lotp-hub {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 22px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 28px 20px;
 }
 .lotp-hub-pack {
+  width: clamp(140px, 40vw, 190px);
   display: flex;
   flex-direction: column;
   align-items: center;

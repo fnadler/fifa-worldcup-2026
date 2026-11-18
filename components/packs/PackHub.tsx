@@ -78,7 +78,7 @@ export default function PackHub({ data }: { data: BuyerPacks }) {
                         <img src={stickerImage(p.legend, "large") ?? ""} alt={`${legendName(p.legend)} ${legendTierOf(p.legend)?.name ?? ""}`} />
                       </div>
                     ) : (
-                      <Envelope seller={shop.name} className="lotp-hub-env" />
+                      <Envelope seller={shop.name} logoUrl={shop.logoUrl} className="lotp-hub-env" />
                     )}
                     <span className="lotp-hub-label">
                       Nº {pad(p.number)}
@@ -93,9 +93,6 @@ export default function PackHub({ data }: { data: BuyerPacks }) {
                   </div>
                 ))}
               </div>
-              {state === "pronto" && fechados > 0 && (
-                <p className="lotp-note lotp-center">Em breve você poderá abrir seus pacotes aqui, um de cada vez.</p>
-              )}
             </>
           )}
         </div>

@@ -1,8 +1,9 @@
 import { useId } from "react";
 
 // Envelope próprio do Pacote Legends (SVG 300×400): faixas serrilhadas, campo verde, "PACOTE LEGENDS",
-// selo "+1 Legend garantida" e "7 figurinhas". `seller`: nome de quem montou (rodapé do envelope).
-export default function Envelope({ seller, className }: { seller: string; className?: string }) {
+// selo "+1 Legend garantida" e "7 figurinhas". `seller`: nome de quem montou (rodapé do envelope);
+// `logoUrl`: logo da loja no alto do envelope (sem logo, o ícone da plataforma).
+export default function Envelope({ seller, logoUrl, className }: { seller: string; logoUrl?: string | null; className?: string }) {
   const id = useId().replace(/:/g, "");
   const ridges = Array.from({ length: 60 }, (_, i) => i * 5 + 2);
   const font = { cond: "var(--font-barlow-condensed), 'Arial Narrow', sans-serif", display: "var(--font-bebas-neue), Impact, sans-serif" };
@@ -26,6 +27,9 @@ export default function Envelope({ seller, className }: { seller: string; classN
         </linearGradient>
         <clipPath id={`c${id}`}>
           <rect x="0" y="22" width="300" height="356" />
+        </clipPath>
+        <clipPath id={`l${id}`}>
+          <rect x="124" y="56" width="52" height="52" rx="11" />
         </clipPath>
       </defs>
       <rect x="0" y="0" width="300" height="400" fill="#eef3ef" />
@@ -57,21 +61,8 @@ export default function Envelope({ seller, className }: { seller: string; classN
       <text x="150" y="40" textAnchor="middle" fontFamily={font.cond} fontWeight="700" fontSize="10" letterSpacing="2.5" fill="#fff" fillOpacity=".8">
         ABRA AQUI ▸ ▸ ▸
       </text>
-      <g transform="translate(150 88)">
-        <text x="-14" y="0" textAnchor="middle" fontFamily={font.display} fontSize="34" fill="#fff">
-          GN
-        </text>
-        <g transform="translate(14 -24)">
-          <rect x="6" y="2" width="16" height="22" rx="2" fill="#ffcf4d" transform="rotate(14 14 13)" />
-          <rect x="2" y="1" width="16" height="22" rx="2" fill="#7de2ab" transform="rotate(6 10 12)" />
-          <rect x="-2" y="0" width="16" height="22" rx="2" fill="#fff" />
-          <circle cx="6" cy="8" r="2.4" fill="#0a5a2c" />
-          <path d="M6 10.5 L6 16 M3 13 L9 13 M6 16 L3.5 20 M6 16 L8.5 20" stroke="#0a5a2c" strokeWidth="1.6" strokeLinecap="round" />
-        </g>
-        <text x="0" y="16" textAnchor="middle" fontFamily={font.cond} fontWeight="700" fontSize="11" letterSpacing="3" fill="#fff">
-          COLECIONA
-        </text>
-      </g>
+      <rect x="121" y="53" width="58" height="58" rx="13" fill="#fff" fillOpacity=".92" />
+      <image href={logoUrl || "/brand/logo.webp"} x="124" y="56" width="52" height="52" preserveAspectRatio="xMidYMid slice" clipPath={`url(#l${id})`} />
       <text x="150" y="152" textAnchor="middle" fontFamily={font.cond} fontWeight="700" fontSize="15" letterSpacing="6" fill="#e9f1ec">
         PACOTE
       </text>

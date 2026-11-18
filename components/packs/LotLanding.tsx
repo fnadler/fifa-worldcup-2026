@@ -212,7 +212,7 @@ export default function LotLanding({ data }: { data: PublicLot }) {
                   <img src={img(c, "large")} alt="" />
                 </div>
               ))}
-              <Envelope seller={shop.name} className="lotp-env" />
+              <Envelope seller={shop.name} logoUrl={shop.logoUrl} className="lotp-env" />
             </div>
           )}
         </div>

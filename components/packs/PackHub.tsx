@@ -155,13 +155,16 @@ export default function PackHub({ data }: { data: BuyerPacks }) {
                       )}
                       <span className="lotp-hub-label">
                         Nº {pad(p.number)}
-                        <small>
-                          {state === "aguardando"
-                            ? "Aguardando pagamento"
-                            : r
-                              ? `${legendName(r.legend)} · ${legendTierOf(r.legend)?.name ?? ""}`
-                              : "Pronto para abrir"}
-                        </small>
+                        {r ? (
+                          <>
+                            <small className="lotp-hub-legend-name">
+                              {legendName(r.legend)} · {legendTierOf(r.legend)?.name ?? ""}
+                            </small>
+                            <small className="lotp-hub-more">+ 7 figurinhas</small>
+                          </>
+                        ) : (
+                          <small>{state === "aguardando" ? "Aguardando pagamento" : "Pronto para abrir"}</small>
+                        )}
                       </span>
                     </button>
                   );

@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { displayCode } from "@/lib/album";
 import { legendName, legendTierOf } from "@/lib/packs";
-import { itemOrder } from "@/lib/shop";
+import { describeSticker, itemOrder } from "@/lib/shop";
 import { stickerImage } from "@/lib/stickerImages";
 import type { PackContent } from "./PackOpening";
 
@@ -32,6 +33,14 @@ export default function PackResult({
   onBack: () => void;
 }) {
   const card = useRef<HTMLDivElement>(null);
+  const [zoom, setZoom] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!zoom) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setZoom(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [zoom]);
   const tier = legendTierOf(content.legend);
 
   function tilt(e: ReactPointerEvent<HTMLDivElement>) {
@@ -68,8 +77,10 @@ export default function PackResult({
         {[...content.commons]
           .sort((a, b) => itemOrder(a) - itemOrder(b))
           .map((c) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img key={c} src={stickerImage(c, "thumb") ?? ""} alt={`Figurinha ${c}`} />
+            <button key={c} className="po-result-common" onClick={() => setZoom(c)} aria-label={`Ver a figurinha ${displayCode(c)} maior`}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={stickerImage(c, "thumb") ?? ""} alt="" />
+            </button>
           ))}
       </div>
       <div className="po-result-actions">
@@ -82,6 +93,18 @@ export default function PackResult({
           Voltar aos pacotes
         </button>
       </div>
+      {zoom && (
+        <div className="po-zoom" role="dialog" aria-modal="true" aria-label={`Figurinha ${displayCode(zoom)}`} onClick={() => setZoom(null)}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={stickerImage(zoom, "large") ?? ""} alt={`Figurinha ${displayCode(zoom)}`} />
+          <p>
+            <b>{displayCode(zoom)}</b> · {describeSticker(zoom)}
+          </p>
+          <button className="lotp-btn lotp-btn-ghost-light lotp-small" onClick={() => setZoom(null)}>
+            Fechar
+          </button>
+        </div>
+      )}
       <p className="po-result-note">
         {remaining > 0 ? `${remaining === 1 ? "Falta 1 pacote" : `Faltam ${remaining} pacotes`} para abrir. ` : ""}A loja separa estas 8 figurinhas e envia
         para o seu endereço.

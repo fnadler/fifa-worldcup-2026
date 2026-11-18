@@ -229,7 +229,7 @@ export default function PackCheckout({ lotId, numbers, priceCents, minOrderCents
               etiqueta de envio.
             </p>
             <div className="lotp-safety">
-              <SafetyTips />
+              <SafetyTips variant="pacotes" />
             </div>
             <label className="lotp-ack">
               <input type="checkbox" checked={ciente} onChange={(e) => setCiente(e.target.checked)} required />

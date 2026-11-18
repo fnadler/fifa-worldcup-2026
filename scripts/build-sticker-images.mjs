@@ -31,18 +31,11 @@ const OUT = path.join(ROOT, "public", "stickers");
 const SIZES = { thumb: 240, large: 720 };
 
 const FORCE = process.argv.includes("--force");
-// Fotos já recortadas na proporção das outras, com fundo da mesma cor da margem: o trim comeria a margem
-// e deixaria a figurinha mais estreita (e mais alta na grade).
-// Portugal (exceto o escudo, POR1): recortadas do PDF da Panini com a margem inteira (o trim cortava as bordas).
-// Argentina, Brasil, Colômbia, Equador, Uruguai, Iraque e Jordânia: idem.
-// Legends e Coca-Cola: idem, recortadas dos PDFs da edição.
-const NO_TRIM = new Set([
-  "EGY3",
-  ...["POR", "ARG", "BRA", "COL", "ECU", "URU", "IRQ", "JOR"].flatMap((t) => Array.from({ length: 19 }, (_, i) => `${t}${i + 2}`)),
-  ...["LIL", "BRO", "PRA", "OUR"].flatMap((t) => Array.from({ length: 20 }, (_, i) => `${t}${i + 1}`)),
-  ...Array.from({ length: 14 }, (_, i) => `CC${i + 1}`),
-]);
 const album = JSON.parse(await readFile(path.join(ROOT, "album.json"), "utf8"));
+// Álbum da Copa 2026 (seleções, FWC, Coca-Cola e Legends): as fotos de origem já vêm com o card inteiro, margem
+// incluída. O trim cortava quantidades diferentes de cada uma (a borda sumia em umas e não em outras, e quase toda
+// a da foto do time), então ele não roda nelas.
+const NO_TRIM = new Set(album.blocks.flatMap((b) => b.codes));
 const adrenalyn = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "adrenalyn-xl.json"), "utf8"));
 const golden = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "golden-crumple.json"), "utf8"));
 const catar = JSON.parse(await readFile(path.join(ROOT, "lib", "catalogs", "copa-catar-2022.json"), "utf8"));
@@ -187,7 +180,7 @@ async function worker() {
     const input = sources.get(code);
     for (const [size, width] of Object.entries(SIZES)) {
       const img = sharp(input);
-      if (!NO_TRIM.has(code) && !code.startsWith("CQ") && !code.startsWith("RU") && !/^(CQ|RU|BZ|ZA|DE)/.test(code) && !/^(KJ|FR|US|IT)\d/.test(code)) img.trim({ threshold: 12 }); // algumas fotos (ex: Coca-Cola) vêm quadradas com margem branca
+      if (!NO_TRIM.has(code) && !code.startsWith("CQ") && !code.startsWith("RU") && !/^(CQ|RU|BZ|ZA|DE)/.test(code) && !/^(KJ|FR|US|IT)\d/.test(code)) img.trim({ threshold: 12 }); // Adrenalyn e Gold Crumple
       await img
         .resize({ width, withoutEnlargement: true })
         .webp({ quality: size === "thumb" ? 72 : 80 })

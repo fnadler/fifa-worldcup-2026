@@ -1,18 +1,38 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { formatDateTimeBR } from "@/lib/shop";
 import { legendName, legendTierOf } from "@/lib/packs";
 import type { BuyerPacks } from "@/lib/packsBuyer";
 import { stickerImage } from "@/lib/stickerImages";
 import Envelope from "./Envelope";
+import PackOpening, { type PackContent } from "./PackOpening";
+import PackResult from "./PackResult";
 
-// Pacotes do comprador: bloqueados enquanto o pagamento não é confirmado, prontos para abrir depois.
+// Pacotes do comprador: bloqueados enquanto o pagamento não é confirmado; depois, abertos um de cada vez
+// (PackOpening) e revistos no resumo (PackResult).
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
+type View = { kind: "hub" } | { kind: "open"; n: number } | { kind: "result"; n: number };
+
 export default function PackHub({ data }: { data: BuyerPacks }) {
+  const router = useRouter();
   const { shop, lot, packs, state } = data;
-  const fechados = packs.filter((p) => !p.opened).length;
+  const [results, setResults] = useState<Record<number, PackContent>>(() =>
+    Object.fromEntries(packs.filter((p) => p.opened && p.legend).map((p) => [p.number, { legend: p.legend!, commons: p.commons }]))
+  );
+  const [view, setView] = useState<View>({ kind: "hub" });
+  const closed = packs.filter((p) => !results[p.number]).map((p) => p.number);
+  const fechados = closed.length;
+  const nextAfter = (n: number) => closed.filter((x) => x !== n);
+
+  function goHub() {
+    setView({ kind: "hub" });
+    router.refresh();
+    window.scrollTo({ top: 0 });
+  }
   const lotHref = shop.slug && lot ? `/${shop.slug}/pacotes/${lot.slug}` : shop.slug ? `/${shop.slug}` : "/";
 
   const titulo =
@@ -63,36 +83,61 @@ export default function PackHub({ data }: { data: BuyerPacks }) {
 
       <section className="lotp-section">
         <div className="lotp-wrap">
-          {state === "cancelado" ? (
+          {view.kind === "result" && results[view.n] ? (
+            <PackResult
+              number={view.n}
+              total={packs.length}
+              content={results[view.n]}
+              remaining={fechados}
+              onNext={() => closed[0] && setView({ kind: "open", n: closed[0] })}
+              onBack={goHub}
+            />
+          ) : state === "cancelado" ? (
             <a className="lotp-btn lotp-btn-gold" href={lotHref}>
               Ver os pacotes disponíveis
             </a>
           ) : (
             <>
               <div className={`lotp-hub${state === "aguardando" ? " is-locked" : ""}`}>
-                {packs.map((p) => (
-                  <div key={p.number} className={`lotp-hub-pack${p.opened ? " is-opened" : ""}`}>
-                    {p.opened && p.legend ? (
-                      <div className="lotp-hub-legend">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={stickerImage(p.legend, "large") ?? ""} alt={`${legendName(p.legend)} ${legendTierOf(p.legend)?.name ?? ""}`} />
-                      </div>
-                    ) : (
-                      <Envelope seller={shop.name} logoUrl={shop.logoUrl} className="lotp-hub-env" />
-                    )}
-                    <span className="lotp-hub-label">
-                      Nº {pad(p.number)}
-                      <small>
-                        {state === "aguardando"
-                          ? "Aguardando pagamento"
-                          : p.opened && p.legend
-                            ? `${legendName(p.legend)} · ${legendTierOf(p.legend)?.name ?? ""}`
-                            : "Pronto para abrir"}
-                      </small>
-                    </span>
-                  </div>
-                ))}
+                {packs.map((p) => {
+                  const r = results[p.number];
+                  return (
+                    <button
+                      key={p.number}
+                      className={`lotp-hub-pack${r ? " is-opened" : ""}`}
+                      disabled={state !== "pronto"}
+                      onClick={() => setView(r ? { kind: "result", n: p.number } : { kind: "open", n: p.number })}
+                      aria-label={r ? `Pacote nº ${pad(p.number)}: ver o que veio` : `Abrir o pacote nº ${pad(p.number)}`}
+                    >
+                      {r ? (
+                        <div className="lotp-hub-legend">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={stickerImage(r.legend, "large") ?? ""} alt="" />
+                        </div>
+                      ) : (
+                        <Envelope seller={shop.name} logoUrl={shop.logoUrl} className="lotp-hub-env" />
+                      )}
+                      <span className="lotp-hub-label">
+                        Nº {pad(p.number)}
+                        <small>
+                          {state === "aguardando"
+                            ? "Aguardando pagamento"
+                            : r
+                              ? `${legendName(r.legend)} · ${legendTierOf(r.legend)?.name ?? ""}`
+                              : "Pronto para abrir"}
+                        </small>
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
+              {state === "pronto" && fechados > 0 && (
+                <div className="lotp-hub-cta">
+                  <button className="lotp-btn lotp-btn-gold" onClick={() => setView({ kind: "open", n: closed[0] })}>
+                    Abrir o pacote nº {pad(closed[0])}
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>
@@ -111,6 +156,27 @@ export default function PackHub({ data }: { data: BuyerPacks }) {
         )}
         <p>Pacote Legends na GN Coleciona</p>
       </footer>
+
+      {view.kind === "open" && (
+        <PackOpening
+          key={view.n}
+          token={data.token}
+          number={view.n}
+          seller={shop.name}
+          logoUrl={shop.logoUrl}
+          remaining={nextAfter(view.n).length}
+          onOpened={(c) => setResults((r) => ({ ...r, [view.n]: c }))}
+          onNext={() => {
+            const n = nextAfter(view.n)[0];
+            if (n) setView({ kind: "open", n });
+          }}
+          onSummary={() => {
+            setView({ kind: "result", n: view.n });
+            window.scrollTo({ top: 0 });
+          }}
+          onClose={() => (results[view.n] ? setView({ kind: "result", n: view.n }) : goHub())}
+        />
+      )}
     </div>
   );
 }

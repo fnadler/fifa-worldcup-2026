@@ -64,7 +64,7 @@ create or replace function public.place_pack_order(
 )
 returns table (id uuid, number bigint, reserved_until timestamptz, pack_token text)
 language plpgsql
-security invoker
+security definer
 set search_path = public
 as $$
 #variable_conflict use_column

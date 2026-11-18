@@ -1325,3 +1325,17 @@ body:has(.lotp) {
   font-size: 18px;
   color: var(--text);
 }
+
+/* "Dúvidas" e outros atalhos da página rolam suavemente até a seção */
+html:has(.lotp) {
+  scroll-behavior: smooth;
+}
+#lotp-perguntas,
+#lotp-pacotes {
+  scroll-margin-top: 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html:has(.lotp) {
+    scroll-behavior: auto;
+  }
+}

@@ -127,23 +127,19 @@ export default function LotLanding({ data }: { data: PublicLot }) {
     <div className="lotp">
       <div className={`lotp-band${shop.official ? " is-official" : ""}`}>
         <header className="lotp-wrap lotp-nav">
-          <a href={`/${shop.slug}`} className="lotp-brand" aria-label={shop.name}>
-            {shop.official ? (
-              <span className="lotp-logo">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/brand/gn-coleciona-logo-300.webp" alt="GN Coleciona" />
-              </span>
-            ) : (
-              <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className="lotp-shop-logo" src={shop.logoUrl || "/brand/logo.webp"} alt="" />
-                <span className="lotp-shop-name">{shop.name}</span>
-              </>
-            )}
+          <a href={`/${shop.slug}`} className="lotp-brand" aria-label={`Loja ${shop.name}`}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="lotp-shop-logo" src={shop.logoUrl || "/brand/logo.webp"} alt="" />
+            <span className="lotp-shop-name">{shop.name}</span>
           </a>
-          <a href="#lotp-perguntas" className="lotp-navlink">
-            Dúvidas
-          </a>
+          <nav className="lotp-navlinks">
+            <a href="#lotp-perguntas" className="lotp-navlink">
+              Dúvidas
+            </a>
+            <a href={`/${shop.slug}`} className="lotp-btn lotp-btn-ghost-light lotp-small">
+              Ver a loja
+            </a>
+          </nav>
         </header>
 
         {isOwner && lot.status !== "ativo" && (
@@ -524,7 +520,15 @@ export default function LotLanding({ data }: { data: PublicLot }) {
       )}
 
       <footer className="lotp-footer">
-        {shop.name} · Pacote Legends na GN Coleciona
+        <a href={`/${shop.slug}`} className="lotp-footer-shop">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={shop.logoUrl || "/brand/logo.webp"} alt="" />
+          <span>
+            <b>{shop.name}</b>
+            Veja as figurinhas avulsas e os produtos da loja →
+          </span>
+        </a>
+        <p>Pacote Legends na GN Coleciona</p>
       </footer>
 
       {packs.length > 0 && (

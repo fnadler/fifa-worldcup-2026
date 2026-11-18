@@ -156,7 +156,7 @@ export default function LotLanding({ data }: { data: PublicLot }) {
 
         <div className="lotp-wrap lotp-hero">
           <div>
-            <div className="lotp-eyebrow">{lot.title} · Copa do Mundo 2026</div>
+            <div className="lotp-pill">{lot.title} · Copa do Mundo 2026</div>
             <h1>
               Pacote<em>Legends</em>
             </h1>
@@ -191,7 +191,7 @@ export default function LotLanding({ data }: { data: PublicLot }) {
                 <button className="lotp-btn lotp-btn-gold" onClick={() => goTab("packs")}>
                   {canBuy ? "Escolher pacotes" : "Ver os pacotes"}
                 </button>
-                <button className="lotp-btn lotp-btn-ghost" onClick={() => goTab("pot")}>
+                <button className="lotp-btn lotp-btn-ghost-light" onClick={() => goTab("pot")}>
                   Ver as Legends
                 </button>
               </div>
@@ -202,16 +202,23 @@ export default function LotLanding({ data }: { data: PublicLot }) {
               </ul>
             </div>
           </div>
-          <div className="lotp-visual" aria-hidden="true">
-            <div className="lotp-glow" />
-            {fan.map((c, i) => (
-              <div key={c} className={`lotp-fan f${i + 1}`}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={img(c, "large")} alt="" />
-              </div>
-            ))}
-            <Envelope seller={shop.name} className="lotp-env" />
-          </div>
+          {lot.imageUrl ? (
+            <div className="lotp-visual has-image">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className="lotp-hero-img" src={lot.imageUrl} alt={lot.title} />
+            </div>
+          ) : (
+            <div className="lotp-visual" aria-hidden="true">
+              <div className="lotp-glow" />
+              {fan.map((c, i) => (
+                <div key={c} className={`lotp-fan f${i + 1}`}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={img(c, "large")} alt="" />
+                </div>
+              ))}
+              <Envelope seller={shop.name} className="lotp-env" />
+            </div>
+          )}
         </div>
       </div>
 
@@ -366,12 +373,14 @@ export default function LotLanding({ data }: { data: PublicLot }) {
                         if (p.state === "res")
                           return (
                             <div key={p.n} className="lotp-cell is-res" aria-label={`Pacote ${pad(p.n)}, reservado`}>
+                              <span className="lbl">Reservado</span>
                               <span className="n">{pad(p.n)}</span>
                             </div>
                           );
                         if (p.state === "sold")
                           return (
                             <div key={p.n} className="lotp-cell is-sold" aria-label={`Pacote ${pad(p.n)}, pago`}>
+                              <span className="lbl">Pago</span>
                               <span className="n">{pad(p.n)}</span>
                             </div>
                           );
@@ -385,6 +394,7 @@ export default function LotLanding({ data }: { data: PublicLot }) {
                             disabled={!canBuy}
                             onClick={() => toggle(p.n)}
                           >
+                            <span className="lbl">{sel ? "✓ Seu" : "Legends"}</span>
                             <span className="n">{pad(p.n)}</span>
                           </button>
                         );
@@ -419,7 +429,7 @@ export default function LotLanding({ data }: { data: PublicLot }) {
         </div>
       </section>
 
-      <section className="lotp-section">
+      <section className="lotp-section lotp-dark">
         <div className="lotp-wrap">
           <div className="lotp-eyebrow">Como funciona</div>
           <h2>Do pedido à sua Legend</h2>
@@ -498,6 +508,20 @@ export default function LotLanding({ data }: { data: PublicLot }) {
           </details>
         </div>
       </section>
+
+      {canBuy && (
+        <section className="lotp-final">
+          <div className="lotp-wrap">
+            <h2>Sua Legend está em um destes pacotes.</h2>
+            <p>
+              Restam {counts.free} de {packs.length} pacotes neste lote.
+            </p>
+            <button className="lotp-btn lotp-btn-gold" onClick={() => goTab("packs")}>
+              Escolher meus pacotes
+            </button>
+          </div>
+        </section>
+      )}
 
       <footer className="lotp-footer">
         {shop.name} · Pacote Legends na GN Coleciona

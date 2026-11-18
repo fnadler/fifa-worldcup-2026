@@ -1,25 +1,29 @@
-/* Página promocional do lote de pacotes (/<loja>/pacotes/<lote>). Tudo dentro de .lotp. */
+/* Página promocional do lote de pacotes (/<loja>/pacotes/<lote>). Identidade da landing: fundo claro,
+   topo verde com círculos, Nunito nos títulos, Figtree no texto, botões em pílula. Tudo dentro de .lotp;
+   cores dos tokens --gn-* (globals.css). */
+
+body:has(.lotp) {
+  background: var(--gn-bg);
+}
 
 .lotp {
-  --bg: #07110c;
-  --bg-2: #0d1a14;
-  --bg-3: #12241b;
-  --line: #1e3328;
-  --text: #e8f2ec;
-  --muted: #8fae9f;
-  --dim: #5d7a6c;
-  --accent: #00c46a;
-  --on-accent: #04180d;
-  --gold: #ffcf4d;
-  --on-gold: #3a2a00;
-  --display: var(--font-bebas-neue), "Impact", "Arial Narrow", sans-serif;
-  --body: var(--font-barlow), system-ui, -apple-system, "Segoe UI", sans-serif;
-  --cond: var(--font-barlow-condensed), "Arial Narrow", system-ui, sans-serif;
-  background: var(--bg);
+  --ink: var(--gn-ink);
+  --text: var(--gn-text);
+  --text-2: var(--gn-text-2);
+  --muted: var(--gn-muted);
+  --line: var(--gn-line);
+  --surface: var(--gn-surface);
+  --green: var(--gn-green);
+  --green-600: var(--gn-green-600);
+  --green-50: var(--gn-green-50);
+  --yellow: var(--gn-yellow);
+  --display: var(--font-nunito), system-ui, sans-serif;
+  --body: var(--font-figtree), system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--gn-bg);
   color: var(--text);
   font-family: var(--body);
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.55;
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -30,53 +34,57 @@
 }
 .lotp button {
   font: inherit;
-  color: inherit;
   cursor: pointer;
 }
-.lotp button:focus-visible,
-.lotp summary:focus-visible,
-.lotp input:focus-visible,
-.lotp a:focus-visible {
-  outline: 2px solid var(--gold);
+.lotp a {
+  color: inherit;
+}
+.lotp :focus-visible {
+  outline: 3px solid var(--yellow);
   outline-offset: 2px;
 }
-.lotp-wrap {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-}
-.lotp-section {
-  padding-block: 44px;
-}
-.lotp-eyebrow {
-  font-family: var(--cond);
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-.lotp h2 {
-  font-family: var(--display);
-  font-weight: 400;
-  font-size: clamp(36px, 7vw, 52px);
-  line-height: 0.95;
-  letter-spacing: 0.5px;
-  margin: 6px 0 10px;
-  text-wrap: balance;
-}
+.lotp h1,
+.lotp h2,
 .lotp h3 {
   margin: 0;
   font-family: var(--display);
-  font-weight: 400;
-  font-size: 32px;
-  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.lotp h2 {
+  font-size: clamp(30px, 4.6vw, 46px);
+  line-height: 1.05;
+  margin: 8px 0 12px;
+}
+.lotp h3 {
+  font-size: 26px;
+  line-height: 1.1;
+}
+.lotp p {
+  text-wrap: pretty;
+}
+.lotp-wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+.lotp-section {
+  padding-block: 64px;
+}
+.lotp-eyebrow {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green);
 }
 .lotp-lead {
-  color: var(--muted);
+  color: var(--text-2);
   margin: 0;
-  max-width: 60ch;
+  max-width: 62ch;
+  font-size: 17px;
 }
 .lotp-muted {
   color: var(--muted);
@@ -88,79 +96,97 @@
 .lotp-center {
   text-align: center;
 }
-.lotp-btn {
+
+/* ---------- botões (pílula, como na landing) ---------- */
+.lotp .lotp-btn {
   border: 0;
-  border-radius: 12px;
-  padding: 14px 20px;
-  font-weight: 700;
-  font-size: 16px;
+  border-radius: 999px;
+  padding: 15px 26px;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 17px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   text-decoration: none;
+  text-align: center;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
-.lotp-btn:disabled {
+.lotp .lotp-btn:disabled {
   opacity: 0.45;
   cursor: default;
 }
-.lotp-btn-gold {
-  background: var(--gold);
-  color: var(--on-gold);
+.lotp .lotp-btn-gold {
+  background: var(--yellow);
+  color: var(--ink);
 }
-.lotp-btn-ghost {
+.lotp .lotp-btn-gold:hover:not(:disabled) {
+  background: var(--gn-yellow-hover);
+}
+.lotp .lotp-btn-green {
+  background: var(--green);
+  color: #fff;
+}
+.lotp .lotp-btn-green:hover {
+  background: var(--green-600);
+}
+.lotp .lotp-btn-ghost {
   background: transparent;
-  box-shadow: inset 0 0 0 1px var(--line);
-  color: var(--text);
+  box-shadow: inset 0 0 0 2px var(--green);
+  color: var(--green);
 }
-.lotp-btn-green {
-  background: var(--accent);
-  color: var(--on-accent);
+.lotp .lotp-btn-ghost:hover {
+  background: var(--green-50);
 }
-.lotp-small {
-  padding: 8px 12px;
-  font-size: 14px;
+.lotp .lotp-btn-ghost-light {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.55);
+  color: #fff;
 }
-.lotp-full {
+.lotp .lotp-btn-ghost-light:hover {
+  box-shadow: inset 0 0 0 2px #fff;
+}
+.lotp .lotp-small {
+  padding: 9px 16px;
+  font-size: 15px;
+}
+.lotp .lotp-full {
   width: 100%;
-  margin-top: 16px;
+  margin-top: 20px;
 }
 
-/* ---------- topo ---------- */
+/* ---------- topo verde ---------- */
 .lotp-band {
-  background: radial-gradient(70% 60% at 50% 30%, #13402a 0%, transparent 70%);
-}
-/* loja oficial: a cor exata do fundo do logo (#029838), com brilho só atrás do envelope */
-.lotp-band.is-official {
-  --muted: #d6f3e1;
-  --dim: #a9dcbd;
-  background:
-    linear-gradient(180deg, transparent 82%, var(--bg) 100%),
-    radial-gradient(38% 46% at 76% 58%, #19b957 0%, transparent 70%),
-    #029838;
-}
-.lotp-band.is-official .lotp-eyebrow {
-  color: #fff3c4;
-}
-.lotp-band.is-official .lotp-lead,
-.lotp-band.is-official .lotp-desc {
-  color: #f2fff6;
-}
-.lotp-band.is-official .lotp-bar {
-  background: rgba(0, 40, 15, 0.3);
-}
-.lotp-band.is-official .lotp-btn-ghost {
-  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.7);
+  background: var(--green);
   color: #fff;
+  position: relative;
+  overflow: hidden;
 }
-.lotp-band.is-official .lotp-btn-gold {
-  box-shadow: 0 6px 18px rgba(0, 40, 15, 0.35);
+.lotp-band::before,
+.lotp-band::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
 }
-.lotp-band.is-official .lotp-hero h1 {
-  filter: drop-shadow(0 3px 0 rgba(0, 40, 15, 0.35));
+.lotp-band::before {
+  right: -180px;
+  top: -160px;
+  width: 560px;
+  height: 560px;
+  border: 80px solid rgba(255, 255, 255, 0.06);
 }
-.lotp-band.is-official .lotp-trust li::before {
-  color: #fff;
+.lotp-band::after {
+  left: -120px;
+  bottom: -220px;
+  width: 420px;
+  height: 420px;
+  background: rgba(0, 0, 0, 0.06);
+}
+.lotp-band > * {
+  position: relative;
+  z-index: 1;
 }
 .lotp-nav {
   display: flex;
@@ -172,93 +198,100 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--text);
   text-decoration: none;
   min-width: 0;
 }
 .lotp-logo {
   display: block;
-  width: 112px;
-  height: 58px;
+  width: 124px;
+  height: 64px;
   overflow: hidden;
   flex: none;
 }
 .lotp-logo img {
-  width: 136px;
-  height: 136px;
+  width: 150px;
+  height: 150px;
   max-width: none;
-  margin: -38px 0 0 -12px;
+  margin: -42px 0 0 -13px;
   display: block;
 }
 .lotp-shop-logo {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
   object-fit: cover;
-  border: 1px solid var(--line);
+  background: #fff;
   flex: none;
 }
 .lotp-shop-name {
   font-family: var(--display);
-  font-size: 24px;
-  line-height: 1;
+  font-weight: 900;
+  font-size: 22px;
+  line-height: 1.1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .lotp-navlink {
-  color: var(--muted);
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 15px;
   text-decoration: none;
-}
-.lotp-band.is-official .lotp-navlink {
-  color: #eafff1;
+  color: #e6f6ec !important;
 }
 .lotp-owner {
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px dashed rgba(255, 255, 255, 0.4);
-  color: #fff;
-  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px dashed rgba(255, 255, 255, 0.5);
+  border-radius: 14px;
   padding: 10px 14px;
   font-size: 14px;
+  font-weight: 600;
 }
 .lotp-hero {
   display: grid;
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
+  gap: 40px;
   align-items: center;
-  padding-block: 8px 56px;
+  padding-block: 28px 80px;
+}
+.lotp-pill {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 .lotp-hero h1 {
-  font-family: var(--display);
-  font-weight: 400;
-  font-size: clamp(64px, 17vw, 112px);
-  line-height: 0.82;
-  margin: 8px 0 12px;
-  letter-spacing: 1px;
+  font-size: clamp(56px, 11vw, 96px);
+  line-height: 0.92;
+  margin: 18px 0 16px;
 }
 .lotp-hero h1 em {
   font-style: normal;
   display: block;
-  background: linear-gradient(180deg, #fff3c4, #ffcf4d 55%, #c8920f);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--yellow);
 }
 .lotp-hero .lotp-lead {
-  font-size: 18px;
-  color: #cfe3d7;
+  color: #e6f6ec;
+  font-size: 19px;
+}
+.lotp-hero .lotp-lead b {
+  color: #fff;
 }
 .lotp-desc {
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   white-space: pre-line;
-  color: var(--muted);
+  color: #cdebd8;
   max-width: 60ch;
 }
 .lotp-buy {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  margin-top: 18px;
+  gap: 16px;
+  margin-top: 24px;
 }
 .lotp-price {
   display: flex;
@@ -268,22 +301,25 @@
 }
 .lotp-price b {
   font-family: var(--display);
-  font-weight: 400;
-  font-size: 46px;
+  font-weight: 900;
+  font-size: 44px;
   line-height: 1;
+  letter-spacing: -0.02em;
 }
 .lotp-price span {
-  color: var(--muted);
+  color: #cdebd8;
+  font-size: 15px;
 }
 .lotp-progress {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  max-width: 520px;
 }
 .lotp-bar {
   height: 10px;
   border-radius: 10px;
-  background: var(--bg-3);
+  background: rgba(0, 0, 0, 0.18);
   overflow: hidden;
   display: flex;
 }
@@ -292,68 +328,81 @@
   height: 100%;
 }
 .lotp-bar .b-open {
-  background: var(--gold);
+  background: var(--yellow);
 }
 .lotp-bar .b-sold {
-  background: #c7a43a;
-  opacity: 0.6;
+  background: #fff;
+  opacity: 0.85;
 }
 .lotp-bar .b-res {
-  background: repeating-linear-gradient(135deg, #5d7a6c 0 4px, #3b5546 4px 8px);
+  background: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.55) 0 4px, rgba(255, 255, 255, 0.25) 4px 8px);
 }
 .lotp-progress small {
-  color: var(--muted);
+  color: #cdebd8;
   font-size: 14px;
 }
 .lotp-progress small b {
-  color: var(--text);
+  color: #fff;
 }
 .lotp-soon {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-  padding: 10px 12px;
-  font-weight: 600;
+  background: rgba(0, 0, 0, 0.16);
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-weight: 700;
+  max-width: 520px;
 }
 .lotp-hero-ctas {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 .lotp-trust {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 16px;
+  gap: 8px 18px;
   padding: 0;
-  margin: 4px 0 0;
+  margin: 0;
   list-style: none;
-  color: var(--muted);
+  color: #cdebd8;
   font-size: 14px;
+  font-weight: 600;
 }
 .lotp-trust li::before {
   content: "✓ ";
-  color: var(--accent);
-  font-weight: 700;
+  color: var(--yellow);
+  font-weight: 900;
 }
 .lotp-visual {
   position: relative;
-  height: 380px;
+  height: 400px;
   display: grid;
   place-items: center;
 }
+.lotp-visual.has-image {
+  height: auto;
+}
+.lotp-hero-img {
+  width: min(100%, 420px);
+  max-height: 520px;
+  object-fit: cover;
+  border-radius: 24px;
+  box-shadow: 0 24px 60px rgba(0, 30, 12, 0.35);
+  display: block;
+}
 .lotp-glow {
   position: absolute;
-  width: 300px;
-  height: 300px;
+  width: 320px;
+  height: 320px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 243, 196, 0.32), transparent 65%);
+  background: radial-gradient(circle, rgba(253, 202, 4, 0.28), transparent 65%);
 }
 .lotp-fan {
   position: absolute;
-  width: 118px;
+  width: 124px;
   aspect-ratio: 545 / 727;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 12px 28px rgba(0, 30, 12, 0.4);
   top: 30px;
 }
 .lotp-fan img {
@@ -363,23 +412,23 @@
   display: block;
 }
 .lotp-fan.f1 {
-  transform: translateX(-78px) rotate(-16deg);
+  transform: translateX(-80px) rotate(-16deg);
 }
 .lotp-fan.f2 {
   transform: translateY(-14px);
   z-index: 1;
 }
 .lotp-fan.f3 {
-  transform: translateX(78px) rotate(16deg);
+  transform: translateX(80px) rotate(16deg);
 }
 .lotp-env {
   position: absolute;
-  width: 210px;
+  width: 214px;
   height: auto;
-  top: 110px;
+  top: 116px;
   z-index: 2;
   animation: lotp-bob 3s ease-in-out infinite;
-  filter: drop-shadow(0 22px 30px rgba(0, 0, 0, 0.6));
+  filter: drop-shadow(0 22px 30px rgba(0, 30, 12, 0.45));
 }
 @keyframes lotp-bob {
   50% {
@@ -387,84 +436,80 @@
   }
 }
 
-/* ---------- seção dos pacotes ---------- */
-.lotp-packs-section {
-  background: linear-gradient(180deg, transparent, #0a1811 12%, #0a1811 88%, transparent);
-}
+/* ---------- pacotes e pote ---------- */
 .lotp-panel-lead {
-  margin-top: 18px;
+  margin-top: 20px;
 }
 .lotp-feed {
   display: flex;
   gap: 10px;
   overflow-x: auto;
-  padding: 4px 0 8px;
+  padding: 4px 2px 10px;
   margin-top: 18px;
   scrollbar-width: thin;
 }
 .lotp-feed-item {
   flex: none;
-  width: 260px;
+  width: 270px;
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
-  background: var(--bg-2);
+  background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 10px;
   text-align: left;
+  color: var(--text);
 }
 .lotp-feed-item img {
-  width: 42px;
+  width: 44px;
   aspect-ratio: 545 / 727;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 5px;
 }
 .lotp-feed-item span {
   font-size: 13px;
-  line-height: 1.35;
-  color: var(--muted);
+  line-height: 1.4;
+  color: var(--text-2);
 }
 .lotp-feed-item b {
   color: var(--text);
 }
 .lotp-feed-item small {
   display: block;
-  color: var(--dim);
+  color: var(--muted);
 }
 
-/* abas: sublinhado dourado, sem cara de botão */
+/* abas: sublinhado verde, sem cara de botão */
 .lotp-tabs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  margin-top: 18px;
+  margin-top: 22px;
   position: sticky;
   top: env(safe-area-inset-top, 0px);
   z-index: 10;
-  background: #0a1811;
+  background: var(--gn-bg);
   border-bottom: 1px solid var(--line);
 }
 .lotp-tabs button {
   position: relative;
   border: 0;
   background: transparent;
-  padding: 12px 8px 11px;
-  font-family: var(--cond);
-  font-weight: 700;
+  padding: 13px 8px 12px;
+  font-family: var(--display);
+  font-weight: 800;
   font-size: 17px;
-  letter-spacing: 0.5px;
-  color: var(--dim);
+  color: var(--muted);
   display: flex;
   flex-direction: column;
   align-items: center;
-  line-height: 1.15;
+  line-height: 1.2;
 }
 .lotp-tabs button small {
   font-family: var(--body);
   font-weight: 500;
   font-size: 12px;
-  letter-spacing: 0;
-  color: var(--dim);
+  color: var(--muted);
 }
 .lotp-tabs button::after {
   content: "";
@@ -479,53 +524,50 @@
 .lotp-tabs button[aria-selected="true"] {
   color: var(--text);
 }
-.lotp-tabs button[aria-selected="true"] small {
-  color: var(--muted);
-}
 .lotp-tabs button[aria-selected="true"]::after {
-  background: var(--gold);
+  background: var(--green);
 }
 
-/* pote */
 .lotp-tiers {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin: 22px 0 18px;
+  gap: 10px;
+  margin: 22px 0 20px;
 }
 .lotp-tier {
-  background: var(--bg-2);
+  background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 12px 10px;
+  border-radius: 16px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 2px;
   text-align: left;
+  color: var(--text);
 }
 .lotp-tier[aria-pressed="true"] {
   border-color: var(--tc);
-  box-shadow: inset 0 0 0 1px var(--tc);
+  box-shadow: inset 0 0 0 2px var(--tc);
 }
 .lotp-tier i {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: var(--tc);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
 }
 .lotp-tier b {
   font-family: var(--display);
-  font-weight: 400;
-  font-size: 32px;
+  font-weight: 900;
+  font-size: 30px;
   line-height: 1;
   margin-top: 6px;
   font-variant-numeric: tabular-nums;
 }
 .lotp-tier span {
-  font-family: var(--cond);
-  font-weight: 700;
+  font-weight: 800;
   font-size: 13px;
-  letter-spacing: 1px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 .lotp-tier small {
@@ -534,8 +576,8 @@
 }
 .lotp-pot {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
+  gap: 12px;
 }
 .lotp-leg {
   display: flex;
@@ -546,9 +588,9 @@
 .lotp-leg-ph {
   position: relative;
   aspect-ratio: 545 / 727;
-  border-radius: 6px;
+  border-radius: 7px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(6, 48, 26, 0.18);
 }
 .lotp-leg-ph img {
   width: 100%;
@@ -561,25 +603,24 @@
   padding-right: 6px;
 }
 .lotp-leg.m2 .lotp-leg-ph {
-  box-shadow: 4px 4px 0 -1px #3b5c4a, 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 4px 4px 0 -1px #b9cfc0, 0 4px 12px rgba(6, 48, 26, 0.18);
 }
 .lotp-leg.m3 .lotp-leg-ph {
-  box-shadow: 4px 4px 0 -1px #3b5c4a, 8px 8px 0 -2px #2a4436, 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 4px 4px 0 -1px #b9cfc0, 8px 8px 0 -2px #d6e3da, 0 4px 12px rgba(6, 48, 26, 0.18);
 }
 .lotp-leg-qty {
   position: absolute;
   top: 4px;
   right: 4px;
-  background: var(--gold);
-  color: var(--on-gold);
-  font-family: var(--cond);
-  font-weight: 700;
+  background: var(--yellow);
+  color: var(--ink);
+  font-weight: 800;
   font-size: 13px;
   padding: 1px 7px;
   border-radius: 10px;
 }
 .lotp-leg.is-out .lotp-leg-ph img {
-  filter: grayscale(1) brightness(0.45);
+  filter: grayscale(1) brightness(0.55);
 }
 .lotp-leg.is-out .lotp-leg-ph::after {
   content: "JÁ SAIU";
@@ -588,14 +629,15 @@
   display: grid;
   place-items: center;
   font-family: var(--display);
-  font-size: 18px;
-  letter-spacing: 1px;
+  font-weight: 900;
+  font-size: 15px;
   color: #fff;
 }
 .lotp-leg-nm {
   font-size: 12px;
+  font-weight: 600;
   line-height: 1.2;
-  color: var(--muted);
+  color: var(--text-2);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -611,12 +653,12 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--gold);
+  background: var(--green);
   display: inline-block;
 }
 .lotp-units i.gone {
   background: transparent;
-  box-shadow: inset 0 0 0 1px var(--dim);
+  box-shadow: inset 0 0 0 1px var(--muted);
 }
 .lotp-note {
   margin-top: 14px;
@@ -631,7 +673,7 @@
   gap: 10px;
   align-items: center;
   justify-content: space-between;
-  margin: 20px 0 14px;
+  margin: 20px 0 16px;
 }
 .lotp-filters {
   display: flex;
@@ -639,33 +681,32 @@
   flex-wrap: wrap;
 }
 .lotp-chip {
-  border: 0;
-  background: var(--bg-2);
-  box-shadow: inset 0 0 0 1px var(--line);
-  border-radius: 20px;
-  padding: 7px 12px;
-  font-family: var(--cond);
-  font-weight: 600;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-weight: 700;
   font-size: 14px;
-  color: var(--muted);
+  color: var(--text-2);
 }
 .lotp-chip[aria-pressed="true"] {
-  background: var(--text);
-  color: var(--bg);
-  box-shadow: none;
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
 }
 .lotp-pick {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--bg-2);
+  background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 6px 6px 6px 12px;
+  border-radius: 999px;
+  padding: 5px 5px 5px 16px;
 }
 .lotp-pick > span {
   font-size: 14px;
-  color: var(--muted);
+  font-weight: 600;
+  color: var(--text-2);
 }
 .lotp-step {
   display: flex;
@@ -676,107 +717,124 @@
   width: 34px;
   height: 34px;
   border: 0;
-  border-radius: 9px;
-  background: var(--bg-3);
+  border-radius: 50%;
+  background: var(--green-50);
+  color: var(--green-600);
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 800;
 }
 .lotp-step output {
-  min-width: 28px;
+  min-width: 26px;
   text-align: center;
-  font-weight: 700;
+  font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
 .lotp-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 7px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
 }
-@media (min-width: 640px) {
+@media (min-width: 520px) {
   .lotp-grid {
-    grid-template-columns: repeat(10, 1fr);
-    gap: 9px;
+    grid-template-columns: repeat(6, 1fr);
   }
 }
+@media (min-width: 760px) {
+  .lotp-grid {
+    grid-template-columns: repeat(10, 1fr);
+  }
+}
+
+/* cada pacote é um mini envelope: faixas serrilhadas em cima e embaixo, picote, "LEGENDS" e o número */
 .lotp-cell {
+  --env-body: linear-gradient(170deg, #0d8a45, #054a25);
+  --crimp: repeating-linear-gradient(90deg, #f3f7f4 0 3px, #d3ddd6 3px 5px);
+  --num: #fff;
+  --lbl: var(--yellow);
   position: relative;
   aspect-ratio: 3 / 4;
-  border-radius: 8px;
+  border-radius: 4px;
   border: 0;
   padding: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  align-items: stretch;
-  font-family: var(--display);
-  color: var(--text);
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background:
+    var(--crimp) top / 100% 11% no-repeat,
+    var(--crimp) bottom / 100% 11% no-repeat,
+    var(--env-body);
+  box-shadow: 0 3px 8px rgba(6, 48, 26, 0.22);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
-.lotp-cell .n {
-  position: relative;
-  z-index: 1;
-  font-size: 20px;
-  line-height: 1;
-  padding: 0 0 6px;
-  text-align: center;
-}
-.lotp-cell.is-free {
-  background: linear-gradient(170deg, #0d8a45, #054a25);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-}
-.lotp-cell.is-free::before {
+.lotp-cell::before {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
-  top: 0;
-  height: 14%;
-  background: repeating-linear-gradient(90deg, #eef3ef 0 3px, #cfd9d2 3px 5px);
+  top: 18%;
+  border-top: 1px dashed rgba(255, 255, 255, 0.5);
+}
+.lotp-cell .lbl {
+  position: relative;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 8.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lbl);
+  margin-top: 10%;
+}
+.lotp-cell .n {
+  position: relative;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 21px;
+  line-height: 1;
+  color: var(--num);
+}
+.lotp-cell.is-free:hover:not(:disabled) {
+  transform: translateY(-3px) rotate(-1.5deg);
+  box-shadow: 0 8px 16px rgba(6, 48, 26, 0.28);
 }
 .lotp-cell.is-free:disabled {
   cursor: default;
-  opacity: 0.75;
+  filter: saturate(0.6);
 }
 .lotp-cell.is-sel {
-  background: linear-gradient(170deg, #fff3c4, #ffcf4d 50%, #c8920f);
-  color: var(--on-gold);
-  box-shadow: 0 0 0 2px var(--gold), 0 6px 16px rgba(255, 207, 77, 0.35);
+  --env-body: linear-gradient(170deg, #ffe680, #fdca04 55%, #d9a700);
+  --num: var(--ink);
+  --lbl: var(--ink);
+  transform: translateY(-3px);
+  box-shadow: 0 0 0 3px var(--ink), 0 10px 18px rgba(253, 202, 4, 0.45);
 }
 .lotp-cell.is-sel::before {
-  content: "✓";
-  position: absolute;
-  top: 6px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-family: var(--body);
-  font-weight: 700;
-  font-size: 16px;
+  border-top-color: rgba(6, 48, 26, 0.35);
 }
 .lotp-cell.is-res {
-  background: repeating-linear-gradient(135deg, #24382d 0 6px, #1b2c22 6px 12px);
-  color: var(--dim);
+  --env-body: linear-gradient(170deg, #cdd8d1, #b3c2b8);
+  --crimp: repeating-linear-gradient(90deg, #eef2ef 0 3px, #d8e0db 3px 5px);
+  --num: #6b8577;
+  --lbl: #6b8577;
+  box-shadow: none;
+}
+.lotp-cell.is-res::before {
+  border-top-color: rgba(0, 0, 0, 0.15);
 }
 .lotp-cell.is-sold {
-  background: #1d2a22;
-  color: #c7a43a;
-  box-shadow: inset 0 0 0 1px #3b4a2a;
-}
-.lotp-cell.is-sold::before {
-  content: "PAGO";
-  position: absolute;
-  top: 8px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-family: var(--cond);
-  font-weight: 700;
-  font-size: 10px;
-  letter-spacing: 1px;
+  --env-body: linear-gradient(170deg, #0b3d22, #06301a);
+  --num: #fff;
+  --lbl: #7de2ab;
 }
 .lotp-cell.is-open {
   background: #000;
-  color: #fff;
+  justify-content: flex-end;
+  border-radius: 6px;
+}
+.lotp-cell.is-open::before {
+  display: none;
 }
 .lotp-cell.is-open img {
   position: absolute;
@@ -784,19 +842,21 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.85;
 }
 .lotp-cell.is-open .n {
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.85) 55%);
-  padding-top: 14px;
+  width: 100%;
+  font-size: 17px;
+  text-align: center;
+  padding: 14px 0 5px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8) 55%);
 }
 .lotp-key {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 14px;
-  margin-top: 14px;
+  gap: 8px 16px;
+  margin-top: 16px;
   font-size: 13px;
-  color: var(--muted);
+  color: var(--text-2);
 }
 .lotp-key span {
   display: inline-flex;
@@ -804,124 +864,168 @@
   align-items: center;
 }
 .lotp-key i {
-  width: 14px;
-  height: 18px;
-  border-radius: 3px;
+  width: 13px;
+  height: 17px;
+  border-radius: 2px;
   display: inline-block;
 }
 .lotp-key .k-free {
   background: linear-gradient(170deg, #0d8a45, #054a25);
 }
 .lotp-key .k-sel {
-  background: var(--gold);
+  background: var(--yellow);
 }
 .lotp-key .k-res {
-  background: repeating-linear-gradient(135deg, #24382d 0 3px, #1b2c22 3px 6px);
+  background: #c3d0c8;
 }
 .lotp-key .k-sold {
-  background: #1d2a22;
-  box-shadow: inset 0 0 0 1px #c7a43a;
+  background: var(--ink);
 }
 .lotp-key .k-open {
-  background: #000;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  background: linear-gradient(170deg, #ffe680, #b88cff);
 }
 
-/* como funciona */
+/* como funciona (seção escura, como a da loja na landing) */
+.lotp-dark {
+  background: var(--ink);
+  color: #fff;
+}
+.lotp-dark .lotp-eyebrow {
+  color: var(--yellow);
+}
 .lotp-steps {
   display: grid;
-  gap: 12px;
-  margin-top: 22px;
-}
-@media (min-width: 720px) {
-  .lotp-steps {
-    grid-template-columns: repeat(4, 1fr);
-  }
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  gap: 16px;
+  margin-top: 26px;
 }
 .lotp-stp {
-  background: var(--bg-2);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 18px;
+  background: var(--gn-ink-2);
+  border: 1px solid var(--gn-ink-line);
+  border-radius: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
 }
 .lotp-stp .k {
   font-family: var(--display);
+  font-weight: 900;
   font-size: 40px;
   line-height: 1;
-  color: var(--gold);
+  color: var(--yellow);
 }
 .lotp-stp b {
-  font-size: 17px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1.2;
 }
 .lotp-stp p {
   margin: 0;
-  color: var(--muted);
+  color: #bfe0cb;
   font-size: 15px;
 }
 .lotp-perks {
   display: grid;
-  gap: 12px;
-  margin-top: 22px;
-}
-@media (min-width: 720px) {
-  .lotp-perks {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 16px;
+  margin-top: 28px;
 }
 .lotp-perks > div {
-  border-top: 2px solid var(--gold);
-  padding-top: 12px;
+  border-top: 3px solid var(--yellow);
+  padding-top: 14px;
 }
 .lotp-perks b {
   display: block;
-  font-size: 17px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 18px;
   margin-bottom: 4px;
 }
 .lotp-perks p {
   margin: 0;
-  color: var(--muted);
+  color: #bfe0cb;
   font-size: 15px;
 }
 
-/* perguntas */
+/* perguntas (cartões brancos, como o FAQ da landing) */
+#lotp-perguntas .lotp-wrap {
+  max-width: 860px;
+}
 .lotp details {
-  border-bottom: 1px solid var(--line);
-  padding: 14px 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  margin-top: 10px;
 }
 .lotp summary {
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 17px;
   list-style: none;
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
 }
 .lotp summary::-webkit-details-marker {
   display: none;
 }
 .lotp summary::after {
   content: "+";
-  color: var(--gold);
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #f0f4f1;
+  color: var(--green);
   font-weight: 700;
+  font-size: 20px;
+  transition: transform 0.2s ease;
 }
 .lotp details[open] summary::after {
-  content: "–";
+  background: var(--green);
+  color: #fff;
+  transform: rotate(45deg);
 }
 .lotp details p {
-  margin: 8px 0 0;
-  color: var(--muted);
+  margin: 0;
+  padding: 0 22px 20px;
+  color: #4d6858;
   max-width: 65ch;
 }
+
+/* chamada final + rodapé */
+.lotp-final {
+  background: var(--green);
+  color: #fff;
+}
+.lotp-final .lotp-wrap {
+  padding-block: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+.lotp-final h2 {
+  margin: 0;
+  max-width: 760px;
+}
+.lotp-final p {
+  margin: 0;
+  color: #e6f6ec;
+  font-size: 18px;
+}
 .lotp-footer {
-  padding-block: 30px 120px;
-  color: var(--dim);
+  padding-block: 28px 120px;
+  color: var(--muted);
   font-size: 13px;
   text-align: center;
-  border-top: 1px solid var(--line);
 }
 
 /* barra fixa */
@@ -931,13 +1035,14 @@
   right: 0;
   bottom: 0;
   z-index: 20;
-  background: rgba(9, 20, 14, 0.94);
+  background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(10px);
   border-top: 1px solid var(--line);
+  box-shadow: 0 -8px 24px rgba(6, 48, 26, 0.08);
   padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
 }
 .lotp-sticky-in {
-  max-width: 1080px;
+  max-width: 1120px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -945,11 +1050,13 @@
   gap: 12px;
 }
 .lotp-sticky-in > div {
-  line-height: 1.2;
+  line-height: 1.25;
   min-width: 0;
 }
 .lotp-sticky-in b {
   display: block;
+  font-family: var(--display);
+  font-weight: 900;
   font-size: 17px;
 }
 .lotp-sticky-in small {
@@ -960,13 +1067,16 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.lotp-sticky .lotp-btn {
+  flex: none;
+}
 
-/* janelas */
+/* janelas (claras, com os componentes do app recoloridos) */
 .lotp-overlay {
   position: fixed;
   inset: 0;
   z-index: 40;
-  background: rgba(3, 8, 5, 0.78);
+  background: rgba(6, 48, 26, 0.55);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -977,21 +1087,30 @@
   }
 }
 .lotp-sheet {
-  width: min(500px, 100%);
+  --field: #f5f7f2;
+  --border-1: var(--gn-line);
+  --border-3: var(--gn-line);
+  --text-1: var(--gn-text);
+  --text-3: var(--gn-text-2);
+  --text-5: var(--gn-muted);
+  width: min(520px, 100%);
   max-height: 92vh;
   overflow-y: auto;
-  background: var(--bg-2);
-  border: 1px solid var(--line);
-  border-radius: 20px 20px 0 0;
-  padding: 20px max(18px, env(safe-area-inset-left, 0px)) calc(20px + env(safe-area-inset-bottom, 0px));
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 24px 24px 0 0;
+  padding: 22px max(20px, env(safe-area-inset-left, 0px)) calc(20px + env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 @media (min-width: 640px) {
   .lotp-sheet {
-    border-radius: 20px;
+    border-radius: 24px;
   }
+}
+.lotp-sheet .lotp-eyebrow {
+  color: var(--green);
 }
 .lotp-form {
   display: flex;
@@ -1005,8 +1124,9 @@
   font-size: 15px;
 }
 .lotp-row.is-total {
-  font-weight: 700;
-  font-size: 18px;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 19px;
   border-top: 1px solid var(--line);
   padding-top: 10px;
 }
@@ -1017,80 +1137,83 @@
 }
 .lotp-nums span {
   font-family: var(--display);
-  font-size: 18px;
-  background: var(--gold);
-  color: var(--on-gold);
-  border-radius: 6px;
-  padding: 2px 8px;
+  font-weight: 900;
+  font-size: 16px;
+  background: var(--yellow);
+  color: var(--ink);
+  border-radius: 8px;
+  padding: 3px 9px;
 }
 .lotp-fields {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 10px;
 }
 .lotp-fields label {
   display: flex;
   flex-direction: column;
   gap: 4px;
   font-size: 13px;
-  color: var(--muted);
+  font-weight: 600;
+  color: var(--text-2);
   min-width: 0;
 }
 .lotp-fields label.full {
   grid-column: 1 / -1;
 }
 .lotp-fields input {
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 10px 12px;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  padding: 11px 13px;
   color: var(--text);
   font: inherit;
   font-size: 16px;
   min-width: 0;
 }
+.lotp-fields input:focus {
+  border-color: var(--green);
+  outline: none;
+}
 .lotp-info {
-  background: var(--bg-3);
-  border-radius: 12px;
-  padding: 10px 12px;
+  background: var(--green-50);
+  border-radius: 14px;
+  padding: 12px 14px;
   font-size: 14px;
-  color: var(--muted);
+  color: var(--gn-ink-2);
 }
 .lotp-small-text {
   font-size: 13px;
-}
-.lotp-safety {
-  font-size: 14px;
 }
 .lotp-ack {
   display: flex;
   gap: 10px;
   align-items: flex-start;
   font-size: 14px;
-  color: var(--muted);
+  color: var(--text-2);
 }
 .lotp-ack input {
   width: 18px;
   height: 18px;
   margin-top: 2px;
-  accent-color: var(--accent);
+  accent-color: var(--green);
   flex: none;
 }
 .lotp-error {
-  background: rgba(255, 143, 107, 0.12);
-  border: 1px solid rgba(255, 143, 107, 0.4);
-  color: #ffb39b;
-  border-radius: 10px;
+  background: #fff1ec;
+  border: 1px solid #f5c2b0;
+  color: #9a3412;
+  border-radius: 12px;
   padding: 10px 12px;
   font-size: 14px;
 }
 .lotp-pop-photo {
-  width: 170px;
+  width: 180px;
   margin: 0 auto;
   aspect-ratio: 545 / 727;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 12px 28px rgba(6, 48, 26, 0.3);
 }
 .lotp-pop-photo img {
   width: 100%;
@@ -1101,25 +1224,25 @@
 .lotp-toast {
   position: fixed;
   left: 50%;
-  bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(92px + env(safe-area-inset-bottom, 0px));
   translate: -50% 0;
   z-index: 60;
-  background: var(--text);
-  color: var(--bg);
-  padding: 10px 16px;
-  border-radius: 10px;
-  font-weight: 600;
+  background: var(--ink);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 700;
   font-size: 14px;
   max-width: calc(100% - 32px);
   text-align: center;
 }
 
-@media (min-width: 900px) {
-  .lotp-hero {
-    grid-template-columns: 1.1fr 0.9fr;
+@media (max-width: 480px) {
+  .lotp-tiers {
+    grid-template-columns: repeat(2, 1fr);
   }
-  .lotp-visual {
-    height: 460px;
+  .lotp-hero-ctas .lotp-btn {
+    flex: 1;
   }
 }
 @media (prefers-reduced-motion: reduce) {

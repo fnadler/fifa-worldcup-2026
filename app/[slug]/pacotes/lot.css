@@ -1243,6 +1243,9 @@ body:has(.lotp) {
   }
   .lotp-hero-ctas .lotp-btn {
     flex: 1;
+    padding-left: 14px;
+    padding-right: 14px;
+    white-space: nowrap;
   }
 }
 @media (prefers-reduced-motion: reduce) {

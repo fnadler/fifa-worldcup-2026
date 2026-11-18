@@ -193,7 +193,7 @@ export default function LotLanding({ data }: { data: PublicLot }) {
               {salesOpen && counts.free === 0 && <div className="lotp-soon">Todos os pacotes deste lote já foram reservados.</div>}
               <div className="lotp-hero-ctas">
                 <button className="lotp-btn lotp-btn-gold" onClick={() => goTab("packs")}>
-                  {canBuy ? "Escolher pacotes" : "Ver os pacotes"}
+                  Ver pacotes
                 </button>
                 <button className="lotp-btn lotp-btn-ghost-light" onClick={() => goTab("pot")}>
                   Ver as Legends
@@ -562,7 +562,7 @@ export default function LotLanding({ data }: { data: PublicLot }) {
               disabled={!canBuy}
               onClick={() => (nums.length ? setCheckout(true) : goTab("packs"))}
             >
-              {nums.length ? "Continuar" : "Escolher pacotes"}
+              {nums.length ? "Continuar" : "Ver pacotes"}
             </button>
           </div>
         </div>

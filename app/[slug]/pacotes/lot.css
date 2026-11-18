@@ -2000,3 +2000,60 @@ html:has(.lotp) {
   color: #e6f6ec;
   text-align: center;
 }
+
+/* guardar na coleção */
+.lotp-collect {
+  margin: 36px auto 0;
+  max-width: 760px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 18px 20px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.lotp-collect > div:first-child {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+.lotp-collect b {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 19px;
+}
+.lotp-collect p {
+  margin: 4px 0 0;
+  color: var(--text-2);
+  font-size: 15px;
+}
+.lotp-collect .lotp-collect-error {
+  color: #9a3412;
+}
+.lotp-collect-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.lotp-collect.is-done {
+  background: var(--green-50);
+  border-color: transparent;
+  color: var(--gn-ink-2);
+  font-weight: 700;
+}
+.po-share-msg {
+  color: var(--muted);
+  text-align: center;
+}
+.lotp .po-all-share {
+  margin-left: auto;
+  border: 0;
+  background: var(--green-50);
+  color: var(--green-600);
+  font-weight: 800;
+  font-size: 13px;
+  border-radius: 999px;
+  padding: 6px 12px;
+}

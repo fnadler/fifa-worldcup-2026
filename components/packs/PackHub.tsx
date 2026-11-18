@@ -9,6 +9,8 @@ import { stickerImage } from "@/lib/stickerImages";
 import Envelope from "./Envelope";
 import PackOpening, { type PackContent } from "./PackOpening";
 import PackResult from "./PackResult";
+import CollectCard from "./CollectCard";
+import { shareLegend } from "./shareLegend";
 
 // Pacotes do comprador: bloqueados enquanto o pagamento não é confirmado; depois, abertos um de cada vez
 // (PackOpening) e revistos no resumo (PackResult).
@@ -24,6 +26,18 @@ export default function PackHub({ data }: { data: BuyerPacks }) {
     Object.fromEntries(packs.filter((p) => p.opened && p.legend).map((p) => [p.number, { legend: p.legend!, commons: p.commons }]))
   );
   const [view, setView] = useState<View>({ kind: "hub" });
+  const [collected, setCollected] = useState<Set<number>>(() => new Set(packs.filter((p) => p.collected).map((p) => p.number)));
+  const [toast, setToast] = useState<string | null>(null);
+  const lotUrl =
+    shop.slug && lot ? `https://www.gncoleciona.com.br/${shop.slug}/pacotes/${lot.slug}` : "https://www.gncoleciona.com.br";
+  const pendingCollect = Object.keys(results)
+    .map(Number)
+    .filter((n) => !collected.has(n)).length * 8;
+
+  function flash(msg: string) {
+    setToast(msg);
+    window.setTimeout(() => setToast((t) => (t === msg ? null : t)), 3000);
+  }
   const closed = packs.filter((p) => !results[p.number]).map((p) => p.number);
   const fechados = closed.length;
   const nextAfter = (n: number) => closed.filter((x) => x !== n);
@@ -101,6 +115,16 @@ export default function PackHub({ data }: { data: BuyerPacks }) {
                         <span>
                           {legendName(r.legend)} · Legend {legendTierOf(r.legend)?.name}
                         </span>
+                        <button
+                          className="po-all-share"
+                          onClick={() =>
+                            void shareLegend({ legend: r.legend, shopName: shop.name, lotUrl })
+                              .then((s) => s === "downloaded" && flash("Imagem baixada. Poste nas suas redes!"))
+                              .catch(() => flash("Não foi possível gerar a imagem — tente de novo."))
+                          }
+                        >
+                          Compartilhar
+                        </button>
                       </div>
                       <div className="po-all-row">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -125,6 +149,8 @@ export default function PackHub({ data }: { data: BuyerPacks }) {
               total={packs.length}
               content={results[view.n]}
               remaining={fechados}
+              shopName={shop.name}
+              lotUrl={lotUrl}
               onNext={() => closed[0] && setView({ kind: "open", n: closed[0] })}
               onBack={goHub}
             />
@@ -186,6 +212,18 @@ export default function PackHub({ data }: { data: BuyerPacks }) {
               )}
             </>
           )}
+          {state === "pronto" && view.kind !== "open" && (
+            <CollectCard
+              token={data.token}
+              viewer={data.viewer}
+              pending={pendingCollect}
+              done={collected.size > 0}
+              onCollected={(added) => {
+                setCollected(new Set(Object.keys(results).map(Number)));
+                flash(`${added} figurinhas marcadas na sua coleção.`);
+              }}
+            />
+          )}
         </div>
       </section>
 
@@ -202,6 +240,8 @@ export default function PackHub({ data }: { data: BuyerPacks }) {
         )}
         <p>Pacote Legends na GN Coleciona</p>
       </footer>
+
+      {toast && <div className="lotp-toast">{toast}</div>}
 
       {view.kind === "open" && (
         <PackOpening

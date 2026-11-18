@@ -12,27 +12,33 @@ const FONT = "font-family:Arial,Helvetica,sans-serif;";
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const pad = (n: number) => String(n).padStart(2, "0");
 
-export function packsReadySubject(n: PacksNotice): string {
+/** `closed`: lembrete — quantos pacotes do pedido ainda estão fechados. */
+export function packsReadySubject(n: PacksNotice, closed?: number): string {
   const nome = firstName(n.buyerName);
+  if (closed) return `${nome ? `${nome}, v` : "V"}ocê ainda tem ${closed === 1 ? "1 pacote fechado" : `${closed} pacotes fechados`}`;
   const frase = packsCountText(n.numbers.length);
   return `${nome ? `${nome}, ` : ""}${frase} para abrir`;
 }
 
-export function packsReadyHtml(n: PacksNotice): string {
+export function packsReadyHtml(n: PacksNotice, closed?: number): string {
   const nome = firstName(n.buyerName);
   const url = packsUrl(n.token);
-  const qtd = n.numbers.length;
+  const qtd = closed || n.numbers.length;
   const nums = n.numbers.map(pad).join(", ");
+  const titulo = closed ? "Sua Legend está esperando!" : "Pagamento confirmado!";
+  const texto = closed
+    ? `${nome ? `${esc(nome)}, ` : ""}você ainda tem ${closed === 1 ? "1 Pacote Legends fechado" : `${closed} Pacotes Legends fechados`} do pedido #${esc(n.code)}. A Legend de cada pacote é sorteada na hora em que você abre: abra agora e descubra quais vieram.`
+    : `${nome ? `${esc(nome)}, ` : ""}${qtd === 1 ? "o seu Pacote Legends" : `os seus ${qtd} Pacotes Legends`} (nº ${nums}) ${qtd === 1 ? "está pronto" : "estão prontos"} para abrir. Cada pacote tem 7 figurinhas da Copa 2026 e mais 1 Legend, que você descobre na hora em que abrir.`;
   return `<!doctype html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light">
-<title>${esc(packsReadySubject(n))}</title>
+<title>${esc(packsReadySubject(n, closed))}</title>
 </head>
 <body style="margin:0;padding:0;background:#f5f7f2;">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;">Pagamento confirmado. Abra agora e descubra quais Legends vieram.</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">${closed ? "Seus pacotes continuam fechados." : "Pagamento confirmado."} Abra agora e descubra quais Legends vieram.</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f7f2;">
   <tr>
     <td align="center" style="padding:24px 12px;">
@@ -45,9 +51,9 @@ export function packsReadyHtml(n: PacksNotice): string {
         <tr>
           <td style="padding:32px 32px 8px;${FONT}">
             <div style="font-size:12px;line-height:16px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:${GREEN};">Pedido #${esc(n.code)} · ${esc(n.shopName)}</div>
-            <h1 style="margin:8px 0 14px;font-size:28px;line-height:34px;color:${INK};">Pagamento confirmado!</h1>
+            <h1 style="margin:8px 0 14px;font-size:28px;line-height:34px;color:${INK};">${titulo}</h1>
             <p style="margin:0 0 10px;font-size:16px;line-height:24px;color:#3d5a48;">
-              ${nome ? `${esc(nome)}, ` : ""}${qtd === 1 ? "o seu Pacote Legends" : `os seus ${qtd} Pacotes Legends`} (nº ${nums}) ${qtd === 1 ? "está pronto" : "estão prontos"} para abrir. Cada pacote tem 7 figurinhas da Copa 2026 e mais 1 Legend, que você descobre na hora em que abrir.
+              ${texto}
             </p>
           </td>
         </tr>
@@ -76,9 +82,17 @@ export function packsReadyHtml(n: PacksNotice): string {
 </html>`;
 }
 
-export function packsReadyText(n: PacksNotice): string {
+export function packsReadyText(n: PacksNotice, closed?: number): string {
   const nome = firstName(n.buyerName);
   const qtd = n.numbers.length;
+  if (closed) {
+    return [
+      `${nome ? `${nome}, v` : "V"}ocê ainda tem ${closed === 1 ? "1 Pacote Legends fechado" : `${closed} Pacotes Legends fechados`} do pedido #${n.code} · ${n.shopName}.`,
+      "",
+      "A Legend de cada pacote é sorteada na hora em que você abre. Abra agora:",
+      packsUrl(n.token),
+    ].join("\n");
+  }
   return [
     `${nome ? `${nome}, p` : "P"}agamento confirmado! Pedido #${n.code} · ${n.shopName}`,
     "",

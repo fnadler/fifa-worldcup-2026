@@ -6,6 +6,7 @@ import { legendName, legendTierOf } from "@/lib/packs";
 import { describeSticker, itemOrder } from "@/lib/shop";
 import { stickerImage } from "@/lib/stickerImages";
 import type { PackContent } from "./PackOpening";
+import { shareLegend } from "./shareLegend";
 
 // O que veio num pacote: a Legend grande (inclina com o dedo/mouse) e as 7 figurinhas.
 
@@ -22,6 +23,8 @@ export default function PackResult({
   total,
   content,
   remaining,
+  shopName,
+  lotUrl,
   onNext,
   onBack,
 }: {
@@ -29,11 +32,29 @@ export default function PackResult({
   total: number;
   content: PackContent;
   remaining: number;
+  shopName: string;
+  /** Endereço público do lote (vai na imagem e no texto do compartilhamento). */
+  lotUrl: string;
   onNext: () => void;
   onBack: () => void;
 }) {
   const card = useRef<HTMLDivElement>(null);
   const [zoom, setZoom] = useState<string | null>(null);
+  const [sharing, setSharing] = useState(false);
+  const [shareMsg, setShareMsg] = useState<string | null>(null);
+
+  async function compartilhar() {
+    setSharing(true);
+    setShareMsg(null);
+    try {
+      const r = await shareLegend({ legend: content.legend, shopName, lotUrl });
+      if (r === "downloaded") setShareMsg("Imagem baixada. Poste nas suas redes!");
+    } catch {
+      setShareMsg("Não foi possível gerar a imagem — tente de novo.");
+    } finally {
+      setSharing(false);
+    }
+  }
 
   useEffect(() => {
     if (!zoom) return;
@@ -84,6 +105,10 @@ export default function PackResult({
           ))}
       </div>
       <div className="po-result-actions">
+        <button className="lotp-btn lotp-btn-green" onClick={() => void compartilhar()} disabled={sharing}>
+          {sharing ? "Gerando a imagem…" : "Compartilhar minha Legend"}
+        </button>
+        {shareMsg && <small className="po-share-msg">{shareMsg}</small>}
         {remaining > 0 && (
           <button className="lotp-btn lotp-btn-gold" onClick={onNext}>
             Abrir o próximo pacote

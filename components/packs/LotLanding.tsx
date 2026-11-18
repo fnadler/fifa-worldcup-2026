@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { formatAuctionDate } from "@/lib/auctions";
+import { clarityEvent } from "@/lib/clarityClient";
+import { track } from "@/lib/metaClient";
 import { LEGEND_TIERS, legendName, legendTierOf } from "@/lib/packs";
 import type { PublicLot, PublicPack } from "@/lib/packsPublic";
 import { formatBRL } from "@/lib/shop";
@@ -38,6 +40,12 @@ export default function LotLanding({ data }: { data: PublicLot }) {
   const [checkout, setCheckout] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [now, setNow] = useState(() => Date.now());
+
+  // Meta: visita à página do lote (uma vez por carregamento).
+  useEffect(() => {
+    track("ViewContent", { content_name: `Pacote Legends · ${lot.title}`, content_type: "product", content_ids: [lot.id], value: lot.priceCents / 100, currency: "BRL" });
+    clarityEvent("pacotes_lote_visto");
+  }, [lot.id, lot.title, lot.priceCents]);
 
   // A grade muda com os pedidos dos outros: atualiza a cada 40s com a aba visível.
   useEffect(() => {

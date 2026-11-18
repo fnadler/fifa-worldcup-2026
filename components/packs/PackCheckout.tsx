@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import { clarityEvent } from "@/lib/clarityClient";
 import { isValidCPF, maskCPF } from "@/lib/cpf";
+import { track } from "@/lib/metaClient";
 import { formatBRL, formatDateTimeBR, isValidPhoneBR, maskPhoneBR, type BuyerInfo } from "@/lib/shop";
 import SafetyTips from "../SafetyTips";
 
@@ -31,6 +33,14 @@ export default function PackCheckout({ lotId, numbers, priceCents, minOrderCents
   const [error, setError] = useState<string | null>(null);
   const [nums, setNums] = useState(numbers);
   const [done, setDone] = useState<{ code: string; numbers: number[]; reservedUntil: string; whatsappUrl: string } | null>(null);
+
+  // Meta: começou o pedido (abriu o checkout com os números escolhidos).
+  useEffect(() => {
+    track("InitiateCheckout", { content_ids: [lotId], content_type: "product", num_items: numbers.length, value: (numbers.length * priceCents) / 100, currency: "BRL" });
+    clarityEvent("pacotes_checkout");
+    // só ao abrir o checkout
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     try {
@@ -92,6 +102,9 @@ export default function PackCheckout({ lotId, numbers, priceCents, minOrderCents
         return setError(data.error ?? "Não foi possível registrar o pedido — tente de novo.");
       }
       setDone({ code: data.code, numbers: data.numbers ?? nums, reservedUntil: data.reservedUntil ?? "", whatsappUrl: data.whatsappUrl });
+      // Meta: pedido registrado (o pagamento é combinado depois, no WhatsApp).
+      track("Lead", { content_ids: [lotId], content_type: "product", num_items: nums.length, value: (nums.length * priceCents) / 100, currency: "BRL" });
+      clarityEvent("pacotes_pedido");
       onOrdered();
     } catch {
       setError("Sem conexão — verifique sua internet e tente de novo.");

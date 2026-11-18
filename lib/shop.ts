@@ -23,6 +23,11 @@ export const PRODUCT_DESCRIPTION_MAX = 600;
 export const PRODUCT_STOCK_MAX = 9999;
 
 export const isProductCode = (code: string) => code.startsWith(PRODUCT_PREFIX);
+
+// Pacotes de um lote: no pedido, um item "PACK:<id do lote>" com o nome do lote e os números.
+export const PACK_PREFIX = "PACK:";
+export const PACKS_GROUP = "Pacotes";
+export const isPackCode = (code: string) => code.startsWith(PACK_PREFIX);
 export const productCode = (id: string) => `${PRODUCT_PREFIX}${id}`;
 
 export interface ShopProduct {
@@ -164,6 +169,8 @@ export interface Order {
   status: OrderStatus;
   buyer: BuyerInfo;
   items: OrderItem[];
+  /** Figurinhas sorteadas para os pacotes do pedido — reservam estoque, mas o comprador não vê. */
+  hiddenItems: { code: string; qty: number }[];
   totalCents: number;
   createdAt: string;
   reservedUntil: string;
@@ -202,6 +209,7 @@ export interface OrderRow {
   address_city: string;
   address_state: string;
   items: OrderItem[];
+  hidden_items?: { code: string; qty: number }[] | null;
   total_cents: number;
   created_at: string;
   reserved_until: string;
@@ -209,7 +217,7 @@ export interface OrderRow {
 }
 
 export const ORDER_COLUMNS =
-  "id, number, code, status, buyer_name, buyer_email, buyer_whatsapp, buyer_cpf, address_cep, address_street, address_number, address_complement, address_district, address_city, address_state, items, total_cents, created_at, reserved_until, cancel_reason";
+  "id, number, code, status, buyer_name, buyer_email, buyer_whatsapp, buyer_cpf, address_cep, address_street, address_number, address_complement, address_district, address_city, address_state, items, hidden_items, total_cents, created_at, reserved_until, cancel_reason";
 
 export function isKnownCode(code: string): boolean {
   return lookupCode(code) !== undefined;
@@ -251,12 +259,13 @@ export const PRODUCTS_GROUP = "Produtos";
 /** `name`: título do produto, quando o código é de produto (vem do pedido ou da lista de produtos). */
 export function itemLabel(code: string, name?: string): ItemLabel {
   if (isProductCode(code)) return { title: name || "Produto", meta: "", group: PRODUCTS_GROUP };
+  if (isPackCode(code)) return { title: name || "Pacotes", meta: "", group: PACKS_GROUP };
   return { title: displayCode(code), meta: describeSticker(code), group: lookupCode(code)?.catalog.shortName ?? "" };
 }
 
 /** Posição do item para ordenar: coleções na ordem da plataforma, itens na ordem do álbum; produtos no fim. */
 export function itemOrder(code: string): number {
-  if (isProductCode(code)) return Number.MAX_SAFE_INTEGER;
+  if (isProductCode(code) || isPackCode(code)) return Number.MAX_SAFE_INTEGER;
   const e = lookupCode(code);
   if (!e) return Number.MAX_SAFE_INTEGER - 1;
   return CATALOGS.indexOf(e.catalog) * 1_000_000 + e.catalog.blocks.indexOf(e.block) * 1_000 + e.index;
@@ -305,6 +314,7 @@ export function orderFromRow(row: OrderRow): Order {
       state: row.address_state,
     },
     items: row.items,
+    hiddenItems: row.hidden_items ?? [],
     totalCents: row.total_cents,
     createdAt: row.created_at,
     reservedUntil: row.reserved_until,
@@ -323,7 +333,7 @@ export function reservedByCode(orders: Order[], now: number, excludeId?: string)
   const out: Record<string, number> = {};
   orders.forEach((o) => {
     if (o.status !== "novo" || isExpired(o, now) || o.id === excludeId) return;
-    o.items.forEach((it) => (out[it.code] = (out[it.code] ?? 0) + it.qty));
+    [...o.items, ...(o.hiddenItems ?? [])].forEach((it) => (out[it.code] = (out[it.code] ?? 0) + it.qty));
   });
   return out;
 }
@@ -390,8 +400,8 @@ export function orderMessage(
   for (const grupo of grupos) {
     const doGrupo = sorted.filter((it) => itemLabel(it.code, it.name).group === grupo);
     if (grupos.length > 1) linhas.push(`*${grupo}*`);
-    if (grupo === PRODUCTS_GROUP) {
-      doGrupo.forEach((it) => linhas.push(linha(it, it.name || "Produto")));
+    if (grupo === PRODUCTS_GROUP || grupo === PACKS_GROUP) {
+      doGrupo.forEach((it) => linhas.push(linha(it, it.name || (grupo === PACKS_GROUP ? "Pacotes" : "Produto"))));
     } else {
       let bloco = "";
       for (const it of doGrupo) {
@@ -412,7 +422,7 @@ export function orderMessage(
 
   const totalItens = items.reduce((s, it) => s + it.qty, 0);
   // pedido de uma coleção só: fala a língua dela ("figurinhas"/"cards"); misto: "itens"
-  const stickers = items.filter((it) => !isProductCode(it.code));
+  const stickers = items.filter((it) => !isProductCode(it.code) && !isPackCode(it.code));
   const catalog = grupos.length === 1 && stickers.length ? catalogOfCodes(stickers.map((it) => it.code)) : null;
   const itemLabelTxt = catalog ? (totalItens === 1 ? catalog.itemSingular : catalog.itemPlural) : totalItens === 1 ? "item" : "itens";
   const reservados = catalog ? (catalog.itemSingular === "card" ? "Cards reservados" : "Figurinhas reservadas") : "Itens reservados";

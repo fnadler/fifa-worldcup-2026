@@ -55,7 +55,11 @@ export default function LotStatusPanel({
       {status === "pausado" && <p className="pack-hint">O lote está pausado: não aparece para os compradores e não recebe pedidos.</p>}
       {path && (
         <p className="pack-hint">
-          Página do lote: <b>gncoleciona.com.br{path}</b> (a página pública entra na próxima fase).
+          Página do lote:{" "}
+          <a href={path} target="_blank" rel="noopener noreferrer">
+            <b>gncoleciona.com.br{path}</b>
+          </a>
+          {status !== "ativo" && " (enquanto o lote não estiver à venda, só você vê a página)"}
         </p>
       )}
       {error && <div className="login-error">{error}</div>}

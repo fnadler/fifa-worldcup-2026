@@ -1,0 +1,1132 @@
+/* Página promocional do lote de pacotes (/<loja>/pacotes/<lote>). Tudo dentro de .lotp. */
+
+.lotp {
+  --bg: #07110c;
+  --bg-2: #0d1a14;
+  --bg-3: #12241b;
+  --line: #1e3328;
+  --text: #e8f2ec;
+  --muted: #8fae9f;
+  --dim: #5d7a6c;
+  --accent: #00c46a;
+  --on-accent: #04180d;
+  --gold: #ffcf4d;
+  --on-gold: #3a2a00;
+  --display: var(--font-bebas-neue), "Impact", "Arial Narrow", sans-serif;
+  --body: var(--font-barlow), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --cond: var(--font-barlow-condensed), "Arial Narrow", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.lotp *,
+.lotp *::before,
+.lotp *::after {
+  box-sizing: border-box;
+}
+.lotp button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.lotp button:focus-visible,
+.lotp summary:focus-visible,
+.lotp input:focus-visible,
+.lotp a:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+.lotp-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.lotp-section {
+  padding-block: 44px;
+}
+.lotp-eyebrow {
+  font-family: var(--cond);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.lotp h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(36px, 7vw, 52px);
+  line-height: 0.95;
+  letter-spacing: 0.5px;
+  margin: 6px 0 10px;
+  text-wrap: balance;
+}
+.lotp h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1;
+}
+.lotp-lead {
+  color: var(--muted);
+  margin: 0;
+  max-width: 60ch;
+}
+.lotp-muted {
+  color: var(--muted);
+  margin: 0;
+}
+.lotp-muted b {
+  color: var(--text);
+}
+.lotp-center {
+  text-align: center;
+}
+.lotp-btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-weight: 700;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+}
+.lotp-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.lotp-btn-gold {
+  background: var(--gold);
+  color: var(--on-gold);
+}
+.lotp-btn-ghost {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--text);
+}
+.lotp-btn-green {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.lotp-small {
+  padding: 8px 12px;
+  font-size: 14px;
+}
+.lotp-full {
+  width: 100%;
+  margin-top: 16px;
+}
+
+/* ---------- topo ---------- */
+.lotp-band {
+  background: radial-gradient(70% 60% at 50% 30%, #13402a 0%, transparent 70%);
+}
+/* loja oficial: a cor exata do fundo do logo (#029838), com brilho só atrás do envelope */
+.lotp-band.is-official {
+  --muted: #d6f3e1;
+  --dim: #a9dcbd;
+  background:
+    linear-gradient(180deg, transparent 82%, var(--bg) 100%),
+    radial-gradient(38% 46% at 76% 58%, #19b957 0%, transparent 70%),
+    #029838;
+}
+.lotp-band.is-official .lotp-eyebrow {
+  color: #fff3c4;
+}
+.lotp-band.is-official .lotp-lead,
+.lotp-band.is-official .lotp-desc {
+  color: #f2fff6;
+}
+.lotp-band.is-official .lotp-bar {
+  background: rgba(0, 40, 15, 0.3);
+}
+.lotp-band.is-official .lotp-btn-ghost {
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.7);
+  color: #fff;
+}
+.lotp-band.is-official .lotp-btn-gold {
+  box-shadow: 0 6px 18px rgba(0, 40, 15, 0.35);
+}
+.lotp-band.is-official .lotp-hero h1 {
+  filter: drop-shadow(0 3px 0 rgba(0, 40, 15, 0.35));
+}
+.lotp-band.is-official .lotp-trust li::before {
+  color: #fff;
+}
+.lotp-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 14px;
+}
+.lotp-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  text-decoration: none;
+  min-width: 0;
+}
+.lotp-logo {
+  display: block;
+  width: 112px;
+  height: 58px;
+  overflow: hidden;
+  flex: none;
+}
+.lotp-logo img {
+  width: 136px;
+  height: 136px;
+  max-width: none;
+  margin: -38px 0 0 -12px;
+  display: block;
+}
+.lotp-shop-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  flex: none;
+}
+.lotp-shop-name {
+  font-family: var(--display);
+  font-size: 24px;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lotp-navlink {
+  color: var(--muted);
+  font-size: 14px;
+  text-decoration: none;
+}
+.lotp-band.is-official .lotp-navlink {
+  color: #eafff1;
+}
+.lotp-owner {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px dashed rgba(255, 255, 255, 0.4);
+  color: #fff;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+.lotp-hero {
+  display: grid;
+  gap: 20px;
+  align-items: center;
+  padding-block: 8px 56px;
+}
+.lotp-hero h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(64px, 17vw, 112px);
+  line-height: 0.82;
+  margin: 8px 0 12px;
+  letter-spacing: 1px;
+}
+.lotp-hero h1 em {
+  font-style: normal;
+  display: block;
+  background: linear-gradient(180deg, #fff3c4, #ffcf4d 55%, #c8920f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.lotp-hero .lotp-lead {
+  font-size: 18px;
+  color: #cfe3d7;
+}
+.lotp-desc {
+  margin: 10px 0 0;
+  white-space: pre-line;
+  color: var(--muted);
+  max-width: 60ch;
+}
+.lotp-buy {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 18px;
+}
+.lotp-price {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.lotp-price b {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 46px;
+  line-height: 1;
+}
+.lotp-price span {
+  color: var(--muted);
+}
+.lotp-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lotp-bar {
+  height: 10px;
+  border-radius: 10px;
+  background: var(--bg-3);
+  overflow: hidden;
+  display: flex;
+}
+.lotp-bar i {
+  display: block;
+  height: 100%;
+}
+.lotp-bar .b-open {
+  background: var(--gold);
+}
+.lotp-bar .b-sold {
+  background: #c7a43a;
+  opacity: 0.6;
+}
+.lotp-bar .b-res {
+  background: repeating-linear-gradient(135deg, #5d7a6c 0 4px, #3b5546 4px 8px);
+}
+.lotp-progress small {
+  color: var(--muted);
+  font-size: 14px;
+}
+.lotp-progress small b {
+  color: var(--text);
+}
+.lotp-soon {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-weight: 600;
+}
+.lotp-hero-ctas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.lotp-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 0;
+  margin: 4px 0 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 14px;
+}
+.lotp-trust li::before {
+  content: "✓ ";
+  color: var(--accent);
+  font-weight: 700;
+}
+.lotp-visual {
+  position: relative;
+  height: 380px;
+  display: grid;
+  place-items: center;
+}
+.lotp-glow {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 243, 196, 0.32), transparent 65%);
+}
+.lotp-fan {
+  position: absolute;
+  width: 118px;
+  aspect-ratio: 545 / 727;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+  top: 30px;
+}
+.lotp-fan img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.lotp-fan.f1 {
+  transform: translateX(-78px) rotate(-16deg);
+}
+.lotp-fan.f2 {
+  transform: translateY(-14px);
+  z-index: 1;
+}
+.lotp-fan.f3 {
+  transform: translateX(78px) rotate(16deg);
+}
+.lotp-env {
+  position: absolute;
+  width: 210px;
+  height: auto;
+  top: 110px;
+  z-index: 2;
+  animation: lotp-bob 3s ease-in-out infinite;
+  filter: drop-shadow(0 22px 30px rgba(0, 0, 0, 0.6));
+}
+@keyframes lotp-bob {
+  50% {
+    transform: translateY(-8px) rotate(0.8deg);
+  }
+}
+
+/* ---------- seção dos pacotes ---------- */
+.lotp-packs-section {
+  background: linear-gradient(180deg, transparent, #0a1811 12%, #0a1811 88%, transparent);
+}
+.lotp-panel-lead {
+  margin-top: 18px;
+}
+.lotp-feed {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 0 8px;
+  margin-top: 18px;
+  scrollbar-width: thin;
+}
+.lotp-feed-item {
+  flex: none;
+  width: 260px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 10px;
+  text-align: left;
+}
+.lotp-feed-item img {
+  width: 42px;
+  aspect-ratio: 545 / 727;
+  object-fit: cover;
+  border-radius: 4px;
+}
+.lotp-feed-item span {
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--muted);
+}
+.lotp-feed-item b {
+  color: var(--text);
+}
+.lotp-feed-item small {
+  display: block;
+  color: var(--dim);
+}
+
+/* abas: sublinhado dourado, sem cara de botão */
+.lotp-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 18px;
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: #0a1811;
+  border-bottom: 1px solid var(--line);
+}
+.lotp-tabs button {
+  position: relative;
+  border: 0;
+  background: transparent;
+  padding: 12px 8px 11px;
+  font-family: var(--cond);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.5px;
+  color: var(--dim);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.15;
+}
+.lotp-tabs button small {
+  font-family: var(--body);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0;
+  color: var(--dim);
+}
+.lotp-tabs button::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: -1px;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: transparent;
+}
+.lotp-tabs button[aria-selected="true"] {
+  color: var(--text);
+}
+.lotp-tabs button[aria-selected="true"] small {
+  color: var(--muted);
+}
+.lotp-tabs button[aria-selected="true"]::after {
+  background: var(--gold);
+}
+
+/* pote */
+.lotp-tiers {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 22px 0 18px;
+}
+.lotp-tier {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+.lotp-tier[aria-pressed="true"] {
+  border-color: var(--tc);
+  box-shadow: inset 0 0 0 1px var(--tc);
+}
+.lotp-tier i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--tc);
+}
+.lotp-tier b {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1;
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.lotp-tier span {
+  font-family: var(--cond);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.lotp-tier small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.lotp-pot {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+  gap: 10px;
+}
+.lotp-leg {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.lotp-leg-ph {
+  position: relative;
+  aspect-ratio: 545 / 727;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.lotp-leg-ph img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.lotp-leg.m2,
+.lotp-leg.m3 {
+  padding-right: 6px;
+}
+.lotp-leg.m2 .lotp-leg-ph {
+  box-shadow: 4px 4px 0 -1px #3b5c4a, 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.lotp-leg.m3 .lotp-leg-ph {
+  box-shadow: 4px 4px 0 -1px #3b5c4a, 8px 8px 0 -2px #2a4436, 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.lotp-leg-qty {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: var(--gold);
+  color: var(--on-gold);
+  font-family: var(--cond);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 1px 7px;
+  border-radius: 10px;
+}
+.lotp-leg.is-out .lotp-leg-ph img {
+  filter: grayscale(1) brightness(0.45);
+}
+.lotp-leg.is-out .lotp-leg-ph::after {
+  content: "JÁ SAIU";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: #fff;
+}
+.lotp-leg-nm {
+  font-size: 12px;
+  line-height: 1.2;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lotp-units {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  font-size: 11px;
+  color: var(--muted);
+}
+.lotp-units i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  display: inline-block;
+}
+.lotp-units i.gone {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--dim);
+}
+.lotp-note {
+  margin-top: 14px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* grade */
+.lotp-grid-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0 14px;
+}
+.lotp-filters {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.lotp-chip {
+  border: 0;
+  background: var(--bg-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+  border-radius: 20px;
+  padding: 7px 12px;
+  font-family: var(--cond);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--muted);
+}
+.lotp-chip[aria-pressed="true"] {
+  background: var(--text);
+  color: var(--bg);
+  box-shadow: none;
+}
+.lotp-pick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 6px 6px 6px 12px;
+}
+.lotp-pick > span {
+  font-size: 14px;
+  color: var(--muted);
+}
+.lotp-step {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.lotp-step button {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--bg-3);
+  font-size: 18px;
+  font-weight: 700;
+}
+.lotp-step output {
+  min-width: 28px;
+  text-align: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.lotp-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 7px;
+}
+@media (min-width: 640px) {
+  .lotp-grid {
+    grid-template-columns: repeat(10, 1fr);
+    gap: 9px;
+  }
+}
+.lotp-cell {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 8px;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
+  font-family: var(--display);
+  color: var(--text);
+}
+.lotp-cell .n {
+  position: relative;
+  z-index: 1;
+  font-size: 20px;
+  line-height: 1;
+  padding: 0 0 6px;
+  text-align: center;
+}
+.lotp-cell.is-free {
+  background: linear-gradient(170deg, #0d8a45, #054a25);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+.lotp-cell.is-free::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 14%;
+  background: repeating-linear-gradient(90deg, #eef3ef 0 3px, #cfd9d2 3px 5px);
+}
+.lotp-cell.is-free:disabled {
+  cursor: default;
+  opacity: 0.75;
+}
+.lotp-cell.is-sel {
+  background: linear-gradient(170deg, #fff3c4, #ffcf4d 50%, #c8920f);
+  color: var(--on-gold);
+  box-shadow: 0 0 0 2px var(--gold), 0 6px 16px rgba(255, 207, 77, 0.35);
+}
+.lotp-cell.is-sel::before {
+  content: "✓";
+  position: absolute;
+  top: 6px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--body);
+  font-weight: 700;
+  font-size: 16px;
+}
+.lotp-cell.is-res {
+  background: repeating-linear-gradient(135deg, #24382d 0 6px, #1b2c22 6px 12px);
+  color: var(--dim);
+}
+.lotp-cell.is-sold {
+  background: #1d2a22;
+  color: #c7a43a;
+  box-shadow: inset 0 0 0 1px #3b4a2a;
+}
+.lotp-cell.is-sold::before {
+  content: "PAGO";
+  position: absolute;
+  top: 8px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--cond);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+.lotp-cell.is-open {
+  background: #000;
+  color: #fff;
+}
+.lotp-cell.is-open img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.85;
+}
+.lotp-cell.is-open .n {
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.85) 55%);
+  padding-top: 14px;
+}
+.lotp-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.lotp-key span {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+.lotp-key i {
+  width: 14px;
+  height: 18px;
+  border-radius: 3px;
+  display: inline-block;
+}
+.lotp-key .k-free {
+  background: linear-gradient(170deg, #0d8a45, #054a25);
+}
+.lotp-key .k-sel {
+  background: var(--gold);
+}
+.lotp-key .k-res {
+  background: repeating-linear-gradient(135deg, #24382d 0 3px, #1b2c22 3px 6px);
+}
+.lotp-key .k-sold {
+  background: #1d2a22;
+  box-shadow: inset 0 0 0 1px #c7a43a;
+}
+.lotp-key .k-open {
+  background: #000;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+/* como funciona */
+.lotp-steps {
+  display: grid;
+  gap: 12px;
+  margin-top: 22px;
+}
+@media (min-width: 720px) {
+  .lotp-steps {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.lotp-stp {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lotp-stp .k {
+  font-family: var(--display);
+  font-size: 40px;
+  line-height: 1;
+  color: var(--gold);
+}
+.lotp-stp b {
+  font-size: 17px;
+}
+.lotp-stp p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+.lotp-perks {
+  display: grid;
+  gap: 12px;
+  margin-top: 22px;
+}
+@media (min-width: 720px) {
+  .lotp-perks {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.lotp-perks > div {
+  border-top: 2px solid var(--gold);
+  padding-top: 12px;
+}
+.lotp-perks b {
+  display: block;
+  font-size: 17px;
+  margin-bottom: 4px;
+}
+.lotp-perks p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+/* perguntas */
+.lotp details {
+  border-bottom: 1px solid var(--line);
+  padding: 14px 0;
+}
+.lotp summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 17px;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.lotp summary::-webkit-details-marker {
+  display: none;
+}
+.lotp summary::after {
+  content: "+";
+  color: var(--gold);
+  font-weight: 700;
+}
+.lotp details[open] summary::after {
+  content: "–";
+}
+.lotp details p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  max-width: 65ch;
+}
+.lotp-footer {
+  padding-block: 30px 120px;
+  color: var(--dim);
+  font-size: 13px;
+  text-align: center;
+  border-top: 1px solid var(--line);
+}
+
+/* barra fixa */
+.lotp-sticky {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  background: rgba(9, 20, 14, 0.94);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--line);
+  padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.lotp-sticky-in {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.lotp-sticky-in > div {
+  line-height: 1.2;
+  min-width: 0;
+}
+.lotp-sticky-in b {
+  display: block;
+  font-size: 17px;
+}
+.lotp-sticky-in small {
+  color: var(--muted);
+  font-size: 13px;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* janelas */
+.lotp-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(3, 8, 5, 0.78);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+@media (min-width: 640px) {
+  .lotp-overlay {
+    align-items: center;
+  }
+}
+.lotp-sheet {
+  width: min(500px, 100%);
+  max-height: 92vh;
+  overflow-y: auto;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 20px 20px 0 0;
+  padding: 20px max(18px, env(safe-area-inset-left, 0px)) calc(20px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+@media (min-width: 640px) {
+  .lotp-sheet {
+    border-radius: 20px;
+  }
+}
+.lotp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.lotp-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 15px;
+}
+.lotp-row.is-total {
+  font-weight: 700;
+  font-size: 18px;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+.lotp-nums {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.lotp-nums span {
+  font-family: var(--display);
+  font-size: 18px;
+  background: var(--gold);
+  color: var(--on-gold);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+.lotp-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.lotp-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--muted);
+  min-width: 0;
+}
+.lotp-fields label.full {
+  grid-column: 1 / -1;
+}
+.lotp-fields input {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+  min-width: 0;
+}
+.lotp-info {
+  background: var(--bg-3);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.lotp-small-text {
+  font-size: 13px;
+}
+.lotp-safety {
+  font-size: 14px;
+}
+.lotp-ack {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 14px;
+  color: var(--muted);
+}
+.lotp-ack input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--accent);
+  flex: none;
+}
+.lotp-error {
+  background: rgba(255, 143, 107, 0.12);
+  border: 1px solid rgba(255, 143, 107, 0.4);
+  color: #ffb39b;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+.lotp-pop-photo {
+  width: 170px;
+  margin: 0 auto;
+  aspect-ratio: 545 / 727;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+}
+.lotp-pop-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.lotp-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+  translate: -50% 0;
+  z-index: 60;
+  background: var(--text);
+  color: var(--bg);
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  max-width: calc(100% - 32px);
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .lotp-hero {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+  .lotp-visual {
+    height: 460px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lotp *,
+  .lotp *::before,
+  .lotp *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

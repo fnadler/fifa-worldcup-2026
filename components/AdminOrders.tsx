@@ -10,6 +10,7 @@ import {
   formatBRL,
   formatDateTimeBR,
   isExpired,
+  isPackCode,
   itemLabel,
   itemOrder,
   orderFromRow,
@@ -113,7 +114,8 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
     if (sinal) {
       onAvailableChange((prev) => {
         const next = { ...prev };
-        order.items.forEach((it) => {
+        [...order.items, ...order.hiddenItems].forEach((it) => {
+          if (isPackCode(it.code)) return;
           const n = (next[it.code] ?? 0) + sinal * it.qty;
           if (n > 0) next[it.code] = n;
           else delete next[it.code];
@@ -172,6 +174,7 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
       {visiveis.map((o) => {
         const ef = effective(o, now);
         const ativo = ef.status === "novo";
+        const temPacote = o.items.some((it) => isPackCode(it.code));
         const totalFigurinhas = o.items.reduce((s, it) => s + it.qty, 0);
         const resumo = whatsappLink(
           o.buyer.whatsapp,
@@ -251,7 +254,7 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
                     Confirmar e dar baixa
                   </button>
                 )}
-                {ativo && (
+                {ativo && !temPacote && (
                   <button type="button" className="btn-ghost" disabled={busy === o.id} onClick={() => setEditando(o.id)}>
                     Editar itens
                   </button>

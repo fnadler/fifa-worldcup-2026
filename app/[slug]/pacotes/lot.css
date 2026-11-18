@@ -1516,6 +1516,14 @@ html:has(.lotp) {
   z-index: 4;
   transform-origin: 0% 12%;
 }
+/* camadas próprias para as partes que se movem (animação mais leve no celular) */
+.po-tear,
+.po-body,
+.po-stack,
+.po-card,
+.po-inner {
+  will-change: transform;
+}
 .po-tear.is-gone {
   transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.3, 1), opacity 0.55s;
   transform: translate(160px, -220px) rotate(38deg);

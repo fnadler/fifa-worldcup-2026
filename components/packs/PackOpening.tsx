@@ -125,17 +125,51 @@ export default function PackOpening({
 
   const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, reduced.current ? 0 : ms));
 
+  // O conteúdo é buscado assim que a tela de abertura aparece (a pessoa já escolheu abrir este pacote) e as
+  // fotos são carregadas e decodificadas antes de as figurinhas subirem — assim a animação não trava.
+  const load = useRef<Promise<{ ok: true } | { ok: false; error: string }> | null>(null);
+
+  function fetchContent() {
+    if (load.current) return load.current;
+    load.current = (async () => {
+      try {
+        const r = await fetch(`/api/pacote/${token}/abrir`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ number }),
+        });
+        const data = (await r.json()) as { legend?: string; commons?: string[]; error?: string };
+        if (!r.ok || !data.legend || !data.commons) return { ok: false as const, error: data.error ?? "Não foi possível abrir o pacote — tente de novo." };
+        const c = { legend: data.legend, commons: data.commons };
+        const urls = [...c.commons, c.legend].map((code) => stickerImage(code, "large")).filter((u): u is string => !!u);
+        const decoded = Promise.all(
+          urls.map((u) => {
+            const img = new Image();
+            img.src = u;
+            return img.decode().catch(() => undefined);
+          })
+        );
+        await Promise.race([decoded, new Promise((r) => setTimeout(r, 2500))]);
+        setContent(c);
+        onOpened(c);
+        return { ok: true as const };
+      } catch {
+        return { ok: false as const, error: "Sem conexão — verifique sua internet e tente de novo." };
+      }
+    })();
+    return load.current;
+  }
+
+  useEffect(() => {
+    void fetchContent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   async function start(fromTap: boolean) {
     if (started.current) return;
     started.current = true;
     setError(null);
-    const req = fetch(`/api/pacote/${token}/abrir`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ number }),
-    })
-      .then(async (r) => ({ ok: r.ok, data: (await r.json()) as { legend?: string; commons?: string[]; error?: string } }))
-      .catch(() => ({ ok: false, data: { error: "Sem conexão — verifique sua internet e tente de novo." } as { legend?: string; commons?: string[]; error?: string } }));
+    const req = fetchContent();
 
     if (fromTap) {
       setPhase("shaking");
@@ -147,16 +181,14 @@ export default function PackOpening({
       }
     }
     const res = await req;
-    if (!res.ok || !res.data.legend || !res.data.commons) {
-      setError(res.data.error ?? "Não foi possível abrir o pacote — tente de novo.");
+    if (!res.ok) {
+      setError(res.error);
       setTear(0);
       setPhase("sealed");
       started.current = false;
+      load.current = null;
       return;
     }
-    const c = { legend: res.data.legend, commons: res.data.commons };
-    setContent(c);
-    onOpened(c);
     buzz(30);
     setPhase("tearing");
     await wait(350);

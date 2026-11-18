@@ -15,7 +15,7 @@ import PackResult from "./PackResult";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-type View = { kind: "hub" } | { kind: "open"; n: number } | { kind: "result"; n: number };
+type View = { kind: "hub" } | { kind: "open"; n: number } | { kind: "result"; n: number } | { kind: "all" };
 
 export default function PackHub({ data }: { data: BuyerPacks }) {
   const router = useRouter();
@@ -83,7 +83,43 @@ export default function PackHub({ data }: { data: BuyerPacks }) {
 
       <section className="lotp-section">
         <div className="lotp-wrap">
-          {view.kind === "result" && results[view.n] ? (
+          {view.kind === "all" ? (
+            <div className="po-all">
+              <h2 className="lotp-center">Tudo o que veio</h2>
+              <p className="lotp-muted lotp-center">
+                {packs.length} {packs.length === 1 ? "pacote" : "pacotes"} · {packs.length} {packs.length === 1 ? "Legend" : "Legends"} ·{" "}
+                {packs.length * 7} figurinhas da Copa 2026. A loja separa tudo e envia para o seu endereço.
+              </p>
+              {packs
+                .filter((p) => results[p.number])
+                .map((p) => {
+                  const r = results[p.number];
+                  return (
+                    <div key={p.number} className="po-all-pack">
+                      <div className="po-all-head">
+                        <strong>Nº {pad(p.number)}</strong>
+                        <span>
+                          {legendName(r.legend)} · Legend {legendTierOf(r.legend)?.name}
+                        </span>
+                      </div>
+                      <div className="po-all-row">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img className="is-legend" src={stickerImage(r.legend, "thumb") ?? ""} alt={legendName(r.legend)} />
+                        {r.commons.map((c) => (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img key={c} src={stickerImage(c, "thumb") ?? ""} alt={`Figurinha ${c}`} />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              <div className="lotp-hub-cta">
+                <button className="lotp-btn lotp-btn-gold" onClick={goHub}>
+                  Voltar aos pacotes
+                </button>
+              </div>
+            </div>
+          ) : view.kind === "result" && results[view.n] ? (
             <PackResult
               number={view.n}
               total={packs.length}
@@ -131,6 +167,13 @@ export default function PackHub({ data }: { data: BuyerPacks }) {
                   );
                 })}
               </div>
+              {state === "pronto" && fechados === 0 && packs.length > 0 && (
+                <div className="lotp-hub-cta">
+                  <button className="lotp-btn lotp-btn-gold" onClick={() => setView({ kind: "all" })}>
+                    Ver tudo o que veio
+                  </button>
+                </div>
+              )}
               {state === "pronto" && fechados > 0 && (
                 <div className="lotp-hub-cta">
                   <button className="lotp-btn lotp-btn-gold" onClick={() => setView({ kind: "open", n: closed[0] })}>
@@ -171,7 +214,8 @@ export default function PackHub({ data }: { data: BuyerPacks }) {
             if (n) setView({ kind: "open", n });
           }}
           onSummary={() => {
-            setView({ kind: "result", n: view.n });
+            setView({ kind: "all" });
+            router.refresh();
             window.scrollTo({ top: 0 });
           }}
           onClose={() => (results[view.n] ? setView({ kind: "result", n: view.n }) : goHub())}

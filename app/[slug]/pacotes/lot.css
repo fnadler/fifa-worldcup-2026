@@ -1432,7 +1432,8 @@ html:has(.lotp) {
 
 /* ---------- abertura do pacote (tela cheia) ---------- */
 .po {
-  --pw: min(270px, 66vw);
+  /* o envelope cabe na altura da tela: sobra espaço para o topo, os botões e a bandeja */
+  --pw: min(270px, 66vw, calc((100vh - 330px) * 0.72));
   position: fixed;
   inset: 0;
   z-index: 50;
@@ -1472,8 +1473,8 @@ html:has(.lotp) {
   position: relative;
   width: 100%;
   max-width: 440px;
-  flex: 1;
-  min-height: calc(var(--pw) * 1.333 + 90px);
+  flex: 1 1 auto;
+  min-height: 0;
   touch-action: none;
 }
 .po-pack {
@@ -1695,10 +1696,17 @@ html:has(.lotp) {
   display: block;
   font-family: var(--display);
   font-weight: 900;
-  font-size: 30px;
+  font-size: clamp(22px, 6vw, 30px);
   line-height: 1.05;
   color: var(--gn-yellow);
 }
+@supports (height: 100dvh) {
+  .po {
+    --pw: min(270px, 66vw, calc((100dvh - 330px) * 0.72));
+    height: 100dvh;
+  }
+}
+
 /* os botões ficam sempre por cima do palco (o envelope que caiu continua posicionado lá) */
 .po-top,
 .po-hint,
@@ -1733,8 +1741,71 @@ html:has(.lotp) {
 .po-actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 6px;
   width: min(360px, 100%);
+}
+.lotp .po-actions .lotp-btn,
+.lotp .po-result-actions .lotp-btn {
+  width: 100%;
+  white-space: nowrap;
+  font-size: 16px;
+  padding: 14px 20px;
+}
+.po-banner b {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* tudo o que veio */
+.po-all {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.po-all-pack {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.po-all-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.po-all-head strong {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 20px;
+}
+.po-all-head span {
+  color: var(--text-2);
+  font-weight: 600;
+  font-size: 14px;
+}
+.po-all-row {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+}
+.po-all-row img {
+  width: 100%;
+  aspect-ratio: 545 / 727;
+  object-fit: cover;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px rgba(6, 48, 26, 0.15);
+}
+.po-all-row img.is-legend {
+  outline: 2px solid var(--yellow);
+  outline-offset: 1px;
 }
 .po-tray {
   width: 100%;

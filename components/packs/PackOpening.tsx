@@ -314,14 +314,18 @@ export default function PackOpening({
           <span className="po-error">{error}</span>
         ) : phase === "revealed" ? (
           <div className="po-actions">
-            {remaining > 0 && (
-              <button className="lotp-btn lotp-btn-gold" onClick={onNext}>
-                Abrir o próximo pacote ({remaining} {remaining === 1 ? "restante" : "restantes"})
+            {remaining > 0 ? (
+              <>
+                <button className="lotp-btn lotp-btn-gold" onClick={onNext}>
+                  Abrir o próximo pacote
+                </button>
+                <small>{remaining === 1 ? "Falta 1 pacote" : `Faltam ${remaining} pacotes`}</small>
+              </>
+            ) : (
+              <button className="lotp-btn lotp-btn-gold" onClick={onSummary}>
+                Ver tudo o que veio
               </button>
             )}
-            <button className={`lotp-btn ${remaining > 0 ? "lotp-btn-ghost-light" : "lotp-btn-gold"}`} onClick={onSummary}>
-              Ver o que veio no pacote
-            </button>
           </div>
         ) : (
           <>

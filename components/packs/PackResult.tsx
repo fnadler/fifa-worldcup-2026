@@ -75,14 +75,17 @@ export default function PackResult({
       <div className="po-result-actions">
         {remaining > 0 && (
           <button className="lotp-btn lotp-btn-gold" onClick={onNext}>
-            Abrir o próximo pacote ({remaining} {remaining === 1 ? "restante" : "restantes"})
+            Abrir o próximo pacote
           </button>
         )}
         <button className={`lotp-btn ${remaining > 0 ? "lotp-btn-ghost" : "lotp-btn-gold"}`} onClick={onBack}>
           Voltar aos pacotes
         </button>
       </div>
-      <p className="po-result-note">A loja separa estas 8 figurinhas e envia para o seu endereço.</p>
+      <p className="po-result-note">
+        {remaining > 0 ? `${remaining === 1 ? "Falta 1 pacote" : `Faltam ${remaining} pacotes`} para abrir. ` : ""}A loja separa estas 8 figurinhas e envia
+        para o seu endereço.
+      </p>
     </div>
   );
 }

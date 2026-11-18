@@ -27,6 +27,7 @@ import {
 import type { Qtd } from "@/lib/types";
 import { useNow } from "@/lib/useNow";
 import OrderEditor from "./OrderEditor";
+import OrderPacks from "./packs/OrderPacks";
 
 interface AdminOrdersProps {
   orders: Order[];
@@ -36,6 +37,8 @@ interface AdminOrdersProps {
   onOrdersChange: Dispatch<SetStateAction<Order[]>>;
   onAvailableChange: Dispatch<SetStateAction<Qtd>>;
   onToast: (msg: string) => void;
+  /** Nome da loja (aviso dos pacotes ao comprador). */
+  shopName: string;
 }
 
 type Filtro = OrderStatus | "ALL";
@@ -75,7 +78,7 @@ function mensagemErro(error: { code?: string; message: string }, fallback: strin
   return error.code === "P0001" ? error.message : fallback;
 }
 
-export default function AdminOrders({ orders, stock, pricing, onOrdersChange, onAvailableChange, onToast }: AdminOrdersProps) {
+export default function AdminOrders({ orders, stock, pricing, onOrdersChange, onAvailableChange, onToast, shopName }: AdminOrdersProps) {
   const [filtro, setFiltro] = useState<Filtro>("novo");
   const [busy, setBusy] = useState<string | null>(null);
   const [editando, setEditando] = useState<string | null>(null);
@@ -92,8 +95,11 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
   }
 
   async function mudarStatus(order: Order, status: OrderStatus) {
+    const pacotes = order.items.some((it) => isPackCode(it.code));
     const aviso =
-      status === "confirmado"
+      status === "confirmado" && pacotes
+        ? `Confirmar o pedido #${order.code}? As figurinhas dos pacotes serão baixadas do seu estoque, os pacotes ficam liberados para abrir e o comprador recebe o link por e-mail.`
+        : status === "confirmado"
         ? `Confirmar o pedido #${order.code}? Os itens serão baixados do seu estoque.`
         : order.status === "confirmado"
           ? `Cancelar o pedido #${order.code}? Os itens voltam para o seu estoque.`
@@ -122,6 +128,26 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
         });
         return next;
       });
+    }
+    if (status === "confirmado" && pacotes) {
+      // Aviso por e-mail com o link dos pacotes (o botão do WhatsApp fica no pedido).
+      let msg = `Pedido #${order.code} confirmado. Avise o comprador no WhatsApp pelo botão do pedido.`;
+      try {
+        const res = await fetch("/api/pacotes/aviso", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: order.id }),
+        });
+        const data = (await res.json()) as { sent?: boolean; error?: string };
+        msg = data.sent
+          ? `Pedido #${order.code} confirmado e e-mail com o link dos pacotes enviado. Avise também no WhatsApp.`
+          : `Pedido #${order.code} confirmado, mas o e-mail não foi enviado (${data.error ?? "tente pelo botão do pedido"}).`;
+      } catch {
+        // segue com a mensagem padrão
+      }
+      await recarregar(order.id);
+      onToast(msg);
+      return;
     }
     await recarregar(order.id);
     onToast(
@@ -241,6 +267,10 @@ export default function AdminOrders({ orders, stock, pricing, onOrdersChange, on
                 </div>
               )}
             </div>
+
+            {temPacote && editando !== o.id && (
+              <OrderPacks order={o} status={ef.status} shopName={shopName} onToast={onToast} onNotified={() => void recarregar(o.id)} />
+            )}
 
             {editando !== o.id && ef.status !== "cancelado" && (
               <footer className="modal-actions order-actions">

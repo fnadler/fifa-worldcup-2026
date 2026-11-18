@@ -171,6 +171,9 @@ export interface Order {
   items: OrderItem[];
   /** Figurinhas sorteadas para os pacotes do pedido — reservam estoque, mas o comprador não vê. */
   hiddenItems: { code: string; qty: number }[];
+  /** Link secreto dos pacotes (/pacote/<token>) e quando o comprador foi avisado por e-mail. */
+  packToken: string | null;
+  packsNotifiedAt: string | null;
   totalCents: number;
   createdAt: string;
   reservedUntil: string;
@@ -210,6 +213,8 @@ export interface OrderRow {
   address_state: string;
   items: OrderItem[];
   hidden_items?: { code: string; qty: number }[] | null;
+  pack_token?: string | null;
+  packs_notified_at?: string | null;
   total_cents: number;
   created_at: string;
   reserved_until: string;
@@ -217,7 +222,7 @@ export interface OrderRow {
 }
 
 export const ORDER_COLUMNS =
-  "id, number, code, status, buyer_name, buyer_email, buyer_whatsapp, buyer_cpf, address_cep, address_street, address_number, address_complement, address_district, address_city, address_state, items, hidden_items, total_cents, created_at, reserved_until, cancel_reason";
+  "id, number, code, status, buyer_name, buyer_email, buyer_whatsapp, buyer_cpf, address_cep, address_street, address_number, address_complement, address_district, address_city, address_state, items, hidden_items, pack_token, packs_notified_at, total_cents, created_at, reserved_until, cancel_reason";
 
 export function isKnownCode(code: string): boolean {
   return lookupCode(code) !== undefined;
@@ -315,6 +320,8 @@ export function orderFromRow(row: OrderRow): Order {
     },
     items: row.items,
     hiddenItems: row.hidden_items ?? [],
+    packToken: row.pack_token ?? null,
+    packsNotifiedAt: row.packs_notified_at ?? null,
     totalCents: row.total_cents,
     createdAt: row.created_at,
     reservedUntil: row.reserved_until,

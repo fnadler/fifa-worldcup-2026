@@ -5666,3 +5666,103 @@ button {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
+
+/* ---------- pacotes no pedido (painel da loja) ---------- */
+.order-packs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 16px 14px;
+}
+.order-packs-warn {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 207, 77, 0.1);
+  border: 1px solid var(--border-fwc);
+  color: var(--gold);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.order-packs-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--field);
+  border: 1px solid var(--border-2);
+}
+.order-packs-url {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.order-packs-url span {
+  font-size: 12px;
+  color: var(--text-5);
+}
+.order-packs-url a {
+  color: var(--positive);
+  font-weight: 600;
+  word-break: break-all;
+}
+.order-packs-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.order-packs-note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-5);
+}
+.order-packs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.order-pack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-2);
+}
+.order-pack-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.order-pack-head strong {
+  font-family: var(--font-bebas-neue);
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: 0.02em;
+}
+.order-pack-legend {
+  font-size: 12px;
+  color: var(--text-5);
+}
+.order-pack-legend.is-drawn {
+  color: var(--leg-text);
+  font-weight: 600;
+}
+.order-pack-commons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.order-pack-commons span {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--cell-empty);
+  border: 1px solid var(--border-3);
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}

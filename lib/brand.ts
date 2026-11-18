@@ -17,6 +17,8 @@ export const RESERVED_SLUGS = new Set([
   // páginas públicas da plataforma (landing e institucionais)
   "colecao", "colecoes", "colecoes-disponiveis", "contato", "cancelamento", "planos", "cadastro", "entrar", "sobre", "precos", "faq", "duvidas", "blog",
   "landing", "home", "inicio", "site",
+  // pacotes: página do comprador (/pacote/<token>)
+  "pacote", "pacotes",
 ]);
 
 export function cleanName(name: string): string {

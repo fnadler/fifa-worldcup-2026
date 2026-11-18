@@ -183,6 +183,7 @@ export default function ShopAdmin({
           onOrdersChange={setOrders}
           onAvailableChange={setAvailable}
           onToast={showToast}
+          shopName={settings.sellerName || DEFAULT_SHOP_NAME}
         />
       )}
       {aba === "precos" && (

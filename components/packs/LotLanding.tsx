@@ -19,18 +19,9 @@ const TIER_COLOR: Record<string, string> = { LIL: "#b88cff", BRO: "#d08a4f", PRA
 const pad = (n: number) => String(n).padStart(2, "0");
 const img = (code: string, size: "thumb" | "large" = "thumb") => stickerImage(code, size) ?? "";
 
-function agoText(iso: string, now: number): string {
-  const min = Math.max(1, Math.round((now - Date.parse(iso)) / 60000));
-  if (min < 60) return `há ${min} min`;
-  const h = Math.round(min / 60);
-  if (h < 24) return `há ${h} h`;
-  const d = Math.round(h / 24);
-  return d === 1 ? "ontem" : `há ${d} dias`;
-}
-
 export default function LotLanding({ data }: { data: PublicLot }) {
   const router = useRouter();
-  const { shop, lot, packs, pot, salesOpen, isOwner } = data;
+  const { shop, lot, packs, pot, salesOpen, isOwner, revealed } = data;
   const [tab, setTab] = useState<"packs" | "pot">("packs");
   const [filter, setFilter] = useState<"all" | "free" | "open">("all");
   const [tier, setTier] = useState<string | null>(null);
@@ -74,12 +65,9 @@ export default function LotLanding({ data }: { data: PublicLot }) {
     packs.forEach((p) => c[p.state]++);
     return c;
   }, [packs]);
-  const potLeft = Object.values(pot.left).reduce((a, b) => a + b, 0);
   const potAll = Object.values(pot.all).reduce((a, b) => a + b, 0);
-  const feed = useMemo(
-    () => packs.filter((p) => p.state === "open" && p.openedAt).sort((a, b) => Date.parse(b.openedAt!) - Date.parse(a.openedAt!)).slice(0, 10),
-    [packs]
-  );
+  // Ganhadores: só depois que todas as Legends saíram (antes disso a página não diz o que saiu).
+  const winners = useMemo(() => (revealed ? packs.filter((p) => p.state === "open" && p.legend) : []), [packs, revealed]);
   const startsLater = lot.status === "ativo" && lot.startsAt && Date.parse(lot.startsAt) > now;
   const canBuy = salesOpen && counts.free > 0;
   const nums = [...selected].sort((a, b) => a - b);
@@ -123,11 +111,11 @@ export default function LotLanding({ data }: { data: PublicLot }) {
     .sort((a, b) => {
       const ta = LEGEND_TIERS.findIndex((t) => t.id === legendTierOf(a)?.id);
       const tb = LEGEND_TIERS.findIndex((t) => t.id === legendTierOf(b)?.id);
-      return tb - ta || (pot.left[b] ? 1 : 0) - (pot.left[a] ? 1 : 0) || legendName(a).localeCompare(legendName(b));
+      return tb - ta || legendName(a).localeCompare(legendName(b));
     });
   const fan = (() => {
     const order = ["OUR", "PRA", "BRO", "LIL"];
-    const codes = Object.keys(pot.left).sort((a, b) => order.indexOf(legendTierOf(a)?.id ?? "") - order.indexOf(legendTierOf(b)?.id ?? ""));
+    const codes = Object.keys(pot.all).sort((a, b) => order.indexOf(legendTierOf(a)?.id ?? "") - order.indexOf(legendTierOf(b)?.id ?? ""));
     return codes.length >= 3 ? [codes[1], codes[0], codes[2]] : codes;
   })();
 
@@ -233,9 +221,9 @@ export default function LotLanding({ data }: { data: PublicLot }) {
           </div>
           <h2>Escolha seu pacote. Descubra sua Legend.</h2>
 
-          {feed.length > 0 && (
-            <div className="lotp-feed" aria-label="Últimos pacotes abertos">
-              {feed.map((p) => (
+          {revealed && winners.length > 0 && (
+            <div className="lotp-feed" aria-label="Quem tirou cada Legend">
+              {winners.map((p) => (
                 <button key={p.n} className="lotp-feed-item" onClick={() => setOpened(p)}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={img(p.legend!)} alt="" />
@@ -244,7 +232,6 @@ export default function LotLanding({ data }: { data: PublicLot }) {
                     <b>
                       {legendName(p.legend!)} {legendTierOf(p.legend!)?.name}
                     </b>
-                    <small>{agoText(p.openedAt!, now)}</small>
                   </span>
                 </button>
               ))}
@@ -256,20 +243,21 @@ export default function LotLanding({ data }: { data: PublicLot }) {
               Pacotes<small>{packs.length ? `${counts.free} disponíveis` : "em breve"}</small>
             </button>
             <button role="tab" aria-selected={tab === "pot"} onClick={() => setTab("pot")}>
-              Legends no pote<small>{potLeft} restantes</small>
+              Legends do lote<small>{potAll} no total</small>
             </button>
           </div>
 
           {tab === "pot" && (
             <div role="tabpanel">
               <p className="lotp-lead lotp-panel-lead">
-                Estas são as Legends deste lote. A sua é escolhida ao acaso entre as que ainda estão no pote, no momento em que você abre o
-                pacote. Cada unidade restante tem a mesma chance.
+                {revealed
+                  ? "Estas foram as Legends deste lote. Todas já saíram: veja na aba Pacotes onde cada uma estava."
+                  : "Estas são as Legends deste lote. A sua é escolhida ao acaso entre as que ainda estão no pote, no momento em que você abre o pacote."}
               </p>
               <div className="lotp-tiers">
                 {[...LEGEND_TIERS].reverse().map((t) => {
-                  const n = tierCodes(t.id).reduce((s, c) => s + (pot.left[c] ?? 0), 0);
-                  const pct = potLeft ? Math.round((n / potLeft) * 100) : 0;
+                  const n = tierCodes(t.id).reduce((s, c) => s + (pot.all[c] ?? 0), 0);
+                  if (!n) return null;
                   return (
                     <button
                       key={t.id}
@@ -281,41 +269,31 @@ export default function LotLanding({ data }: { data: PublicLot }) {
                       <i />
                       <b>{n}</b>
                       <span>{t.name}</span>
-                      <small>{pct}% de chance</small>
                     </button>
                   );
                 })}
               </div>
               <div className="lotp-pot">
                 {potCodes.map((c) => {
-                  const l = pot.left[c] ?? 0;
                   const a = pot.all[c] ?? 0;
                   return (
-                    <div key={c} className={`lotp-leg${l ? "" : " is-out"}${l >= 3 ? " m3" : l === 2 ? " m2" : ""}`}>
+                    <div key={c} className={`lotp-leg${a >= 3 ? " m3" : a === 2 ? " m2" : ""}`}>
                       <div className="lotp-leg-ph">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={img(c)} alt={`${legendName(c)} ${legendTierOf(c)?.name}`} loading="lazy" />
-                        {l > 1 && <span className="lotp-leg-qty">×{l}</span>}
+                        {a > 1 && <span className="lotp-leg-qty">×{a}</span>}
                       </div>
                       <span className="lotp-leg-nm">{legendName(c)}</span>
-                      {a > 1 && (
-                        <span className="lotp-units">
-                          {Array.from({ length: a }, (_, i) => (
-                            <i key={i} className={i < l ? "" : "gone"} />
-                          ))}
-                          <span>{l ? `${l} de ${a}` : "esgotada"}</span>
-                        </span>
-                      )}
                     </div>
                   );
                 })}
               </div>
               <p className="lotp-note">
-                {potLeft} {potLeft === 1 ? "Legend ainda no pote" : "Legends ainda no pote"}, de {potAll} no lote.{" "}
+                {potAll} {potAll === 1 ? "Legend" : "Legends"} neste lote.{" "}
                 {tier ? "Toque de novo na cor para ver todas." : "Toque numa cor para filtrar."}
               </p>
               <button className="lotp-btn lotp-btn-gold lotp-full" onClick={() => goTab("packs")}>
-                Escolher meus pacotes
+                {canBuy ? "Escolher meus pacotes" : "Ver pacotes"}
               </button>
             </div>
           )}
@@ -327,8 +305,10 @@ export default function LotLanding({ data }: { data: PublicLot }) {
               ) : (
                 <>
                   <p className="lotp-lead lotp-panel-lead">
-                    {canBuy ? "Toque nos números livres." : startsLater ? "A escolha dos números abre no início das vendas." : ""} Pacotes
-                    abertos mostram a Legend que saiu e quem abriu.
+                    {canBuy ? "Toque nos números livres." : startsLater ? "A escolha dos números abre no início das vendas." : ""}{" "}
+                    {revealed
+                      ? "Todas as Legends já saíram: toque num pacote para ver quem abriu."
+                      : "As Legends que saíram só aparecem aqui quando o lote terminar."}
                   </p>
                   <div className="lotp-grid-head">
                     <div className="lotp-filters">
@@ -366,6 +346,13 @@ export default function LotLanding({ data }: { data: PublicLot }) {
                     {packs
                       .filter((p) => filter === "all" || (filter === "free" ? p.state === "free" : p.state === "open"))
                       .map((p) => {
+                        if (p.state === "open" && !p.legend)
+                          return (
+                            <div key={p.n} className="lotp-cell is-gone" aria-label={`Pacote ${pad(p.n)}, aberto`}>
+                              <span className="lbl">Aberto</span>
+                              <span className="n">{pad(p.n)}</span>
+                            </div>
+                          );
                         if (p.state === "open")
                           return (
                             <button key={p.n} className="lotp-cell is-open" onClick={() => setOpened(p)} aria-label={`Pacote ${pad(p.n)}, aberto`}>
@@ -422,7 +409,7 @@ export default function LotLanding({ data }: { data: PublicLot }) {
                       Pago, ainda fechado
                     </span>
                     <span>
-                      <i className="k-open" />
+                      <i className={revealed ? "k-open" : "k-gone"} />
                       Aberto
                     </span>
                   </div>
@@ -469,8 +456,8 @@ export default function LotLanding({ data }: { data: PublicLot }) {
               <p>Se você tem conta na GN Coleciona, damos prioridade às figurinhas que faltam na sua coleção.</p>
             </div>
             <div>
-              <b>Tudo à vista</b>
-              <p>O pote mostra o que ainda pode sair e a grade mostra o que saiu em cada pacote aberto.</p>
+              <b>Tudo à vista no final</b>
+              <p>A página mostra todas as Legends do lote. Quando a última sair, a grade revela onde estava cada uma e quem abriu.</p>
             </div>
           </div>
         </div>
@@ -503,8 +490,11 @@ export default function LotLanding({ data }: { data: PublicLot }) {
             <p>24 horas a partir do pedido. Se o pagamento não for confirmado nesse prazo, os números voltam a ficar disponíveis.</p>
           </details>
           <details>
-            <summary>Por que meu nome aparece na grade?</summary>
-            <p>Quando um pacote é aberto, a grade mostra a Legend que saiu, o primeiro nome e a cidade de quem abriu. Nada além disso é exibido.</p>
+            <summary>Meu nome aparece na página?</summary>
+            <p>
+              Só quando todas as Legends do lote tiverem saído. Aí a grade mostra a Legend de cada pacote, o primeiro nome e a cidade de quem
+              abriu. Nada além disso é exibido.
+            </p>
           </details>
           <details>
             <summary>Posso cancelar?</summary>

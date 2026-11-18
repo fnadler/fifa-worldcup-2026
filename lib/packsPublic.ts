@@ -6,13 +6,16 @@ import { createAdminClient } from "./supabase/admin";
 import { createClient } from "./supabase/server";
 
 // Página pública do lote (/<loja>/pacotes/<lote>): leitura pelo servidor (service_role), mostrando só o
-// que é público — situação de cada pacote e, nos abertos, a Legend, o primeiro nome e a cidade.
+// que é público — a situação de cada pacote. Enquanto houver Legend no pote, nada indica quais já saíram
+// (para não desanimar quem ainda vai comprar); quando o pote esvazia, cada pacote aberto mostra a Legend,
+// o primeiro nome e a cidade de quem abriu.
 
 export type PublicPackState = "free" | "res" | "sold" | "open";
 
 export interface PublicPack {
   n: number;
   state: PublicPackState;
+  /** Só depois que o lote revela o resultado (pote vazio). */
   legend?: string;
   /** Primeiro nome e "Cidade/UF" de quem abriu (só pacotes abertos). */
   who?: { first: string; place: string };
@@ -31,8 +34,10 @@ export interface PublicLot {
   shop: PublicShop;
   lot: PackLot;
   packs: PublicPack[];
-  /** Todas as unidades do pote e as que ainda não saíram. */
-  pot: { all: LegendCount; left: LegendCount };
+  /** Todas as unidades do pote. */
+  pot: { all: LegendCount };
+  /** Todas as Legends já saíram: a grade mostra a Legend e quem abriu cada pacote. */
+  revealed: boolean;
   minOrderCents: number;
   /** Lote à venda e já começou. */
   salesOpen: boolean;
@@ -100,10 +105,19 @@ export async function loadPublicLot(shopSlug: string, lotSlug: string): Promise<
     admin.from("pack_lot_legends").select("code, pack_id").eq("lot_id", lot.id).limit(1000),
   ]);
 
+  const all: LegendCount = {};
+  let potLeft = 0;
+  for (const l of (legendRows ?? []) as { code: string; pack_id: string | null }[]) {
+    all[l.code] = (all[l.code] ?? 0) + 1;
+    if (!l.pack_id) potLeft++;
+  }
+  const revealed = (legendRows ?? []).length > 0 && potLeft === 0;
+
   const now = Date.now();
   const packs: PublicPack[] = (packRows ?? []).map((p) => {
     const o = p.order;
     if (p.opened_at && p.legend_code && o) {
+      if (!revealed) return { n: p.number, state: "open" };
       return {
         n: p.number,
         state: "open",
@@ -117,20 +131,14 @@ export async function loadPublicLot(shopSlug: string, lotSlug: string): Promise<
     return { n: p.number, state: "free" };
   });
 
-  const all: LegendCount = {};
-  const left: LegendCount = {};
-  for (const l of (legendRows ?? []) as { code: string; pack_id: string | null }[]) {
-    all[l.code] = (all[l.code] ?? 0) + 1;
-    if (!l.pack_id) left[l.code] = (left[l.code] ?? 0) + 1;
-  }
-
   const salesOpen = lot.status === "ativo" && shop.enabled && (!lot.startsAt || Date.parse(lot.startsAt) <= now);
 
   return {
     shop: { name: shop.seller_name || DEFAULT_SHOP_NAME, slug: shop.slug, logoUrl: shop.logo_url, official: shop.slug === "loja-oficial" },
     lot,
     packs,
-    pot: { all, left },
+    pot: { all },
+    revealed,
     minOrderCents: lot.minOrderCents ?? shopMin?.order_min_cents ?? 0,
     salesOpen,
     isOwner,

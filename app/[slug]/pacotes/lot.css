@@ -2060,3 +2060,18 @@ html:has(.lotp) {
   border-radius: 999px;
   padding: 6px 12px;
 }
+
+/* pacote já aberto, antes do fim do lote: indisponível, sem mostrar a Legend */
+.lotp-cell.is-gone {
+  --env-body: linear-gradient(170deg, #3d4a43, #26302a);
+  --crimp: repeating-linear-gradient(90deg, #8a968f 0 3px, #6f7b74 3px 5px);
+  --num: rgba(255, 255, 255, 0.55);
+  --lbl: rgba(255, 255, 255, 0.55);
+  box-shadow: none;
+}
+.lotp-cell.is-gone::before {
+  border-top-color: rgba(255, 255, 255, 0.25);
+}
+.lotp-key .k-gone {
+  background: #33403a;
+}

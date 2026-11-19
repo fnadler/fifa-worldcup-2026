@@ -3,11 +3,12 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import AccountHeader from "@/components/AccountHeader";
 import LotForm from "@/components/packs/LotForm";
+import LotFunnel from "@/components/packs/LotFunnel";
 import LotPot from "@/components/packs/LotPot";
 import LotStatusPanel from "@/components/packs/LotStatusPanel";
 import { PLATFORM_NAME } from "@/lib/brand";
 import { LOT_STATUS_LABEL } from "@/lib/packs";
-import { loadLot, packSeller } from "@/lib/packsServer";
+import { loadFunnel, loadLot, packSeller } from "@/lib/packsServer";
 import { ownShop } from "@/lib/shopLink";
 import { createClient } from "@/lib/supabase/server";
 
@@ -28,6 +29,7 @@ export default async function PackLotPage({ params }: { params: Promise<{ id: st
 
   const [data, shop] = await Promise.all([loadLot(s.supabase, user.id, id), ownShop(supabase, user.id)]);
   if (!data) notFound();
+  const funnel = data.lot.status === "rascunho" ? null : await loadFunnel(data.lot.id);
   const { lot, pot, available, shopSlug, shopMinOrderCents } = data;
   const packs = Object.values(pot).reduce((a, b) => a + b, 0);
 
@@ -47,6 +49,7 @@ export default async function PackLotPage({ params }: { params: Promise<{ id: st
           </div>
           <LotStatusPanel lotId={lot.id} status={lot.status} packs={packs} priceCents={lot.priceCents} shopSlug={shopSlug} lotSlug={lot.slug} />
         </section>
+        {funnel && <LotFunnel funnel={funnel} />}
         <LotPot lotId={lot.id} editable={lot.status === "rascunho"} pot={pot} available={available} />
         <section className="admin-section">
           <h2 className="admin-section-title">Dados do lote</h2>

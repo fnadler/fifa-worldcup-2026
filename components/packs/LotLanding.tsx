@@ -6,6 +6,8 @@ import { formatAuctionDate } from "@/lib/auctions";
 import { clarityEvent } from "@/lib/clarityClient";
 import { track } from "@/lib/metaClient";
 import { LEGEND_TIERS, legendName, legendTierOf } from "@/lib/packs";
+import type { FunnelStep } from "@/lib/packFunnel";
+import { funnel } from "@/lib/packFunnelClient";
 import type { PublicLot, PublicPack } from "@/lib/packsPublic";
 import { formatBRL } from "@/lib/shop";
 import { stickerImage } from "@/lib/stickerImages";
@@ -36,7 +38,13 @@ export default function LotLanding({ data }: { data: PublicLot }) {
   useEffect(() => {
     track("ViewContent", { content_name: `Pacote Legends · ${lot.title}`, content_type: "product", content_ids: [lot.id], value: lot.priceCents / 100, currency: "BRL" });
     clarityEvent("pacotes_lote_visto");
-  }, [lot.id, lot.title, lot.priceCents]);
+    if (!isOwner) funnel(lot.id, "view");
+  }, [lot.id, lot.title, lot.priceCents, isOwner]);
+
+  // Funil da página (o lojista olhando a própria página não conta).
+  const step = (s: FunnelStep) => {
+    if (!isOwner) funnel(lot.id, s);
+  };
 
   // A grade muda com os pedidos dos outros: atualiza a cada 40s com a aba visível.
   useEffect(() => {
@@ -80,6 +88,7 @@ export default function LotLanding({ data }: { data: PublicLot }) {
 
   function toggle(n: number) {
     if (!canBuy) return;
+    if (!selected.has(n)) step("pick");
     setSelected((s) => {
       const next = new Set(s);
       if (next.has(n)) next.delete(n);
@@ -96,6 +105,7 @@ export default function LotLanding({ data }: { data: PublicLot }) {
     }
     const chosen = free.slice(0, pick);
     if (!chosen.length) return flash("Não há mais pacotes disponíveis.");
+    step("pick");
     setSelected((s) => new Set([...s, ...chosen]));
     flash(`${chosen.length} ${chosen.length === 1 ? "pacote escolhido" : "pacotes escolhidos"} ao acaso`);
   }
@@ -550,7 +560,11 @@ export default function LotLanding({ data }: { data: PublicLot }) {
             <button
               className="lotp-btn lotp-btn-gold"
               disabled={!canBuy}
-              onClick={() => (nums.length ? setCheckout(true) : goTab("packs"))}
+              onClick={() => {
+                if (!nums.length) return goTab("packs");
+                step("checkout");
+                setCheckout(true);
+              }}
             >
               {nums.length ? "Continuar" : "Ver pacotes"}
             </button>
@@ -590,6 +604,7 @@ export default function LotLanding({ data }: { data: PublicLot }) {
             router.refresh();
           }}
           onOrdered={() => {
+            step("order");
             setSelected(new Set());
             router.refresh();
           }}

@@ -5495,6 +5495,51 @@ button {
   flex-direction: column;
   gap: 8px;
 }
+.pack-funnel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 14px 0 10px;
+}
+.pack-funnel-label {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-size: 14px;
+  color: var(--text-3);
+}
+.pack-funnel-label b {
+  font-size: 18px;
+  color: var(--text-1);
+}
+.pack-funnel-label small {
+  font-size: 12px;
+  color: var(--text-5);
+}
+.pack-funnel-bar {
+  height: 10px;
+  margin-top: 6px;
+  border-radius: 999px;
+  background: var(--border-1);
+  overflow: hidden;
+}
+.pack-funnel-bar span {
+  display: block;
+  height: 100%;
+  min-width: 2px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+.pack-funnel-reading {
+  margin: 4px 0 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--card-header);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text-2);
+}
 .pack-image-row {
   display: flex;
   gap: 14px;

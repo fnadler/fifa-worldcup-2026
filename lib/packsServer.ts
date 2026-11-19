@@ -1,7 +1,9 @@
 import "server-only";
 import type { SupabaseClient, User } from "@supabase/supabase-js";
 import { LEGEND_CODES, LOT_COLUMNS, lotFromRow, type LegendCount, type PackLot, type PackLotRow } from "./packs";
+import { FUNNEL_STEPS, type FunnelSource, type FunnelStep } from "./packFunnel";
 import { hasShopAccess } from "./shopAccess";
+import { createAdminClient } from "./supabase/admin";
 import { createClient } from "./supabase/server";
 
 // Lotes de pacotes: acesso e leitura no servidor. As escritas passam pela service_role (actions), sempre
@@ -90,4 +92,46 @@ export async function loadLot(client: SupabaseClient, sellerId: string, id: stri
     shopSlug: shop?.slug ?? null,
     shopMinOrderCents: shop?.order_min_cents ?? 0,
   };
+}
+
+export interface LotFunnel {
+  /** Pessoas em cada etapa. */
+  total: Record<FunnelStep, number>;
+  /** Pessoas em cada etapa, por origem da primeira visita (só origens com alguma visita). */
+  bySource: { source: FunnelSource; steps: Record<FunnelStep, number> }[];
+  /** Visitantes nas últimas 24h. */
+  last24h: number;
+}
+
+/** Funil da página do lote. Chamar só depois de confirmar que o lote é do lojista (loadLot). */
+export async function loadFunnel(lotId: string): Promise<LotFunnel> {
+  const zero = () => Object.fromEntries(FUNNEL_STEPS.map((s) => [s, 0])) as Record<FunnelStep, number>;
+  const total = zero();
+  const src = new Map<FunnelSource, Record<FunnelStep, number>>();
+  const firstSource = new Map<string, FunnelSource>();
+  let last24h = 0;
+  const since = Date.now() - 86_400_000;
+  const rows: { visitor: string; step: FunnelStep; source: FunnelSource; created_at: string }[] = [];
+  const admin = createAdminClient();
+  for (let from = 0; ; from += 1000) {
+    const { data } = await admin
+      .from("pack_lot_events")
+      .select("visitor, step, source, created_at")
+      .eq("lot_id", lotId)
+      .order("created_at")
+      .range(from, from + 999);
+    rows.push(...((data ?? []) as typeof rows));
+    if (!data || data.length < 1000) break;
+  }
+  // A origem de cada pessoa é a da primeira etapa registrada (normalmente a visita).
+  for (const r of rows) if (!firstSource.has(r.visitor)) firstSource.set(r.visitor, r.source);
+  for (const r of rows) {
+    total[r.step]++;
+    const s = firstSource.get(r.visitor) ?? r.source;
+    if (!src.has(s)) src.set(s, zero());
+    src.get(s)![r.step]++;
+    if (r.step === "view" && Date.parse(r.created_at) >= since) last24h++;
+  }
+  const bySource = [...src.entries()].map(([source, steps]) => ({ source, steps })).sort((a, b) => b.steps.view - a.steps.view);
+  return { total, bySource, last24h };
 }
